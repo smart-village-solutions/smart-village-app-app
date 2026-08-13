@@ -3,6 +3,8 @@ import React, { useContext, useEffect } from 'react';
 import renderer from 'react-test-renderer';
 
 const mockUseColorScheme = jest.fn();
+let mockSystemOnOffSwitchLabelsEnabled = false;
+let mockSetSystemAccessibility;
 
 jest.mock('react-native/Libraries/Utilities/useColorScheme', () => ({
   __esModule: true,
@@ -10,11 +12,19 @@ jest.mock('react-native/Libraries/Utilities/useColorScheme', () => ({
 }));
 
 jest.mock('../src/helpers/accessibilityListeners', () => ({
-  accessibilityListeners: () => () => undefined
+  accessibilityListeners: (setAccessibility) => {
+    mockSetSystemAccessibility = setAccessibility;
+    setAccessibility((previous) => ({
+      ...previous,
+      isOnOffSwitchLabelsEnabled: mockSystemOnOffSwitchLabelsEnabled
+    }));
+
+    return () => undefined;
+  }
 }));
 
 import { AccessibilityContext, AccessibilityProvider } from '../src/AccessibilityProvider';
-import { lightColors } from '../src/config';
+import { lightColors } from '../src/config/colors';
 import { SettingsContext } from '../src/SettingsProvider';
 
 let currentAccessibility;
@@ -49,6 +59,8 @@ describe('AccessibilityProvider', () => {
   beforeEach(async () => {
     currentAccessibility = undefined;
     mockUseColorScheme.mockReturnValue('light');
+    mockSystemOnOffSwitchLabelsEnabled = false;
+    mockSetSystemAccessibility = undefined;
     await AsyncStorage.clear();
   });
 
@@ -135,5 +147,86 @@ describe('AccessibilityProvider', () => {
     });
 
     expect(currentAccessibility.themeMode).toBe('system');
+  });
+
+  it('follows the iOS On/Off Labels setting until the user creates an app override', async () => {
+    mockSystemOnOffSwitchLabelsEnabled = true;
+
+    await renderProvider({
+      settings: {
+        accessibility: {
+          enabledFeatures: { switchLabels: true }
+        }
+      }
+    });
+
+    expect(currentAccessibility.system.isOnOffSwitchLabelsEnabled).toBe(true);
+    expect(currentAccessibility.preferences.switchLabelsEnabled).toBeUndefined();
+    expect(currentAccessibility.isSwitchLabelsEnabled).toBe(true);
+
+    await renderer.act(async () => {
+      currentAccessibility.setPreference('switchLabelsEnabled', false);
+    });
+
+    expect(currentAccessibility.preferences.switchLabelsEnabled).toBe(false);
+    expect(currentAccessibility.isSwitchLabelsEnabled).toBe(false);
+
+    const storedSettings = JSON.parse(await AsyncStorage.getItem('accessibilityUserSettings'));
+    expect(storedSettings.switchLabelsEnabled).toBe(false);
+  });
+
+  it('can enable app switch labels while the iOS system setting is off', async () => {
+    await renderProvider({
+      settings: {
+        accessibility: {
+          enabledFeatures: { switchLabels: true }
+        }
+      }
+    });
+
+    expect(currentAccessibility.isSwitchLabelsEnabled).toBe(false);
+
+    await renderer.act(async () => {
+      currentAccessibility.setPreference('switchLabelsEnabled', true);
+    });
+
+    expect(currentAccessibility.isSwitchLabelsEnabled).toBe(true);
+  });
+
+  it('enables switch labels from the switchLabels global default alias', async () => {
+    await renderProvider({
+      settings: {
+        accessibility: {
+          defaults: { switchLabels: true },
+          enabledFeatures: { switchLabels: true }
+        }
+      }
+    });
+
+    expect(currentAccessibility.defaults.switchLabelsEnabled).toBe(true);
+    expect(currentAccessibility.isSwitchLabelsEnabled).toBe(true);
+  });
+
+  it('reflects a live iOS On/Off Labels change while there is no app override', async () => {
+    await renderProvider({
+      settings: {
+        accessibility: {
+          enabledFeatures: { switchLabels: true }
+        }
+      }
+    });
+
+    expect(currentAccessibility.isSwitchLabelsEnabled).toBe(false);
+
+    renderer.act(() => {
+      mockSetSystemAccessibility((previous) => ({
+        ...previous,
+        isOnOffSwitchLabelsEnabled: true
+      }));
+    });
+
+    expect(currentAccessibility.system.isOnOffSwitchLabelsEnabled).toBe(true);
+    expect(currentAccessibility.preferences.switchLabelsEnabled).toBeUndefined();
+    expect(currentAccessibility.isSwitchLabelsEnabled).toBe(true);
   });
 });

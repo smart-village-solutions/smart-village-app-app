@@ -1,6 +1,10 @@
 import type { Dispatch, SetStateAction } from 'react';
 import { AccessibilityInfo } from 'react-native';
 
+import {
+  addSystemOnOffSwitchLabelsChangeListener,
+  isSystemOnOffSwitchLabelsEnabled
+} from '../../modules/on-off-switch-labels';
 import { AccessibilitySystemState } from '../types/Accessibility';
 
 // for detailed information: https://reactnative.dev/docs/accessibilityinfo#addeventlistener
@@ -92,6 +96,15 @@ export const accessibilityListeners = (
     }
   );
 
+  const onOffSwitchLabelsChangedSubscription = addSystemOnOffSwitchLabelsChangeListener(
+    (isOnOffSwitchLabelsEnabled) => {
+      setAccessibility((prev: AccessibilitySystemState) => ({
+        ...prev,
+        isOnOffSwitchLabelsEnabled
+      }));
+    }
+  );
+
   AccessibilityInfo.isBoldTextEnabled().then((isBoldTextEnabled) => {
     setAccessibility((prev: AccessibilitySystemState) => ({ ...prev, isBoldTextEnabled }));
   });
@@ -113,11 +126,18 @@ export const accessibilityListeners = (
   AccessibilityInfo.isScreenReaderEnabled().then((isScreenReaderEnabled) => {
     setAccessibility((prev: AccessibilitySystemState) => ({ ...prev, isScreenReaderEnabled }));
   });
+  isSystemOnOffSwitchLabelsEnabled().then((isOnOffSwitchLabelsEnabled) => {
+    setAccessibility((prev: AccessibilitySystemState) => ({
+      ...prev,
+      isOnOffSwitchLabelsEnabled
+    }));
+  });
 
   return () => {
     boldTextChangedSubscription.remove();
     grayscaleChangedSubscription.remove();
     invertColorsChangedSubscription.remove();
+    onOffSwitchLabelsChangedSubscription.remove();
     reduceMotionChangedSubscription.remove();
     reduceTransparencyChangedSubscription.remove();
     screenReaderChangedSubscription.remove();

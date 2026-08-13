@@ -15,13 +15,14 @@ export const ACCESSIBILITY_FEATURE_BY_PREFERENCE: Record<
   highContrastEnabled: 'highContrast',
   readAloudEnabled: 'readAloud',
   reduceMotionEnabled: 'reduceMotion',
-  reduceTransparencyEnabled: 'reduceTransparency'
+  reduceTransparencyEnabled: 'reduceTransparency',
+  switchLabelsEnabled: 'switchLabels'
 };
 
 export const ACCESSIBILITY_TEXT_SCALE_MULTIPLIERS = [0.9, 0.95, 1, 1.1, 1.2, 1.3, 1.4] as const;
 export const DEFAULT_ACCESSIBILITY_TEXT_SCALE_LEVEL = 2;
 
-export const DEFAULT_ACCESSIBILITY_FEATURES: AccessibilityFeatureAvailability = {
+export const DEFAULT_ACCESSIBILITY_FEATURES: Required<AccessibilityFeatureAvailability> = {
   boldText: false,
   headerEntry: false,
   highContrast: false,
@@ -29,6 +30,7 @@ export const DEFAULT_ACCESSIBILITY_FEATURES: AccessibilityFeatureAvailability = 
   readAloud: false,
   reduceMotion: false,
   reduceTransparency: false,
+  switchLabels: false,
   settingsEntry: false,
   textScaling: false,
   theming: false
@@ -50,6 +52,7 @@ type AccessibilityGlobalSettings = {
     accessibility?: {
       defaults?: Partial<AccessibilityUserSettings> & {
         boldText?: boolean;
+        switchLabels?: boolean;
         textScaling?: number;
       };
       enabledFeatures?: Partial<AccessibilityFeatureAvailability>;
@@ -86,6 +89,7 @@ export const getTextScaleMultiplier = (textScaleLevel: number) =>
 
 type AccessibilityDefaultsInput = Partial<AccessibilityUserSettings> & {
   boldText?: unknown;
+  switchLabels?: unknown;
   textScaling?: unknown;
 };
 
@@ -116,6 +120,18 @@ const getTextScaleDefault = (defaultSettings: AccessibilityDefaultsInput) => {
   return DEFAULT_ACCESSIBILITY_USER_SETTINGS.textScaleLevel;
 };
 
+const getSwitchLabelsDefault = (defaultSettings: AccessibilityDefaultsInput) => {
+  if (typeof defaultSettings.switchLabelsEnabled === 'boolean') {
+    return defaultSettings.switchLabelsEnabled;
+  }
+
+  if (typeof defaultSettings.switchLabels === 'boolean') {
+    return defaultSettings.switchLabels;
+  }
+
+  return undefined;
+};
+
 /* eslint-disable complexity */
 export const resolveAccessibilityConfiguration = (
   globalSettings?: AccessibilityGlobalSettings | null
@@ -128,6 +144,7 @@ export const resolveAccessibilityConfiguration = (
     featureSettings,
     DEFAULT_ACCESSIBILITY_FEATURES
   );
+  const switchLabelsDefault = getSwitchLabelsDefault(defaultSettings);
 
   const defaults: AccessibilityUserSettings = {
     ...DEFAULT_ACCESSIBILITY_USER_SETTINGS,
@@ -152,6 +169,9 @@ export const resolveAccessibilityConfiguration = (
       defaultSettings.reduceTransparencyEnabled,
       DEFAULT_ACCESSIBILITY_USER_SETTINGS.reduceTransparencyEnabled
     ),
+    ...(typeof switchLabelsDefault === 'boolean' && {
+      switchLabelsEnabled: switchLabelsDefault
+    }),
     textScaleLevel: getTextScaleDefault(defaultSettings),
     themeMode: isThemeMode(defaultSettings.themeMode)
       ? defaultSettings.themeMode

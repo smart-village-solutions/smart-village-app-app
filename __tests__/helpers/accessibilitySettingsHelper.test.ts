@@ -88,6 +88,20 @@ describe('accessibilitySettingsHelper', () => {
     expect(resolved.defaults.textScaleLevel).toBe(ACCESSIBILITY_TEXT_SCALE_MULTIPLIERS.length - 1);
   });
 
+  it('supports switchLabels as a global default alias', () => {
+    const resolved = resolveAccessibilityConfiguration({
+      settings: {
+        accessibility: {
+          defaults: {
+            switchLabels: true
+          }
+        }
+      }
+    });
+
+    expect(resolved.defaults.switchLabelsEnabled).toBe(true);
+  });
+
   it('reads modern defaults from global settings', () => {
     const resolved = resolveAccessibilityConfiguration({
       settings: {
@@ -98,6 +112,7 @@ describe('accessibilitySettingsHelper', () => {
             readAloudEnabled: true,
             reduceMotionEnabled: true,
             reduceTransparencyEnabled: true,
+            switchLabelsEnabled: false,
             textScaleLevel: 0,
             themeMode: 'dark'
           }
@@ -110,6 +125,7 @@ describe('accessibilitySettingsHelper', () => {
     expect(resolved.defaults.readAloudEnabled).toBe(true);
     expect(resolved.defaults.reduceMotionEnabled).toBe(true);
     expect(resolved.defaults.reduceTransparencyEnabled).toBe(true);
+    expect(resolved.defaults.switchLabelsEnabled).toBe(false);
     expect(resolved.defaults.textScaleLevel).toBe(0);
     expect(resolved.defaults.themeMode).toBe('dark');
   });

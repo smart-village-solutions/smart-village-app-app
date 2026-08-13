@@ -4,6 +4,7 @@ export type AccessibilitySystemState = {
   isBoldTextEnabled: boolean;
   isGrayscaleEnabled: boolean;
   isInvertColorsEnabled: boolean;
+  isOnOffSwitchLabelsEnabled?: boolean;
   isReduceMotionEnabled: boolean;
   isReduceTransparencyEnabled: boolean;
   isScreenReaderEnabled: boolean;
@@ -15,7 +16,8 @@ export type AccessibilityTogglePreferenceKey =
   | 'highContrastEnabled'
   | 'readAloudEnabled'
   | 'reduceMotionEnabled'
-  | 'reduceTransparencyEnabled';
+  | 'reduceTransparencyEnabled'
+  | 'switchLabelsEnabled';
 
 export type AccessibilityPreferenceKey =
   | AccessibilityTogglePreferenceKey
@@ -29,6 +31,7 @@ export type AccessibilityUserSettings = {
   readAloudEnabled: boolean;
   reduceMotionEnabled: boolean;
   reduceTransparencyEnabled: boolean;
+  switchLabelsEnabled?: boolean;
   textScaleLevel: number;
   themeMode: ThemeMode;
 };
@@ -41,11 +44,17 @@ export type AccessibilityFeatureKey =
   | 'readAloud'
   | 'reduceMotion'
   | 'reduceTransparency'
+  | 'switchLabels'
   | 'headerEntry'
   | 'settingsEntry'
   | 'theming';
 
-export type AccessibilityFeatureAvailability = Record<AccessibilityFeatureKey, boolean>;
+export type AccessibilityFeatureAvailability = Record<
+  Exclude<AccessibilityFeatureKey, 'switchLabels'>,
+  boolean
+> & {
+  switchLabels?: boolean;
+};
 
 export type AccessibilityContextValue = AccessibilitySystemState & {
   defaults: AccessibilityUserSettings;
@@ -53,6 +62,7 @@ export type AccessibilityContextValue = AccessibilitySystemState & {
   isHighContrastEnabled: boolean;
   isHydrated: boolean;
   isReadAloudEnabled: boolean;
+  isSwitchLabelsEnabled?: boolean;
   resolvedThemeMode: ResolvedThemeMode;
   preferences: AccessibilityUserSettings;
   resetPreferences: () => void;

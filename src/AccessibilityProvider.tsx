@@ -24,6 +24,7 @@ const defaultSystemAccessibility: AccessibilitySystemState = {
   isBoldTextEnabled: false,
   isGrayscaleEnabled: false,
   isInvertColorsEnabled: false,
+  isOnOffSwitchLabelsEnabled: false,
   isReduceMotionEnabled: false,
   isReduceTransparencyEnabled: false,
   isScreenReaderEnabled: false
@@ -49,6 +50,7 @@ const defaultAccessibility: AccessibilityContextValue = {
     readAloud: false,
     reduceMotion: false,
     reduceTransparency: false,
+    switchLabels: false,
     settingsEntry: false,
     textScaling: false,
     theming: false
@@ -56,6 +58,7 @@ const defaultAccessibility: AccessibilityContextValue = {
   isHighContrastEnabled: false,
   isHydrated: false,
   isReadAloudEnabled: false,
+  isSwitchLabelsEnabled: false,
   preferences: {
     boldTextEnabled: false,
     isGrayscaleEnabled: false,
@@ -79,6 +82,17 @@ const defaultAccessibility: AccessibilityContextValue = {
 };
 
 export const AccessibilityContext = createContext<AccessibilityContextValue>(defaultAccessibility);
+
+const resolveSwitchLabelsEnabled = (
+  featureEnabled: boolean | undefined,
+  preference: boolean | undefined,
+  systemEnabled: boolean | undefined,
+  defaultEnabled: boolean | undefined
+) =>
+  featureEnabled &&
+  (typeof preference === 'boolean'
+    ? preference
+    : systemEnabled === true || defaultEnabled === true);
 
 export const AccessibilityProvider = ({ children }: { children?: React.ReactNode }) => {
   const { globalSettings } = useContext(SettingsContext);
@@ -255,6 +269,12 @@ export const AccessibilityProvider = ({ children }: { children?: React.ReactNode
     const isReduceTransparencyEnabled =
       systemAccessibility.isReduceTransparencyEnabled ||
       (features.reduceTransparency && preferences.reduceTransparencyEnabled);
+    const isSwitchLabelsEnabled = resolveSwitchLabelsEnabled(
+      features.switchLabels,
+      preferences.switchLabelsEnabled,
+      systemAccessibility.isOnOffSwitchLabelsEnabled,
+      defaults.switchLabelsEnabled
+    );
     return {
       ...systemAccessibility,
       defaults,
@@ -266,6 +286,7 @@ export const AccessibilityProvider = ({ children }: { children?: React.ReactNode
       isReadAloudEnabled: features.readAloud,
       isReduceMotionEnabled,
       isReduceTransparencyEnabled,
+      isSwitchLabelsEnabled,
       preferences,
       resolvedThemeMode,
       resetPreferences,

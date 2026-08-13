@@ -14,6 +14,7 @@ export const useAccessibilityPreferences = () => {
     features,
     isGrayscaleEnabled,
     isHighContrastEnabled,
+    isSwitchLabelsEnabled,
     preferences,
     resetPreferences,
     resolvedThemeMode,
@@ -28,7 +29,7 @@ export const useAccessibilityPreferences = () => {
 
   const isPreferenceAvailable = useCallback(
     (key: AccessibilityTogglePreferenceKey) => {
-      return features[ACCESSIBILITY_FEATURE_BY_PREFERENCE[key]] !== false;
+      return features[ACCESSIBILITY_FEATURE_BY_PREFERENCE[key]] === true;
     },
     [features]
   );
@@ -86,6 +87,7 @@ export const useAccessibilityPreferences = () => {
     features,
     isGrayscaleEnabled,
     isHighContrastEnabled,
+    isSwitchLabelsEnabled,
     isPreferenceAvailable,
     isTextScalingAvailable,
     isThemingAvailable: features.theming !== false,
