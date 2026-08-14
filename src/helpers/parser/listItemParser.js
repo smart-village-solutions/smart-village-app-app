@@ -355,6 +355,7 @@ const parseConversations = (data) =>
  * @param {{
  *     appDesignSystem?: any;
  *     bookmarkable?: boolean;
+ *     dateTimeFormat?: string;
  *     filterTypes?: any;
  *     isSectioned?: boolean;
  *     queryKey?: string;

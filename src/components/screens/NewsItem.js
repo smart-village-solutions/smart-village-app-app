@@ -57,6 +57,9 @@ export const NewsItem = ({ data, route }) => {
   );
 
   const businessAccount = dataProvider?.dataType === 'business_account';
+  const formattedPublishedAt = publishedAt
+    ? momentFormatUtcToLocal(publishedAt, detailDateFormat)
+    : null;
 
   return (
     <View>
@@ -74,10 +77,10 @@ export const NewsItem = ({ data, route }) => {
         <SectionHeader big center title={trimNewLines(title)} />
       </WrapperRow>
 
-      {!!momentFormatUtcToLocal(publishedAt) && (
+      {!!formattedPublishedAt && (
         <Wrapper center>
           <WrapperRow center>
-            <RegularText>{momentFormatUtcToLocal(publishedAt, detailDateFormat)}</RegularText>
+            <RegularText>{formattedPublishedAt}</RegularText>
           </WrapperRow>
         </Wrapper>
       )}

@@ -135,7 +135,6 @@ const renderItem = ({ item }) => {
     },
     NEWS_ITEMS_INDEX: ({
       categoryId,
-      dateTimeFormat,
       indexCategoryIds,
       rootRouteName = ROOT_ROUTE_NAMES.NEWS_ITEMS,
       title,
