@@ -82,4 +82,3 @@ Note: `.gitignore` already covers these rules; this section makes the agent beha
 - Main docs index: `docs/INDEX.md`
 - Changelog policy and release notes: `CHANGELOG.md`
 - Contribution and commit guidance: `CONTRIBUTING.md`
-
