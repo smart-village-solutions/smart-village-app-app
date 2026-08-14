@@ -1,10 +1,12 @@
 import { StackNavigationProp } from '@react-navigation/stack';
-import React from 'react';
+import React, { useContext } from 'react';
 import { useQuery } from 'react-query';
 
+import { CACHE_SCOPES, millisecondsUntilCacheExpires } from '../helpers/cacheHelper';
 import { useHomePointsOfInterestAndToursRefresh, useHomeRefresh, useVolunteerData } from '../hooks';
 import { getQuery, QUERY_TYPES } from '../queries';
 import { ReactQueryClient } from '../ReactQueryClient';
+import { SettingsContext } from '../SettingsProvider';
 
 import { DataListSection } from './DataListSection';
 
@@ -40,6 +42,7 @@ export const HomeSection = ({
   title,
   titleDetail
 }: Props) => {
+  const { globalSettings } = useContext(SettingsContext);
   const isPointsOfInterestAndTours = query === QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS;
   // `dataUpdatedAt` is provided by react-query and changes whenever a successful fetch updates data.
   const { data, dataUpdatedAt, isLoading, refetch } = useQuery(
@@ -51,6 +54,7 @@ export const HomeSection = ({
     },
     isPointsOfInterestAndTours
       ? {
+          cacheTime: millisecondsUntilCacheExpires(globalSettings, CACHE_SCOPES.HOME),
           // Keep one random selection stable across tab switches; manual refresh uses a separate event.
           staleTime: 60 * 60 * 1000,
           refetchOnWindowFocus: false,

@@ -19,6 +19,7 @@ import { BookmarkProvider } from './BookmarkProvider';
 import { consts, namespace, secrets } from './config';
 import { ConfigurationsProvider } from './ConfigurationsProvider';
 import {
+  createEndOfDayExpiringStorage,
   geoLocationToLocationObject,
   graphqlFetchPolicy,
   parsedImageAspectRatio,
@@ -33,13 +34,35 @@ import { OrientationProvider } from './OrientationProvider';
 import { PermanentFilterProvider } from './PermanentFilterProvider';
 import { ProfileProvider } from './ProfileProvider';
 import { getQuery, QUERY_TYPES } from './queries';
-import { ReactQueryProvider } from './ReactQueryProvider';
+import { ReactQueryCacheSettings, ReactQueryProvider } from './ReactQueryProvider';
 import RootView from './RootView';
-import { initialContext, SettingsProvider } from './SettingsProvider';
+import { initialContext, SettingsContext, SettingsProvider } from './SettingsProvider';
 import { UnreadMessagesProvider } from './UnreadMessagesProvider';
 import { OtaUpdateManager } from './components';
 
 const { LIST_TYPES } = consts;
+
+const MainAppWithSettings = () => {
+  const { globalSettings } = useContext(SettingsContext);
+
+  return (
+    <>
+      <ReactQueryCacheSettings globalSettings={globalSettings} />
+      <ConfigurationsProvider>
+        <OnboardingManager>
+          <ProfileProvider>
+            <UnreadMessagesProvider>
+              <RootView>
+                <OtaUpdateManager />
+                <Navigator navigationType={globalSettings.navigation} />
+              </RootView>
+            </UnreadMessagesProvider>
+          </ProfileProvider>
+        </OnboardingManager>
+      </ConfigurationsProvider>
+    </>
+  );
+};
 
 const MainAppWithApolloProvider = () => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
@@ -76,7 +99,9 @@ const MainAppWithApolloProvider = () => {
     // const link = ApolloLink.from([authLink, restLink, errorLink, retryLink, httpLink]);
     const link = ApolloLink.from([authLink, httpLink]);
     const cache = new InMemoryCache();
-    const storage = AsyncStorage;
+    const storage = createEndOfDayExpiringStorage(AsyncStorage, {
+      getGlobalSettings: storageHelper.globalSettings
+    });
 
     try {
       // await before instantiating ApolloClient,
@@ -219,18 +244,7 @@ const MainAppWithApolloProvider = () => {
           initialConversationSettings
         }}
       >
-        <ConfigurationsProvider>
-          <OnboardingManager>
-            <ProfileProvider>
-              <UnreadMessagesProvider>
-                <RootView>
-                  <OtaUpdateManager />
-                  <Navigator navigationType={initialGlobalSettings.navigation} />
-                </RootView>
-              </UnreadMessagesProvider>
-            </ProfileProvider>
-          </OnboardingManager>
-        </ConfigurationsProvider>
+        <MainAppWithSettings />
       </SettingsProvider>
     </ApolloProvider>
   );
