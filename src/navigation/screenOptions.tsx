@@ -19,6 +19,7 @@ type OptionConfig = {
   withDrawer?: boolean;
   withFavorites?: boolean;
   withInfo?: boolean;
+  withProfile?: boolean;
   withSearch?: boolean;
   withShare?: boolean;
 };
@@ -32,6 +33,7 @@ export const getScreenOptions =
     withDrawer,
     withFavorites,
     withInfo,
+    withProfile,
     withSearch,
     withShare
   }: OptionConfig): ((props: OptionProps) => StackNavigationOptions) =>
@@ -52,6 +54,7 @@ export const getScreenOptions =
             withDelete,
             withDrawer,
             withInfo,
+            withProfile,
             withSearch,
             withShare
           }}

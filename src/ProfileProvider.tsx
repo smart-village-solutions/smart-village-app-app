@@ -43,7 +43,7 @@ export const ProfileProvider = ({ children }: { children?: React.ReactNode }) =>
 
   const handleMemberResponse = useCallback(
     (responseData: ProfileMember) => {
-      if (!responseData?.member || !responseData?.member?.keycloak_refresh_token) {
+      if (!responseData?.member) {
         clearProfileSession();
 
         return;
@@ -118,8 +118,7 @@ export const ProfileProvider = ({ children }: { children?: React.ReactNode }) =>
           setIsLoggedIn(true);
           setCurrentUserData(userData);
 
-          pendingMemberSync.current =
-            scheduleMemberSync && !syncMemberNow;
+          pendingMemberSync.current = scheduleMemberSync && !syncMemberNow;
 
           if (syncMemberNow) {
             await refetchMemberWithRetryState();
@@ -143,36 +142,39 @@ export const ProfileProvider = ({ children }: { children?: React.ReactNode }) =>
     });
   }, [isConnected, loadProfileState]);
 
-  const syncMemberCallback = useCallback(async ({ requirePendingSync = false } = {}) => {
-    await runSerializedTask(async () => {
-      try {
-        if (requirePendingSync && !pendingMemberSync.current) {
-          return;
-        }
+  const syncMemberCallback = useCallback(
+    async ({ requirePendingSync = false } = {}) => {
+      await runSerializedTask(async () => {
+        try {
+          if (requirePendingSync && !pendingMemberSync.current) {
+            return;
+          }
 
-        const storedProfileAuthToken = await profileAuthToken();
+          const storedProfileAuthToken = await profileAuthToken();
 
-        if (!storedProfileAuthToken) {
-          clearProfileSession();
+          if (!storedProfileAuthToken) {
+            clearProfileSession();
 
-          return;
-        }
+            return;
+          }
 
-        if (isConnected) {
-          // Keep reconnect and home-triggered member syncs silent so background
-          // authorization refreshes do not re-enter the global profile loading state.
-          setIsError(false);
-          await refetchMemberWithRetryState();
-        } else {
+          if (isConnected) {
+            // Keep reconnect and home-triggered member syncs silent so background
+            // authorization refreshes do not re-enter the global profile loading state.
+            setIsError(false);
+            await refetchMemberWithRetryState();
+          } else {
+            pendingMemberSync.current = true;
+          }
+        } catch (e) {
+          console.warn(e);
           pendingMemberSync.current = true;
+          setIsError(true);
         }
-      } catch (e) {
-        console.warn(e);
-        pendingMemberSync.current = true;
-        setIsError(true);
-      }
-    });
-  }, [clearProfileSession, isConnected, refetchMemberWithRetryState, runSerializedTask]);
+      });
+    },
+    [clearProfileSession, isConnected, refetchMemberWithRetryState, runSerializedTask]
+  );
 
   useHomeRefresh(syncMemberCallback);
 
