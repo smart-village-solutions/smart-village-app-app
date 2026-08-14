@@ -38,7 +38,9 @@ export const CategoryScreen = ({ navigation, route }: CategoryScreenProps) => {
     isLoading = false,
     refetch
   } = useBusCategoryChildren(category?.id, areaId);
-  const { data: services = [], isLoading: isServicesLoading = false } = useBusServices(areaId);
+  const { data: services = [], isLoading: isServicesLoading = false } = useBusServices(
+    areaId ?? null
+  );
   const childCategories = isError ? [] : data;
 
   useMatomoTrackScreenView(`BUS/${category?.name || 'Lebenslagen'}`);
