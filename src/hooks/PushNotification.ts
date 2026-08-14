@@ -1,8 +1,9 @@
 import * as Notifications from 'expo-notifications';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { AppState, AppStateStatus, InteractionManager } from 'react-native';
+import { AppState, AppStateStatus } from 'react-native';
 
 import { readFromStore } from '../helpers';
+import { getNotificationResponseKey } from '../helpers/notificationHelper';
 import {
   PushNotificationStorageKeys,
   getPushTokenFromStorage,
@@ -10,12 +11,7 @@ import {
 } from '../pushNotifications';
 
 type NotificationHandler = (arg: Notifications.Notification) => void;
-type ResponseHandler = (arg: Notifications.NotificationResponse) => void;
-
-// Module-level variable to track the last handled cold-start notification.
-// Persists across hook remounts within the same app session so the same tap
-// cannot trigger duplicate navigation after a remount or navigator reset.
-let lastHandledNotificationId: string | undefined;
+type ResponseHandler = (arg: Notifications.NotificationResponse) => boolean | void;
 
 export const usePushNotifications = (
   notificationHandler?: NotificationHandler,
@@ -26,11 +22,19 @@ export const usePushNotifications = (
   // this causes the active state to never change between rerenders.
   // like this enabling or disabling the pushNotifications requires an app restart.
   const [isActive] = useState(active);
+  const lastNotificationResponse = Notifications.useLastNotificationResponse();
 
   const notificationListener = useRef<Notifications.EventSubscription | null>(null);
-  const responseListener = useRef<Notifications.EventSubscription | null>(null);
+  const notificationHandlerRef = useRef(notificationHandler);
+  const behaviorRef = useRef(behavior);
+  const lastHandledNotificationKey = useRef<string | undefined>(undefined);
 
-  const currentAppState = useRef<AppStateStatus>();
+  const currentAppState = useRef<AppStateStatus | undefined>(undefined);
+
+  useEffect(() => {
+    notificationHandlerRef.current = notificationHandler;
+    behaviorRef.current = behavior;
+  }, [behavior, notificationHandler]);
 
   const onGetActive = useCallback(async (nextState: AppStateStatus) => {
     if (currentAppState.current !== nextState) {
@@ -50,12 +54,33 @@ export const usePushNotifications = (
   }, []); // empty dependencies because it will only used once in the "mountEffect" below
 
   useEffect(() => {
+    if (!lastNotificationResponse || !interactionHandler) return;
+
+    const responseKey = getNotificationResponseKey(lastNotificationResponse);
+
+    if (responseKey === lastHandledNotificationKey.current) return;
+
+    try {
+      const handled = interactionHandler(lastNotificationResponse);
+
+      Notifications.clearLastNotificationResponse();
+      lastHandledNotificationKey.current = responseKey;
+
+      if (handled === false) {
+        console.warn('Push notification response did not contain a supported navigation target.');
+      }
+    } catch (error) {
+      // Keep the native response available so a remount can retry after a transient failure.
+      console.warn('An error occurred while handling a push notification response:', error);
+    }
+  }, [interactionHandler, lastNotificationResponse]);
+
+  useEffect(() => {
     if (isActive === false) return;
 
     Notifications.setNotificationHandler({
       handleNotification: async () =>
-        behavior ?? {
-          shouldShowAlert: true,
+        behaviorRef.current ?? {
           shouldPlaySound: false,
           shouldSetBadge: false,
           shouldShowBanner: false,
@@ -66,43 +91,14 @@ export const usePushNotifications = (
     const subscription = AppState.addEventListener('change', onGetActive);
 
     // This listener is fired whenever a notification is received while the app is foregrounded
-    notificationListener.current = notificationHandler
-      ? Notifications.addNotificationReceivedListener((notification) => {
-          notificationHandler(notification);
-        })
-      : null;
-
-    // This listener is fired whenever a user taps on or interacts with a notification
-    // while the app is foregrounded or backgrounded.
-    responseListener.current = interactionHandler
-      ? Notifications.addNotificationResponseReceivedListener((response) => {
-          interactionHandler(response);
-        })
-      : null;
-
-    // Handle the cold-start case: when the app was killed and the user tapped a notification
-    // to open it. In this case the response listener above never fires because the tap
-    // happened before the listener was registered. getLastNotificationResponseAsync returns
-    // the response that caused the app to open.
-    if (interactionHandler) {
-      const lastResponse = Notifications.getLastNotificationResponse();
-      if (lastResponse) {
-        const id = lastResponse.notification.request.identifier;
-
-        if (id !== lastHandledNotificationId) {
-          lastHandledNotificationId = id;
-          InteractionManager.runAfterInteractions(() => {
-            interactionHandler(lastResponse);
-          });
-        }
-      }
-    }
+    notificationListener.current = Notifications.addNotificationReceivedListener((notification) => {
+      notificationHandlerRef.current?.(notification);
+    });
 
     return () => {
       notificationListener.current && notificationListener.current.remove();
-      responseListener.current && responseListener.current.remove();
 
       subscription.remove();
     };
-  }, []);
+  }, [isActive, onGetActive]);
 };

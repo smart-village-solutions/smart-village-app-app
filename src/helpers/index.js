@@ -33,6 +33,7 @@ export * from './mapHelper';
 export * from './matomoHelper';
 export * from './momentHelper';
 export * from './normalizeStyleValues';
+export * from './notificationHelper';
 export * from './openingHoursHelper';
 export * from './personNameHelper';
 export * from './positionHelper';

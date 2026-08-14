@@ -21,6 +21,7 @@ import {
 import { colors, consts, texts } from '../config';
 import {
   graphqlFetchPolicy,
+  getPushNotificationNavigationData,
   queryVariablesFromQuery,
   rootRouteName,
   routeNameFromQuery
@@ -260,26 +261,41 @@ export const HomeScreen = ({ navigation, route }) => {
 
   const interactionHandler = useCallback(
     (response) => {
-      const data = response?.notification?.request?.content?.data || {};
-      const { id, query_type: queryType, title } = data;
-      const query = queryType ? getQueryType(queryType) : undefined;
+      const target = getPushNotificationNavigationData(response);
+
+      if (!target) return false;
+
+      const { data, queryType, title } = target;
+      const query = getQueryType(queryType);
+
+      if (!query) {
+        console.warn(`Unsupported push notification query type: ${queryType}`);
+        return false;
+      }
+
       const name = routeNameFromQuery(query);
+
+      if (!name) {
+        console.warn(`No route configured for push notification query type: ${queryType}`);
+        return false;
+      }
+
       const queryVariables = queryVariablesFromQuery(query, data);
 
-      if (id && name && query) {
-        // navigate to the referenced item
-        navigation.navigate({
-          name,
-          params: {
-            details: null,
-            query,
-            queryVariables,
-            rootRouteName: rootRouteName(query),
-            shareContent: null,
-            title: title || texts.detailTitles[query]
-          }
-        });
-      }
+      // HomeScreen is mounted by its stack navigator, so its navigation object is ready here.
+      navigation.navigate({
+        name,
+        params: {
+          details: null,
+          query,
+          queryVariables,
+          rootRouteName: rootRouteName(query),
+          shareContent: null,
+          title: title || texts.detailTitles[query]
+        }
+      });
+
+      return true;
     },
     [navigation]
   );
