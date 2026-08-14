@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 
 import { consts, Icon, normalize, texts } from '../../config';
 import {
@@ -19,6 +19,7 @@ import {
 } from '../../helpers';
 import { createCalendarEvent } from '../../helpers/createCalendarEvent';
 import { useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
 import { GenericType } from '../../types';
 import { Button } from '../Button';
 import { DataProviderButton } from '../DataProviderButton';
@@ -201,6 +202,7 @@ const ParticipationProjectCalendarExport = ({ data }: { data: ParticipationProje
 };
 
 const ParticipationProjectDetailStatusIndicator = ({ data }: { data: ParticipationProject }) => {
+  const styles = useThemeStyles(createStyles);
   const statusLabel = getParticipationProjectStatusLabel(data);
 
   if (!statusLabel) return null;
@@ -303,7 +305,7 @@ export const ParticipationProjectDetail = ({ data, route }: Props) => {
 };
 /* eslint-enable complexity */
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   statusContainer: {
     marginBottom: normalize(12),
     marginTop: normalize(4)

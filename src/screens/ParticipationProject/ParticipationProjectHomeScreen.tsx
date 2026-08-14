@@ -1,6 +1,6 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useCallback, useMemo, useState } from 'react';
-import { DeviceEventEmitter, FlatList, RefreshControl, StyleSheet } from 'react-native';
+import { DeviceEventEmitter, FlatList, RefreshControl } from 'react-native';
 import { useQuery } from 'react-query';
 
 import {
@@ -14,7 +14,7 @@ import {
   TextListItem,
   WrapperVertical
 } from '../../components';
-import { colors, consts, normalize, texts } from '../../config';
+import { consts, normalize, texts } from '../../config';
 import {
   subtitle as formatSubtitle,
   getParticipationProjectStatusColor,
@@ -34,6 +34,8 @@ import {
   trimNewLines
 } from '../../helpers';
 import { HOME_REFRESH_EVENT, useMatomoTrackScreenView, useStaticContent } from '../../hooks';
+import { useTheme } from '../../hooks/useTheme';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { ReactQueryClient } from '../../ReactQueryClient';
 import { GenericItem, GenericType, ScreenName } from '../../types';
@@ -205,7 +207,7 @@ const buildProjectListItem = (
   const listDate = getParticipationProjectPreviewDate(item);
   const statusLabel = getParticipationProjectStatusLabel(item as ParticipationProject);
 
-  const overtitle = formatSubtitle(listDate, type);
+  const overtitle = formatSubtitle(listDate, type, '');
 
   const accessibilityLabel = [
     overtitle,
@@ -318,6 +320,8 @@ const buildCategoryItems = ({
 export const ParticipationProjectHomeScreen = ({
   navigation
 }: StackScreenProps<ParticipationProjectHomeParamList, ScreenName.ParticipationProjectHome>) => {
+  const { colors } = useTheme();
+  const styles = useThemeStyles(createStyles);
   const [refreshing, setRefreshing] = useState(false);
 
   const {
@@ -529,7 +533,7 @@ export const ParticipationProjectHomeScreen = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   contentContainer: {
     flexGrow: 1,
     paddingHorizontal: normalize(16)

@@ -14,7 +14,7 @@ import {
   Wrapper
 } from '../../components';
 import { expandMapBounds, getMarkerBounds } from '../../components/map/getMarkerBounds';
-import { colors, consts, normalize } from '../../config';
+import { consts, normalize } from '../../config';
 import {
   buildParticipationProjectPreviewItem,
   getParticipationProjectGeoLocation,
@@ -26,8 +26,9 @@ import {
   PARTICIPATION_PROJECT_STATUS_POSITION_PARAM,
   ParticipationProject
 } from '../../helpers';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
 import { getQuery, QUERY_TYPES } from '../../queries';
-import { GenericType, MapMarker, ScreenName } from '../../types';
+import { GenericType, MapMarker, ScreenName, ThemeColorPalette } from '../../types';
 
 type ParticipationProjectMapParamList = Record<string, object | undefined> & {
   [ScreenName.ParticipationProjectMap]: {
@@ -51,6 +52,7 @@ export const ParticipationProjectMapScreen = ({
   navigation,
   route
 }: StackScreenProps<ParticipationProjectMapParamList, ScreenName.ParticipationProjectMap>) => {
+  const styles = useThemeStyles(createStyles);
   const [selectedMarker, setSelectedMarker] = useState<string>();
   const [isMapReady, setIsMapReady] = useState(false);
   const titleNumberOfLines = route.params?.titleNumberOfLines;
@@ -189,7 +191,7 @@ export const ParticipationProjectMapScreen = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColorPalette) => ({
   container: {
     flex: 1,
     width: '100%'

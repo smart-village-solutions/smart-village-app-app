@@ -1,8 +1,11 @@
 /* eslint-disable @typescript-eslint/no-var-requires, react/prop-types */
 import React from 'react';
 import { act, fireEvent, render } from '@testing-library/react-native';
+import { StyleSheet, View } from 'react-native';
 
+import { darkColors } from '../../src/config/colors';
 import { ParticipationProjectMapScreen } from '../../src/screens/ParticipationProject/ParticipationProjectMapScreen';
+import { ThemeContext } from '../../src/ThemeContext';
 import { ScreenName } from '../../src/types';
 
 const DETAIL_ROUTE_NAME = 'Detail';
@@ -221,6 +224,35 @@ describe('ParticipationProjectMapScreen', () => {
       title: 'Beteiligungsprojekt'
     });
     expect(useQuery.mock.calls[0][0][1]).not.toHaveProperty('participationStatus');
+  });
+
+  it('uses the active theme surface for the map loading overlay', () => {
+    useQuery.mockReturnValue({
+      data: {
+        genericItems: [
+          buildItem({
+            id: 'active-dark-mode',
+            position: { latitude: 52.1, longitude: 11.6 },
+            status: 'active'
+          })
+        ]
+      },
+      isLoading: false
+    });
+
+    const screen = render(
+      <ThemeContext.Provider value={{ colors: darkColors, isDark: true, mode: 'dark' }}>
+        <ParticipationProjectMapScreen
+          navigation={{ goBack: jest.fn(), navigate: jest.fn(), setOptions: jest.fn() } as never}
+          route={{ params: {} } as never}
+        />
+      </ThemeContext.Provider>
+    );
+    const usesDarkSurface = screen
+      .UNSAFE_getAllByType(View)
+      .some((view) => StyleSheet.flatten(view.props.style)?.backgroundColor === darkColors.surface);
+
+    expect(usesDarkSurface).toBe(true);
   });
 
   it('renders the empty state and wires the standard back button to goBack', () => {

@@ -1,8 +1,11 @@
 /* eslint-disable @typescript-eslint/no-var-requires, react/prop-types */
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react-native';
+import { RefreshControl } from 'react-native';
 
+import { darkColors } from '../../src/config/colors';
 import { ParticipationProjectHomeScreen } from '../../src/screens/ParticipationProject/ParticipationProjectHomeScreen';
+import { ThemeContext } from '../../src/ThemeContext';
 
 jest.mock('react-query', () => ({
   useQuery: jest.fn()
@@ -163,6 +166,18 @@ describe('ParticipationProjectHomeScreen', () => {
 
     expect(getByText('<p>Intro zum Beteiligungsportal</p>')).toBeTruthy();
     expect(queryByTestId('participation-project-home-content')).toBeNull();
+  });
+
+  it('uses the active theme color for pull to refresh', () => {
+    const screen = render(
+      <ThemeContext.Provider value={{ colors: darkColors, isDark: true, mode: 'dark' }}>
+        <ParticipationProjectHomeScreen navigation={{ navigate: jest.fn() } as never} />
+      </ThemeContext.Provider>
+    );
+    const refreshControl = screen.UNSAFE_getByType(RefreshControl);
+
+    expect(refreshControl.props.colors).toEqual([darkColors.refreshControl]);
+    expect(refreshControl.props.tintColor).toBe(darkColors.refreshControl);
   });
 
   it('shows only the active count and uses active projects as the default list selection', () => {
