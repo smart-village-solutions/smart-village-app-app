@@ -262,7 +262,11 @@ type Props = {
   }) => void | Promise<void>;
   onMarkerPress?: (arg0?: string) => void;
   onMaximizeButtonPress?: () => void;
-  onMyLocationButtonPress?: ({ isFullScreenMap }: { isFullScreenMap?: boolean }) => void;
+  onMyLocationButtonPress?: ({
+    isFullScreenMap
+  }: {
+    isFullScreenMap?: boolean;
+  }) => void | Promise<void>;
   selectedMarker?: string;
   selectedPosition?: LocationObjectCoords;
   setPinEnabled?: boolean;
@@ -822,6 +826,8 @@ export const MapLibre = ({
   const maximizeFullscreenStyle = isFullscreenMap
     ? { bottom: normalize(15) + (safeAreaBottom ? 0 : bottomTabBarHeight), right: 0 as const }
     : undefined;
+  const hasCurrentPosition =
+    currentPosition?.coords?.latitude != null && currentPosition?.coords?.longitude != null;
 
   return (
     <View style={[styles.container, style]}>
@@ -1008,13 +1014,28 @@ export const MapLibre = ({
         )}
       </Map>
 
-      {isMyLocationButtonVisible && showsUserLocation && (
+      {isMyLocationButtonVisible && (
         <TouchableOpacity
           accessibilityLabel={`${texts.components.map} ${a11yLabel.button}`}
-          onPress={() => {
-            setFollowsUserLocation(true);
-            onMyLocationButtonPress?.({});
-            setTimeout(() => setFollowsUserLocation(false), FOLLOW_USER_TIMEOUT);
+          onPress={async () => {
+            try {
+              await onMyLocationButtonPress?.({ isFullScreenMap: isFullscreenMap });
+            } catch (error) {
+              console.error('My location button press failed', error);
+            }
+
+            if (!showsUserLocation) {
+              return;
+            }
+
+            // Android can crash when user tracking is enabled before a valid
+            // runtime-granted location is available on the native layer.
+            const canFollowUserLocation = hasCurrentPosition || !onMyLocationButtonPress;
+
+            if (canFollowUserLocation) {
+              setFollowsUserLocation(true);
+              setTimeout(() => setFollowsUserLocation(false), FOLLOW_USER_TIMEOUT);
+            }
           }}
           style={[
             styles.buttonsContainer,

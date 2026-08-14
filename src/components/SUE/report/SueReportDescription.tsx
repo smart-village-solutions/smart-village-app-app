@@ -20,6 +20,7 @@ export const SueReportDescription = ({
   errorMessage,
   requiredInputs,
   selectedPosition,
+  storeReportValues,
   setSelectedPosition,
   setShowCoordinatesFromImageAlert,
   setUpdateRegionFromImage,
@@ -31,6 +32,7 @@ export const SueReportDescription = ({
   errorMessage: string;
   requiredInputs: keyof TValues[];
   selectedPosition?: Location.LocationObjectCoords;
+  storeReportValues: () => Promise<void>;
   setSelectedPosition: (position?: Location.LocationObjectCoords) => void;
   setShowCoordinatesFromImageAlert: (value: boolean) => void;
   setUpdateRegionFromImage: (value: boolean) => void;
@@ -58,6 +60,7 @@ export const SueReportDescription = ({
         setUpdateRegionFromImage,
         setValue
       },
+      onBeforeNativeImagePicker: storeReportValues,
       isMultiImages: true,
       selectorType: IMAGE_SELECTOR_TYPES.SUE,
       errorType: IMAGE_SELECTOR_ERROR_TYPES.SUE,
@@ -73,6 +76,7 @@ export const SueReportDescription = ({
       areaServiceData,
       errorMessage,
       selectedPosition,
+      storeReportValues,
       setSelectedPosition,
       setShowCoordinatesFromImageAlert,
       setUpdateRegionFromImage,

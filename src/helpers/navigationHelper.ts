@@ -21,7 +21,10 @@ export const navigateToRoute = ({
   targetTabIndex,
   usePush = false
 }: NavigateToRouteOptions) => {
-  if (hasValidTabIndex(targetTabIndex)) {
+  const shouldStayOnCurrentStack =
+    routeName === 'SueList' && params?.query === 'myRequests';
+
+  if (!shouldStayOnCurrentStack && hasValidTabIndex(targetTabIndex)) {
     const parentNavigation = navigation.getParent?.();
 
     if (parentNavigation?.navigate) {

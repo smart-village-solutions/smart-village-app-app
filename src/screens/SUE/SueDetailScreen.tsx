@@ -21,7 +21,6 @@ import {
   SafeAreaViewFlex,
   SueCategory,
   SueDatetime,
-  SueImageFallback,
   SueStatus,
   SueStatuses,
   Wrapper,
@@ -129,7 +128,6 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
       >
         <View style={[isFullscreenMap && styles.wrapperHidden]}>
           <ImageSection mediaContents={mediaContents} />
-          {!mediaContents?.length && <SueImageFallback style={styles.sueImageContainer} />}
 
           {!!serviceName && !!requestedDatetime && (
             <SueCategory serviceName={serviceName} requestedDatetime={requestedDatetime} />
@@ -308,9 +306,6 @@ const styles = StyleSheet.create({
   },
   map: {
     height: normalize(300),
-    width: '100%'
-  },
-  sueImageContainer: {
     width: '100%'
   },
   wrapperHidden: {

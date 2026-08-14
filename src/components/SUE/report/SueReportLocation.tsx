@@ -4,7 +4,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import * as Location from 'expo-location';
 import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { UseFormGetValues, UseFormSetValue } from 'react-hook-form';
-import { Alert, Linking, StyleSheet } from 'react-native';
+import { Alert, Linking, Platform, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 import { useQuery } from 'react-query';
@@ -119,6 +119,7 @@ export const SueReportLocation = ({
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { locationService } = settings;
+  const isMyLocationButtonVisible = locationService !== false;
   const systemPermission = useSystemPermission();
   const { appDesignSystem = {} } = useContext(ConfigurationsContext);
   const { sueStatus = {} } = appDesignSystem;
@@ -224,19 +225,29 @@ export const SueReportLocation = ({
     const requestId = latestReverseGeocodeRequestRef.current + 1;
 
     latestReverseGeocodeRequestRef.current = requestId;
-    setSelectedPosition(position);
     setShowCoordinatesFromImageAlert(true);
     setUpdateRegionFromImage(false);
     clearAddressFields();
 
     try {
-      await reverseGeocode({
+      const reverseGeocodeResult = await reverseGeocode({
         areaServiceData,
         errorMessage,
         isLatestRequest: () => latestReverseGeocodeRequestRef.current === requestId,
         position,
         setValue
       });
+
+      if (reverseGeocodeResult?.isStale) {
+        return;
+      }
+
+      if (reverseGeocodeResult?.isWithinArea) {
+        setSelectedPosition(position);
+        return;
+      }
+
+      setSelectedPosition(undefined);
     } catch (error) {
       if (latestReverseGeocodeRequestRef.current !== requestId) {
         return;
@@ -253,6 +264,67 @@ export const SueReportLocation = ({
   }: {
     isFullScreenMap?: boolean;
   }) => {
+    const resolvePosition = async () => {
+      const fallbackPosition = position || lastKnownPosition;
+
+      if (fallbackPosition?.coords) {
+        return fallbackPosition;
+      }
+
+      try {
+        const current = await Location.getCurrentPositionAsync({
+          accuracy: Platform.select({
+            ios: Location.Accuracy.Balanced,
+            default: undefined
+          })
+        });
+
+        return current || (await Location.getLastKnownPositionAsync({}));
+      } catch (error) {
+        return await Location.getLastKnownPositionAsync({});
+      }
+    };
+
+    const applyCurrentPosition = async () => {
+      if (!locationServiceEnabled) {
+        locationServiceEnabledAlert({
+          currentPosition: undefined,
+          locationServiceEnabled: false,
+          navigation
+        });
+        return;
+      }
+
+      const permissionResponse = await Location.getForegroundPermissionsAsync();
+      const hasPermission = permissionResponse.status === Location.PermissionStatus.GRANTED;
+
+      if (!hasPermission) {
+        locationServiceEnabledAlert({
+          currentPosition: undefined,
+          locationServiceEnabled: true,
+          navigation
+        });
+        return;
+      }
+
+      const resolvedPosition = await resolvePosition();
+
+      if (!resolvedPosition?.coords) {
+        locationServiceEnabledAlert({
+          currentPosition: undefined,
+          locationServiceEnabled: true,
+          navigation
+        });
+        return;
+      }
+
+      onMapPress({
+        geometry: {
+          coordinates: [resolvedPosition.coords.longitude, resolvedPosition.coords.latitude]
+        }
+      });
+    };
+
     if (!isFullScreenMap) {
       Alert.alert(texts.sue.report.alerts.hint, texts.sue.report.alerts.myLocation, [
         {
@@ -260,29 +332,11 @@ export const SueReportLocation = ({
         },
         {
           text: texts.sue.report.alerts.yes,
-          onPress: async () => {
-            locationServiceEnabledAlert({
-              currentPosition,
-              locationServiceEnabled,
-              navigation
-            });
-
-            !!currentPosition &&
-              onMapPress({
-                geometry: {
-                  coordinates: [currentPosition.coords.longitude, currentPosition.coords.latitude]
-                }
-              });
-          }
+          onPress: applyCurrentPosition
         }
       ]);
     } else {
-      !!currentPosition &&
-        onMapPress({
-          geometry: {
-            coordinates: [currentPosition.coords.longitude, currentPosition.coords.latitude]
-          }
-        });
+      await applyCurrentPosition();
     }
   };
 
@@ -295,7 +349,7 @@ export const SueReportLocation = ({
           clusterThreshold={configuration.geoMap?.clusterThreshold}
           currentPosition={currentPosition}
           isMultipleMarkersMap
-          isMyLocationButtonVisible={!!locationService}
+          isMyLocationButtonVisible={isMyLocationButtonVisible}
           locations={locations}
           mapStyle={[
             styles.map,
