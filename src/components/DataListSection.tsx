@@ -56,7 +56,15 @@ type Props = {
   sectionTitleDetail?: string;
   showButton?: boolean;
   showLink?: boolean;
+  skipLastDivider?: boolean;
 };
+
+const removeLastDivider = (data: unknown[]) =>
+  data.map((item, index) =>
+    index === data.length - 1 && item && typeof item === 'object'
+      ? { ...item, bottomDivider: false }
+      : item
+  );
 
 /* eslint-disable complexity */
 export const DataListSection = ({
@@ -81,7 +89,8 @@ export const DataListSection = ({
   sectionTitle = getTitleForQuery(query),
   sectionTitleDetail,
   showButton,
-  showLink
+  showLink,
+  skipLastDivider = false
 }: Props) => {
   const renderSectionHeader = () => {
     if (!sectionTitle) return null;
@@ -126,18 +135,20 @@ export const DataListSection = ({
     }
   }
 
-  if (listData?.length && additionalData?.length) {
-    listData.push(...additionalData);
-    listData = _sortBy(listData, (item) => item.listDate);
+  if (additionalData?.length) {
+    listData = _sortBy([...(listData || []), ...additionalData], (item) => item.listDate);
   }
 
   if (listData?.length) {
+    const visibleData = (isRandom ? _shuffle(listData) : listData).slice(0, limit);
+    const renderedData = skipLastDivider ? removeLastDivider(visibleData) : visibleData;
+
     return (
       <View>
         {renderSectionHeader()}
 
         <ListComponent
-          data={isRandom ? _shuffle(listData).slice(0, limit) : listData.slice(0, limit)}
+          data={renderedData}
           horizontal={horizontal}
           navigation={navigation}
           listType={listType}

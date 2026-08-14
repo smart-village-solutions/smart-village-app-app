@@ -1,10 +1,18 @@
 import { StackNavigationProp } from '@react-navigation/stack';
-import React from 'react';
+import React, { useContext } from 'react';
 import { useQuery } from 'react-query';
 
-import { useHomePointsOfInterestAndToursRefresh, useHomeRefresh, useVolunteerData } from '../hooks';
+import {
+  useGenericItemEvents,
+  useHomePointsOfInterestAndToursRefresh,
+  useHomeRefresh,
+  useVolunteerData
+} from '../hooks';
+import { eventDate } from '../helpers/dateTimeHelper';
+import { subtitle } from '../helpers/textHelper';
 import { getQuery, QUERY_TYPES } from '../queries';
 import { ReactQueryClient } from '../ReactQueryClient';
+import { SettingsContext } from '../SettingsProvider';
 
 import { DataListSection } from './DataListSection';
 
@@ -24,10 +32,12 @@ type Props = {
   query: string;
   queryVariables: { limit?: number; take?: number };
   showVolunteerEvents?: boolean;
+  skipLastDivider?: boolean;
   title: string;
   titleDetail?: string;
 };
 
+/* eslint-disable complexity */
 export const HomeSection = ({
   buttonTitle,
   isIndexStartingAt1 = false,
@@ -37,9 +47,13 @@ export const HomeSection = ({
   query,
   queryVariables,
   showVolunteerEvents = false,
+  skipLastDivider = false,
   title,
   titleDetail
 }: Props) => {
+  const { globalSettings } = useContext(SettingsContext);
+  const genericItemEventSources =
+    globalSettings?.settings?.eventCalendar?.genericItemEventSources || [];
   const isPointsOfInterestAndTours = query === QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS;
   // `dataUpdatedAt` is provided by react-query and changes whenever a successful fetch updates data.
   const { data, dataUpdatedAt, isLoading, refetch } = useQuery(
@@ -71,6 +85,15 @@ export const HomeSection = ({
     isCalendar: isCalendarWithVolunteerEvents,
     isSectioned: false
   });
+  const isEventCalendar = query === QUERY_TYPES.EVENT_RECORDS;
+  const {
+    data: genericItemEvents,
+    isLoading: isLoadingGenericItemEvents,
+    refetch: refetchGenericItemEvents
+  } = useGenericItemEvents({
+    enabled: isEventCalendar && genericItemEventSources.length > 0,
+    sources: genericItemEventSources
+  });
 
   useHomeRefresh(
     isPointsOfInterestAndTours
@@ -78,6 +101,7 @@ export const HomeSection = ({
       : () => {
           refetch();
           isCalendarWithVolunteerEvents && refetchVolunteerEvents();
+          isEventCalendar && genericItemEventSources.length && refetchGenericItemEvents();
         }
   );
 
@@ -92,13 +116,26 @@ export const HomeSection = ({
 
   let showButton = !!data?.[query]?.length;
 
+  if (isEventCalendar) {
+    showButton = showButton || !!dataVolunteerEvents?.length || !!genericItemEvents.length;
+  }
+
   if (isPointsOfInterestAndTours) {
     showButton =
       !!data?.[QUERY_TYPES.POINTS_OF_INTEREST]?.length || !!data?.[QUERY_TYPES.TOURS]?.length;
   }
 
-  const loading = isLoading || isLoadingVolunteerEvents;
-  const additionalData = isCalendarWithVolunteerEvents ? dataVolunteerEvents : undefined;
+  const loading = isLoading || isLoadingVolunteerEvents || isLoadingGenericItemEvents;
+  const genericItemEventsWithDate = genericItemEvents.map((item) => ({
+    ...item,
+    overtitle: subtitle(eventDate(item.listDate), undefined, item.startTime)
+  }));
+  const additionalData = isEventCalendar
+    ? [
+        ...(isCalendarWithVolunteerEvents ? dataVolunteerEvents || [] : []),
+        ...genericItemEventsWithDate
+      ]
+    : undefined;
 
   return (
     <DataListSection
@@ -117,6 +154,8 @@ export const HomeSection = ({
       sectionTitle={title}
       sectionTitleDetail={titleDetail}
       showButton={showButton}
+      skipLastDivider={skipLastDivider}
     />
   );
 };
+/* eslint-enable complexity */

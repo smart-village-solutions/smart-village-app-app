@@ -182,11 +182,7 @@ export const Calendar = ({
 
   const markedDates = useMemo(() => {
     const dates: CalendarProps['markedDates'] = {};
-    const eventRecords = data?.[query] || [];
-
-    if (additionalData?.length) {
-      eventRecords?.push(...additionalData);
-    }
+    const eventRecords = [...(data?.[query] || []), ...(additionalData || [])];
 
     if (eventRecords?.length) {
       eventRecords.forEach((item: { listDate: string; color: string }) => {
@@ -211,7 +207,7 @@ export const Calendar = ({
     };
 
     return dates;
-  }, [additionalData, data, dotCount, query, queryVariablesWithDateRange, selectedDay]);
+  }, [additionalData, colors.calendarSelected, colors.primary, data, dotCount, query, selectedDay]);
 
   const listItems = useMemo(() => {
     if (!subList) return [];
