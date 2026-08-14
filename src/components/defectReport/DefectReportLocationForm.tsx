@@ -20,11 +20,13 @@ import { WrapperHorizontal, WrapperVertical } from '../Wrapper';
 export const DefectReportLocationForm = ({
   setIsLocationSelect,
   selectedPosition,
-  setSelectedPosition
+  setSelectedPosition,
+  withoutLocation = false
 }: {
   setIsLocationSelect: (isLocationSelect: boolean) => void;
   selectedPosition: Location.LocationObjectCoords | undefined;
   setSelectedPosition: (position: Location.LocationObjectCoords | undefined) => void;
+  withoutLocation?: boolean;
 }) => {
   const { locationSettings } = useLocationSettings();
   const systemPermission = useSystemPermission();
@@ -59,8 +61,8 @@ export const DefectReportLocationForm = ({
 
   return (
     <WrapperHorizontal>
-      {systemPermission.status !== Location.PermissionStatus.DENIED && (
-        <WrapperVertical>
+      {systemPermission.status !== Location.PermissionStatus.DENIED && !showMap && (
+        <WrapperVertical noPaddingBottom>
           <Button onPress={onPressPosition} title={texts.defectReport.usePosition} />
         </WrapperVertical>
       )}
@@ -116,10 +118,21 @@ export const DefectReportLocationForm = ({
         </WrapperVertical>
       </Collapsible>
       <Collapsible collapsed={showMap}>
-        <WrapperVertical>
+        <WrapperVertical noPaddingBottom noPaddingTop>
           <Button title={texts.defectReport.useMap} onPress={() => setShowMap(true)} />
         </WrapperVertical>
       </Collapsible>
+      {withoutLocation && !showMap && (
+        <WrapperVertical noPaddingBottom noPaddingTop>
+          <Button
+            title={texts.defectReport.continueWithoutLocation}
+            onPress={() => {
+              setSelectedPosition(undefined);
+              setIsLocationSelect(false);
+            }}
+          />
+        </WrapperVertical>
+      )}
     </WrapperHorizontal>
   );
 };

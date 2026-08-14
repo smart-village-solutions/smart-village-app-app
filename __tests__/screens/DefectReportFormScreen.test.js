@@ -7,6 +7,7 @@ import { DefectReportFormScreen } from '../../src/screens/DefectReport';
 import { SettingsContext, initialContext } from '../../src/SettingsProvider';
 
 const mockUseQuery = jest.fn();
+const mockUseStaticContent = jest.fn();
 
 jest.mock('react-apollo', () => ({
   useQuery: (...args) => mockUseQuery(...args)
@@ -18,7 +19,9 @@ jest.mock('../../src/components/index.js', () => {
   return {
     DefaultKeyboardAvoidingView: ({ children }) => <View>{children}</View>,
     DefectReportCreateForm: () => <View />,
-    DefectReportLocationForm: () => <View />,
+    DefectReportLocationForm: ({ withoutLocation }) => (
+      <View testID={`location-form-${withoutLocation}`} />
+    ),
     HtmlView: () => <View />,
     LoadingContainer: ({ children }) => <View>{children}</View>,
     SafeAreaViewFlex: ({ children }) => <View>{children}</View>,
@@ -27,11 +30,7 @@ jest.mock('../../src/components/index.js', () => {
 });
 
 jest.mock('../../src/hooks', () => ({
-  useStaticContent: jest.fn(() => ({
-    data: undefined,
-    loading: true,
-    refetch: jest.fn()
-  }))
+  useStaticContent: (...args) => mockUseStaticContent(...args)
 }));
 
 describe('DefectReportFormScreen', () => {
@@ -39,12 +38,58 @@ describe('DefectReportFormScreen', () => {
   const route = {};
 
   beforeEach(() => {
+    mockUseStaticContent.mockReturnValue({
+      data: undefined,
+      loading: true,
+      refetch: jest.fn()
+    });
     mockUseQuery.mockReturnValue({
       data: undefined,
       loading: true,
       refetch: jest.fn()
     });
   });
+
+  it.each([
+    [true, true],
+    [undefined, false]
+  ])(
+    'passes withoutLocation=%s from global settings to the location form',
+    async (setting, expected) => {
+      mockUseStaticContent.mockReturnValue({
+        data: undefined,
+        loading: false,
+        refetch: jest.fn()
+      });
+      mockUseQuery.mockReturnValue({
+        data: undefined,
+        loading: false,
+        refetch: jest.fn()
+      });
+
+      const globalSettings = {
+        ...initialContext.globalSettings,
+        settings: {
+          defectReports: {
+            withoutLocation: setting
+          }
+        }
+      };
+      let component;
+
+      await act(async () => {
+        component = renderer.create(
+          <NetworkContext.Provider value={{ isConnected: true, isMainserverUp: true }}>
+            <SettingsContext.Provider value={{ ...initialContext, globalSettings }}>
+              <DefectReportFormScreen navigation={navigation} route={route} />
+            </SettingsContext.Provider>
+          </NetworkContext.Provider>
+        );
+      });
+
+      expect(component.root.findByProps({ testID: `location-form-${expected}` })).toBeTruthy();
+    }
+  );
 
   it('fetches defect report categories from the network when opening the form', async () => {
     const globalSettings = {
