@@ -15,6 +15,7 @@ import { SettingsContext } from '../SettingsProvider';
 
 const { MATOMO_TRACKING } = consts;
 
+// eslint-disable-next-line complexity
 export const WebScreen = ({
   route
 }: {
@@ -32,14 +33,19 @@ export const WebScreen = ({
   const { isConnected } = useContext(NetworkContext);
   const { globalSettings = {} } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
-  const { isIncognitoWebScreens = true } = settings;
+  const { webView = {} } = settings;
+  const { isIncognito: isIncognitoWebView, mobileUserAgent = {} } = webView;
   const trackScreenViewAsync = useTrackScreenViewAsync();
   const webUrl = route.params?.webUrl ?? '';
   const injectedJavaScript = route.params?.injectedJavaScript ?? '';
   const inModalBrowser = route.params?.inModalBrowser ?? false;
   const isExternal = route.params?.isExternal ?? false;
-  // Use route-specific isIncognito if provided, otherwise fall back to global setting
-  const isIncognito = route.params?.isIncognito ?? isIncognitoWebScreens;
+  const resolvedUserAgent = mobileUserAgent?.[device.platform]?.toString()?.trim();
+  const legacyIsIncognitoWebScreens = (settings as { isIncognitoWebScreens?: boolean })
+    ?.isIncognitoWebScreens;
+  // Backward-compatible priority: route param -> new webView key -> legacy key -> default
+  const isIncognito =
+    route.params?.isIncognito ?? isIncognitoWebView ?? legacyIsIncognitoWebScreens ?? true;
 
   // NOTE: we cannot use the `useMatomoTrackScreenView` hook here, as we need the `webUrl`
   //       dependency
@@ -89,6 +95,7 @@ export const WebScreen = ({
         source={{ uri: webUrl }}
         startInLoadingState
         style={styles.container}
+        userAgent={resolvedUserAgent}
       />
     </SafeAreaViewFlex>
   );
