@@ -5,12 +5,12 @@ import { useQuery } from 'react-apollo';
 import { FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { IconUrl, colors, normalize } from '../../config';
+import { IconUrl, colors, consts, normalize } from '../../config';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { BoldText } from '../Text';
 
 type Props = {
-  pointsOfInterest?: { category: { id: string | number; iconName: string; name: string } }[];
+  pointsOfInterest?: { category: { id: string | number; iconName?: string; name: string } }[];
   queryVariables: {
     category?: string;
     categoryId?: string | number;
@@ -27,7 +27,7 @@ type Props = {
 };
 
 const keyExtractor = (
-  item: { id: string | number; iconName: string; name: string },
+  item: { id: string | number; iconName?: string; name: string },
   index: number
 ) => `index${index}-id${item.id}`;
 
@@ -43,10 +43,7 @@ export const ChipFilter = ({ queryVariables, refetch }: Props) => {
     }
   });
 
-  const filter = _sortBy(
-    data?.categories.filter((item: { iconName: string }) => !!item.iconName),
-    'name'
-  );
+  const filter = _sortBy(data?.categories || [], 'name');
 
   useEffect(() => {
     refetch?.({ limit: undefined, categoryIds });
@@ -92,7 +89,7 @@ export const ChipFilter = ({ queryVariables, refetch }: Props) => {
                   index === filter?.length - 1 && styles.lastChip
                 ]}
               >
-                {!!item.iconName && <IconUrl iconName={item.iconName} />}
+                <IconUrl iconName={item.iconName || consts.MAP.DEFAULT_PIN} />
                 <BoldText small style={styles.category}>
                   {item.name}
                 </BoldText>

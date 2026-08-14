@@ -12,6 +12,7 @@ import { DataProviderButton } from '../DataProviderButton';
 import { DataProviderNotice } from '../DataProviderNotice';
 import { HtmlView } from '../HtmlView';
 import { ImageSection } from '../ImageSection';
+import { LoadingSpinner } from '../LoadingSpinner';
 import { SectionHeader } from '../SectionHeader';
 import { HeadlineText } from '../Text';
 import { Wrapper, WrapperHorizontal, WrapperVertical } from '../Wrapper';
@@ -21,6 +22,7 @@ import { VoucherListItem } from '../vouchers';
 
 import {
   AvailableVehicles,
+  KNOWN_ICON_STATUS_NAMES,
   VehicleStatusFeature,
   fetchAvailableVehicles,
   vehiclePropertyKey
@@ -50,6 +52,7 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }: PointOfInt
   const { showOpeningTimes = true } = settings;
   const [loadedVoucherDataCount, setLoadedVoucherDataCount] = useState(INITIAL_VOUCHER_COUNT);
   const [availableVehiclesData, setAvailableVehiclesData] = useState<VehicleStatusFeature[]>([]);
+  const [availableVehiclesLoading, setAvailableVehiclesLoading] = useState(true);
   const {
     addresses,
     categories,
@@ -101,14 +104,36 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }: PointOfInt
   }, [vouchers]);
 
   useEffect(() => {
+    // Reset state immediately so the previous POI's status is never shown for the new one
+    setAvailableVehiclesLoading(true);
+    setAvailableVehiclesData([]);
+
+    if (!payload?.freeStatusUrl) {
+      setAvailableVehiclesLoading(false);
+      return;
+    }
+
+    const controller = new AbortController();
+
     const fetchData = async () => {
-      if (payload?.freeStatusUrl) {
-        const data = await fetchAvailableVehicles(payload.freeStatusUrl);
+      try {
+        const data = await fetchAvailableVehicles(payload.freeStatusUrl, controller.signal);
         setAvailableVehiclesData(data);
+        setAvailableVehiclesLoading(false);
+      } catch (error) {
+        // AbortError is expected when freeStatusUrl changes or the component unmounts before
+        // the request completes. Skip state updates so stale data is never written.
+        if (!(error instanceof Error && error.name === 'AbortError')) {
+          setAvailableVehiclesLoading(false);
+        }
       }
     };
 
     fetchData();
+
+    return () => {
+      controller.abort();
+    };
   }, [payload?.freeStatusUrl]);
 
   const businessAccount = dataProvider?.dataType === 'business_account';
@@ -119,8 +144,36 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }: PointOfInt
     nestedCategory = categories.find((category) => category.name === categoryName);
   }
 
-  const status =
-    availableVehiclesData?.length && availableVehiclesData[0]?.properties?.[vehiclePropertyKey];
+  const status = availableVehiclesData?.length
+    ? availableVehiclesData[0]?.properties?.[vehiclePropertyKey]
+    : undefined;
+
+  if (availableVehiclesLoading) {
+    return <LoadingSpinner loading={availableVehiclesLoading} />;
+  }
+
+  const iconName =
+    payload?.iconName ||
+    category?.iconName ||
+    availableVehiclesData[0]?.iconName ||
+    MAP.DEFAULT_PIN;
+
+  const vehicleActiveIconName =
+    availableVehiclesData[0]?.activeIconName || availableVehiclesData[0]?.iconNameActive;
+
+  // Fall back to the "Active" suffix only for icons that come from the category or the default
+  // pin (where the asset is guaranteed to exist). When the icon originates from payload or
+  // freeStatus response and no active icon is supplied, pass undefined so MapLibre falls back
+  // to iconName instead of trying a missing asset.
+  const fallbackActiveIconName =
+    payload?.iconName || availableVehiclesData[0]?.iconName ? undefined : `${iconName}Active`;
+
+  // Use payload.activeIconName when provided; if status signals occupancy/availability use that;
+  // otherwise fall back through vehicle data and finally to the computed fallback.
+  const activeIconName =
+    typeof status === 'string' && KNOWN_ICON_STATUS_NAMES.has(status)
+      ? status
+      : payload?.activeIconName || vehicleActiveIconName || fallbackActiveIconName;
 
   return (
     <WrapperVertical>
@@ -179,10 +232,15 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }: PointOfInt
       )}
 
       {!!payload?.freeStatusUrl && (
-        <AvailableVehicles status={status} iconName={category?.iconName} />
+        <AvailableVehicles
+          iconName={iconName}
+          isSpecialForParkHaus={availableVehiclesData[0]?.isSpecialForParkHaus}
+          loading={availableVehiclesLoading}
+          status={status}
+        />
       )}
 
-      {hasTravelTimes && <TravelTimes id={id} iconName={category?.iconName} />}
+      {hasTravelTimes && <TravelTimes id={id} iconName={iconName} />}
 
       {!!openingHours?.length && (
         <WrapperVertical>
@@ -235,11 +293,8 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }: PointOfInt
             isMyLocationButtonVisible={false}
             locations={[
               {
-                iconName: category?.iconName || MAP.DEFAULT_PIN,
-                activeIconName:
-                  !!status && status !== 'unbekannt'
-                    ? status
-                    : `${category?.iconName || MAP.DEFAULT_PIN}Active`,
+                iconName,
+                activeIconName,
                 id,
                 position: { latitude, longitude }
               }
