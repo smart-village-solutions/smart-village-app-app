@@ -88,4 +88,63 @@ describe('getDetailSpeechItems', () => {
       { id: 'contentBlockBody-0', text: 'Das ist der Inhalt.' }
     ]);
   });
+
+  it('reads structured participation project details', () => {
+    const speechItems = getDetailSpeechItems({
+      detail: {
+        genericType: 'ParticipationProject',
+        title: 'Neuer Stadtpark',
+        dataProvider: { name: 'Stadt Magdeburg' },
+        publicationDate: '2026-03-31',
+        payload: {
+          type: 'Dialog',
+          theme: 'Stadtentwicklung',
+          status: 'Aktiv',
+          instance: 'Magdeburg',
+          startTime: '10 Uhr',
+          endTime: '12 Uhr',
+          organizer: 'Stadtplanungsamt',
+          contact: 'Projektbüro',
+          email: 'projekt@example.org',
+          phone: '0391 123456',
+          capacity: 120,
+          registrationRequired: true,
+          statistics: '42 Beiträge',
+          tags: ['Park', 'Dialog']
+        },
+        dates: [{ dateStart: '2026-04-01', dateEnd: '2026-04-02' }],
+        locations: [{ name: 'Rathaus' }],
+        teaser: 'Ihre Ideen sind gefragt.',
+        description: 'Gemeinsam planen wir einen neuen Park.',
+        contentBlocks: [{ title: 'Ablauf', body: '<p>Vorstellung und Diskussion.</p>' }]
+      },
+      query: QUERY_TYPES.GENERIC_ITEM
+    });
+
+    expect(speechItems).toEqual([
+      { id: 'title', text: 'Neuer Stadtpark' },
+      { id: 'dataProvider', text: 'Stadt Magdeburg' },
+      { id: 'publishedAt', text: '31.03.2026' },
+      { id: 'type', text: 'Typ: Dialog' },
+      { id: 'theme', text: 'Thema: Stadtentwicklung' },
+      { id: 'status', text: 'Status: Aktiv' },
+      { id: 'instance', text: 'Instanz: Magdeburg' },
+      { id: 'dateStart', text: 'Datum: 01.04.2026' },
+      { id: 'dateEnd', text: '02.04.2026' },
+      { id: 'time', text: 'Uhrzeit: 10 Uhr - 12 Uhr' },
+      { id: 'location', text: 'Ort: Rathaus' },
+      { id: 'organizer', text: 'Veranstalter: Stadtplanungsamt' },
+      { id: 'contact', text: 'Kontakt: Projektbüro' },
+      { id: 'email', text: 'E-Mail: projekt@example.org' },
+      { id: 'phone', text: 'Telefon: 0391 123456' },
+      { id: 'capacity', text: 'Kapazitaet: 120' },
+      { id: 'registrationRequired', text: 'Anmeldung erforderlich: Ja' },
+      { id: 'statistics', text: 'Statistik: 42 Beiträge' },
+      { id: 'tags', text: 'Tags: Park, Dialog' },
+      { id: 'teaser', text: 'Ihre Ideen sind gefragt.' },
+      { id: 'description', text: 'Gemeinsam planen wir einen neuen Park.' },
+      { id: 'contentBlockTitle-0', text: 'Ablauf' },
+      { id: 'contentBlockBody-0', text: 'Vorstellung und Diskussion.' }
+    ]);
+  });
 });
