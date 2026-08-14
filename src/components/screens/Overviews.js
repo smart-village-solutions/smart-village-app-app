@@ -106,8 +106,11 @@ export const Overviews = ({ navigation, route }) => {
   const { globalSettings } = useContext(SettingsContext);
   const { filter = {}, sections = {}, settings = {} } = globalSettings;
   const { news: showNewsFilter = false } = filter;
-  const { switchBetweenListAndMap = SWITCH_BETWEEN_LIST_AND_MAP.TOP_FILTER, locationService = {} } =
-    settings;
+  const {
+    switchBetweenListAndMap = SWITCH_BETWEEN_LIST_AND_MAP.TOP_FILTER,
+    locationService = {},
+    news = {}
+  } = settings;
   const {
     categoryListIntroText = texts.categoryList.intro,
     categoryListFooter,
@@ -115,6 +118,7 @@ export const Overviews = ({ navigation, route }) => {
     poiListIntro
   } = sections;
   const query = route.params?.query ?? '';
+  const dateTimeFormat = news?.listDateFormat;
   const { initialFilter = FILTER_TYPES.LIST } = route.params?.queryVariables ?? {};
   const INITIAL_FILTER = [
     {
@@ -198,9 +202,10 @@ export const Overviews = ({ navigation, route }) => {
   const listItems = useMemo(() => {
     let parsedListItems = parseListItemsFromQuery(query, data, titleDetail, {
       bookmarkable,
-      withDate: false,
+      dateTimeFormat,
       queryVariables,
-      subQuery
+      subQuery,
+      withDate: false
     });
 
     if (queryVariables.onlyCurrentlyOpen) {
@@ -233,18 +238,19 @@ export const Overviews = ({ navigation, route }) => {
 
     return parsedListItems;
   }, [
-    query,
-    data,
-    titleDetail,
     bookmarkable,
-    queryVariables,
-    subQuery,
-    sortByDistance,
     currentPosition,
-    radiusSearchByDistance,
+    data,
+    dateTimeFormat,
     isLocationAlertShow,
     locationSettings,
-    navigation
+    navigation,
+    query,
+    queryVariables,
+    radiusSearchByDistance,
+    sortByDistance,
+    subQuery,
+    titleDetail
   ]);
 
   const refresh = useCallback(() => {

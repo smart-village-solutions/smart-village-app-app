@@ -19,13 +19,20 @@ const { MATOMO_TRACKING } = consts;
 /* NOTE: we need to check a lot for presence, so this is that complex */
 export const NewsItem = ({ data, route }) => {
   const { globalSettings } = useContext(SettingsContext);
-  const { showImageRights } = globalSettings || {};
+  const { showImageRights, settings = {} } = globalSettings || {};
+  const { detailDateFormat } = settings?.news || {};
   const imageRightsPosition = showImageRights?.newsDetail?.imageRightsPosition;
 
-  const { dataProvider, mainTitle, contentBlocks, publishedAt, sourceUrl, settings, categories } =
-    data;
+  const {
+    dataProvider,
+    mainTitle,
+    contentBlocks,
+    publishedAt,
+    sourceUrl,
+    settings: itemSettings,
+    categories
+  } = data;
 
-  const logo = dataProvider && dataProvider.logo && dataProvider.logo.url;
   const link = sourceUrl && sourceUrl.url;
   const subtitle = dataProvider && dataProvider.name;
   // the title of a news item is either a given main title or the title from the first content block
@@ -50,6 +57,9 @@ export const NewsItem = ({ data, route }) => {
   );
 
   const businessAccount = dataProvider?.dataType === 'business_account';
+  const formattedPublishedAt = publishedAt
+    ? momentFormatUtcToLocal(publishedAt, detailDateFormat)
+    : null;
 
   return (
     <View>
@@ -67,10 +77,10 @@ export const NewsItem = ({ data, route }) => {
         <SectionHeader big center title={trimNewLines(title)} />
       </WrapperRow>
 
-      {!!momentFormatUtcToLocal(publishedAt) && (
+      {!!formattedPublishedAt && (
         <Wrapper center>
           <WrapperRow center>
-            <RegularText>{momentFormatUtcToLocal(publishedAt)}</RegularText>
+            <RegularText>{formattedPublishedAt}</RegularText>
           </WrapperRow>
         </Wrapper>
       )}
@@ -88,7 +98,7 @@ export const NewsItem = ({ data, route }) => {
             contentBlock={contentBlock}
             index={index}
             openWebScreen={openWebScreen}
-            settings={settings}
+            settings={itemSettings}
           />
         ))}
 
