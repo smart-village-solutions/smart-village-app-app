@@ -16,7 +16,7 @@ import { LoadingSpinner } from '../LoadingSpinner';
 import { SectionHeader } from '../SectionHeader';
 import { HeadlineText } from '../Text';
 import { Wrapper, WrapperHorizontal, WrapperVertical } from '../Wrapper';
-import { InfoCard } from '../infoCard';
+import { DistanceDirectionCard, InfoCard } from '../infoCard';
 import { MapLibre } from '../map';
 import { VoucherListItem } from '../vouchers';
 
@@ -49,7 +49,7 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }: PointOfInt
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
-  const { showOpeningTimes = true } = settings;
+  const { showOpeningTimes = true, showDistanceDirection = {} } = settings;
   const [loadedVoucherDataCount, setLoadedVoucherDataCount] = useState(INITIAL_VOUCHER_COUNT);
   const [availableVehiclesData, setAvailableVehiclesData] = useState<VehicleStatusFeature[]>([]);
   const [availableVehiclesLoading, setAvailableVehiclesLoading] = useState(true);
@@ -197,7 +197,9 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }: PointOfInt
       )}
 
       {(!!addresses?.length || !!contact || !!openingHours?.length || !!webUrls?.length) && (
-        <Wrapper>
+        <Wrapper
+          noPaddingBottom={!!showDistanceDirection.poi && latitude != null && longitude != null}
+        >
           <InfoCard
             addresses={addresses}
             contact={contact}
@@ -207,6 +209,10 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }: PointOfInt
             webUrls={webUrls}
           />
         </Wrapper>
+      )}
+
+      {!!showDistanceDirection.poi && latitude != null && longitude != null && (
+        <DistanceDirectionCard targetPosition={{ latitude, longitude }} />
       )}
 
       {!!voucherListItems?.length && (

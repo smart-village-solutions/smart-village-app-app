@@ -1,16 +1,17 @@
 import _filter from 'lodash/filter';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useContext } from 'react';
 import { View } from 'react-native';
 
 import { consts, texts } from '../../config';
 import { matomoTrackingString } from '../../helpers';
 import { useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
+import { SettingsContext } from '../../SettingsProvider';
 import { DataProviderButton } from '../DataProviderButton';
 import { DataProviderNotice } from '../DataProviderNotice';
 import { HtmlView } from '../HtmlView';
 import { ImageSection } from '../ImageSection';
-import { InfoCard } from '../infoCard';
+import { DistanceDirectionCard, InfoCard } from '../infoCard';
 import { Logo } from '../Logo';
 import { SectionHeader } from '../SectionHeader';
 import { TourStops } from '../TourStops';
@@ -24,6 +25,9 @@ const { MATOMO_TRACKING } = consts;
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
 export const Tour = ({ data, navigation, route }) => {
+  const { globalSettings } = useContext(SettingsContext);
+  const { settings = {} } = globalSettings;
+  const { showDistanceDirection = {} } = settings;
   const {
     addresses,
     categories,
@@ -68,6 +72,16 @@ export const Tour = ({ data, navigation, route }) => {
 
   const businessAccount = dataProvider?.dataType === 'business_account';
 
+  // target coordinate for the distance/direction card: prefer the tour's start
+  // geometry point, fall back to the first tour stop's location
+  const tourStartPosition =
+    geometryTourData?.[0]?.latitude != null && geometryTourData?.[0]?.longitude != null
+      ? {
+          latitude: geometryTourData[0].latitude,
+          longitude: geometryTourData[0].longitude
+        }
+      : tourStops?.[0]?.location?.geoLocation;
+
   return (
     <View>
       <ImageSection mediaContents={mediaContents} />
@@ -81,6 +95,12 @@ export const Tour = ({ data, navigation, route }) => {
       {(!!tourAddresses.length || !!lengthKm) && (
         <TourCard lengthKm={lengthKm} tourAddresses={tourAddresses} payload={payload} />
       )}
+
+      {!!showDistanceDirection.tour &&
+        tourStartPosition?.latitude != null &&
+        tourStartPosition?.longitude != null && (
+          <DistanceDirectionCard targetPosition={tourStartPosition} />
+        )}
 
       {!!description && (
         <View>

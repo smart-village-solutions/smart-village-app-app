@@ -3,6 +3,7 @@ export * from './SUE';
 export * from './addImage';
 export * from './arrowDown';
 export * from './arrowLeft';
+export * from './arrowNarrowUp';
 export * from './arrowRight';
 export * from './arrowUp';
 export * from './calendar';

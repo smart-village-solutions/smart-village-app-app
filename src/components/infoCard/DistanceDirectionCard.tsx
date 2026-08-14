@@ -9,17 +9,13 @@ import { Wrapper, WrapperRow } from '../Wrapper';
 
 type Props = {
   currentPosition?: Location.LocationObject;
-  tourStopData: {
-    location?: {
-      geoLocation?: {
-        latitude?: number;
-        longitude?: number;
-      };
-    };
+  targetPosition?: {
+    latitude?: number;
+    longitude?: number;
   };
 };
 
-export const TourDetailInfoCard = ({ currentPosition, tourStopData }: Props) => {
+export const DistanceDirectionCard = ({ currentPosition, targetPosition }: Props) => {
   const [localPosition, setLocalPosition] = useState<Location.LocationObject | undefined>(
     currentPosition
   );
@@ -50,8 +46,8 @@ export const TourDetailInfoCard = ({ currentPosition, tourStopData }: Props) => 
 
   const lat1 = localPosition?.coords.latitude;
   const lon1 = localPosition?.coords.longitude;
-  const lat2 = tourStopData?.location?.geoLocation?.latitude;
-  const lon2 = tourStopData?.location?.geoLocation?.longitude;
+  const lat2 = targetPosition?.latitude;
+  const lon2 = targetPosition?.longitude;
 
   // Tracks the device's current compass heading in degrees (0 = North).
   const [deviceHeading, setDeviceHeading] = useState<number>(0);
@@ -124,10 +120,13 @@ export const TourDetailInfoCard = ({ currentPosition, tourStopData }: Props) => 
 
   // Relative bearing: how many degrees the arrow must rotate from "straight up"
   // (= device's forward direction) to point at the destination.
-  // Only computed when heading data is confirmed available, so the default 0°
-  // heading never silently produces a misleading direction.
+  // When a live compass heading is available, the arrow is device-relative.
+  // Otherwise (no magnetometer / heading unavailable) we fall back to the
+  // geographic bearing assuming north is up, so the direction is still shown.
   const relativeBearing = useMemo(() => {
-    if (absoluteBearing == null || !headingAvailable) return null;
+    if (absoluteBearing == null) return null;
+
+    if (!headingAvailable) return absoluteBearing;
 
     return (absoluteBearing - deviceHeading + 360) % 360;
   }, [absoluteBearing, deviceHeading, headingAvailable]);
@@ -205,7 +204,7 @@ export const TourDetailInfoCard = ({ currentPosition, tourStopData }: Props) => 
                   }
                 ]}
               >
-                <Icon.ArrowUp color={colors.primary} />
+                <Icon.ArrowNarrowUp color={colors.primary} />
               </Animated.View>
               <View>
                 <RegularText small>{texts.tour.direction}</RegularText>
@@ -223,7 +222,9 @@ export const TourDetailInfoCard = ({ currentPosition, tourStopData }: Props) => 
 
 const styles = StyleSheet.create({
   divider: {
-    backgroundColor: colors.placeholder
+    alignSelf: 'center',
+    backgroundColor: colors.placeholder,
+    width: '90%'
   },
   margin: {
     marginRight: normalize(12)
