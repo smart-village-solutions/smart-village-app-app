@@ -9,6 +9,7 @@ export * from './whistleblow';
 export * from './Accessibility';
 export * from './Address';
 export * from './AppIntroSlide';
+export * from './Bus';
 export * from './Camera';
 export * from './Chatbot';
 export * from './ConstructionSite';

@@ -130,22 +130,31 @@ exports[`Link renders a Link that opens a WebScreen 1`] = `
         </RNSVGGroup>
       </RNSVGSvgView>
     </View>
-    <Text
-      primary={true}
+    <View
       style={
-        Array [
-          Object {
-            "color": "#107821",
-            "fontFamily": "regular",
-            "fontSize": 17.92,
-            "lineHeight": 24.64,
-            "textDecorationColor": "#107821",
-          },
-        ]
+        Object {
+          "flex": 1,
+          "minWidth": 0,
+        }
       }
     >
-      description
-    </Text>
+      <Text
+        primary={true}
+        style={
+          Array [
+            Object {
+              "color": "#107821",
+              "fontFamily": "regular",
+              "fontSize": 17.92,
+              "lineHeight": 24.64,
+              "textDecorationColor": "#107821",
+            },
+          ]
+        }
+      >
+        description
+      </Text>
+    </View>
   </View>
 </View>
 `;
@@ -280,22 +289,31 @@ exports[`Link renders a default Link 1`] = `
         </RNSVGGroup>
       </RNSVGSvgView>
     </View>
-    <Text
-      primary={true}
+    <View
       style={
-        Array [
-          Object {
-            "color": "#107821",
-            "fontFamily": "regular",
-            "fontSize": 17.92,
-            "lineHeight": 24.64,
-            "textDecorationColor": "#107821",
-          },
-        ]
+        Object {
+          "flex": 1,
+          "minWidth": 0,
+        }
       }
     >
-      description
-    </Text>
+      <Text
+        primary={true}
+        style={
+          Array [
+            Object {
+              "color": "#107821",
+              "fontFamily": "regular",
+              "fontSize": 17.92,
+              "lineHeight": 24.64,
+              "textDecorationColor": "#107821",
+            },
+          ]
+        }
+      >
+        description
+      </Text>
+    </View>
   </View>
 </View>
 `;

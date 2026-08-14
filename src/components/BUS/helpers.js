@@ -12,12 +12,14 @@ export const getAddress = (addresses) => {
   let address = addresses[0];
 
   const { street, houseNumber, zipcode, area } = address;
+  const streetLine = [street, houseNumber].filter(Boolean).join(' ');
 
   return {
-    street: (!!street || !!houseNumber) && `${address.street} ${address.houseNumber}`,
+    street: streetLine || undefined,
     zip: zipcode,
     city: area?.name,
     elevator: address.elevator,
+    transportationStops: address.transportationStops,
     wheelchairAccessible: address.wheelchairAccessible
   };
 };
