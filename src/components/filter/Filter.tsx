@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { Modal, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Collapsible from 'react-native-collapsible';
 import { Divider, Header } from 'react-native-elements';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Icon, colors, consts, normalize, texts } from '../../config';
 import { momentFormat } from '../../helpers';
@@ -217,54 +218,56 @@ export const Filter = ({
               </Wrapper>
             </ScrollView>
 
-            <Wrapper style={styles.alignLeft} noPaddingTop>
-              <WrapperRow style={{ gap: normalize(16) }}>
-                <Button
-                  disabled={!!isNoFilterSet}
-                  invert
-                  notFullWidth
-                  onPress={resetFilters}
-                  title={texts.filter.resetFilter}
-                />
-                <Button
-                  disabled={!!isNoFilterSet}
-                  notFullWidth
-                  onPress={() => {
-                    let dateRange = filters.dateRange || null;
+            <SafeAreaView edges={['bottom']}>
+              <Wrapper style={styles.alignLeft} noPaddingTop>
+                <WrapperRow style={{ gap: normalize(16) }}>
+                  <Button
+                    disabled={!!isNoFilterSet}
+                    invert
+                    notFullWidth
+                    onPress={resetFilters}
+                    title={texts.filter.resetFilter}
+                  />
+                  <Button
+                    disabled={!!isNoFilterSet}
+                    notFullWidth
+                    onPress={() => {
+                      let dateRange = filters.dateRange || null;
 
-                    if (filters.start_date && filters.end_date) {
-                      dateRange = [
-                        momentFormat(filters.start_date, 'YYYY-MM-DD'),
-                        momentFormat(filters.end_date, 'YYYY-MM-DD')
-                      ];
-                    } else if (filters.start_date && !filters.end_date) {
-                      // because of the requirement to specify the start and end date of the `dateRange`,
-                      // if only `startDate` is selected, `endDate` is set to 31.12.9999
-                      dateRange = [momentFormat(filters.start_date, 'YYYY-MM-DD'), '9999-12-31'];
-                    } else if (!filters.start_date && filters.end_date) {
-                      // because of the requirement to specify the start and end date of the `dateRange`,
-                      // if only `endDate` is selected, `startDate` is set to today's date or if
-                      // `endDate` is in the past, it is set to the date of the `endDate`
-                      dateRange = [
-                        moment().isAfter(filters.end_date)
-                          ? momentFormat(filters.end_date, 'YYYY-MM-DD')
-                          : moment().format('YYYY-MM-DD'),
-                        momentFormat(filters.end_date, 'YYYY-MM-DD')
-                      ];
-                    }
+                      if (filters.start_date && filters.end_date) {
+                        dateRange = [
+                          momentFormat(filters.start_date, 'YYYY-MM-DD'),
+                          momentFormat(filters.end_date, 'YYYY-MM-DD')
+                        ];
+                      } else if (filters.start_date && !filters.end_date) {
+                        // because of the requirement to specify the start and end date of the `dateRange`,
+                        // if only `startDate` is selected, `endDate` is set to 31.12.9999
+                        dateRange = [momentFormat(filters.start_date, 'YYYY-MM-DD'), '9999-12-31'];
+                      } else if (!filters.start_date && filters.end_date) {
+                        // because of the requirement to specify the start and end date of the `dateRange`,
+                        // if only `endDate` is selected, `startDate` is set to today's date or if
+                        // `endDate` is in the past, it is set to the date of the `endDate`
+                        dateRange = [
+                          moment().isAfter(filters.end_date)
+                            ? momentFormat(filters.end_date, 'YYYY-MM-DD')
+                            : moment().format('YYYY-MM-DD'),
+                          momentFormat(filters.end_date, 'YYYY-MM-DD')
+                        ];
+                      }
 
-                    if (dateRange?.length) {
-                      setQueryVariables({ ...filters, dateRange });
-                    } else {
-                      setQueryVariables({ ...filters });
-                    }
+                      if (dateRange?.length) {
+                        setQueryVariables({ ...filters, dateRange });
+                      } else {
+                        setQueryVariables({ ...filters });
+                      }
 
-                    setIsCollapsed(!isCollapsed);
-                  }}
-                  title={texts.filter.filter}
-                />
-              </WrapperRow>
-            </Wrapper>
+                      setIsCollapsed(!isCollapsed);
+                    }}
+                    title={texts.filter.filter}
+                  />
+                </WrapperRow>
+              </Wrapper>
+            </SafeAreaView>
           </Modal>
         ) : (
           <Collapsible collapsed={isCollapsed}>
