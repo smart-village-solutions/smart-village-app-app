@@ -11,7 +11,7 @@ import React, {
   useState
 } from 'react';
 import { useQuery } from 'react-apollo';
-import { ActivityIndicator, RefreshControl } from 'react-native';
+import { ActivityIndicator, RefreshControl, StyleSheet, View } from 'react-native';
 import { Divider } from 'react-native-elements';
 
 import { colors, consts, Icon, normalize, texts } from '../../config';
@@ -19,10 +19,16 @@ import { ConfigurationsContext } from '../../ConfigurationsProvider';
 import {
   filterTypesHelper,
   geoLocationFilteredListItem,
+  getParticipationProjectStatusCounts,
   graphqlFetchPolicy,
   isOpen,
+  isParticipationProjectMapEligible,
+  isParticipationProjectStatus,
   openLink,
   parseListItemsFromQuery,
+  PARTICIPATION_PROJECT_DEFAULT_STATUSES,
+  PARTICIPATION_PROJECT_STATUS_FILTER,
+  PARTICIPATION_PROJECT_STATUS_POSITION_PARAM,
   sortPOIsByDistanceFromPosition
 } from '../../helpers';
 import { updateResourceFiltersStateHelper } from '../../helpers/updateResourceFiltersStateHelper';
@@ -39,7 +45,7 @@ import { NetworkContext } from '../../NetworkProvider';
 import { PermanentFilterContext } from '../../PermanentFilterProvider';
 import { getFetchMoreQuery, getQuery, QUERY_TYPES } from '../../queries';
 import { SettingsContext } from '../../SettingsProvider';
-import { GenericType } from '../../types';
+import { GenericType, ScreenName } from '../../types';
 import { Button } from '../Button';
 import { CategoryList } from '../CategoryList';
 import { EmptyMessage } from '../EmptyMessage';
@@ -121,13 +127,83 @@ const getAdditionalQueryVariables = (
   return additionalQueryVariables;
 };
 
+const toFiniteNumber = (value) => {
+  if (typeof value === 'number' && Number.isFinite(value)) {
+    return value;
+  }
+
+  if (typeof value === 'string') {
+    const trimmedValue = value.trim();
+    if (!trimmedValue) {
+      return null;
+    }
+
+    const parsedValue = Number(trimmedValue);
+    return Number.isFinite(parsedValue) ? parsedValue : null;
+  }
+
+  return null;
+};
+
+const getSelectedParticipationProjectStatuses = (selectedStatuses) => {
+  if (Array.isArray(selectedStatuses)) return selectedStatuses;
+
+  return selectedStatuses ? [selectedStatuses] : [...PARTICIPATION_PROJECT_DEFAULT_STATUSES];
+};
+
+const getParticipationProjectStatusFilter = (statusCounts, selectedStatuses) => {
+  if (
+    !statusCounts.length ||
+    (statusCounts.length === 1 &&
+      PARTICIPATION_PROJECT_DEFAULT_STATUSES.includes(statusCounts[0].status))
+  ) {
+    return;
+  }
+
+  return {
+    data: statusCounts.map(({ count, label, status }, index) => {
+      const statusLabel = texts.participationProject.statuses?.[status] || label;
+
+      return {
+        filterValue: status,
+        id: index + 1,
+        index,
+        selected: selectedStatuses.includes(status),
+        value: `${statusLabel} (${count})`
+      };
+    }),
+    isMultiselect: true,
+    label: texts.participationProject.status,
+    name: PARTICIPATION_PROJECT_STATUS_FILTER,
+    placeholder: texts.participationProject.statusFilter,
+    type: consts.FILTER_TYPES.DROPDOWN
+  };
+};
+
+const ParticipationProjectIndexMapButton = ({ navigationType, onPress }) => (
+  <View style={[styles.floatingButtonContainer, stylesWithProps({ navigationType }).position]}>
+    <Button
+      icon={<Icon.Map color={colors.surface} />}
+      iconPosition="left"
+      onPress={onPress}
+      title={texts.locationOverview.map}
+      notFullWidth
+    />
+  </View>
+);
+
+ParticipationProjectIndexMapButton.propTypes = {
+  navigationType: PropTypes.string,
+  onPress: PropTypes.func.isRequired
+};
+
 /* eslint-disable complexity */
 export const Overviews = ({ navigation, route }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { resourceFilters } = useContext(ConfigurationsContext);
   const { resourceFiltersState = {}, resourceFiltersDispatch } = useContext(PermanentFilterContext);
   const { globalSettings } = useContext(SettingsContext);
-  const { filter = {}, sections = {}, settings = {} } = globalSettings;
+  const { filter = {}, navigation: navigationType, sections = {}, settings = {} } = globalSettings;
   const { news: showNewsFilter = false } = filter;
   const {
     switchBetweenListAndMap = SWITCH_BETWEEN_LIST_AND_MAP.TOP_FILTER,
@@ -157,6 +233,25 @@ export const Overviews = ({ navigation, route }) => {
   ];
   const [filterType, setFilterType] = useState(INITIAL_FILTER);
   const initialQueryVariables = route?.params?.queryVariables || {};
+  const isParticipationProjectOverview =
+    query === QUERY_TYPES.GENERIC_ITEMS &&
+    initialQueryVariables.genericType === GenericType.ParticipationProject;
+  const initialParticipationStatus = initialQueryVariables[PARTICIPATION_PROJECT_STATUS_FILTER];
+  const initialParticipationStatuses = useMemo(
+    () =>
+      initialParticipationStatus
+        ? Array.isArray(initialParticipationStatus)
+          ? initialParticipationStatus
+          : [initialParticipationStatus]
+        : PARTICIPATION_PROJECT_DEFAULT_STATUSES,
+    [initialParticipationStatus]
+  );
+  const participationInitialQueryVariables = isParticipationProjectOverview
+    ? {
+        ...initialQueryVariables,
+        [PARTICIPATION_PROJECT_STATUS_FILTER]: initialParticipationStatuses
+      }
+    : initialQueryVariables;
   const resourceFiltersQuery =
     query === QUERY_TYPES.GENERIC_ITEMS ? initialQueryVariables.genericType : query;
   const filterQuery =
@@ -167,10 +262,14 @@ export const Overviews = ({ navigation, route }) => {
       : query === QUERY_TYPES.NEWS_ITEMS
       ? _camelCase(route.params?.title)
       : query;
-  const [queryVariables, setQueryVariables] = useState({
-    ...initialQueryVariables,
-    ...resourceFiltersState[filterQuery]
-  });
+  const [queryVariables, setQueryVariables] = useState(() => ({
+    ...participationInitialQueryVariables,
+    ...resourceFiltersState[filterQuery],
+    ...(isParticipationProjectOverview && {
+      [PARTICIPATION_PROJECT_STATUS_FILTER]:
+        participationInitialQueryVariables[PARTICIPATION_PROJECT_STATUS_FILTER]
+    })
+  }));
   const [refreshing, setRefreshing] = useState(false);
   const showMap = isMapSelected(query, filterType);
   const { excludeDataProviderIds, excludeMowasRegionalKeys } = usePermanentFilter();
@@ -204,11 +303,23 @@ export const Overviews = ({ navigation, route }) => {
     skip: !htmlContentName
   });
   const [isLocationAlertShow, setIsLocationAlertShow] = useState(false);
+  const networkQueryVariables = useMemo(() => {
+    if (!isParticipationProjectOverview) return queryVariables;
+
+    const participationQueryVariables = { ...queryVariables };
+    delete participationQueryVariables[PARTICIPATION_PROJECT_STATUS_FILTER];
+    delete participationQueryVariables[PARTICIPATION_PROJECT_STATUS_POSITION_PARAM];
+    delete participationQueryVariables.participationOrder;
+    delete participationQueryVariables.subtitleNumberOfLines;
+    delete participationQueryVariables.titleNumberOfLines;
+
+    return participationQueryVariables;
+  }, [isParticipationProjectOverview, queryVariables]);
 
   const { data, loading, fetchMore, refetch } = useQuery(getQuery(query, { showNewsFilter }), {
     fetchPolicy,
     variables: {
-      ...queryVariables,
+      ...networkQueryVariables,
       // if we want to sort by distance, we need to fetch all the entries at once. this is not a
       // big issue if we want to sort by distance, because getting the location usually takes longer
       // than fetching all entries.
@@ -216,11 +327,24 @@ export const Overviews = ({ navigation, route }) => {
       // have any open POIs in the next batch that would result in the list not getting any new
       // items and not reliably triggering another `fetchMore`
       limit:
-        sortByDistance || queryVariables.onlyCurrentlyOpen
+        isParticipationProjectOverview || sortByDistance || queryVariables.onlyCurrentlyOpen
           ? undefined
           : route.params?.queryVariables?.limit
     }
   });
+
+  const participationProjectStatusCounts = useMemo(
+    () =>
+      isParticipationProjectOverview
+        ? getParticipationProjectStatusCounts(data?.[QUERY_TYPES.GENERIC_ITEMS] || [])
+        : [],
+    [data, isParticipationProjectOverview]
+  );
+  const selectedParticipationProjectStatuses = useMemo(
+    () =>
+      getSelectedParticipationProjectStatuses(queryVariables[PARTICIPATION_PROJECT_STATUS_FILTER]),
+    [queryVariables]
+  );
 
   const listItems = useMemo(() => {
     let parsedListItems = parseListItemsFromQuery(query, data, titleDetail, {
@@ -243,6 +367,14 @@ export const Overviews = ({ navigation, route }) => {
       );
     }
 
+    if (isParticipationProjectOverview) {
+      parsedListItems = parsedListItems?.filter((entry) =>
+        selectedParticipationProjectStatuses.some((status) =>
+          isParticipationProjectStatus(entry.params?.details, status)
+        )
+      );
+    }
+
     if (sortByDistance && currentPosition && parsedListItems?.length) {
       parsedListItems = sortPOIsByDistanceFromPosition(parsedListItems, currentPosition.coords);
     }
@@ -258,6 +390,45 @@ export const Overviews = ({ navigation, route }) => {
         setIsLocationAlertShow
       });
     }
+    if (
+      queryVariables?.genericType === GenericType.ParticipationProject &&
+      !!queryVariables.participationOrder
+    ) {
+      // Keep ordering numeric when possible and deterministic for mixed/non-numeric values.
+      parsedListItems = [...parsedListItems].sort((leftEntry, rightEntry) => {
+        const leftRawValue =
+          leftEntry.params?.details?.payload?.[queryVariables.participationOrder];
+        const rightRawValue =
+          rightEntry.params?.details?.payload?.[queryVariables.participationOrder];
+
+        const leftNumericValue = toFiniteNumber(leftRawValue);
+        const rightNumericValue = toFiniteNumber(rightRawValue);
+        const leftIsNumeric = leftNumericValue !== null;
+        const rightIsNumeric = rightNumericValue !== null;
+
+        if (leftIsNumeric && rightIsNumeric && leftNumericValue !== rightNumericValue) {
+          return leftNumericValue - rightNumericValue;
+        }
+
+        if (leftIsNumeric !== rightIsNumeric) {
+          return leftIsNumeric ? -1 : 1;
+        }
+
+        const leftText = leftRawValue == null ? '' : String(leftRawValue);
+        const rightText = rightRawValue == null ? '' : String(rightRawValue);
+        const textComparison = leftText.localeCompare(rightText, undefined, {
+          sensitivity: 'base'
+        });
+
+        if (textComparison !== 0) {
+          return textComparison;
+        }
+
+        const leftFallback = String(leftEntry.id ?? leftEntry.params?.details?.id ?? '');
+        const rightFallback = String(rightEntry.id ?? rightEntry.params?.details?.id ?? '');
+        return leftFallback.localeCompare(rightFallback, undefined, { sensitivity: 'base' });
+      });
+    }
 
     return parsedListItems;
   }, [
@@ -266,15 +437,30 @@ export const Overviews = ({ navigation, route }) => {
     data,
     dateTimeFormat,
     isLocationAlertShow,
+    isParticipationProjectOverview,
     locationSettings,
     navigation,
     query,
     queryVariables,
     radiusSearchByDistance,
+    selectedParticipationProjectStatuses,
+    setIsLocationAlertShow,
     sortByDistance,
     subQuery,
     titleDetail
   ]);
+
+  const hasParticipationProjectMapItems =
+    isParticipationProjectOverview &&
+    !!data?.[QUERY_TYPES.GENERIC_ITEMS]?.some(
+      (item) =>
+        isParticipationProjectMapEligible(item) &&
+        selectedParticipationProjectStatuses.some(
+          (status) =>
+            PARTICIPATION_PROJECT_DEFAULT_STATUSES.includes(status) &&
+            isParticipationProjectStatus(item, status)
+        )
+    );
 
   const refresh = useCallback(() => {
     setRefreshing(true);
@@ -285,7 +471,7 @@ export const Overviews = ({ navigation, route }) => {
   }, [isConnected, setRefreshing, refetch]);
 
   const filterTypes = useMemo(() => {
-    return filterTypesHelper({
+    const configuredFilterTypes = filterTypesHelper({
       categories,
       category: initialQueryVariables?.category,
       data,
@@ -294,7 +480,29 @@ export const Overviews = ({ navigation, route }) => {
       queryVariables,
       resourceFilters
     });
-  }, [data]);
+
+    if (!isParticipationProjectOverview) return configuredFilterTypes;
+
+    const participationStatusFilter = getParticipationProjectStatusFilter(
+      participationProjectStatusCounts,
+      selectedParticipationProjectStatuses
+    );
+
+    return participationStatusFilter
+      ? [...configuredFilterTypes, participationStatusFilter]
+      : configuredFilterTypes;
+  }, [
+    data,
+    categories,
+    excludeDataProviderIds,
+    initialQueryVariables.category,
+    queryVariables,
+    isParticipationProjectOverview,
+    participationProjectStatusCounts,
+    resourceFilters,
+    resourceFiltersQuery,
+    selectedParticipationProjectStatuses
+  ]);
 
   useEffect(() => {
     updateResourceFiltersStateHelper({
@@ -310,6 +518,7 @@ export const Overviews = ({ navigation, route }) => {
     // the query variables are taken freshly. otherwise the mounted screen can have query variables
     // from the previous screen, what does not work. this can result in an unchanged screen because
     // the query is not returning anything.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setQueryVariables({
       ...(route.params?.queryVariables ?? {}),
       ...resourceFiltersState?.[filterQuery],
@@ -318,9 +527,19 @@ export const Overviews = ({ navigation, route }) => {
         undefined,
         excludeDataProviderIds,
         excludeMowasRegionalKeys
-      )
+      ),
+      ...(isParticipationProjectOverview && {
+        [PARTICIPATION_PROJECT_STATUS_FILTER]: initialParticipationStatuses
+      })
     });
-  }, [excludeDataProviderIds, excludeMowasRegionalKeys, query, route.params?.queryVariables]);
+  }, [
+    excludeDataProviderIds,
+    excludeMowasRegionalKeys,
+    isParticipationProjectOverview,
+    initialParticipationStatuses,
+    query,
+    route.params?.queryVariables
+  ]);
 
   useLayoutEffect(() => {
     if (
@@ -354,7 +573,7 @@ export const Overviews = ({ navigation, route }) => {
     return fetchMore({
       query: getFetchMoreQuery(query),
       variables: {
-        ...queryVariables,
+        ...networkQueryVariables,
         offset: data?.[query]?.length
       },
       updateQuery: (prevResult, { fetchMoreResult }) => {
@@ -368,7 +587,7 @@ export const Overviews = ({ navigation, route }) => {
         };
       }
     });
-  }, [data, query, queryVariables]);
+  }, [data, query, networkQueryVariables, fetchMore]);
 
   const hasNestedPoiCategories = useMemo(
     () => hasNestedPointsOfInterestCategories(categories),
@@ -425,7 +644,7 @@ export const Overviews = ({ navigation, route }) => {
       {!hideModalFilter && (
         <Filter
           filterTypes={filterTypes}
-          initialQueryVariables={initialQueryVariables}
+          initialQueryVariables={participationInitialQueryVariables}
           isOverlay
           queryVariables={queryVariables}
           setQueryVariables={setQueryVariables}
@@ -513,7 +732,7 @@ export const Overviews = ({ navigation, route }) => {
             sectionByDate
             query={query}
             queryVariables={queryVariables}
-            fetchMoreData={fetchMoreData}
+            fetchMoreData={isParticipationProjectOverview ? undefined : fetchMoreData}
             refreshControl={
               <RefreshControl
                 refreshing={refreshing}
@@ -532,10 +751,41 @@ export const Overviews = ({ navigation, route }) => {
         filterType.find((entry) => entry.title == texts.locationOverview.list)?.selected && (
           <IndexMapSwitch filter={filterType} setFilter={setFilterType} />
         )}
+      {!loading && hasParticipationProjectMapItems && (
+        <ParticipationProjectIndexMapButton
+          navigationType={navigationType}
+          onPress={() =>
+            navigation.navigate(ScreenName.ParticipationProjectMap, {
+              queryVariables,
+              rootRouteName: route.params?.rootRouteName,
+              subtitleNumberOfLines: queryVariables?.subtitleNumberOfLines,
+              title,
+              titleNumberOfLines: queryVariables?.titleNumberOfLines
+            })
+          }
+        />
+      )}
     </SafeAreaViewFlex>
   );
 };
 /* eslint-enable complexity */
+
+const styles = StyleSheet.create({
+  floatingButtonContainer: {
+    alignSelf: 'center',
+    position: 'absolute'
+  }
+});
+
+/* eslint-disable react-native/no-unused-styles */
+/* this works properly, we do not want that warning */
+const stylesWithProps = ({ navigationType }) =>
+  StyleSheet.create({
+    position: {
+      bottom: navigationType === 'drawer' ? '5%' : 0
+    }
+  });
+/* eslint-enable react-native/no-unused-styles */
 
 Overviews.propTypes = {
   navigation: PropTypes.object.isRequired,

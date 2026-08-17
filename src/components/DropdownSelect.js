@@ -44,7 +44,7 @@ export const DropdownSelect = ({
         device.platform === 'android' ? -normalize(24) : isOverlayFilter ? normalize(65) : 0,
       maxHeight: normalize(320)
     }),
-    [marginHorizontal]
+    [isOverlayFilter, marginHorizontal]
   );
 
   const [arrow, setArrow] = useState('down');
@@ -56,30 +56,52 @@ export const DropdownSelect = ({
 
   const renderRow = useCallback(
     (rowData, rowID, highlighted) => {
-      highlighted = multipleSelect
-        ? selectedMultipleValues.includes(rowData)
-        : selectedValue === rowData;
+      const row = data.find((entry) => entry.value === rowData);
+      highlighted = multipleSelect ? !!row?.selected : selectedValue === rowData;
+      const isCheckboxOption = multipleSelect && row?.id !== 0;
 
       return (
         <Wrapper
-          accessibilityLabel={`${rowData} (${a11yLabel.dropDownMenuItem})`}
+          accessibilityLabel={`${rowData} (${a11yLabel.dropDownMenuItem})${
+            isCheckboxOption
+              ? ` (${
+                  highlighted
+                    ? texts.accessibilityLabels.checkbox.active
+                    : texts.accessibilityLabels.checkbox.inactive
+                })`
+              : ''
+          }`}
+          accessibilityRole={isCheckboxOption ? 'checkbox' : undefined}
+          accessibilityState={isCheckboxOption ? { checked: highlighted } : undefined}
           accessible
           style={styles.dropdownRowWrapper}
         >
-          <RegularText secondary={highlighted} placeholder={rowData == placeholder}>
-            {rowData}
-          </RegularText>
+          <WrapperRow itemsCenter>
+            {isCheckboxOption &&
+              (highlighted ? (
+                <Icon.SquareCheckFilled
+                  color={colors.primary}
+                  size={normalize(22)}
+                  style={styles.checkbox}
+                />
+              ) : (
+                <Icon.Square color={colors.darkText} size={normalize(22)} style={styles.checkbox} />
+              ))}
+            <RegularText secondary={highlighted} placeholder={rowData == placeholder}>
+              {rowData}
+            </RegularText>
+          </WrapperRow>
         </Wrapper>
       );
     },
-    [data, selectedMultipleValues, selectedValue, multipleSelect, placeholder]
+    [data, selectedValue, multipleSelect, placeholder]
   );
 
   const preselect = (index) => dropdownRef.current.select(index);
 
   useEffect(() => {
     preselect(selectedIndex);
-  }, [selectedData]);
+  }, [selectedData, selectedIndex]);
 
   const accessibilityLabel = multipleSelect ? selectedMultipleValues : selectedValue;
   return (
@@ -162,6 +184,9 @@ export const DropdownSelect = ({
 };
 
 const styles = StyleSheet.create({
+  checkbox: {
+    marginRight: normalize(10)
+  },
   dropdownTextWrapper: {
     alignItems: 'center',
     borderBottomWidth: normalize(1),

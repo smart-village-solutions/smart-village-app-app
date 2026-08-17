@@ -8,18 +8,22 @@ import { colors, consts, Icon, normalize } from '../config';
 import { isOpen, trimNewLines } from '../helpers';
 
 import { Image } from './Image';
+import { ParticipationProjectStatusIndicator } from './ParticipationProjectStatusIndicator';
 import { BoldText, HeadlineText, RegularText } from './Text';
 import { Touchable } from './Touchable';
 import { WrapperRow } from './Wrapper';
 
+type ListNavigation = StackNavigationProp<Record<string, object | undefined>>;
+
 export type ItemData = {
   id: string;
+  accessibilityLabel?: string;
   badge?: { value: string; textStyle: { color: string } };
   bottomDivider?: boolean;
   count?: number;
   isHeadlineTitle?: boolean;
   leftIcon?: React.ReactElement;
-  onPress?: (navigation: any) => void;
+  onPress?: (navigation: ListNavigation) => void;
   overtitle?: string;
   params: Record<string, unknown>;
   picture?: { url: string };
@@ -27,6 +31,9 @@ export type ItemData = {
   routeName: string;
   statustitle?: string;
   statustitleIcon?: React.ReactElement;
+  statusColor?: string;
+  statusLabel?: string;
+  statusPosition?: 'belowTeaser' | 'replaceTeaser';
   subtitle?: string;
   teaserTitle?: string;
   title: string;
@@ -41,17 +48,19 @@ type Props = {
   leftImage?: boolean;
   listItemStyle?: ViewStyle;
   listsWithoutArrows?: boolean | undefined;
-  navigation: StackNavigationProp<Record<string, any>>;
+  navigation: ListNavigation;
   noOvertitle?: boolean;
   noSubtitle?: boolean;
   rightImage?: boolean;
   showOpenStatus?: boolean;
+  subtitleNumberOfLines?: number;
+  titleNumberOfLines?: number;
   withCard?: boolean;
 };
 
 /* eslint-disable complexity */
 export const TextListItem: NamedExoticComponent<Props> & {
-  propTypes?: Record<string, Validator<any>>;
+  propTypes?: Record<string, Validator<unknown>>;
 } & {
   defaultProps?: Partial<Props>;
 } = memo<Props>(
@@ -68,10 +77,13 @@ export const TextListItem: NamedExoticComponent<Props> & {
     noSubtitle = false,
     rightImage = false,
     showOpenStatus,
+    subtitleNumberOfLines,
+    titleNumberOfLines,
     withCard = false
   }) => {
     const {
       badge,
+      accessibilityLabel,
       bottomDivider,
       count,
       isHeadlineTitle = true,
@@ -84,6 +96,9 @@ export const TextListItem: NamedExoticComponent<Props> & {
       routeName: name,
       statustitle,
       statustitleIcon,
+      statusColor,
+      statusLabel,
+      statusPosition = 'belowTeaser',
       subtitle,
       teaserTitle,
       title,
@@ -91,11 +106,17 @@ export const TextListItem: NamedExoticComponent<Props> & {
     } = item;
     const navigate = () => navigation && navigation.push(name, params);
     let titleText = isHeadlineTitle ? (
-      <HeadlineText small>{trimNewLines(title)}</HeadlineText>
+      <HeadlineText small numberOfLines={titleNumberOfLines}>
+        {trimNewLines(title)}
+      </HeadlineText>
     ) : withCard ? (
-      <BoldText style={styles.topMargin}>{trimNewLines(title)}</BoldText>
+      <BoldText style={styles.topMargin} numberOfLines={titleNumberOfLines}>
+        {trimNewLines(title)}
+      </BoldText>
     ) : (
-      <BoldText small>{trimNewLines(title)}</BoldText>
+      <BoldText small numberOfLines={titleNumberOfLines}>
+        {trimNewLines(title)}
+      </BoldText>
     );
 
     let status = '';
@@ -107,7 +128,9 @@ export const TextListItem: NamedExoticComponent<Props> & {
       titleText = (
         <>
           {titleText}
-          <RegularText small>{teaserTitle}</RegularText>
+          <RegularText small numberOfLines={subtitleNumberOfLines}>
+            {teaserTitle}
+          </RegularText>
         </>
       );
     }
@@ -118,13 +141,22 @@ export const TextListItem: NamedExoticComponent<Props> & {
           {titleText}
           <WrapperRow style={styles.statustitleWrapper}>
             {!!statustitleIcon && statustitleIcon}
-            <RegularText small placeholder>
+            <RegularText small placeholder numberOfLines={subtitleNumberOfLines}>
               {statustitle}
             </RegularText>
           </WrapperRow>
         </>
       );
     }
+
+    const showSubtitle = !noSubtitle && !!subtitle && statusPosition !== 'replaceTeaser';
+    const statusIndicator = statusLabel ? (
+      <ParticipationProjectStatusIndicator
+        color={statusColor}
+        containerStyle={styles.statusWrapper}
+        label={statusLabel}
+      />
+    ) : null;
 
     // `title` is the first line and `subtitle` the second line, so `title` is used with our subtitle
     // content and `subtitle` is used with the main title
@@ -138,7 +170,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
         disabled={!navigation}
         delayPressIn={0}
         Component={Touchable}
-        accessibilityLabel={`(${title}) ${consts.a11yLabel.button}`}
+        accessibilityLabel={accessibilityLabel || `(${title}) ${consts.a11yLabel.button}`}
       >
         {leftIcon ||
           (leftImage && !!picture?.url ? (
@@ -157,11 +189,10 @@ export const TextListItem: NamedExoticComponent<Props> & {
                 {trimNewLines(overtitle)}
               </HeadlineText>
             )}
-            {noSubtitle || !subtitle ? undefined : titleText}
-            {noSubtitle || !subtitle ? (
-              titleText
-            ) : (
-              <RegularText small style={styles.subtitle}>
+            {statusIndicator}
+            {titleText}
+            {showSubtitle && (
+              <RegularText small style={styles.subtitle} numberOfLines={subtitleNumberOfLines}>
                 {subtitle}
               </RegularText>
             )}
@@ -173,11 +204,10 @@ export const TextListItem: NamedExoticComponent<Props> & {
                 {trimNewLines(overtitle)}
               </HeadlineText>
             )}
-            {noSubtitle || !subtitle ? undefined : titleText}
-            {noSubtitle || !subtitle ? (
-              titleText
-            ) : (
-              <RegularText small style={styles.subtitle}>
+            {statusIndicator}
+            {titleText}
+            {showSubtitle && (
+              <RegularText small style={styles.subtitle} numberOfLines={subtitleNumberOfLines}>
                 {subtitle}
               </RegularText>
             )}
@@ -195,7 +225,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
             />
           ) : undefined)}
 
-        {!!count && <BoldText>{count}</BoldText>}
+        {count !== undefined && count !== null && <BoldText>{count}</BoldText>}
 
         {!listsWithoutArrows && !!navigation && !withCard && (
           <Icon.ArrowRight color={colors.darkText} size={normalize(18)} />
@@ -221,6 +251,9 @@ const styles = StyleSheet.create({
   },
   smallImageContainer: {
     alignSelf: 'flex-start'
+  },
+  statusWrapper: {
+    marginBottom: normalize(6)
   },
   statustitleWrapper: {
     marginTop: normalize(7)
@@ -252,5 +285,7 @@ TextListItem.propTypes = {
   noSubtitle: PropTypes.bool,
   rightImage: PropTypes.bool,
   showOpenStatus: PropTypes.bool,
+  subtitleNumberOfLines: PropTypes.number,
+  titleNumberOfLines: PropTypes.number,
   withCard: PropTypes.bool
 };

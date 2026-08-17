@@ -1,4 +1,4 @@
-import { getMarkerBounds } from '../../../src/components/map/getMarkerBounds';
+import { expandMapBounds, getMarkerBounds } from '../../../src/components/map/getMarkerBounds';
 
 describe('getMarkerBounds', () => {
   it('returns geographic extremes in west, south, east, north order', () => {
@@ -20,5 +20,11 @@ describe('getMarkerBounds', () => {
         { id: '3', position: { latitude: 91, longitude: 13.8 } }
       ])
     ).toBeUndefined();
+  });
+
+  it('expands bounds evenly around their geographic center', () => {
+    expect(expandMapBounds([11.6, 52.1, 11.65, 52.15], 2)).toEqual([
+      11.575, 52.075, 11.675, 52.175
+    ]);
   });
 });

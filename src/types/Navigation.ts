@@ -63,6 +63,8 @@ export enum ScreenName {
   OParlPersons = 'OParlPersons',
   OParlSearch = 'OParlSearch',
   Pdf = 'Pdf',
+  ParticipationProjectHome = 'ParticipationProject',
+  ParticipationProjectMap = 'ParticipationProjectMap',
   Profile = 'Profile',
   ProfileConversations = 'ProfileConversations',
   ProfileDelete = 'ProfileDelete',

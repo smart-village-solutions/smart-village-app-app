@@ -52,6 +52,23 @@ const deleteInitialStartDateFromQueryVariables = (queryVariables: FilterProps): 
   return queryVariables;
 };
 
+const areFiltersReset = (
+  filters: FilterProps,
+  initialQueryVariables: FilterProps | undefined,
+  isOverlay: boolean,
+  isNoFilterSet: boolean
+) => {
+  if (!isOverlay) return isNoFilterSet;
+
+  return _isEqual(
+    _omit(filters, ['saveable', 'search']),
+    _omit(deleteInitialStartDateFromQueryVariables(initialQueryVariables || {}), [
+      'saveable',
+      'search'
+    ])
+  );
+};
+
 export const Filter = ({
   filterTypes,
   initialQueryVariables,
@@ -103,7 +120,7 @@ export const Filter = ({
     } else {
       setIsCollapsed(!isCollapsed);
 
-      const { dateRange, ...rest } = initialQueryVariables || {};
+      const rest = _omit(initialQueryVariables || {}, ['dateRange']);
 
       setFilters((prev) => ({
         saveable: false,
@@ -141,9 +158,16 @@ export const Filter = ({
         return acc;
       }, {} as FilterProps);
 
-      setFilterCount(Object.keys(filteredActiveFilters).length);
+      const changedInitialFilters =
+        filterTypes?.filter(
+          ({ name }) =>
+            Object.prototype.hasOwnProperty.call(initialQueryVariables || {}, name) &&
+            !_isEqual(filters[name], initialQueryVariables?.[name])
+        ).length || 0;
+
+      setFilterCount(Object.keys(filteredActiveFilters).length + changedInitialFilters);
     }
-  }, [filters, initialQueryVariables, isCollapsed]);
+  }, [filters, filterTypes, initialQueryVariables, isCollapsed]);
 
   if (!filterTypes?.length) {
     return null;
@@ -152,6 +176,8 @@ export const Filter = ({
   const isNoFilterSet =
     filters.start_date === INITIAL_START_DATE &&
     !Object.keys(_omit(filters, Object.keys(queryVariables))).length;
+  const isApplyDisabled = _isEqual(filters, updatedQueryVariables);
+  const isResetDisabled = areFiltersReset(filters, initialQueryVariables, isOverlay, isNoFilterSet);
 
   return (
     <>
@@ -222,14 +248,14 @@ export const Filter = ({
               <Wrapper style={styles.alignLeft} noPaddingTop>
                 <WrapperRow style={{ gap: normalize(16) }}>
                   <Button
-                    disabled={!!isNoFilterSet}
+                    disabled={isResetDisabled}
                     invert
                     notFullWidth
                     onPress={resetFilters}
                     title={texts.filter.resetFilter}
                   />
                   <Button
-                    disabled={!!isNoFilterSet}
+                    disabled={isApplyDisabled}
                     notFullWidth
                     onPress={() => {
                       let dateRange = filters.dateRange || null;

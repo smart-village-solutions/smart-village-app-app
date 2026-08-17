@@ -720,6 +720,50 @@ export const texts = {
     },
     writeMessage: 'Unterhaltung starten'
   },
+  participationProject: {
+    categories: 'Kategorien',
+    categoryCount: (count) => `${count} ${count === 1 ? 'Eintrag' : 'Einträge'}`,
+    calendarExport: 'Termin speichern',
+    capacity: 'Kapazität',
+    completedCount: (count) => `${count} beendet`,
+    contact: 'Kontakt',
+    date: 'Zeitraum',
+    email: 'E-Mail',
+    empty: 'Keine Beteiligungen gefunden.',
+    featuredProjects: 'Besonders interessant',
+    instance: 'Mandant',
+    location: 'Ort',
+    no: 'Nein',
+    openProject: 'Beteiligung öffnen',
+    openStreetMap: 'Auf OpenStreetMap anzeigen',
+    organizer: 'Veranstalter',
+    overview: 'Übersicht',
+    participationProject: 'Beteiligung',
+    participationProjects: 'Beteiligungen',
+    phone: 'Telefon',
+    portalHint:
+      'Weitere Informationen und Beteiligungsmöglichkeiten finden Sie im Beteiligungsportal.',
+    registrationRequired: 'Anmeldung erforderlich',
+    showAll: 'Alle Beteiligungen ansehen',
+    statistics: 'Statistik',
+    status: 'Status',
+    statusFilter: 'Status auswählen',
+    statuses: {
+      active: 'Aktiv',
+      announced: 'Ankündigung',
+      completed: 'Abgeschlossen',
+      ended: 'Beendet',
+      recently_ended: 'Kürzlich beendet',
+      empty: 'Ohne Status'
+    },
+    tags: 'Schlagworte',
+    theme: 'Thema',
+    time: 'Uhrzeit',
+    type: 'Beteiligungsart',
+    updatedAt: 'Aktualisiert am',
+    publishedAt: 'Veröffentlicht am',
+    yes: 'Ja'
+  },
   oparl: {
     agendaItem: {
       agendaItem: 'Tagesordnungspunkt',
@@ -1135,6 +1179,10 @@ export const texts = {
     },
     routePlanner: 'Routenplaner bbnavi',
     pointsOfInterest: 'Orte und Touren',
+    participationProject: {
+      home: 'Beteiligung',
+      index: 'Beteiligungen'
+    },
     search: 'Suche',
     service: 'Service',
     settings: 'Einstellungen',
@@ -1174,10 +1222,11 @@ export const texts = {
   search: {
     abort: 'Abbrechen',
     noResults: 'Keine Ergebnisse gefunden.',
-    placeholder: 'Suche nach Nachrichten, Veranstaltungen, Orten und Touren',
+    placeholder: 'Suche nach Nachrichten, Veranstaltungen, Orten, Touren und Beteiligungen',
     pleaseSearch: 'Bitte geben Sie einen Suchbegriff ein.',
     recordTypes: {
       eventRecord: 'Veranstaltungen',
+      genericItem: 'Weitere Inhalte',
       newsItem: 'Nachrichten',
       pointOfInterest: 'Orte',
       tour: 'Touren'

@@ -12,8 +12,17 @@ import {
   getGenericItemRootRouteName,
   getGenericItemSubtitle
 } from '../genericTypeHelper';
+import { removeHtml, trimNewLines } from '../htmlViewHelper';
 import { mainImageOfMediaContents } from '../imageHelper';
 import { momentFormatUtcToLocal } from '../momentHelper';
+import {
+  getParticipationProjectPreviewDate,
+  getParticipationProjectStatusColor,
+  getParticipationProjectStatusLabel,
+  normalizeParticipationProjectStatusPosition,
+  PARTICIPATION_PROJECT_STATUS_POSITION,
+  PARTICIPATION_PROJECT_STATUS_POSITION_PARAM
+} from '../participationProjectHelper';
 import { shareMessage } from '../shareHelper';
 import { subtitle } from '../textHelper';
 
@@ -30,6 +39,43 @@ const GENERIC_TYPES_WITH_DATES = [
   GenericType.Job,
   GenericType.Noticeboard
 ];
+
+const normalizeParticipationProjectText = (text) =>
+  trimNewLines(removeHtml(text || ''))
+    ?.replace(/\s+/g, ' ')
+    ?.trim();
+
+const getParticipationProjectSubtitle = (genericItem) =>
+  normalizeParticipationProjectText(genericItem.contentBlocks?.[0]?.body);
+
+const getParticipationProjectListPresentation = (genericItem, queryVariables) => {
+  if (genericItem.genericType !== GenericType.ParticipationProject) return;
+
+  const listSubtitle = getParticipationProjectSubtitle(genericItem);
+  const statusLabel = getParticipationProjectStatusLabel(genericItem);
+  const statusPosition = normalizeParticipationProjectStatusPosition(
+    queryVariables?.[PARTICIPATION_PROJECT_STATUS_POSITION_PARAM]
+  );
+  const accessibilityLabel = [
+    genericItem.title,
+    statusPosition === PARTICIPATION_PROJECT_STATUS_POSITION.REPLACE_TEASER
+      ? undefined
+      : listSubtitle,
+    statusLabel
+  ]
+    .filter(Boolean)
+    .map((value) => `(${value})`)
+    .join(' ');
+
+  return {
+    accessibilityLabel: `${accessibilityLabel} ${consts.a11yLabel.button}`,
+    overtitle: subtitle(getParticipationProjectPreviewDate(genericItem), genericItem.payload?.type),
+    statusColor: getParticipationProjectStatusColor(genericItem),
+    statusLabel,
+    statusPosition,
+    subtitle: listSubtitle
+  };
+};
 
 /* eslint-disable complexity */
 export const filterGenericItems = (item, queryVariables, filterTypes) => {
@@ -112,45 +158,56 @@ const parseGenericItems = (data, skipLastDivider, queryVariables, subQuery, filt
   );
   const isCarpool = subQuery?.params?.isCarpool ?? false;
 
-  return filteredData?.map((genericItem, index) => ({
-    id: genericItem.id,
-    categories: genericItem.categories,
-    overtitle:
-      genericItem.genericType !== GenericType.Deadline &&
-      subtitle(
-        (isCarpool && genericItem?.payload?.departureDate) ||
-          momentFormatUtcToLocal(genericItem.publicationDate || genericItem.createdAt),
-        getGenericItemSubtitle(genericItem)
-      ),
-    title: genericItem.title,
-    picture: {
-      url:
-        genericItem.contentBlocks?.[0]?.mediaContents?.length &&
-        _filter(
-          genericItem.contentBlocks[0].mediaContents,
-          (mediaContent) =>
-            mediaContent.contentType === 'image' || mediaContent.contentType === 'thumbnail'
-        )[0]?.sourceUrl?.url
-    },
-    routeName: ScreenName.Detail,
-    params: {
-      title: getGenericItemDetailTitle(
-        genericItem.genericType,
-        queryVariables,
-        genericItem?.categories?.[0]?.name
-      ),
-      subQuery,
-      suffix: genericItem.genericType,
-      query: QUERY_TYPES.GENERIC_ITEM,
-      queryVariables: { id: `${genericItem.id}` },
-      rootRouteName: getGenericItemRootRouteName(genericItem.genericType),
-      shareContent: {
-        message: shareMessage(genericItem, QUERY_TYPES.GENERIC_ITEM)
+  return filteredData?.map((genericItem, index) => {
+    const isParticipationProject = genericItem.genericType === GenericType.ParticipationProject;
+    const participationListPresentation = getParticipationProjectListPresentation(
+      genericItem,
+      queryVariables
+    );
+
+    return {
+      id: genericItem.id,
+      categories: genericItem.categories,
+      overtitle:
+        !isParticipationProject &&
+        genericItem.genericType !== GenericType.Deadline &&
+        subtitle(
+          (isCarpool && genericItem?.payload?.departureDate) ||
+            momentFormatUtcToLocal(genericItem.publicationDate || genericItem.createdAt),
+          getGenericItemSubtitle(genericItem)
+        ),
+      title: genericItem.title,
+      picture: {
+        url: isParticipationProject
+          ? mainImageOfMediaContents(genericItem.mediaContents)
+          : genericItem.contentBlocks?.[0]?.mediaContents?.length &&
+            _filter(
+              genericItem.contentBlocks[0].mediaContents,
+              (mediaContent) =>
+                mediaContent.contentType === 'image' || mediaContent.contentType === 'thumbnail'
+            )[0]?.sourceUrl?.url
       },
-      details: genericItem
-    },
-    bottomDivider: !skipLastDivider || index !== filteredData.length - 1
-  }));
+      routeName: ScreenName.Detail,
+      params: {
+        title: getGenericItemDetailTitle(
+          genericItem.genericType,
+          queryVariables,
+          genericItem?.categories?.[0]?.name
+        ),
+        subQuery,
+        suffix: genericItem.genericType,
+        query: QUERY_TYPES.GENERIC_ITEM,
+        queryVariables: { id: `${genericItem.id}` },
+        rootRouteName: getGenericItemRootRouteName(genericItem.genericType),
+        shareContent: {
+          message: shareMessage(genericItem, QUERY_TYPES.GENERIC_ITEM)
+        },
+        details: genericItem
+      },
+      bottomDivider: !skipLastDivider || index !== filteredData.length - 1,
+      ...participationListPresentation
+    };
+  });
 };
 
 const parseNewsItems = (data, skipLastDivider, titleDetail, bookmarkable, dateTimeFormat) => {

@@ -1,3 +1,32 @@
+import _camelCase from 'lodash/camelCase';
+
+import { QUERY_TYPES } from '../queries/types';
+
+export const DEFAULT_SEARCH_FILTER = [
+  'news_item',
+  'event_record',
+  'point_of_interest',
+  'tour',
+  'generic_item'
+];
+
+export const pluralizeSearchRecordType = (recordType) => {
+  switch (_camelCase(recordType)) {
+    case QUERY_TYPES.NEWS_ITEM:
+      return QUERY_TYPES.NEWS_ITEMS;
+    case QUERY_TYPES.EVENT_RECORD:
+      return QUERY_TYPES.EVENT_RECORDS;
+    case QUERY_TYPES.POINT_OF_INTEREST:
+      return QUERY_TYPES.POINTS_OF_INTEREST;
+    case QUERY_TYPES.TOUR:
+      return QUERY_TYPES.TOURS;
+    case QUERY_TYPES.GENERIC_ITEM:
+      return QUERY_TYPES.GENERIC_ITEMS;
+    default:
+      return recordType;
+  }
+};
+
 /**
  * Search all results with a given config.
  *

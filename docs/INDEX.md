@@ -65,3 +65,7 @@ For detailed documentation see [the auth docs](./AUTH.md).
 ## Augmented Reality
 
 For detailed documentation see [the ar docs](./AR.md).
+
+## Participation Projects
+
+For module setup and static content examples see [the Participation Project docs](./PARTICIPATION_PROJECT.md).

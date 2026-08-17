@@ -39,6 +39,7 @@ export const SectionHeader = ({
         } `}
         big={big}
         center={center}
+        onPress={onPress}
         small={small}
         uppercase={uppercase}
       >

@@ -19,7 +19,7 @@ import { WasteCollectionListItem } from '../components/waste/WasteCollectionList
 import { consts, normalize, texts } from '../config';
 import { momentFormat } from '../helpers';
 import { QUERY_TYPES } from '../queries';
-import { ScreenName } from '../types';
+import { GenericType, ScreenName } from '../types';
 
 const { LIST_TYPES, ROOT_ROUTE_NAMES } = consts;
 
@@ -310,6 +310,27 @@ export const useRenderItem = (query, navigation, options = {}) => {
         // `SectionHeader` list item for `Noticeboard`
         if (query === QUERY_TYPES.GENERIC_ITEMS && !!item.component) {
           return item.component;
+        }
+
+        if (
+          query === QUERY_TYPES.GENERIC_ITEMS &&
+          options.queryVariables?.genericType === GenericType.ParticipationProject
+        ) {
+          return (
+            <TextListItem
+              item={{
+                ...item,
+                bottomDivider: calculateBottomDivider(item, index, section)
+              }}
+              {...{
+                leftImage: true,
+                listsWithoutArrows,
+                subtitleNumberOfLines: options.queryVariables?.subtitleNumberOfLines,
+                titleNumberOfLines: options.queryVariables?.titleNumberOfLines,
+                navigation
+              }}
+            />
+          );
         }
 
         return (

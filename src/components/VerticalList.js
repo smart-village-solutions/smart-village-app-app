@@ -41,7 +41,6 @@ export const VerticalList = ({
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { switchBetweenListAndMap = SWITCH_BETWEEN_LIST_AND_MAP.TOP_FILTER } = settings;
-  const isPartOfIndexScreen = !!query && !!queryVariables?.isPartOfIndexScreen;
   const flatListRef = useRef();
   const [listEndReached, setListEndReached] = useState(false);
 
@@ -105,8 +104,7 @@ export const VerticalList = ({
                     })
                   }
                 />
-                {isPartOfIndexScreen &&
-                  query == QUERY_TYPES.POINTS_OF_INTEREST &&
+                {(query == QUERY_TYPES.POINTS_OF_INTEREST || query == QUERY_TYPES.GENERIC_ITEMS) &&
                   switchBetweenListAndMap == SWITCH_BETWEEN_LIST_AND_MAP.BOTTOM_FLOATING_BUTTON && (
                     <View style={styles.spacer} />
                   )}
@@ -122,8 +120,7 @@ export const VerticalList = ({
             <ActivityIndicator color={colors.refreshControl} style={styles.loadingIndicator} />
           );
         } else if (
-          isPartOfIndexScreen &&
-          query == QUERY_TYPES.POINTS_OF_INTEREST &&
+          (query == QUERY_TYPES.POINTS_OF_INTEREST || query == QUERY_TYPES.GENERIC_ITEMS) &&
           switchBetweenListAndMap == SWITCH_BETWEEN_LIST_AND_MAP.BOTTOM_FLOATING_BUTTON
         ) {
           return <View style={styles.spacer} />;
@@ -140,7 +137,7 @@ export const VerticalList = ({
       keyboardShouldPersistTaps="handled"
       contentContainerStyle={styles.contentContainerStyle}
       stickyHeaderIndices={stickyHeaderIndices}
-      style={[styles.container, isPartOfIndexScreen && styles.indexScreenContainer, containerStyle]}
+      style={[styles.container, containerStyle]}
     />
   );
 };
@@ -155,9 +152,6 @@ const styles = StyleSheet.create({
   },
   loadingIndicator: {
     margin: normalize(14)
-  },
-  indexScreenContainer: {
-    paddingHorizontal: normalize(8)
   },
   spacer: {
     height: normalize(70)

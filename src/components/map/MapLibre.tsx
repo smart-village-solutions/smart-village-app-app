@@ -220,6 +220,7 @@ type Props = {
     };
   }) => { isLocationSelectable: boolean };
   onMarkerPress?: (arg0?: string) => void;
+  onMapReady?: () => void;
   onMaximizeButtonPress?: () => void;
   onMyLocationButtonPress?: ({ isFullScreenMap }: { isFullScreenMap?: boolean }) => void;
   selectedMarker?: string;
@@ -252,6 +253,7 @@ export const MapLibre = ({
   mapStyle,
   minZoom = 5,
   onMapPress,
+  onMapReady,
   onMarkerPress,
   onMaximizeButtonPress,
   onMyLocationButtonPress,
@@ -334,8 +336,9 @@ export const MapLibre = ({
   const shapeSourceRef = useRef<GeoJSONSourceRef>(null);
   const mapPressTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const hasInitialFitRef = useRef(!!initialBounds);
-  // Ensures the distance-based initial zoom is applied only once per mount.
-  const hasAppliedInitialZoomRef = useRef(false);
+  // Bounds already include the required zoom; applying the configured zoom afterwards
+  // would cause the camera to jump once the map finishes loading.
+  const hasAppliedInitialZoomRef = useRef(!!initialBounds);
   const { bottom: safeAreaBottom } = useSafeAreaInsets();
   const bottomTabBarHeight = useSafeBottomTabBarHeight();
 
@@ -787,6 +790,7 @@ export const MapLibre = ({
         ref={mapRef}
         style={[styles.map, mapStyle]}
         onDidFinishLoadingMap={() => setMapReady(true)}
+        onDidFinishRenderingMapFully={() => onMapReady?.()}
         onPress={handleMapPress}
         {...interactivity}
       >
