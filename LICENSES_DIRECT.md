@@ -538,6 +538,16 @@
     - publisher: 650 Industries, Inc.
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-sharing
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-sharing/README.md
+- **[expo-speech@14.0.8](https://github.com/expo/expo)**
+    - name: expo-speech
+    - version: 14.0.8
+    - description: Provides text-to-speech functionality.
+    - copyright: 
+    - licenses: MIT
+    - repository: https://github.com/expo/expo
+    - publisher: 650 Industries, Inc.
+    - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-speech
+    - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-speech/README.md
 - **[expo-splash-screen@31.0.13](https://github.com/expo/expo)**
     - name: expo-splash-screen
     - version: 31.0.13
@@ -848,6 +858,16 @@
     - publisher: Joel Arvidsson
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-collapsible
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-collapsible/LICENSE
+- **[react-native-color-matrix-image-filters@8.0.2](https://github.com/iyegoroff/react-native-color-matrix-image-filters)**
+    - name: react-native-color-matrix-image-filters
+    - version: 8.0.2
+    - description: Various color matrix based image filters for iOS & Android
+    - copyright: Copyright (c) 2018-2022 iyegoroff
+    - licenses: MIT
+    - repository: https://github.com/iyegoroff/react-native-color-matrix-image-filters
+    - publisher: iyegoroff
+    - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-color-matrix-image-filters
+    - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-color-matrix-image-filters/LICENSE
 - **[react-native-elements@3.4.3](https://github.com/react-native-elements/react-native-elements)**
     - name: react-native-elements
     - version: 3.4.3

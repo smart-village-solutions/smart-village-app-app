@@ -10,7 +10,7 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
 
 | License | Packages count |
 |---------|---------------:|
-| [MIT](https://spdx.org/licenses/MIT.html) | 977 |
+| [MIT](https://spdx.org/licenses/MIT.html) | 983 |
 | [ISC](https://spdx.org/licenses/ISC.html) | 73 |
 | [BSD-2-Clause](https://spdx.org/licenses/BSD-2-Clause.html) | 24 |
 | [BSD-3-Clause](https://spdx.org/licenses/BSD-3-Clause.html) | 23 |
@@ -4371,6 +4371,17 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "3.9.0",
     "description": "Get details about the current Continuous Integration environment"
   },
+  "clamp@1.0.1": {
+    "licenses": "MIT",
+    "repository": "https://github.com/hughsk/clamp",
+    "publisher": "Hugh Kennedy",
+    "email": "hughskennedy@gmail.com",
+    "licenseText": "## The MIT License (MIT) ##\n\nCopyright (c) 2013 Hugh Kennedy\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.",
+    "copyright": "Copyright (c) 2013 Hugh Kennedy",
+    "name": "clamp",
+    "version": "1.0.1",
+    "description": "Clamp a value between two other values"
+  },
   "cli-cursor@2.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/cli-cursor",
@@ -4575,6 +4586,17 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "1.8.0",
     "description": "Node.js compression middleware",
     "publisher": ""
+  },
+  "concat-color-matrices@1.0.0": {
+    "licenses": "MIT",
+    "repository": "https://github.com/iyegoroff/concat-color-matrices",
+    "publisher": "iyegoroff",
+    "email": "iegoroff@gmail.com",
+    "licenseText": "MIT License\n\nCopyright (c) 2018 iyegoroff\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
+    "copyright": "Copyright (c) 2018 iyegoroff",
+    "name": "concat-color-matrices",
+    "version": "1.0.0",
+    "description": "Functions for combining color matrices"
   },
   "concat-map@0.0.1": {
     "licenses": "MIT",
@@ -5939,6 +5961,16 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "expo-sharing",
     "version": "14.0.8",
     "description": "Provides a way to share files directly with other compatible applications.",
+    "copyright": ""
+  },
+  "expo-speech@14.0.8": {
+    "licenses": "MIT",
+    "repository": "https://github.com/expo/expo",
+    "publisher": "650 Industries, Inc.",
+    "licenseText": "<p>\n  <a href=\"https://docs.expo.dev/versions/latest/sdk/speech/\">\n    <img\n      src=\"../../.github/resources/expo-speech.svg\"\n      alt=\"expo-speech\"\n      height=\"64\" />\n  </a>\n</p>\n\nProvides text-to-speech functionality.\n\n# API documentation\n\n- [Documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/speech/)\n- [Documentation for the main branch](https://docs.expo.dev/versions/unversioned/sdk/speech/)\n\n# Installation in managed Expo projects\n\nFor [managed](https://docs.expo.dev/archive/managed-vs-bare/) Expo projects, please follow the installation instructions in the [API documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/speech/).\n\n# Installation in bare React Native projects\n\nFor bare React Native projects, you must ensure that you have [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/) before continuing.\n\n### Add the package to your npm dependencies\n\n```\nnpx expo install expo-speech\n```\n\n### Configure for Android\n\nNo additional set up necessary.\n\n### Configure for iOS\n\nRun `npx pod-install` after installing the npm package.\n\n# Contributing\n\nContributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).",
+    "name": "expo-speech",
+    "version": "14.0.8",
+    "description": "Provides text-to-speech functionality.",
     "copyright": ""
   },
   "expo-splash-screen@31.0.13": {
@@ -9465,6 +9497,17 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "1.6.1",
     "description": "Animated collapsible component for React Native using the Animated API. Good for accordions, toggles etc"
   },
+  "react-native-color-matrix-image-filters@8.0.2": {
+    "licenses": "MIT",
+    "repository": "https://github.com/iyegoroff/react-native-color-matrix-image-filters",
+    "publisher": "iyegoroff",
+    "email": "iegoroff@gmail.com",
+    "licenseText": "MIT License\n\nCopyright (c) 2018-2022 iyegoroff\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
+    "copyright": "Copyright (c) 2018-2022 iyegoroff",
+    "name": "react-native-color-matrix-image-filters",
+    "version": "8.0.2",
+    "description": "Various color matrix based image filters for iOS & Android"
+  },
   "react-native-communications@2.2.1": {
     "licenses": "MIT",
     "repository": "https://github.com/anarchicknight/react-native-communications",
@@ -10194,6 +10237,17 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "rimraf",
     "version": "3.0.2",
     "description": "A deep deletion module for node (like `rm -rf`)"
+  },
+  "rn-color-matrices@4.1.0": {
+    "licenses": "MIT",
+    "repository": "https://github.com/iyegoroff/rn-color-matrices",
+    "publisher": "iyegoroff",
+    "email": "iegoroff@gmail.com",
+    "licenseText": "MIT License\n\nCopyright (c) 2018 iyegoroff\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
+    "copyright": "Copyright (c) 2018 iyegoroff",
+    "name": "rn-color-matrices",
+    "version": "4.1.0",
+    "description": "[![npm version](https://badge.fury.io/js/rn-color-matrices.svg?t=1495378566925)](https://badge.fury.io/js/rn-color-matrices) [![Dependency Status](https://david-dm.org/iyegoroff/rn-color-matrices.svg?t=1495378566925)](https://david-dm.org/iyegoroff/rn-color-matrices) [![devDependencies Status](https://david-dm.org/iyegoroff/rn-color-matrices/dev-status.svg)](https://david-dm.org/iyegoroff/rn-color-matrices?type=dev) [![npm](https://img.shields.io/npm/l/express.svg?t=1495378566925)](https://www.npmjs.com/package/rn-color-matrices)"
   },
   "rtl-detect@1.1.2": {
     "licenses": "BSD-3-Clause",
@@ -11201,6 +11255,17 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "0.0.5",
     "description": "Best type safe way to check null or undefined in typescript",
     "copyright": ""
+  },
+  "ts-tiny-invariant@2.0.5": {
+    "licenses": "MIT",
+    "repository": "https://github.com/iyegoroff/ts-tiny-invariant",
+    "publisher": "iyegoroff",
+    "email": "iegoroff@gmail.com",
+    "licenseText": "MIT License\n\nCopyright (c) 2019-2022 iyegoroff\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
+    "copyright": "Copyright (c) 2019-2022 iyegoroff",
+    "name": "ts-tiny-invariant",
+    "version": "2.0.5",
+    "description": "Stricter version of tiny-invariant"
   },
   "ts-toolbelt@6.15.5": {
     "licenses": "Apache-2.0",
