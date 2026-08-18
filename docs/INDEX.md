@@ -80,4 +80,9 @@ For detailed documentation see [the accessibility settings docs](./accessibility
 
 ## Version module history
 
-For an English overview of modules and major capabilities introduced or developed in every release, see [the version module history](./VERSION_MODULE_HISTORY.md).
+Overview of modules and major capabilities introduced or developed in every release, see [the version module history](./VERSION_MODULE_HISTORY.md).
+
+## Version Migrations
+
+For the complete app, Main-Server and remote configuration checklist see the
+[v4.3.0 to v5.0.0 migration guide](./MIGRATION_V4.3.0_TO_V5.0.0.md).
