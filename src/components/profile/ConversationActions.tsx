@@ -1,14 +1,19 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useMutation } from 'react-apollo';
-import { ActivityIndicator, Alert, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, TouchableOpacity, View } from 'react-native';
 
-import { colors, consts, Icon, texts } from '../../config';
+import { consts, Icon, texts } from '../../config';
 import { storageHelper } from '../../helpers';
 import { DELETE_CONVERSATION, GET_CONVERSATIONS } from '../../queries/profile';
 import { SettingsContext } from '../../SettingsProvider';
 import { useMessagesContext } from '../../UnreadMessagesProvider';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 export const ConversationActions = ({ conversationId }: { conversationId: string | number }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const { conversationSettings, setConversationSettings } = useContext(SettingsContext);
   const { refetch: refetchUnreadMessages } = useMessagesContext();
   const [isPinned, setIsPinned] = useState(
@@ -88,7 +93,7 @@ export const ConversationActions = ({ conversationId }: { conversationId: string
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   container: {
     gap: 8
   }

@@ -89,7 +89,10 @@ export const ProfileResetPasswordScreen = ({ navigation }: StackScreenProps<any>
 
             <RegularText />
 
-            <TouchableOpacity onPress={() => navigation.goBack()}>
+            <TouchableOpacity
+              accessibilityLabel={texts.accessibilityLabels.actions.back}
+              onPress={() => navigation.goBack()}
+            >
               <RegularText primary center underline>
                 {texts.profile.back}
               </RegularText>

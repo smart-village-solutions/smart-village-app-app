@@ -1,11 +1,12 @@
 import React, { useContext } from 'react';
-import { Alert, StyleSheet } from 'react-native';
+import { Alert } from 'react-native';
 
 import appJson from '../../app.json';
 import { AccessibilityContext } from '../AccessibilityProvider';
-import { colors, consts, device } from '../config';
+import { consts, device, texts } from '../config';
 import { hasSueApiConfiguration } from '../helpers';
 import { SettingsContext } from '../SettingsProvider';
+import { useThemeStyles } from '../hooks/useThemeStyles';
 
 import { RegularText } from './Text.js';
 import { Touchable } from './Touchable';
@@ -14,6 +15,7 @@ import { WrapperVertical } from './Wrapper.js';
 const { a11yLabel } = consts;
 
 export const VersionNumber = () => {
+  const styles = useThemeStyles(createStyles);
   const { isReduceTransparencyEnabled } = useContext(AccessibilityContext);
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
@@ -26,6 +28,7 @@ export const VersionNumber = () => {
     <WrapperVertical>
       <Touchable
         activeOpacity={0.8}
+        accessibilityLabel={texts.accessibilityLabels.actions.showVersionInfo}
         onPress={() => {
           Alert.alert(
             a11yLabel.versionInfos,
@@ -55,7 +58,7 @@ export const VersionNumber = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   accessibilityColor: {
     color: colors.darkText
   }

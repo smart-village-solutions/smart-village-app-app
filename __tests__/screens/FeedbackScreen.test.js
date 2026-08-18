@@ -106,7 +106,7 @@ jest.mock('../../src/config', () => ({
   }
 }));
 
-jest.mock('../../src/helpers', () => ({
+jest.mock('../../src/helpers/appUserContentHelper', () => ({
   collectDeviceInfo: (...args) => mockCollectDeviceInfo(...args)
 }));
 

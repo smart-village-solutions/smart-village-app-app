@@ -10,7 +10,12 @@ export const FlagMemberFooter = ({ onPress }: { onPress: () => void }) => {
 
   return (
     <View style={styles.container}>
-      <Pressable onPress={onPress} style={styles.button}>
+      <Pressable
+        accessibilityLabel={texts.accessibilityLabels.actions.reportProfile}
+        accessibilityRole="button"
+        onPress={onPress}
+        style={styles.button}
+      >
         <BoldText underline placeholder={!isReduceTransparencyEnabled}>
           {texts.profile.flagProfile.toUpperCase()}
         </BoldText>

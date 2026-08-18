@@ -2,12 +2,17 @@ import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { colors, Icon, texts } from '../config';
+import { Icon, texts } from '../config';
 import { SettingsContext } from '../SettingsProvider';
+import { useThemeStyles } from '../hooks/useThemeStyles';
+import { useTheme } from '../hooks/useTheme';
 
 import { Button } from './Button';
 
 export const IndexMapSwitch = ({ filter, setFilter }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const { globalSettings } = useContext(SettingsContext);
   const { navigation: navigationType } = globalSettings;
 
@@ -41,7 +46,7 @@ export const IndexMapSwitch = ({ filter, setFilter }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   floatingButtonContainer: {
     alignSelf: 'center',
     position: 'absolute'

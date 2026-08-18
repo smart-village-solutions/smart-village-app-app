@@ -1,11 +1,11 @@
 import _filter from 'lodash/filter';
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, View } from 'react-native';
 import { WebView } from 'react-native-webview';
 
 import { SettingsContext } from '../../SettingsProvider';
-import { colors, consts, normalize, texts } from '../../config';
+import { consts, normalize, texts } from '../../config';
 import { isTodayOrLater, matomoTrackingString, openLink, trimNewLines } from '../../helpers';
 import { useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
 import { Button } from '../Button';
@@ -18,6 +18,8 @@ import { SectionHeader } from '../SectionHeader';
 import { HeadlineText } from '../Text';
 import { Wrapper, WrapperHorizontal, WrapperVertical } from '../Wrapper';
 import { InfoCard } from '../infoCard';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 import { OpeningTimesCard } from './OpeningTimesCard';
 import { OperatingCompany } from './OperatingCompany';
@@ -37,7 +39,10 @@ const { MATOMO_TRACKING } = consts;
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
-export const EventRecord = ({ data, route }) => {
+export const EventRecord = ({ data, readAloudControls, route }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { eventDetail = {} } = settings;
@@ -139,7 +144,7 @@ export const EventRecord = ({ data, route }) => {
         <SectionHeader title={texts.eventRecord.details} />
       )}
 
-      <Wrapper>
+      <Wrapper noPaddingBottom>
         <InfoCard
           addresses={addresses}
           contacts={contacts}
@@ -147,6 +152,8 @@ export const EventRecord = ({ data, route }) => {
           webUrls={webUrlsSettings?.displayOnlySummary === 'true' ? [] : webUrls}
         />
       </Wrapper>
+
+      {readAloudControls}
 
       {!!eventDates?.length && (
         <WrapperVertical>
@@ -204,11 +211,12 @@ export const EventRecord = ({ data, route }) => {
 };
 /* eslint-enable complexity */
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   iframeWebView: {
     height: normalize(210),
     width: '100%'
   },
+
   noPaddingTop: {
     paddingTop: 0
   }
@@ -217,5 +225,6 @@ const styles = StyleSheet.create({
 EventRecord.propTypes = {
   data: PropTypes.object.isRequired,
   navigation: PropTypes.object,
+  readAloudControls: PropTypes.node,
   route: PropTypes.object.isRequired
 };

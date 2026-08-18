@@ -2,10 +2,12 @@ import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { useMutation } from 'react-apollo';
 import { useForm } from 'react-hook-form';
-import { Alert, StyleSheet, TouchableOpacity, View, Keyboard } from 'react-native';
+import { Alert, TouchableOpacity, View, Keyboard } from 'react-native';
 
-import { colors, Icon, normalize, texts } from '../../../config';
+import { Icon, normalize, texts } from '../../../config';
 import { ConsulClient } from '../../../ConsulClient';
+import { useTheme } from '../../../hooks/useTheme';
+import { useThemeStyles } from '../../../hooks/useThemeStyles';
 import {
   ADD_REPLY_TO_COMMENT,
   CAST_VOTE_ON_COMMENT,
@@ -36,6 +38,8 @@ const deleteCommentAlert = (onDelete) =>
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
 export const ConsulCommentListItem = ({ commentItem, refetch, replyList, navigation }) => {
+  const { colors } = useTheme();
+  const styles = useThemeStyles(createStyles);
   const [isLoading, setIsLoading] = useState(false);
   const [showReply, setShowReply] = useState(false);
   const [showResponse, setShowResponse] = useState(false);
@@ -129,7 +133,10 @@ export const ConsulCommentListItem = ({ commentItem, refetch, replyList, navigat
           ) : null}
           <>
             {responses && responses.length > 0 ? (
-              <Touchable onPress={() => setShowResponse(!showResponse)}>
+              <Touchable
+                accessibilityLabel={texts.accessibilityLabels.actions.showAnswers}
+                onPress={() => setShowResponse(!showResponse)}
+              >
                 <RegularText primary smallest>
                   {responses.length}{' '}
                   {responses.length > 1 ? texts.consul.responses : texts.consul.response}
@@ -145,7 +152,10 @@ export const ConsulCommentListItem = ({ commentItem, refetch, replyList, navigat
 
           {commentUserId === userId && (
             <>
-              <Touchable onPress={() => deleteCommentAlert(onDelete)}>
+              <Touchable
+                accessibilityLabel={texts.accessibilityLabels.actions.deleteComment}
+                onPress={() => deleteCommentAlert(onDelete)}
+              >
                 <View style={styles.deleteButton}>
                   <Icon.Trash size={normalize(12)} color={colors.error} />
                   <RegularText error smallest>
@@ -158,7 +168,10 @@ export const ConsulCommentListItem = ({ commentItem, refetch, replyList, navigat
             </>
           )}
 
-          <Touchable onPress={() => setShowReply(!showReply)}>
+          <Touchable
+            accessibilityLabel={texts.accessibilityLabels.actions.answers}
+            onPress={() => setShowReply(!showReply)}
+          >
             <RegularText primary smallest>
               {texts.consul.answer}
             </RegularText>
@@ -227,6 +240,7 @@ export const ConsulCommentListItem = ({ commentItem, refetch, replyList, navigat
             chat
           />
           <TouchableOpacity
+            accessibilityLabel={texts.accessibilityLabels.actions.sendComment}
             onPress={handleSubmit(onSubmit)}
             style={styles.button}
             disabled={isLoading}
@@ -241,8 +255,15 @@ export const ConsulCommentListItem = ({ commentItem, refetch, replyList, navigat
 /* eslint-enable complexity */
 
 const LikeDissLikeIcon = ({ cachedVotesUp, cachedVotesDown, like, disslike, onPress, color }) => {
+  const styles = useThemeStyles(createStyles);
+
   return (
-    <Touchable onPress={onPress}>
+    <Touchable
+      accessibilityLabel={
+        like ? texts.accessibilityLabels.actions.unlike : texts.accessibilityLabels.actions.like
+      }
+      onPress={onPress}
+    >
       <View style={styles.iconButton}>
         <Icon.Like
           color={color}
@@ -259,7 +280,7 @@ const Space = () => {
   return <RegularText smallest> | </RegularText>;
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   bottomContainer: {
     borderBottomWidth: 0.5,
     borderColor: colors.darkText,

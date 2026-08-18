@@ -3,35 +3,47 @@ import React, { memo, useEffect, useRef } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { SearchBar } from 'react-native-elements';
 
-import { colors, consts, Icon, normalize, texts } from '../../config';
+import { consts, Icon, normalize, texts } from '../../config';
 import { Label } from '../Label';
 import { WrapperHorizontal } from '../Wrapper';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 const { a11yLabel } = consts;
 
-const SearchIcon = () => (
-  <Icon.Search
-    accessibilityLabel={`${texts.accessibilityLabels.searchInputIcons.search} ${a11yLabel.button}`}
-    color={colors.primary}
-    size={normalize(28)}
-  />
-);
+const SearchIcon = () => {
+  const { colors } = useTheme();
 
-const ClearIcon = ({ onPress }) => (
-  <TouchableOpacity
-    accessibilityLabel={`${texts.accessibilityLabels.searchInputIcons.delete} ${a11yLabel.button}`}
-    activeOpacity={1}
-    onPress={onPress}
-  >
-    <Icon.Close color={colors.primary} size={normalize(24)} />
-  </TouchableOpacity>
-);
+  return (
+    <Icon.Search
+      accessibilityLabel={`${texts.accessibilityLabels.searchInputIcons.search} ${a11yLabel.button}`}
+      color={colors.primary}
+      size={normalize(28)}
+    />
+  );
+};
+
+const ClearIcon = ({ onPress }) => {
+  const { colors } = useTheme();
+
+  return (
+    <TouchableOpacity
+      accessibilityLabel={`${texts.accessibilityLabels.searchInputIcons.delete} ${a11yLabel.button}`}
+      activeOpacity={1}
+      onPress={onPress}
+    >
+      <Icon.Close color={colors.primary} size={normalize(24)} />
+    </TouchableOpacity>
+  );
+};
 
 ClearIcon.propTypes = {
   onPress: PropTypes.func.isRequired
 };
 
 export const TextSearch = memo(({ blurSignal = 0, data, setData, label, placeholder }) => {
+  const { colors } = useTheme();
+  const styles = useThemeStyles(createStyles);
   const inputRef = useRef(null);
   const clearSearch = () => setData('');
 
@@ -68,7 +80,7 @@ export const TextSearch = memo(({ blurSignal = 0, data, setData, label, placehol
   );
 });
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   containerStyle: {
     backgroundColor: colors.backgroundRgba,
     borderColor: colors.borderRgba,
@@ -79,22 +91,27 @@ const styles = StyleSheet.create({
     borderTopColor: colors.borderRgba,
     padding: normalize(6)
   },
+
   inputStyle: {
     backgroundColor: colors.transparent,
     color: colors.darkText,
     fontFamily: 'regular',
     fontSize: normalize(16)
   },
+
   marginLeft: {
     marginLeft: normalize(8)
   },
+
   inputContainerStyle: {
     backgroundColor: colors.transparent
   },
+
   leftIconContainerStyle: {
     backgroundColor: colors.transparent,
     marginLeft: normalize(6)
   },
+
   rightIconContainerStyle: {
     backgroundColor: colors.transparent
   }

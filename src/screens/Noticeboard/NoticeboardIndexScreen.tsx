@@ -2,7 +2,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useQuery } from 'react-apollo';
-import { ActivityIndicator, RefreshControl, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, RefreshControl, View } from 'react-native';
 import { Divider } from 'react-native-elements';
 import { useQuery as RQuseQuery } from 'react-query';
 
@@ -19,7 +19,7 @@ import {
   Wrapper,
   WrapperHorizontal
 } from '../../components';
-import { colors, Icon, texts } from '../../config';
+import { Icon, texts } from '../../config';
 import { ConfigurationsContext } from '../../ConfigurationsProvider';
 import {
   filterTypesHelper,
@@ -39,9 +39,14 @@ import { member } from '../../queries/profile';
 import { GenericType, ProfileMember } from '../../types';
 import { ListHeaderComponent } from '../NestedInfoScreen';
 import { ProfileUpdateScreen } from '../profile';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 /* eslint-disable complexity */
 export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<any>) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
   const [refreshing, setRefreshing] = useState(false);
@@ -354,7 +359,7 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
 };
 /* eslint-enable complexity */
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   divider: {
     backgroundColor: colors.placeholder
   }

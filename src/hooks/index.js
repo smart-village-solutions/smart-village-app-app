@@ -5,11 +5,15 @@ export * from './volunteer';
 
 export * from './apollo';
 export * from './appInfo';
+export * from './useAccessibilityPreferences';
 export * from './Bookmarks';
 export * from './bus';
 export * from './Chatbot';
 export * from './constructionSites';
 export * from './DetailRefresh';
+export * from './useDetailSpeech';
+export * from './useTheme';
+export * from './useThemeStyles';
 export * from './documentPicker';
 export * from './HomeRefresh';
 export * from './imagePicker';

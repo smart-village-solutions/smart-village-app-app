@@ -2,13 +2,14 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import styled from 'styled-components/native';
 
-import { colors, device, normalize } from '../../config';
+import { device, normalize } from '../../config';
+import { lightColors } from '../../config/colors';
 import { priceFormat } from '../../helpers';
 import { BoldText, RegularText } from '../Text';
 import { WrapperHorizontal, WrapperWrap } from '../Wrapper';
 
 const PriceBox = styled.View`
-  background-color: ${colors.lighterPrimary};
+  background-color: ${(props) => props.theme?.lighterPrimary || lightColors.lighterPrimary};
   flex-direction: column;
   margin-bottom: ${normalize(14)}px;
   padding: ${normalize(7)}px;

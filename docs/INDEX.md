@@ -44,9 +44,9 @@ The Smart Village App is an open source React Native application built with Expo
 
 To start the app simply use one of the following commands.
 
-* only packager and Expo dev tools: `npm start` or `yarn start`
-* iOS: `npm run ios` or `yarn ios`
-* Android: `npm run android` or `yarn android`
+- only packager and Expo dev tools: `npm start` or `yarn start`
+- iOS: `npm run ios` or `yarn ios`
+- Android: `npm run android` or `yarn android`
 
 ## Test the app
 
@@ -69,3 +69,7 @@ For detailed documentation see [the ar docs](./AR.md).
 ## Participation Projects
 
 For module setup and static content examples see [the Participation Project docs](./PARTICIPATION_PROJECT.md).
+
+## Accessibility
+
+For detailed documentation see [the accessibility settings docs](./accessibility-settings.md).

@@ -1,10 +1,13 @@
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import React, { useCallback, useContext } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import React, { useCallback, useContext, useMemo } from 'react';
+import { TouchableOpacity, View } from 'react-native';
 
-import { colors, consts, normalize, texts } from '../../config';
+import { AccessibilityContext } from '../../AccessibilityProvider';
+import { consts, normalize, texts } from '../../config';
 import { ConfigurationsContext } from '../../ConfigurationsProvider';
+import { DEFAULT_TILE_GRID_COLUMNS, resolveTileGridLayout } from '../../helpers/serviceTileLayout';
+import { umlautSwitcher } from '../../helpers/umlautSwitcher';
 import { usePersonalizedTiles } from '../../hooks';
 import { OrientationContext } from '../../OrientationProvider';
 import { SettingsContext } from '../../SettingsProvider';
@@ -13,34 +16,15 @@ import { DiagonalGradient } from '../DiagonalGradient';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { RegularText } from '../Text';
 import { WrapperWrap } from '../Wrapper';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 import { DraggableGrid } from './DraggableGrid';
 import { ServiceTile, TServiceTile } from './ServiceTile';
 
-const { MATOMO_TRACKING, UMLAUT_REGEX } = consts;
-const ITEMS_PER_ROW_PORTRAIT = 3;
-const ITEMS_PER_ROW_LANDSCAPE = 5;
+const { MATOMO_TRACKING } = consts;
 
-export const umlautSwitcher = (text: string) => {
-  if (!text) return;
-
-  const umlautReplacements = {
-    ü: 'ue',
-    ä: 'ae',
-    ö: 'oe',
-    Ü: 'UE',
-    Ä: 'AE',
-    Ö: 'OE',
-    ß: 'ss'
-  };
-
-  const replacedText = text
-    .replace(UMLAUT_REGEX, (match: string) => umlautReplacements[match])
-    ?.replace('​', '');
-
-  return replacedText;
-};
-
+/* eslint-disable complexity */
 export const Service = ({
   data,
   isEditMode,
@@ -52,8 +36,12 @@ export const Service = ({
   staticJsonName: string;
   hasDiagonalGradientBackground?: boolean;
 }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const { globalSettings } = useContext(SettingsContext);
   const { orientation } = useContext(OrientationContext);
+  const { textScaleMultiplier = 1 } = useContext(AccessibilityContext);
   const { settings = {} } = globalSettings;
   const { personalizedTiles: isPersonalizable = false, tileSizeFactor = 1 } = settings;
   const { appDesignSystem } = useContext(ConfigurationsContext);
@@ -65,6 +53,18 @@ export const Service = ({
     isEditMode,
     staticJsonName
   );
+  const tileGridLayout = useMemo(
+    () => resolveTileGridLayout(orientation as 'portrait' | 'landscape', textScaleMultiplier),
+    [orientation, textScaleMultiplier]
+  );
+  const defaultColumnsByOrientation =
+    orientation === 'portrait'
+      ? DEFAULT_TILE_GRID_COLUMNS.portrait
+      : DEFAULT_TILE_GRID_COLUMNS.landscape;
+  const itemsPerRow =
+    typeof tileGridLayout.columns === 'number' && tileGridLayout.columns > 0
+      ? tileGridLayout.columns
+      : defaultColumnsByOrientation;
 
   const onPress = useCallback(
     () =>
@@ -77,7 +77,7 @@ export const Service = ({
             isEditMode: true,
             hasDiagonalGradientBackground
           }),
-    [isEditMode, hasDiagonalGradientBackground]
+    [isEditMode, hasDiagonalGradientBackground, navigation, staticJsonName]
   );
   const renderItem = useCallback(
     (item: TServiceTile, index: number, shouldAddMargin?: boolean) => (
@@ -91,14 +91,29 @@ export const Service = ({
         onToggleVisibility={onToggleVisibility}
         serviceTiles={serviceTiles}
         shouldAddMargin={shouldAddMargin}
+        layoutColumns={itemsPerRow}
         tileSizeFactor={tileSizeFactor}
       />
     ),
-    [isEditMode, hasDiagonalGradientBackground, onToggleVisibility, serviceTiles, tileSizeFactor]
+    [
+      isEditMode,
+      hasDiagonalGradientBackground,
+      onToggleVisibility,
+      serviceTiles,
+      itemsPerRow,
+      tileSizeFactor
+    ]
   );
   const toggler = isPersonalizable && (
     <View style={styles.toggler}>
-      <TouchableOpacity onPress={onPress}>
+      <TouchableOpacity
+        accessibilityLabel={
+          isEditMode
+            ? texts.accessibilityLabels.actions.finishEditing
+            : texts.accessibilityLabels.actions.edit
+        }
+        onPress={onPress}
+      >
         <RegularText lightest={hasDiagonalGradientBackground} center small underline>
           {isEditMode ? texts.serviceTiles.done : texts.serviceTiles.edit}
         </RegularText>
@@ -109,8 +124,6 @@ export const Service = ({
   if (isLoading && isEditMode) return <LoadingSpinner loading />;
 
   const tilesCount = tiles?.length || 0;
-  const isPortrait = orientation === 'portrait';
-  const itemsPerRow = isPortrait ? ITEMS_PER_ROW_PORTRAIT : ITEMS_PER_ROW_LANDSCAPE;
 
   // Split the tiles array into subarrays (rows), each containing up to itemsPerRow elements.
   // This is done to render tiles row-by-row in a grid layout based on screen orientation.
@@ -124,7 +137,9 @@ export const Service = ({
       colors={!hasDiagonalGradientBackground ? [colors.surface, colors.surface] : undefined}
       style={styles.diagonalGradient}
     >
-      <DraggableGrid onDragEnd={onDragEnd}>{tiles?.map(renderItem)}</DraggableGrid>
+      <DraggableGrid columns={itemsPerRow} onDragEnd={onDragEnd}>
+        {tiles?.map(renderItem)}
+      </DraggableGrid>
       {toggler}
     </DiagonalGradient>
   ) : (
@@ -151,11 +166,13 @@ export const Service = ({
     </>
   );
 };
+/* eslint-enable complexity */
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   diagonalGradient: {
     flex: 1
   },
+
   toggler: {
     paddingVertical: normalize(14)
   }

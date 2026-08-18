@@ -83,8 +83,11 @@ export const FilterComponent = ({
               <>
                 <Label bold>{item.label}</Label>
                 <View style={styles.switchContainerStyle}>
-                  <RegularText small>{item.placeholder}</RegularText>
+                  <RegularText accessible={false} importantForAccessibility="no" small>
+                    {item.placeholder}
+                  </RegularText>
                   <Switch
+                    accessibilityLabel={item.placeholder}
                     switchValue={filters[item.name] || false}
                     toggleSwitch={(value) =>
                       setFilters(
@@ -105,8 +108,11 @@ export const FilterComponent = ({
               <>
                 <Label bold>{item.currentPosition.label}</Label>
                 <View style={styles.switchContainerStyle}>
-                  <RegularText small>{item.currentPosition.placeholder}</RegularText>
+                  <RegularText accessible={false} importantForAccessibility="no" small>
+                    {item.currentPosition.placeholder}
+                  </RegularText>
                   <Switch
+                    accessibilityLabel={item.currentPosition.placeholder}
                     switchValue={filters[item.name]?.currentPosition || false}
                     toggleSwitch={(value) => {
                       setSliderVisible(!value);

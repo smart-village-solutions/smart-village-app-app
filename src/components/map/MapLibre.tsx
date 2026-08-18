@@ -25,7 +25,6 @@ import {
   Platform,
   Pressable,
   StyleProp,
-  StyleSheet,
   TouchableOpacity,
   View,
   ViewStyle
@@ -33,9 +32,11 @@ import {
 import Animated from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { colors, consts, Icon, normalize, texts } from '../../config';
+import { consts, Icon, normalize, texts } from '../../config';
 import { getBounds, truncateText } from '../../helpers';
 import { useLocationSettings, useMapFeatureConfig } from '../../hooks';
+import { useTheme } from '../../hooks/useTheme';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
 import { SettingsContext } from '../../SettingsProvider';
 import { MapMarker } from '../../types';
 import { LoadingSpinner } from '../LoadingSpinner';
@@ -149,6 +150,7 @@ const splitLayerStyle = (
 };
 
 const CustomCallout = ({ feature }: { feature: GeoJSON.Feature }) => {
+  const styles = useThemeStyles(createStyles);
   const { properties = {} } = feature || {};
   const serviceName = truncateText(properties?.serviceName);
   const title = truncateText(properties?.title);
@@ -267,6 +269,8 @@ export const MapLibre = ({
   preserveZoomOnSelectedPosition = false,
   style
 }: Props) => {
+  const { colors } = useTheme();
+  const styles = useThemeStyles(createStyles);
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const locationService = (settings as { locationService?: unknown }).locationService;
@@ -585,18 +589,13 @@ export const MapLibre = ({
     if (mapPressTimeoutRef.current) clearTimeout(mapPressTimeoutRef.current);
 
     mapPressTimeoutRef.current = setTimeout(() => {
-      const mapPressPayload = { geometry: { coordinates: nativeEvent?.lngLat ?? [] } };
-
       if (setPinEnabled && nativeEvent?.lngLat) {
-        handleMapPressToSetNewPin(
-          mapPressPayload as {
-            geometry: { coordinates: [number, number] };
-            features?: unknown[];
-          }
-        );
+        handleMapPressToSetNewPin({
+          geometry: { coordinates: nativeEvent.lngLat as [number, number] }
+        });
       } else if (nativeEvent?.lngLat) {
         clearSelection(true, 'map-press-empty');
-        onMapPress?.(mapPressPayload as { geometry: { coordinates: number[] } });
+        onMapPress?.({ geometry: { coordinates: nativeEvent.lngLat } });
       } else if (!setPinEnabled) {
         clearSelection(true, 'map-press-empty');
         onMapPress?.({ geometry: { coordinates: [] } });
@@ -605,8 +604,9 @@ export const MapLibre = ({
     }, MAP_PRESS_DEBOUNCE);
   };
 
-  const selectedMarkerId =
-    selectedMarker || (selectedFeature?.properties?.id as string | undefined);
+  const selectedFeatureId =
+    selectedFeature?.properties?.id != null ? String(selectedFeature.properties.id) : undefined;
+  const selectedMarkerId = selectedMarker ?? selectedFeatureId;
 
   const clusteredLocations = useMemo(() => {
     if (!selectedMarkerId) return locations;
@@ -648,10 +648,7 @@ export const MapLibre = ({
     if (!feature) {
       clearSelection(true, 'shape-source-press-empty');
       if (nativeEvent?.lngLat) {
-        // Cast event geometry to match onMapPress expected type
-        onMapPress?.({
-          geometry: { coordinates: nativeEvent.lngLat }
-        } as { geometry: { coordinates: number[] } });
+        onMapPress?.({ geometry: { coordinates: nativeEvent.lngLat } });
       }
       return;
     }
@@ -959,6 +956,8 @@ export const MapLibre = ({
                 lngLat={selectedLocationFeature?.geometry?.coordinates as [number, number]}
               >
                 <Pressable
+                  accessibilityLabel={`Markierung schließen ${a11yLabel.button}`}
+                  accessibilityRole="button"
                   onPress={() => {
                     clearSelection(true, 'marker-view-press');
                   }}
@@ -986,6 +985,7 @@ export const MapLibre = ({
       {isMyLocationButtonVisible && showsUserLocation && (
         <TouchableOpacity
           accessibilityLabel={`${texts.components.map} ${a11yLabel.button}`}
+          accessibilityRole="button"
           onPress={() => {
             setFollowsUserLocation(true);
             onMyLocationButtonPress?.({});
@@ -1006,7 +1006,11 @@ export const MapLibre = ({
 
       {!!onMaximizeButtonPress && (
         <TouchableOpacity
-          accessibilityLabel={`Karte vergrößern ${a11yLabel.button}`}
+          accessibilityLabel={`${isFullscreenMap ? 'Karte verkleinern' : 'Karte vergrößern'} ${
+            a11yLabel.button
+          }`}
+          accessibilityRole="button"
+          accessibilityState={{ expanded: isFullscreenMap }}
           onPress={() => {
             setIsFullscreenMap((prev) => !prev);
             onMaximizeButtonPress();
@@ -1027,7 +1031,7 @@ export const MapLibre = ({
 };
 /* eslint-enable complexity */
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   buttons: {
     alignItems: 'center',
     height: '100%',

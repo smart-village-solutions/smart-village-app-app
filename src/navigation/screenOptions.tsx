@@ -1,20 +1,25 @@
 import { RouteProp } from '@react-navigation/core';
+import { NavigationProp } from '@react-navigation/native';
 import { CardStyleInterpolators, StackNavigationOptions } from '@react-navigation/stack';
 import React from 'react';
 import { StyleSheet } from 'react-native';
 
 import { DiagonalGradient, FavoritesHeader, HeaderLeft, HeaderRight } from '../components';
-import { colors, normalize } from '../config';
+import { normalize } from '../config';
+import { useTheme } from '../hooks/useTheme';
+
+type NavigationParams = Record<string, object | undefined>;
 
 type OptionProps = {
-  route: RouteProp<Record<string, any | undefined>, string>;
-  navigation: any;
+  route: RouteProp<NavigationParams, string>;
+  navigation: NavigationProp<NavigationParams>;
 };
 
 type OptionConfig = {
   cardStyleInterpolator?: StackNavigationOptions['cardStyleInterpolator'];
   noHeaderLeft?: boolean;
   withBookmark?: boolean;
+  withAccessibility?: boolean;
   withDelete?: boolean;
   withDrawer?: boolean;
   withFavorites?: boolean;
@@ -23,11 +28,18 @@ type OptionConfig = {
   withShare?: boolean;
 };
 
+const HeaderBackground = () => {
+  const { colors } = useTheme();
+
+  return <DiagonalGradient colors={[colors.surface, colors.surface]} />;
+};
+
 export const getScreenOptions =
   ({
     cardStyleInterpolator,
     noHeaderLeft = false,
     withBookmark,
+    withAccessibility = true,
     withDelete,
     withDrawer,
     withFavorites,
@@ -39,7 +51,7 @@ export const getScreenOptions =
     return {
       // header gradient:
       // https://stackoverflow.com/questions/44924323/react-navigation-gradient-color-for-header
-      headerBackground: () => <DiagonalGradient colors={[colors.surface, colors.surface]} />,
+      headerBackground: HeaderBackground,
       headerTitleStyle: styles.headerTitleStyle,
       headerTitleAlign: 'center',
       headerRight: () => (
@@ -48,6 +60,7 @@ export const getScreenOptions =
             navigation,
             route,
             shareContent: route.params?.shareContent,
+            withAccessibility,
             withBookmark,
             withDelete,
             withDrawer,
@@ -69,7 +82,6 @@ export const getScreenOptions =
 
 const styles = StyleSheet.create({
   headerTitleStyle: {
-    color: colors.darkText,
     fontFamily: 'condbold',
     fontSize: normalize(18),
     lineHeight: normalize(23)

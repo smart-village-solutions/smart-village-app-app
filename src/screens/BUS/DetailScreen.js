@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useContext, useRef, useState } from 'react';
-import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
+import { RefreshControl, ScrollView, View } from 'react-native';
 
 import { BackToTop, Button, SafeAreaViewFlex } from '../../components';
 import { Authority } from '../../components/BUS/Authority';
@@ -8,11 +8,13 @@ import { Persons } from '../../components/BUS/Persons';
 import { TextBlock } from '../../components/BUS/TextBlock';
 import { FeedbackFooter } from '../../components/FeedbackFooter';
 import { LoadingSpinner } from '../../components/LoadingSpinner';
-import { colors, consts, device, normalize } from '../../config';
+import { consts, device, normalize } from '../../config';
 import { matomoTrackingString, openLink } from '../../helpers';
 import { getBusTopActions, splitBusTextBlocks } from '../../helpers/busDetailHelper';
 import { useBusService, useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
 import { SettingsContext } from '../../SettingsProvider';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 const { MATOMO_TRACKING } = consts;
 
@@ -52,6 +54,9 @@ const renderForm = (headerTitle, form, rootRouteName) => {
 
 // eslint-disable-next-line complexity
 export const DetailScreen = ({ route }) => {
+  const { colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const scrollViewRef = useRef();
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
@@ -186,7 +191,7 @@ export const DetailScreen = ({ route }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   formContainer: {
     marginTop: normalize(21),
     paddingHorizontal: normalize(14)

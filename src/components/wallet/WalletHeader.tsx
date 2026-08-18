@@ -1,9 +1,11 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import 'react-native';
 
-import { colors, Icon, normalize } from '../../config';
+import { Icon, normalize } from '../../config';
 import { HeadlineText, RegularText } from '../Text';
 import { Wrapper, WrapperVertical } from '../Wrapper';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 type TWalletHeader = {
   iconBackgroundColor: string;
@@ -15,11 +17,15 @@ type TWalletHeader = {
 
 export const WalletHeader = ({
   description = '',
-  iconBackgroundColor = colors.lighterPrimaryRgba,
+  iconBackgroundColor: iconBackgroundColorProp,
   iconColor,
   iconName = 'credit-card',
   type = ''
 }: TWalletHeader) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
+  const iconBackgroundColor = iconBackgroundColorProp || colors.lighterPrimaryRgba;
   return (
     <>
       <Wrapper itemsCenter style={[styles.iconContainer, { backgroundColor: iconBackgroundColor }]}>
@@ -37,7 +43,7 @@ export const WalletHeader = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   iconContainer: {
     alignSelf: 'center',
     borderRadius: normalize(50)

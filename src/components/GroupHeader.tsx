@@ -1,11 +1,15 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
-import { StyleProp, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native';
+import { StyleProp, TouchableOpacity, ViewStyle } from 'react-native';
 
-import { colors, consts, Icon, normalize, texts } from '../config';
+import { consts, Icon, normalize, texts } from '../config';
 import { useVolunteerNavigation } from '../hooks';
 import { QUERY_TYPES } from '../queries';
 import { ScreenName } from '../types';
+import { useThemeStyles } from '../hooks/useThemeStyles';
+import { useTheme } from '../hooks/useTheme';
+
+import { HEADER_RIGHT_ICON_STROKE_WIDTH } from './headerIconConfig';
 
 const { a11yLabel, ROOT_ROUTE_NAMES } = consts;
 
@@ -15,6 +19,9 @@ type Props = {
 };
 
 export const GroupHeader = ({ navigation, style }: Props) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const volunteerNavigation = useVolunteerNavigation();
 
   return (
@@ -33,13 +40,19 @@ export const GroupHeader = ({ navigation, style }: Props) => {
       }
       accessibilityLabel={a11yLabel.groupIcon}
       accessibilityHint={a11yLabel.groupHint}
+      accessibilityRole="button"
     >
-      <Icon.Plus color={colors.darkText} style={[style, styles.icon]} size={normalize(28)} />
+      <Icon.Plus
+        color={colors.darkText}
+        style={[style, styles.icon]}
+        size={normalize(28)}
+        strokeWidth={HEADER_RIGHT_ICON_STROKE_WIDTH}
+      />
     </TouchableOpacity>
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   icon: {
     paddingHorizontal: normalize(6)
   }

@@ -11,7 +11,7 @@ import {
   SectionHeader,
   Wrapper
 } from '../components';
-import { texts } from '../config';
+import { consts, texts } from '../config';
 
 export const Scanner = ({
   isScanning,
@@ -71,7 +71,11 @@ export const Scanner = ({
   return (
     <SafeAreaViewFlex>
       {isScanning ? (
-        <CameraView onBarcodeScanned={handleBarCodeScanned} style={styles.scanner} />
+        <CameraView
+          accessibilityLabel={`${texts.voucher.scannerScreen.scannerTitle} ${consts.a11yLabel.cameraScanner}`}
+          onBarcodeScanned={handleBarCodeScanned}
+          style={styles.scanner}
+        />
       ) : null}
     </SafeAreaViewFlex>
   );

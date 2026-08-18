@@ -4,9 +4,10 @@ import { Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Icon } from 'react-native-elements';
 
 import { DiagonalGradient, SafeAreaViewFlex } from '../components';
-import { colors, consts } from '../config';
+import { consts } from '../config';
 import { getHeaderHeight, statusBarHeight } from '../helpers';
 import { OrientationContext } from '../OrientationProvider';
+import { useTheme } from '../hooks/useTheme';
 
 import DrawerNavigatorItems from './DrawerNavigatorItems';
 
@@ -15,6 +16,8 @@ import DrawerNavigatorItems from './DrawerNavigatorItems';
  *   https://github.com/react-navigation/drawer/blob/c5954d744f463e7f1c67941b8eb6914c0101e56c/src/navigators/createDrawerNavigator.tsx
  */
 export const CustomDrawerContentComponent = ({ navigation, drawerRoutes, state }) => {
+  const { colors } = useTheme();
+
   const { orientation } = useContext(OrientationContext);
   const a11yText = consts.a11yLabel;
 

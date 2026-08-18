@@ -1,7 +1,7 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import moment from 'moment';
 import React, { useCallback, useEffect, useState } from 'react';
-import { RefreshControl, ScrollView, StyleSheet } from 'react-native';
+import { RefreshControl, ScrollView } from 'react-native';
 import { useMutation } from 'react-query';
 
 import {
@@ -9,11 +9,12 @@ import {
   HtmlView,
   Image,
   LoadingSpinner,
+  ReadAloudContent,
   SafeAreaViewFlex,
   ServiceTiles,
   Wrapper
 } from '../../components';
-import { colors, texts } from '../../config';
+import { texts } from '../../config';
 import { addToStore, readFromStore } from '../../helpers';
 import {
   storeVoucherAuthToken,
@@ -23,12 +24,19 @@ import {
 } from '../../helpers/voucherHelper';
 import { useStaticContent, useVoucher } from '../../hooks';
 import { profileLogIn as logIn } from '../../queries/profile';
+import { useReadAloudScrollContentContainerStyle } from '../../ReadAloudAvailabilityProvider';
 import { ScreenName, VoucherLogin } from '../../types';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 const SAVED_DATE_OF_LAST_ACCOUNT_CHECK = 'savedDateOfLastAccountCheck';
 
 export const VoucherHomeScreen = ({ navigation, route }: StackScreenProps<any>) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const { refresh, isLoading, isLoggedIn, memberId } = useVoucher();
+  const scrollContentContainerStyle = useReadAloudScrollContentContainerStyle();
   const [loadingAccountCheck, setLoadingAccountCheck] = useState(true);
 
   const imageUri = route?.params?.headerImage;
@@ -84,6 +92,7 @@ export const VoucherHomeScreen = ({ navigation, route }: StackScreenProps<any>) 
   return (
     <SafeAreaViewFlex>
       <ScrollView
+        contentContainerStyle={scrollContentContainerStyle}
         refreshControl={
           <RefreshControl
             refreshing={false}
@@ -99,6 +108,7 @@ export const VoucherHomeScreen = ({ navigation, route }: StackScreenProps<any>) 
 
         {!!dataHomeText && (
           <Wrapper>
+            <ReadAloudContent content={dataHomeText} contentId="voucher-home-content" />
             <HtmlView html={dataHomeText} />
           </Wrapper>
         )}
@@ -118,7 +128,7 @@ export const VoucherHomeScreen = ({ navigation, route }: StackScreenProps<any>) 
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   imageContainerStyle: {
     alignSelf: 'center'
   }

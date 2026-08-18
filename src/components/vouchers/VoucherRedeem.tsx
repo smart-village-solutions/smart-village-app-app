@@ -1,10 +1,10 @@
 import { randomUUID as uuid } from 'expo-crypto';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useMutation } from 'react-apollo';
-import { Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Modal, TouchableOpacity, View } from 'react-native';
 import CircularProgress from 'react-native-circular-progress-indicator';
 
-import { colors, Icon, normalize, texts } from '../../config';
+import { Icon, normalize, texts } from '../../config';
 import { addToStore, readFromStore } from '../../helpers';
 import {
   isVoucherCurrentlyAvailable,
@@ -19,6 +19,8 @@ import { SafeAreaViewFlex } from '../SafeAreaViewFlex';
 import { BoldText, RegularText } from '../Text';
 import { Touchable } from '../Touchable';
 import { Wrapper, WrapperRow, WrapperVertical } from '../Wrapper';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 const defaultTime = 15 * 60; // 15 minutes in seconds
 
@@ -40,6 +42,8 @@ export const VoucherRedeem = ({
   quota: TQuota;
   voucherId: string;
 }) => {
+  const { colors } = useTheme();
+  const styles = useThemeStyles(createStyles);
   const [isVisible, setIsVisible] = useState(false);
   const [remainingTime, setRemainingTime] = useState(defaultTime);
   const [isRedeemingVoucher, setIsRedeemingVoucher] = useState(false);
@@ -190,6 +194,7 @@ export const VoucherRedeem = ({
 
                 <Wrapper noPaddingBottom>
                   <Touchable
+                    accessibilityLabel={texts.accessibilityLabels.actions.close}
                     onPress={() => {
                       setIsVisible(false);
                       setIsRedeemingVoucher(false);
@@ -239,6 +244,7 @@ export const VoucherRedeem = ({
 
                 <Wrapper noPaddingBottom>
                   <Touchable
+                    accessibilityLabel={texts.accessibilityLabels.actions.close}
                     onPress={() => {
                       setIsVisible(false);
                       setIsRedeemingVoucher(false);
@@ -284,6 +290,7 @@ export const VoucherRedeem = ({
 
                       <View style={styles.quantityButtonContainer}>
                         <TouchableOpacity
+                          accessibilityLabel={texts.accessibilityLabels.actions.decreaseQuantity}
                           style={styles.quantityButton}
                           onPress={() => {
                             if (quantity > 1) {
@@ -295,6 +302,7 @@ export const VoucherRedeem = ({
                         </TouchableOpacity>
                         <BoldText lightest>{quantity}</BoldText>
                         <TouchableOpacity
+                          accessibilityLabel={texts.accessibilityLabels.actions.increaseQuantity}
                           style={styles.quantityButton}
                           onPress={() => {
                             if (quantity < availableQuantityForMember) {
@@ -311,6 +319,7 @@ export const VoucherRedeem = ({
 
                 <Wrapper noPaddingBottom noPaddingTop>
                   <TouchableOpacity
+                    accessibilityLabel={texts.accessibilityLabels.actions.redeemVoucher}
                     disabled={!isChecked}
                     style={[styles.button, !isChecked && styles.buttonDisabled]}
                     onPress={redeemVoucher}
@@ -321,6 +330,7 @@ export const VoucherRedeem = ({
                   </TouchableOpacity>
 
                   <TouchableOpacity
+                    accessibilityLabel={texts.accessibilityLabels.actions.cancel}
                     style={[styles.button, styles.closeButton]}
                     onPress={() => {
                       setIsVisible(false);
@@ -340,7 +350,7 @@ export const VoucherRedeem = ({
 };
 /* eslint-enable complexity */
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   button: {
     alignItems: 'center',
     backgroundColor: colors.primary,
@@ -350,6 +360,7 @@ const styles = StyleSheet.create({
     marginTop: normalize(12),
     width: '100%'
   },
+
   buttonDisabled: {
     backgroundColor: colors.placeholder
   },
@@ -361,34 +372,41 @@ const styles = StyleSheet.create({
     backgroundColor: colors.transparent,
     padding: 0
   },
+
   closeButton: {
     backgroundColor: colors.transparent,
     borderColor: colors.surface,
     borderWidth: normalize(1),
     marginTop: normalize(16)
   },
+
   expiredViewContainer: {
     alignItems: 'center',
     marginVertical: normalize(45),
     paddingTop: 0
   },
+
   progressContainer: {
     alignSelf: 'center'
   },
+
   progressOvertitle: {
     alignSelf: 'center',
     position: 'absolute',
     top: normalize(75)
   },
+
   progressTitle: {
     alignSelf: 'center',
     fontWeight: 'bold',
     marginTop: normalize(30)
   },
+
   quantityButton: {
     alignItems: 'center',
     width: normalize(20)
   },
+
   quantityButtonContainer: {
     alignItems: 'center',
     backgroundColor: colors.shadowRgba,
@@ -401,14 +419,17 @@ const styles = StyleSheet.create({
     marginLeft: normalize(16),
     width: normalize(93)
   },
+
   quantityContainer: {
     alignItems: 'center'
   },
+
   sheetBackgroundContainer: {
     backgroundColor: colors.shadowRgba,
     flex: 1,
     justifyContent: 'flex-end'
   },
+
   sheetContainer: {
     backgroundColor: colors.darkerPrimary,
     borderTopLeftRadius: normalize(5),

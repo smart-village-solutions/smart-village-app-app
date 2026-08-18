@@ -1,25 +1,33 @@
 import _kebabCase from 'lodash/kebabCase';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { Alert, StyleSheet, TouchableOpacity } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 
 import {
   Button,
   DropdownSelect,
   HtmlView,
   LoadingSpinner,
+  ReadAloudContent,
   SafeAreaViewFlex,
   ServiceTiles,
   Title,
   Wrapper,
   WrapperRow
 } from '../components';
-import { colors, Icon, normalize, texts } from '../config';
+import { consts, Icon, normalize, texts } from '../config';
 import { readFromStore, SELECTED_CITY, storeSelectedCity } from '../helpers';
 import { useStaticContent } from '../hooks';
+import { useReadAloudPlayerBottomSpacing } from '../ReadAloudAvailabilityProvider';
 import { SettingsContext } from '../SettingsProvider';
 import { DropdownProps } from '../types';
+import { useThemeStyles } from '../hooks/useThemeStyles';
+import { useTheme } from '../hooks/useTheme';
 
 export const CitySelectionScreen = () => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
+  const readAloudPlayerBottomSpacing = useReadAloudPlayerBottomSpacing();
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { citySelection = {} } = settings;
@@ -56,20 +64,6 @@ export const CitySelectionScreen = () => {
     fetchStoredCity();
   }, []);
 
-  useEffect(() => {
-    if (citiesData?.length) {
-      updateDropdownData();
-    }
-  }, [citiesData]);
-
-  useEffect(() => {
-    setSelectedCity(
-      dropdownData?.[0]?.selected
-        ? null
-        : dropdownData[dropdownData.findIndex((item) => item.selected)]?.value
-    );
-  }, [dropdownData]);
-
   const updateDropdownData = useCallback(() => {
     const items =
       citiesData?.map((city, index) => ({
@@ -82,6 +76,20 @@ export const CitySelectionScreen = () => {
 
     setDropdownData(items);
   }, [citiesData, storedCity]);
+
+  useEffect(() => {
+    if (citiesData?.length) {
+      updateDropdownData();
+    }
+  }, [citiesData, updateDropdownData]);
+
+  useEffect(() => {
+    setSelectedCity(
+      dropdownData?.[0]?.selected
+        ? null
+        : dropdownData[dropdownData.findIndex((item) => item.selected)]?.value
+    );
+  }, [dropdownData]);
 
   const onResetPress = useCallback(async () => {
     setSelectedCity(null);
@@ -96,8 +104,9 @@ export const CitySelectionScreen = () => {
 
   if (!storedCity && !contentName) {
     return (
-      <SafeAreaViewFlex>
+      <SafeAreaViewFlex style={{ paddingBottom: readAloudPlayerBottomSpacing }}>
         <Wrapper>
+          <ReadAloudContent content={htmlContent} contentId="city-selection-content" />
           <HtmlView html={htmlContent} />
 
           {!!dropdownData?.length && (
@@ -124,7 +133,11 @@ export const CitySelectionScreen = () => {
         <WrapperRow itemsCenter>
           <Title>{storedCity}</Title>
 
-          <TouchableOpacity onPress={onResetPress}>
+          <TouchableOpacity
+            accessibilityLabel={`${texts.citySelection.alerts.resetAlertTitle} ${consts.a11yLabel.button}`}
+            accessibilityRole="button"
+            onPress={onResetPress}
+          >
             <Icon.Pen color={colors.darkText} size={normalize(18)} style={styles.paddingLeft} />
           </TouchableOpacity>
         </WrapperRow>
@@ -135,7 +148,7 @@ export const CitySelectionScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   paddingLeft: {
     paddingLeft: normalize(16)
   }

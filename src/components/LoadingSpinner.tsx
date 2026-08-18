@@ -1,7 +1,8 @@
 import React from 'react';
-import { ActivityIndicator } from 'react-native';
+import { ActivityIndicator, View } from 'react-native';
 
-import { colors } from '../config';
+import { consts } from '../config';
+import { useTheme } from '../hooks/useTheme';
 
 import { LoadingContainer } from './LoadingContainer';
 
@@ -10,9 +11,17 @@ type Props = {
 };
 
 export const LoadingSpinner = ({ loading }: Props) => {
+  const { colors } = useTheme();
+
   return loading ? (
     <LoadingContainer>
-      <ActivityIndicator color={colors.refreshControl} />
+      <View
+        accessibilityLabel={consts.a11yLabel.loading}
+        accessibilityRole="progressbar"
+        accessible
+      >
+        <ActivityIndicator color={colors.refreshControl} />
+      </View>
     </LoadingContainer>
   ) : null;
 };

@@ -5,6 +5,7 @@ import Collapsible from 'react-native-collapsible';
 import { SectionHeader } from './SectionHeader';
 import { BoldText } from './Text';
 import { Wrapper } from './Wrapper';
+import { texts } from '../config';
 
 type Props<T> = {
   data?: T[];
@@ -32,7 +33,15 @@ export const PreviewSection = <T,>({ data, header, limit = 3, renderItem }: Prop
             {data.slice(limit, data.length).map(renderItem)}
           </Collapsible>
           <Wrapper>
-            <TouchableOpacity onPress={onPress} style={styles.touchable}>
+            <TouchableOpacity
+              accessibilityLabel={
+                collapsed
+                  ? texts.accessibilityLabels.actions.showAll
+                  : texts.accessibilityLabels.actions.showLess
+              }
+              onPress={onPress}
+              style={styles.touchable}
+            >
               <BoldText primary small>
                 {collapsed ? 'Alle anzeigen' : 'Weniger anzeigen'}
               </BoldText>

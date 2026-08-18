@@ -1,9 +1,10 @@
 import PropTypes from 'prop-types';
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Button as RNEButton } from 'react-native-elements';
 
-import { colors, consts, normalize } from '../config';
+import { consts, normalize } from '../config';
+import { useTheme } from '../hooks/useTheme';
 import { OrientationContext } from '../OrientationProvider';
 
 import { DiagonalGradient } from './DiagonalGradient';
@@ -17,6 +18,8 @@ export const ButtonVariants = {
 
 /* eslint-disable complexity */
 export const Button = ({
+  accessibilityHint,
+  accessibilityLabel,
   big = false,
   disabled = false,
   icon = undefined,
@@ -31,10 +34,14 @@ export const Button = ({
   variant = ButtonVariants.DEFAULT
 }) => {
   const { orientation, dimensions } = useContext(OrientationContext);
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const needLandscapeStyle =
     notFullWidth ||
     orientation === 'landscape' ||
     dimensions.width > consts.DIMENSIONS.FULL_SCREEN_MAX_WIDTH;
+  const buttonAccessibilityLabel = accessibilityLabel || `${title} ${consts.a11yLabel.button}`;
+  const buttonAccessibilityState = { disabled };
 
   if (variant === ButtonVariants.ACCEPT || variant === ButtonVariants.REJECT) {
     return (
@@ -49,7 +56,11 @@ export const Button = ({
         ]}
         containerStyle={[needLandscapeStyle && styles.containerLandscape]}
         useForeground
-        accessibilityLabel={`${title} ${consts.a11yLabel.button}`}
+        disabled={disabled}
+        accessibilityHint={accessibilityHint}
+        accessibilityLabel={buttonAccessibilityLabel}
+        accessibilityRole="button"
+        accessibilityState={buttonAccessibilityState}
       />
     );
   }
@@ -87,7 +98,10 @@ export const Button = ({
         invert || variant === ButtonVariants.DELETE || disabled ? undefined : DiagonalGradient
       }
       useForeground={!invert}
-      accessibilityLabel={`${title} ${consts.a11yLabel.button}`}
+      accessibilityHint={accessibilityHint}
+      accessibilityLabel={buttonAccessibilityLabel}
+      accessibilityRole="button"
+      accessibilityState={buttonAccessibilityState}
       disabled={disabled}
       icon={
         !!icon && (
@@ -109,112 +123,117 @@ export const Button = ({
 };
 /* eslint-enable complexity */
 
-const styles = StyleSheet.create({
-  acceptButton: {
-    backgroundColor: colors.primary
-  },
-  bigButton: {
-    minHeight: normalize(56),
-    paddingVertical: normalize(10)
-  },
-  bigButtonRadius: {
-    borderRadius: normalize(8)
-  },
-  bigTitle: {
-    fontSize: normalize(14)
-  },
-  button: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: normalize(48),
-    paddingVertical: normalize(8)
-  },
-  buttonDisabled: {
-    backgroundColor: colors.placeholder
-  },
-  buttonInvert: {
-    backgroundColor: colors.transparent,
-    borderColor: colors.primary,
-    borderStyle: 'solid',
-    borderWidth: normalize(1)
-  },
-  buttonRadius: {
-    borderRadius: normalize(8)
-  },
-  container: {
-    marginBottom: normalize(16)
-  },
-  containerLandscape: {
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  iconLeft: {
-    paddingRight: normalize(8)
-  },
-  iconRight: {
-    paddingLeft: normalize(8)
-  },
-  invertRejectButton: {
-    borderColor: colors.error,
-    borderStyle: 'solid',
-    borderWidth: normalize(1)
-  },
-  landscapeIconLeft: {
-    marginRight: normalize(-14),
-    paddingLeft: normalize(14)
-  },
-  landscapeIconRight: {
-    marginLeft: normalize(-14),
-    paddingRight: normalize(14)
-  },
-  lightestBorderColor: {
-    borderColor: colors.surface
-  },
-  rejectButton: {
-    backgroundColor: colors.error
-  },
-  smallButton: {
-    minHeight: normalize(40),
-    paddingVertical: normalize(6)
-  },
-  smallButtonRadius: {
-    borderRadius: normalize(40)
-  },
-  smallestButton: {
-    minHeight: normalize(32),
-    paddingVertical: normalize(4)
-  },
-  smallestButtonRadius: {
-    borderRadius: normalize(32)
-  },
-  smallestTitle: {
-    fontSize: normalize(12)
-  },
-  smallTitle: {
-    fontSize: normalize(14)
-  },
-  title: {
-    color: colors.lightestText,
-    fontFamily: 'bold',
-    fontSize: normalize(14),
-    fontWeight: '600',
-    textAlign: 'center'
-  },
-  titleInvert: {
-    color: colors.primary
-  },
-  titleInvertReject: {
-    color: colors.error
-  },
-  titleLandscape: {
-    paddingHorizontal: normalize(14)
-  },
-  titleLightest: {
-    color: colors.lightestText
-  }
-});
+/* Dynamic theme styles cannot be resolved by react-native/no-unused-styles. */
+/* eslint-disable react-native/no-unused-styles */
+const createStyles = (colors) =>
+  StyleSheet.create({
+    acceptButton: {
+      backgroundColor: colors.primary
+    },
+    bigButton: {
+      minHeight: normalize(56),
+      paddingVertical: normalize(10)
+    },
+    bigButtonRadius: {
+      borderRadius: normalize(8)
+    },
+    bigTitle: {
+      fontSize: normalize(14)
+    },
+    button: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      minHeight: normalize(48),
+      paddingVertical: normalize(8)
+    },
+    buttonDisabled: {
+      backgroundColor: colors.placeholder
+    },
+    buttonInvert: {
+      backgroundColor: colors.transparent,
+      borderColor: colors.primary,
+      borderStyle: 'solid',
+      borderWidth: normalize(1)
+    },
+    buttonRadius: {
+      borderRadius: normalize(8)
+    },
+    container: {
+      marginBottom: normalize(16)
+    },
+    containerLandscape: {
+      alignItems: 'center',
+      justifyContent: 'center'
+    },
+    iconLeft: {
+      paddingRight: normalize(8)
+    },
+    iconRight: {
+      paddingLeft: normalize(8)
+    },
+    invertRejectButton: {
+      borderColor: colors.error,
+      borderStyle: 'solid',
+      borderWidth: normalize(1)
+    },
+    landscapeIconLeft: {
+      marginRight: normalize(-14),
+      paddingLeft: normalize(14)
+    },
+    landscapeIconRight: {
+      marginLeft: normalize(-14),
+      paddingRight: normalize(14)
+    },
+    lightestBorderColor: {
+      borderColor: colors.surface
+    },
+    rejectButton: {
+      backgroundColor: colors.error
+    },
+    smallButton: {
+      minHeight: normalize(40),
+      paddingVertical: normalize(6)
+    },
+    smallButtonRadius: {
+      borderRadius: normalize(40)
+    },
+    smallestButton: {
+      minHeight: normalize(32),
+      paddingVertical: normalize(4)
+    },
+    smallestButtonRadius: {
+      borderRadius: normalize(32)
+    },
+    smallestTitle: {
+      fontSize: normalize(12)
+    },
+    smallTitle: {
+      fontSize: normalize(14)
+    },
+    title: {
+      color: colors.onPrimary,
+      fontFamily: 'bold',
+      fontSize: normalize(14),
+      fontWeight: '600'
+    },
+    titleInvert: {
+      color: colors.primary
+    },
+    titleInvertReject: {
+      color: colors.error
+    },
+    titleLandscape: {
+      paddingHorizontal: normalize(14)
+    },
+    titleLightest: {
+      color: colors.onPrimary
+    }
+  });
+/* eslint-enable react-native/no-unused-styles */
 
 Button.propTypes = {
+  accessibilityHint: PropTypes.string,
+  accessibilityLabel: PropTypes.string,
   big: PropTypes.bool,
   disabled: PropTypes.bool,
   icon: PropTypes.node,

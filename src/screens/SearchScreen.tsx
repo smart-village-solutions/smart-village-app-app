@@ -1,7 +1,7 @@
 import { FlashList } from '@shopify/flash-list';
 import _camelCase from 'lodash/camelCase';
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 import { SearchBar } from 'react-native-elements';
 import { useQueries, useQuery } from 'react-query';
 
@@ -12,7 +12,7 @@ import {
   SafeAreaViewFlex,
   Wrapper
 } from '../components';
-import { colors, device, Icon, texts } from '../config';
+import { consts, device, Icon, texts } from '../config';
 import {
   DEFAULT_SEARCH_FILTER,
   parseListItemsFromQuery,
@@ -22,6 +22,10 @@ import { useRenderItem } from '../hooks';
 import { getQuery, QUERY_TYPES } from '../queries';
 import { ReactQueryClient } from '../ReactQueryClient';
 import { SettingsContext } from '../SettingsProvider';
+import { useThemeStyles } from '../hooks/useThemeStyles';
+import { useTheme } from '../hooks/useTheme';
+
+import { createSearchStyles } from './searchStyles';
 
 const MAX_INITIAL_NUM_TO_RENDER = 15;
 const keyExtractor = (item: { id?: any } | string, index: any) => {
@@ -33,6 +37,9 @@ const keyExtractor = (item: { id?: any } | string, index: any) => {
 };
 
 export const SearchScreen = ({ navigation }) => {
+  const { colors, isDark } = useTheme();
+
+  const styles = useThemeStyles(createSearchStyles);
   const { globalSettings } = useContext(SettingsContext);
   const { sections: sectionsGlobalSettings = {}, settings = {} } = globalSettings;
   const { search: searchSettings = {} } = settings;
@@ -188,25 +195,33 @@ export const SearchScreen = ({ navigation }) => {
         <SearchBar
           cancelButtonProps={{
             accessibilityLabel: searchTexts.abort,
-            color: colors.darkerPrimary
+            color: colors.primary
           }}
           cancelButtonTitle={searchTexts.abort}
           clearIcon={() => (
-            <TouchableOpacity activeOpacity={1} onPress={() => searchBarRef?.current?.clear?.()}>
-              <Icon.Close color={colors.darkerPrimary} />
+            <TouchableOpacity
+              accessibilityLabel={`${texts.accessibilityLabels.searchInputIcons.delete} ${consts.a11yLabel.button}`}
+              accessibilityRole="button"
+              activeOpacity={1}
+              onPress={() => searchBarRef?.current?.clear?.()}
+            >
+              <Icon.Close color={colors.primary} />
             </TouchableOpacity>
           )}
+          containerStyle={styles.searchBarContainer}
           inputContainerStyle={styles.inputContainerStyle}
-          lightTheme
+          inputStyle={styles.inputStyle}
+          keyboardAppearance={isDark ? 'dark' : 'light'}
           loadingProps={{
-            color: colors.darkerPrimary
+            color: colors.primary
           }}
           onChangeText={setSearch}
           placeholder={searchTexts.placeholder}
           placeholderTextColor={colors.placeholder}
           platform={device.platform === 'ios' ? device.platform : 'default'}
           ref={searchBarRef}
-          searchIcon={() => <Icon.Search color={colors.darkerPrimary} />}
+          searchIcon={() => <Icon.Search color={colors.primary} />}
+          selectionColor={colors.primary}
           showCancel
           showLoading={isLoading}
           value={search}
@@ -238,9 +253,3 @@ export const SearchScreen = ({ navigation }) => {
     </SafeAreaViewFlex>
   );
 };
-
-const styles = StyleSheet.create({
-  inputContainerStyle: {
-    backgroundColor: colors.backgroundRgba
-  }
-});

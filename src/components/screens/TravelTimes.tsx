@@ -1,10 +1,10 @@
 import moment from 'moment';
 import React, { Fragment, useState } from 'react';
 import { useQuery } from 'react-apollo';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, View } from 'react-native';
 import { Divider, ListItem } from 'react-native-elements';
 
-import { Icon, IconUrl, colors, normalize, texts } from '../../config';
+import { Icon, IconUrl, normalize, texts } from '../../config';
 import { momentFormat, normalizeTime } from '../../helpers';
 import { useDetailRefresh } from '../../hooks';
 import { QUERY_TYPES, getQuery } from '../../queries';
@@ -13,6 +13,8 @@ import { LoadingContainer } from '../LoadingContainer';
 import { SectionHeader } from '../SectionHeader';
 import { BoldText, HeadlineText, RegularText } from '../Text';
 import { Wrapper } from '../Wrapper';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 const MAX_INITIAL_NUM_TO_RENDER = 15;
 
@@ -26,6 +28,9 @@ type TravelTimeProps = {
 };
 
 export const TravelTimes = ({ id }: { id: string }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const [today, setToday] = useState<string>(moment().format('YYYY-MM-DDTHH:mm'));
   const [moreData, setMoreData] = useState(1);
 
@@ -163,39 +168,47 @@ export const TravelTimes = ({ id }: { id: string }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   container: {
     backgroundColor: colors.transparent,
     paddingVertical: normalize(8)
   },
+
   divider: {
     backgroundColor: colors.placeholder,
     marginHorizontal: normalize(16)
   },
+
   headSign: {
     flexShrink: 1
   },
+
   icon: {
     marginHorizontal: normalize(8)
   },
+
   itemRow: {
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'flex-start'
   },
+
   noPaddingBottom: {
     paddingBottom: 0
   },
+
   time: {
     fontFamily: 'bold',
     fontSize: normalize(14),
     lineHeight: normalize(20),
     marginRight: normalize(8)
   },
+
   typeDirection: {
     alignItems: 'center',
     flexDirection: 'row'
   },
+
   typeIconContainer: {
     alignItems: 'center',
     borderRadius: normalize(20),
@@ -204,6 +217,7 @@ const styles = StyleSheet.create({
     marginRight: normalize(5),
     width: normalize(22)
   },
+
   typeView: {
     alignItems: 'center',
     borderRadius: normalize(4),

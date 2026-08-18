@@ -6,6 +6,7 @@ import { ShareContent, StyleSheet } from 'react-native';
 
 import { normalize } from '../config';
 
+import { AccessibilityHeader } from './AccessibilityHeader';
 import { BookmarkHeader } from './bookmarks';
 import { CalendarHeader } from './CalendarHeader';
 import { ChatHeader } from './ChatHeader';
@@ -19,10 +20,12 @@ import { ShareHeader } from './ShareHeader';
 import { WrapperRow } from './Wrapper';
 
 type Props = {
-  navigation: StackNavigationProp<any> & DrawerNavigationProp<any>;
+  navigation: StackNavigationProp<Record<string, object | undefined>> &
+    DrawerNavigationProp<Record<string, object | undefined>>;
   onPress?: () => void;
-  route: RouteProp<any, string>;
+  route: RouteProp<Record<string, object | undefined>, string>;
   shareContent?: ShareContent;
+  withAccessibility?: boolean;
   withBookmark?: boolean;
   withCalendar?: boolean;
   withChat?: boolean;
@@ -41,6 +44,7 @@ export const HeaderRight = ({
   onPress,
   route,
   shareContent = route.params?.shareContent,
+  withAccessibility = true,
   withBookmark = false,
   withCalendar = false,
   withChat = false,
@@ -62,6 +66,7 @@ export const HeaderRight = ({
     {withInfo && <InfoHeader route={route} style={styles.icon} />}
     {withSearch && <SearchHeader navigation={navigation} style={styles.icon} />}
     {withShare && <ShareHeader shareContent={shareContent} style={styles.icon} />}
+    {withAccessibility && <AccessibilityHeader style={styles.icon} />}
     {withDrawer && <DrawerHeader navigation={navigation} style={styles.icon} />}
   </WrapperRow>
 );

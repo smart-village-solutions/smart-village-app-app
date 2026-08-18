@@ -1,8 +1,8 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import 'react-native';
 import { Divider } from 'react-native-elements';
 
-import { colors, texts } from '../../config';
+import { texts } from '../../config';
 import { momentFormat } from '../../helpers';
 import { useEncounterList } from '../../hooks';
 import { Encounter } from '../../types';
@@ -10,8 +10,10 @@ import { LoadingSpinner } from '../LoadingSpinner';
 import { SectionHeader } from '../SectionHeader';
 import { RegularText } from '../Text';
 import { Wrapper, WrapperRow } from '../Wrapper';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
 
 const EncounterEntry = ({ encounter }: { encounter: Encounter }) => {
+  const styles = useThemeStyles(createStyles);
   return (
     <>
       <WrapperRow>
@@ -50,7 +52,7 @@ export const EncounterList = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   divider: {
     backgroundColor: colors.placeholder
   }

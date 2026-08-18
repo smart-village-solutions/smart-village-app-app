@@ -3,17 +3,32 @@ import { TouchableOpacity } from 'react-native';
 import renderer from 'react-test-renderer';
 
 import { FloatingButton } from '../../src/components/FloatingButton';
+import { lightColors } from '../../src/config/colors';
+import { ThemeContext } from '../../src/ThemeContext';
+
+const themeColors = {
+  ...lightColors,
+  darkText: '#111111',
+  lightestText: '#ffffff',
+  primary: '#000000',
+  shadow: '#000000'
+};
 
 const renderFloatingButton = (props) => {
   let testRenderer;
 
   renderer.act(() => {
-    testRenderer = renderer.create(<FloatingButton publicJsonFile="floatingButton" {...props} />);
+    testRenderer = renderer.create(
+      <ThemeContext.Provider value={{ colors: themeColors, isDark: false, mode: 'light' }}>
+        <FloatingButton publicJsonFile="floatingButton" {...props} />
+      </ThemeContext.Provider>
+    );
   });
 
   return testRenderer;
 };
 
+const mockUseAccessibilityPreferences = jest.fn();
 const mockUseStaticContent = jest.fn();
 const mockUseHomeRefresh = jest.fn();
 const mockGetCurrentRoute = jest.fn();
@@ -21,8 +36,11 @@ const mockIsReady = jest.fn();
 const mockNavigate = jest.fn();
 const mockAddListener = jest.fn();
 const mockRemoveListener = jest.fn();
+const mockGetRouteItems = jest.fn();
+const mockIsRouteAvailable = jest.fn();
 
 jest.mock('../../src/hooks', () => ({
+  useAccessibilityPreferences: (...args) => mockUseAccessibilityPreferences(...args),
   useHomeRefresh: (...args) => mockUseHomeRefresh(...args),
   useStaticContent: (...args) => mockUseStaticContent(...args)
 }));
@@ -36,13 +54,38 @@ jest.mock('../../src/navigation/navigationRef', () => ({
   }
 }));
 
+jest.mock('../../src/ReadAloudAvailabilityProvider', () => ({
+  useReadAloudAvailability: () => ({
+    getRouteItems: (...args) => mockGetRouteItems(...args),
+    isRouteAvailable: (...args) => mockIsRouteAvailable(...args)
+  })
+}));
+
+jest.mock('../../src/components/FloatingReadAloudPlayer', () => ({
+  FloatingReadAloudPlayer: 'mock-read-aloud-player'
+}));
+
+jest.mock('@react-navigation/native', () => ({
+  useNavigationState: (selector) => selector({})
+}));
+
 jest.mock('../../src/config', () => ({
   colors: {
     primary: '#000000',
+    darkText: '#111111',
     lightestText: '#ffffff',
     shadow: '#000000'
   },
   normalize: (value) => value,
+  texts: {
+    settingsContents: {
+      accessibility: {
+        readAloud: {
+          expandPlayer: 'Expand player'
+        }
+      }
+    }
+  },
   Icon: {
     NamedIcon: () => null
   }
@@ -61,8 +104,15 @@ describe('FloatingButton', () => {
       loading: false,
       refetch: jest.fn()
     });
+    mockUseAccessibilityPreferences.mockReturnValue({
+      features: { readAloud: false },
+      preferences: { readAloudEnabled: false },
+      setPreference: jest.fn()
+    });
 
-    mockGetCurrentRoute.mockReturnValue({ name: 'Home' });
+    mockGetRouteItems.mockReturnValue([]);
+    mockIsRouteAvailable.mockReturnValue(false);
+    mockGetCurrentRoute.mockReturnValue({ key: 'home-key', name: 'Home' });
     mockIsReady.mockReturnValue(true);
     mockAddListener.mockReturnValue(mockRemoveListener);
   });
@@ -205,5 +255,31 @@ describe('FloatingButton', () => {
     });
 
     expect(mockNavigate).toHaveBeenCalledWith('Web', { webUrl: 'https://example.com' });
+  });
+
+  it('keeps the always-active centered player visible when content is available', () => {
+    mockIsRouteAvailable.mockReturnValue(true);
+    mockUseAccessibilityPreferences.mockReturnValue({
+      features: { readAloud: true }
+    });
+
+    const testRenderer = renderFloatingButton({ bottomOffset: 0 });
+    const player = testRenderer.root.findByType('mock-read-aloud-player');
+
+    expect(player.props.isEnabled).toBeUndefined();
+    expect(player.props.onEnable).toBeUndefined();
+    expect(player.props.onDisable).toBeUndefined();
+  });
+
+  it('shows the redesigned player while global read aloud is enabled', () => {
+    mockIsRouteAvailable.mockReturnValue(true);
+    mockUseAccessibilityPreferences.mockReturnValue({
+      features: { readAloud: true }
+    });
+
+    const testRenderer = renderFloatingButton({ bottomOffset: 0 });
+
+    expect(testRenderer.root.findAllByType(TouchableOpacity)).toHaveLength(0);
+    expect(testRenderer.root.findByType('mock-read-aloud-player')).toBeTruthy();
   });
 });

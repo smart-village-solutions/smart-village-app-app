@@ -1,10 +1,12 @@
 import { BarcodeScanningResult } from 'expo-camera';
 import React, { useState } from 'react';
-import { Alert, StyleSheet } from 'react-native';
+import { Alert } from 'react-native';
 
-import { colors, Icon, normalize, texts } from '../../config';
+import { consts, Icon, normalize, texts } from '../../config';
 import { Scanner } from '../../screens';
 import { Touchable } from '../Touchable';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 export const WalletCardScanner = ({
   setCardNumber,
@@ -13,6 +15,9 @@ export const WalletCardScanner = ({
   setCardNumber: (number: string) => void;
   setIsScannerOpen: (isOpen: boolean) => void;
 }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const [isScanning, setIsScanning] = useState(true);
 
   const handleBarCodeScanned = ({ data }: BarcodeScanningResult) => {
@@ -41,14 +46,18 @@ export const WalletCardScanner = ({
     <>
       <Scanner isScanning={isScanning} handleBarCodeScanned={handleBarCodeScanned} />
 
-      <Touchable onPress={() => setIsScannerOpen(false)} style={styles.closeButton}>
+      <Touchable
+        accessibilityLabel={consts.a11yLabel.closeIcon}
+        onPress={() => setIsScannerOpen(false)}
+        style={styles.closeButton}
+      >
         <Icon.Close size={24} color={colors.surface} />
       </Touchable>
     </>
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   closeButton: {
     alignItems: 'center',
     backgroundColor: colors.darkText,

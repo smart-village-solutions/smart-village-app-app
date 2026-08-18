@@ -2,14 +2,16 @@ import _isEqual from 'lodash/isEqual';
 import _omit from 'lodash/omit';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
-import { Modal, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Modal, ScrollView, TouchableOpacity, View } from 'react-native';
 import Collapsible from 'react-native-collapsible';
 import { Divider, Header } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { Icon, colors, consts, normalize, texts } from '../../config';
+import { Icon, consts, normalize, texts } from '../../config';
 import { momentFormat } from '../../helpers';
 import { FilterProps, FilterTypesProps } from '../../types';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 import { Button } from './../Button';
 import { BoldText, RegularText } from './../Text';
@@ -77,6 +79,9 @@ export const Filter = ({
   setQueryVariables,
   withSearch = false
 }: Props) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const updatedQueryVariables = deleteInitialStartDateFromQueryVariables(queryVariables);
   const [filters, setFilters] = useState<FilterProps>(updatedQueryVariables);
   const [isCollapsed, setIsCollapsed] = useState(true);
@@ -213,87 +218,86 @@ export const Filter = ({
             presentationStyle="pageSheet"
             visible={!isCollapsed}
           >
-            <Header
-              backgroundColor={colors.transparent}
-              centerComponent={{
-                text: texts.filter.header,
-                style: {
-                  color: colors.darkText,
-                  fontFamily: 'condbold',
-                  fontSize: normalize(18),
-                  lineHeight: normalize(23)
+            <View style={styles.overlayContent}>
+              <Header
+                backgroundColor={colors.background}
+                centerComponent={{
+                  text: texts.filter.header,
+                  style: {
+                    color: colors.text,
+                    fontFamily: 'condbold',
+                    fontSize: normalize(18),
+                    lineHeight: normalize(23)
+                  }
+                }}
+                rightComponent={
+                  <TouchableOpacity
+                    accessibilityLabel={`${texts.accessibilityLabels.actions.close} ${a11yLabel.button}`}
+                    accessibilityRole="button"
+                    onPress={() => setIsCollapsed(!isCollapsed)}
+                    style={styles.closeButton}
+                  >
+                    <Icon.Close color={colors.text} size={normalize(20)} />
+                  </TouchableOpacity>
                 }
-              }}
-              rightComponent={{
-                color: colors.darkText,
-                icon: 'close',
-                onPress: () => setIsCollapsed(!isCollapsed),
-                type: 'ionicon'
-              }}
-              rightContainerStyle={styles.headerRightContainer}
-            />
-            <Divider />
-            <ScrollView>
-              <Wrapper noPaddingTop noPaddingBottom>
-                <FilterComponent
-                  filters={filters}
-                  filterTypes={filterTypes}
-                  isOverlayFilter
-                  setFilters={setFilters}
-                />
-              </Wrapper>
-            </ScrollView>
-
-            <SafeAreaView edges={['bottom']}>
-              <Wrapper style={styles.alignLeft} noPaddingTop>
-                <WrapperRow style={{ gap: normalize(16) }}>
-                  <Button
-                    disabled={isResetDisabled}
-                    invert
-                    notFullWidth
-                    onPress={resetFilters}
-                    title={texts.filter.resetFilter}
+                rightContainerStyle={styles.headerRightContainer}
+              />
+              <Divider style={styles.overlayDivider} />
+              <ScrollView style={styles.overlayScrollView}>
+                <Wrapper noPaddingTop noPaddingBottom>
+                  <FilterComponent
+                    filters={filters}
+                    filterTypes={filterTypes}
+                    isOverlayFilter
+                    setFilters={setFilters}
                   />
-                  <Button
-                    disabled={isApplyDisabled}
-                    notFullWidth
-                    onPress={() => {
-                      let dateRange = filters.dateRange || null;
+                </Wrapper>
+              </ScrollView>
 
-                      if (filters.start_date && filters.end_date) {
-                        dateRange = [
-                          momentFormat(filters.start_date, 'YYYY-MM-DD'),
-                          momentFormat(filters.end_date, 'YYYY-MM-DD')
-                        ];
-                      } else if (filters.start_date && !filters.end_date) {
-                        // because of the requirement to specify the start and end date of the `dateRange`,
-                        // if only `startDate` is selected, `endDate` is set to 31.12.9999
-                        dateRange = [momentFormat(filters.start_date, 'YYYY-MM-DD'), '9999-12-31'];
-                      } else if (!filters.start_date && filters.end_date) {
-                        // because of the requirement to specify the start and end date of the `dateRange`,
-                        // if only `endDate` is selected, `startDate` is set to today's date or if
-                        // `endDate` is in the past, it is set to the date of the `endDate`
-                        dateRange = [
-                          moment().isAfter(filters.end_date)
-                            ? momentFormat(filters.end_date, 'YYYY-MM-DD')
-                            : moment().format('YYYY-MM-DD'),
-                          momentFormat(filters.end_date, 'YYYY-MM-DD')
-                        ];
-                      }
+              <SafeAreaView edges={['bottom']}>
+                <Wrapper style={styles.alignLeft} noPaddingTop>
+                  <WrapperRow style={{ gap: normalize(16) }}>
+                    <Button
+                      disabled={isResetDisabled}
+                      invert
+                      notFullWidth
+                      onPress={resetFilters}
+                      title={texts.filter.resetFilter}
+                    />
+                    <Button
+                      disabled={isApplyDisabled}
+                      notFullWidth
+                      onPress={() => {
+                        let dateRange = filters.dateRange || null;
 
-                      if (dateRange?.length) {
-                        setQueryVariables({ ...filters, dateRange });
-                      } else {
-                        setQueryVariables({ ...filters });
-                      }
+                        if (filters.start_date && filters.end_date) {
+                          dateRange = [
+                            momentFormat(filters.start_date, 'YYYY-MM-DD'),
+                            momentFormat(filters.end_date, 'YYYY-MM-DD')
+                          ];
+                        } else if (filters.start_date && !filters.end_date) {
+                          dateRange = [
+                            momentFormat(filters.start_date, 'YYYY-MM-DD'),
+                            '9999-12-31'
+                          ];
+                        } else if (!filters.start_date && filters.end_date) {
+                          dateRange = [
+                            moment().isAfter(filters.end_date)
+                              ? momentFormat(filters.end_date, 'YYYY-MM-DD')
+                              : moment().format('YYYY-MM-DD'),
+                            momentFormat(filters.end_date, 'YYYY-MM-DD')
+                          ];
+                        }
 
-                      setIsCollapsed(!isCollapsed);
-                    }}
-                    title={texts.filter.filter}
-                  />
-                </WrapperRow>
-              </Wrapper>
-            </SafeAreaView>
+                        setQueryVariables(dateRange?.length ? { ...filters, dateRange } : filters);
+                        setIsCollapsed(!isCollapsed);
+                      }}
+                      title={texts.filter.filter}
+                    />
+                  </WrapperRow>
+                </Wrapper>
+              </SafeAreaView>
+            </View>
           </Modal>
         ) : (
           <Collapsible collapsed={isCollapsed}>
@@ -324,15 +328,24 @@ export const Filter = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   alignLeft: {
     alignItems: 'flex-start'
   },
+
   button: {
     flexDirection: 'row',
     alignItems: 'center',
     alignSelf: 'flex-end'
   },
+
+  closeButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: normalize(32),
+    minWidth: normalize(32)
+  },
+
   countContainer: {
     alignItems: 'center',
     backgroundColor: colors.primary,
@@ -342,13 +355,29 @@ const styles = StyleSheet.create({
     marginLeft: normalize(8),
     width: normalize(20)
   },
+
   container: {
     padding: normalize(14)
   },
+
   headerRightContainer: {
     justifyContent: 'center'
   },
+
   icon: {
     paddingLeft: normalize(8)
+  },
+
+  overlayContent: {
+    backgroundColor: colors.background,
+    flex: 1
+  },
+
+  overlayDivider: {
+    backgroundColor: colors.border
+  },
+
+  overlayScrollView: {
+    backgroundColor: colors.background
   }
 });

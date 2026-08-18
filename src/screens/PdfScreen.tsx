@@ -1,22 +1,28 @@
-import { NavigationProp } from '@react-navigation/native';
+import { NavigationProp, ParamListBase } from '@react-navigation/native';
 import React, { useContext, useEffect, useState } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 import Pdf from 'react-native-pdf';
 
-import { RegularText, SafeAreaViewFlex, WrapperRow } from '../components';
-import { colors, consts, Icon, normalize } from '../config';
+import { AccessibilityHeader, RegularText, SafeAreaViewFlex, WrapperRow } from '../components';
+import { HEADER_RIGHT_ICON_STROKE_WIDTH } from '../components/headerIconConfig';
+import { consts, Icon, normalize } from '../config';
 import { onDownloadAndSharePdf } from '../helpers';
 import { useTrackScreenViewAsync } from '../hooks';
 import { NetworkContext } from '../NetworkProvider';
+import { useThemeStyles } from '../hooks/useThemeStyles';
+import { useTheme } from '../hooks/useTheme';
 
 const { MATOMO_TRACKING } = consts;
 
 type PdfScreenProps = {
-  navigation: NavigationProp<any>;
+  navigation: NavigationProp<ParamListBase>;
   route: { params: { pdfUrl: string; title: string; injectedJavaScript: string } };
 };
 
 export const PdfScreen = ({ navigation, route }: PdfScreenProps) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const { isConnected } = useContext(NetworkContext);
   const trackScreenViewAsync = useTrackScreenViewAsync();
   const pdfUrl = route.params?.pdfUrl ?? '';
@@ -27,27 +33,37 @@ export const PdfScreen = ({ navigation, route }: PdfScreenProps) => {
   //       dependency
   useEffect(() => {
     isConnected && pdfUrl && trackScreenViewAsync(`${MATOMO_TRACKING.SCREEN_VIEW.PDF} / ${pdfUrl}`);
-  }, [pdfUrl]);
+  }, [isConnected, pdfUrl, trackScreenViewAsync]);
 
   useEffect(() => {
     if (title) {
       navigation.setOptions({
         headerRight: () => (
           <WrapperRow style={styles.headerRight}>
-            <TouchableOpacity onPress={() => onDownloadAndSharePdf({ title, url: pdfUrl })}>
-              <Icon.ArrowDownCircle color={colors.lightestText} style={styles.icon} />
+            <AccessibilityHeader style={styles.icon} />
+            <TouchableOpacity
+              accessibilityLabel={`PDF herunterladen ${consts.a11yLabel.button}`}
+              accessibilityRole="button"
+              onPress={() => onDownloadAndSharePdf({ title, url: pdfUrl })}
+            >
+              <Icon.ArrowDownCircle
+                color={colors.lightestText}
+                style={styles.icon}
+                strokeWidth={HEADER_RIGHT_ICON_STROKE_WIDTH}
+              />
             </TouchableOpacity>
           </WrapperRow>
         )
       });
     }
-  }, [title]);
+  }, [navigation, pdfUrl, title]);
 
   if (!pdfUrl) return null;
 
   return (
     <SafeAreaViewFlex>
       <Pdf
+        accessibilityLabel={`${title || 'PDF'} ${consts.a11yLabel.pdf}`}
         onPageChanged={(page, numberOfPages) => setPageCount(`${page}/${numberOfPages}`)}
         source={{ uri: pdfUrl, cache: true }}
         style={styles.pdf}
@@ -63,14 +79,16 @@ export const PdfScreen = ({ navigation, route }: PdfScreenProps) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   headerRight: {
     alignItems: 'center',
     paddingRight: normalize(7)
   },
+
   icon: {
     paddingHorizontal: normalize(10)
   },
+
   pageCountCountainer: {
     backgroundColor: colors.gray40,
     borderRadius: normalize(10),
@@ -79,6 +97,7 @@ const styles = StyleSheet.create({
     padding: 10,
     position: 'absolute'
   },
+
   pdf: {
     flex: 1
   }

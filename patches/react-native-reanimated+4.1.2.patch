@@ -1,0 +1,26 @@
+diff --git a/node_modules/react-native-reanimated/lib/module/common/logger.js b/node_modules/react-native-reanimated/lib/module/common/logger.js
+index 1bbe479..dd0280b 100644
+--- a/node_modules/react-native-reanimated/lib/module/common/logger.js
++++ b/node_modules/react-native-reanimated/lib/module/common/logger.js
+@@ -60,7 +60,7 @@ export function updateLoggerConfig(options) {
+ function handleLog(level, message, options) {
+   'worklet';
+ 
+-  const config = global.__reanimatedLoggerConfig;
++  const config = global.__reanimatedLoggerConfig ?? DEFAULT_LOGGER_CONFIG;
+   if (
+   // Don't log if the log is marked as strict-only and the config doesn't
+   // enable strict logging
+diff --git a/node_modules/react-native-reanimated/src/common/logger.ts b/node_modules/react-native-reanimated/src/common/logger.ts
+index e16b741..cd03bc6 100644
+--- a/node_modules/react-native-reanimated/src/common/logger.ts
++++ b/node_modules/react-native-reanimated/src/common/logger.ts
+@@ -84,7 +84,7 @@ function handleLog(
+   options: LogOptions
+ ) {
+   'worklet';
+-  const config = global.__reanimatedLoggerConfig;
++  const config = global.__reanimatedLoggerConfig ?? DEFAULT_LOGGER_CONFIG;
+   if (
+     // Don't log if the log is marked as strict-only and the config doesn't
+     // enable strict logging

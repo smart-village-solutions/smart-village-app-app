@@ -3,13 +3,16 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { ActivityIndicator, SectionList, StyleSheet } from 'react-native';
 
-import { colors, normalize, texts } from '../config';
+import { normalize, texts } from '../config';
+import { ThemeContext } from '../ThemeContext';
 
 import { CategoryListItem } from './CategoryListItem';
 import { LoadingContainer } from './LoadingContainer';
 import { SectionHeader } from './SectionHeader';
 
 export class CategoryList extends React.PureComponent {
+  static contextType = ThemeContext;
+
   keyExtractor = (item, index) => `index${index}-id${item.id}`;
 
   renderSectionHeader = ({ section: { title, data } }) => {
@@ -21,6 +24,7 @@ export class CategoryList extends React.PureComponent {
   };
 
   render() {
+    const { colors } = this.context;
     const {
       categoryTitles = {},
       data,

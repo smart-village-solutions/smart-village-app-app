@@ -3,13 +3,14 @@ import React from 'react';
 import { Alert } from 'react-native';
 import { ListItem } from 'react-native-elements';
 
-import { colors, consts, Icon, normalize, texts } from '../../../config';
+import { consts, Icon, normalize, texts } from '../../../config';
 import { setConsulAuthToken, setConsulUser } from '../../../helpers';
 import { useOpenWebScreen } from '../../../hooks';
 import { QUERY_TYPES } from '../../../queries';
 import { ScreenName } from '../../../types';
 import { BoldText } from '../../Text';
 import { Touchable } from '../../Touchable';
+import { useTheme } from '../../../hooks/useTheme';
 
 const logOutAlert = (onLogout) =>
   Alert.alert(texts.consul.loginAllFieldsRequiredTitle, texts.consul.logoutAlertBody, [
@@ -26,6 +27,8 @@ const logOutAlert = (onLogout) =>
   ]);
 
 export const ConsulListItem = ({ navigation, item }) => {
+  const { colors } = useTheme();
+
   const { routeName: name, params, title } = item;
   const headerTitle = title ?? '';
   const link = params?.queryVariables.link ?? '';

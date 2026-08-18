@@ -3,12 +3,14 @@ import React, { useContext, useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
 
 import { LoadingSpinner, MapLibre, TextListItem, Wrapper } from '../components';
-import { colors, normalize } from '../config';
+import { normalize } from '../config';
 import { navigationToArtworksDetailScreen } from '../helpers';
 import { useMapSettings } from '../hooks';
 import { SettingsContext } from '../SettingsProvider';
+import { useThemeStyles } from '../hooks/useThemeStyles';
 
 export const MapScreen = () => {
+  const styles = useThemeStyles(createStyles);
   const navigation = useNavigation();
   const route = useRoute();
   const { geometryTourData, isAugmentedReality, locations, onMarkerPress, showsUserLocation } =
@@ -78,11 +80,12 @@ export const MapScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   map: {
     width: '100%',
     height: '100%'
   },
+
   listItemContainer: {
     backgroundColor: colors.surface,
     borderRadius: normalize(12),

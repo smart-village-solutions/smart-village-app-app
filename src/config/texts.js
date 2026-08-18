@@ -2,6 +2,75 @@ import appJson from '../../app.json';
 
 export const texts = {
   accessibilityLabels: {
+    actions: {
+      back: 'Zurück',
+      calendarView: 'Kalenderansicht',
+      call: 'Anrufen',
+      cancel: 'Abbrechen',
+      close: 'Schließen',
+      copy: 'Kopieren',
+      createNewComment: 'Neuen Kommentar verfassen',
+      createNewPost: 'Neuen Beitrag verfassen',
+      decreaseQuantity: 'Anzahl verringern',
+      decreaseTextSize: 'Textgröße verkleinern',
+      deleteAll: 'Alle löschen',
+      deleteComment: 'Kommentar löschen',
+      deleteDocument: 'Dokument löschen',
+      deleteImage: 'Bild löschen',
+      deleteMedium: 'Medium löschen',
+      deletePost: 'Beitrag löschen',
+      edit: 'Bearbeiten',
+      editLocation: 'Standort bearbeiten',
+      enterActivationCode: 'Aktivierungscode eingeben',
+      finishEditing: 'Bearbeitung beenden',
+      increaseQuantity: 'Anzahl erhöhen',
+      increaseTextSize: 'Textgröße vergrößern',
+      like: 'Gefällt mir',
+      listView: 'Listenansicht',
+      loadMore: 'Mehr laden',
+      loadPreviousComments: 'Frühere Kommentare laden',
+      nextCarouselItem: 'Nächstes Bild im Bilderkarussell',
+      nextDay: 'Nächster Tag',
+      openAddress: 'Adresse öffnen',
+      openAccessibilitySettings: 'Barrierefreiheit öffnen',
+      openDocument: 'Dokument öffnen',
+      openLink: 'Link öffnen',
+      openPdf: 'PDF öffnen',
+      openRoutePlanner: 'Routenplaner öffnen',
+      openScanner: 'Scanner öffnen',
+      openSettings: 'Einstellungen öffnen',
+      pausePlayback: 'BilderkarussellWiedergabe pausieren',
+      previousMonth: 'Vorheriger Monat',
+      previousCarouselItem: 'Vorheriges Bild im Bilderkarussell',
+      previousDay: 'Vorheriger Tag',
+      redeemVoucher: 'Gutschein einlösen',
+      registerNow: 'Jetzt registrieren',
+      reportProfile: 'Profil melden',
+      scrollToTop: 'Nach oben scrollen',
+      search: 'Suchen',
+      nextMonth: 'Nächster Monat',
+      selectAnswer: 'Antwort auswählen',
+      selectDate: 'Datum auswählen',
+      sendComment: 'Kommentar senden',
+      sendEmail: 'E-Mail senden',
+      sendFeedback: 'Feedback senden',
+      showAll: 'Alle anzeigen',
+      showAllPosts: 'Alle Beiträge anzeigen',
+      showAnswers: 'Antworten anzeigen',
+      showApplicants: 'Bewerber anzeigen',
+      showLess: 'Weniger anzeigen',
+      showMembers: 'Mitglieder anzeigen',
+      showOnMap: 'Auf Karte anzeigen',
+      showParticipants: 'Teilnehmer anzeigen',
+      showVersionInfo: 'Versionsinformationen anzeigen',
+      startPlayback: 'Bilderkarussell Wiedergabe starten',
+      toggleCommunication: 'Kommunikation ein-/ausklappen',
+      toggleLinks: 'Links ein-/ausklappen',
+      unlike: 'Gefällt mir nicht mehr',
+      whatIsAugmentedReality: 'Was ist Augmented Reality',
+      writeAnswer: 'Antwort verfassen',
+      answers: 'Antworten'
+    },
     checkbox: {
       active: 'ausgewählt',
       inactive: 'nicht ausgewählt'
@@ -26,6 +95,11 @@ export const texts = {
       active: 'geöffnet',
       inactive: 'geschlossen'
     }
+  },
+  accessibilityModal: {
+    description:
+      'Passe die Barrierefreiheits-Optionen direkt im aktuellen Bildschirm an. Die Änderungen werden sofort gespeichert.',
+    title: 'Barrierefreiheit'
   },
   appIntro: {
     continue: 'Weiter',
@@ -406,6 +480,12 @@ export const texts = {
     },
     voucher: 'Gutschein',
     tour: 'Tour'
+  },
+  detailActions: {
+    remember: '{{title}} merken',
+    rememberFallback: 'Merken',
+    share: '{{title}} teilen',
+    shareFallback: 'Teilen'
   },
   dropdownFilter: {
     category: 'Kategorie',
@@ -1237,6 +1317,79 @@ export const texts = {
     edit: 'Kacheln bearbeiten'
   },
   settingsContents: {
+    accessibility: {
+      intro:
+        'Diese Einstellungen erweitern die systemweiten Bedienungshilfen um app-interne Optionen.',
+      reset: 'Auf Standardwerte zurücksetzen',
+      setting: 'Barrierefreiheit',
+      theme: {
+        title: 'Farbschema',
+        description: 'Wähle ein helles, dunkles oder vom Gerät gesteuertes Farbschema.',
+        light: 'Hell',
+        dark: 'Dunkel',
+        system: 'Systemeinstellung'
+      },
+      textSize: {
+        title: 'Textgröße',
+        description: 'Passe die Schriftgröße in der App stufenweise an.',
+        sliderLabel: 'Textgrößenregler',
+        decreaseLabel: 'A-',
+        increaseLabel: 'A+',
+        currentValue: 'Aktuelle Größe: {{value}}',
+        levelSmallest: 'Sehr klein',
+        levelSmall: 'Klein',
+        levelDefault: 'Standard',
+        levelLarge: 'Groß',
+        levelLarger: 'Sehr groß',
+        levelLargest: 'Extra groß',
+        levelMaximum: 'Maximum'
+      },
+      boldText: {
+        title: 'Fetter Text',
+        description: 'Stellt App-Texte in fetter Schrift dar.'
+      },
+      isGrayscaleEnabled: {
+        title: 'Graustufenmodus',
+        description: 'Stellt die App-Inhalte in Graustufen dar.'
+      },
+      highContrast: {
+        title: 'Höherer Kontrast',
+        description: 'Reduziert kontrastarme Textfarben für bessere Lesbarkeit.'
+      },
+      readAloud: {
+        title: 'Lesemodus in Details',
+        description: 'Ermöglicht das Vorlesen von Detailinhalten per Sprachausgabe.',
+        collapsePlayer: 'Lesemodus-Player verkleinern',
+        expandPlayer: 'Lesemodus-Player vergrößern',
+        pause: 'Vorlesen pausieren',
+        progress: 'Abschnitt {{current}} von {{total}}',
+        currentTextLabel: 'Aktuell gelesen',
+        hideReadAlong: 'Mitlese-Text ausblenden',
+        next: 'Nächsten Abschnitt vorlesen',
+        resume: 'Vorlesen fortsetzen',
+        previous: 'Vorherigen Abschnitt vorlesen',
+        showReadAlong: 'Mitlese-Text anzeigen',
+        speedFast: '1.2x',
+        speedNormal: '1.0x',
+        speedSlow: '0.8x',
+        speedTitle: 'Vorlesegeschwindigkeit',
+        start: 'Vorlesen starten',
+        stop: 'Vorlesen stoppen'
+      },
+      reduceMotion: {
+        title: 'Bewegung reduzieren',
+        description: 'Verringert Bewegungs- und Übergangseffekte in der App.'
+      },
+      reduceTransparency: {
+        title: 'Transparenz reduzieren',
+        description: 'Verwendet stärker deckende Oberflächen und Hervorhebungen.'
+      },
+      switchLabels: {
+        title: 'Ein/Aus-Kennzeichnungen',
+        description:
+          'Zeigt in Schaltern zusätzlich einen Strich für „Ein“ und einen Kreis für „Aus“ an.'
+      }
+    },
     analytics: {
       no: 'Nein',
       onActivate:
@@ -1296,6 +1449,7 @@ export const texts = {
     intro: ''
   },
   settingsTitles: {
+    accessibility: 'Barrierefreiheit',
     analytics: 'Matomo Analytics',
     arListLayouts: {
       alertTitle: 'Hinweis',

@@ -1,12 +1,13 @@
 import moment from 'moment';
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 import styled from 'styled-components/native';
 
-import { colors, normalize } from '../../config';
+import { normalize } from '../../config';
 import { momentFormat } from '../../helpers';
 import { RegularText } from '../Text';
 import { Wrapper, WrapperRow } from '../Wrapper';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
 
 const TimeBox = styled.View`
   flex-direction: row;
@@ -29,54 +30,58 @@ export const VolunteerAppointmentsCard = ({
     timeFrom: string;
     timeTo: string;
   }[];
-}) => (
-  <Wrapper>
-    {appointments?.map((item, index) => {
-      const { allDay, dateFrom, dateTo, timeFrom, timeTo } = item;
-      const returnFormatDate = 'DD.MM.YYYY';
-      const fullDay = allDay || (timeFrom === '00:00' && timeTo === '00:00');
+}) => {
+  const styles = useThemeStyles(createStyles);
 
-      return (
-        <View key={index} style={index !== appointments.length - 1 ? styles.divider : null}>
-          {(!!timeFrom || !!timeTo || !!dateFrom || !!dateTo) && (
-            <WrapperRow>
-              {!fullDay && (!!timeFrom || !!timeTo) && (
-                <TimeBox>
-                  {!!timeFrom && <RegularText>{timeFrom}</RegularText>}
-                  {!!timeFrom && !!timeTo && <RegularText> -</RegularText>}
-                  {!!timeTo && <RegularText> {timeTo}</RegularText>}
-                </TimeBox>
-              )}
-              {(!!dateFrom || !!dateTo) && (
-                <DateBox>
-                  {!!dateFrom && (
-                    <RegularText>
-                      <RegularText small />
-                      {momentFormat(dateFrom, returnFormatDate)}
-                    </RegularText>
-                  )}
+  return (
+    <Wrapper>
+      {appointments?.map((item, index) => {
+        const { allDay, dateFrom, dateTo, timeFrom, timeTo } = item;
+        const returnFormatDate = 'DD.MM.YYYY';
+        const fullDay = allDay || (timeFrom === '00:00' && timeTo === '00:00');
 
-                  {!!dateTo && dateTo !== dateFrom && (
-                    <RegularText>
-                      <RegularText small>bis </RegularText>
-                      {momentFormat(
-                        fullDay ? moment(dateTo).subtract(1, 'day').format('YYYY-MM-DD') : dateTo,
-                        returnFormatDate
-                      )}
-                    </RegularText>
-                  )}
-                </DateBox>
-              )}
-            </WrapperRow>
-          )}
-        </View>
-      );
-    })}
-  </Wrapper>
-);
+        return (
+          <View key={index} style={index !== appointments.length - 1 ? styles.divider : null}>
+            {(!!timeFrom || !!timeTo || !!dateFrom || !!dateTo) && (
+              <WrapperRow>
+                {!fullDay && (!!timeFrom || !!timeTo) && (
+                  <TimeBox>
+                    {!!timeFrom && <RegularText>{timeFrom}</RegularText>}
+                    {!!timeFrom && !!timeTo && <RegularText> -</RegularText>}
+                    {!!timeTo && <RegularText> {timeTo}</RegularText>}
+                  </TimeBox>
+                )}
+                {(!!dateFrom || !!dateTo) && (
+                  <DateBox>
+                    {!!dateFrom && (
+                      <RegularText>
+                        <RegularText small />
+                        {momentFormat(dateFrom, returnFormatDate)}
+                      </RegularText>
+                    )}
+
+                    {!!dateTo && dateTo !== dateFrom && (
+                      <RegularText>
+                        <RegularText small>bis </RegularText>
+                        {momentFormat(
+                          fullDay ? moment(dateTo).subtract(1, 'day').format('YYYY-MM-DD') : dateTo,
+                          returnFormatDate
+                        )}
+                      </RegularText>
+                    )}
+                  </DateBox>
+                )}
+              </WrapperRow>
+            )}
+          </View>
+        );
+      })}
+    </Wrapper>
+  );
+};
 /* eslint-enable complexity */
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   divider: {
     borderBottomColor: colors.primary,
     borderBottomWidth: 1,

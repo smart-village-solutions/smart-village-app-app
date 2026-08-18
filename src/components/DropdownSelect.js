@@ -4,9 +4,11 @@ import { StyleSheet, View } from 'react-native';
 import Dropdown from 'react-native-modal-dropdown';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { colors, consts, device, Icon, normalize, texts } from '../config';
+import { consts, device, Icon, normalize, texts } from '../config';
 import { baseFontStyle } from '../config/styles/baseFontStyle';
 import { OrientationContext } from '../OrientationProvider';
+import { useTheme } from '../hooks/useTheme';
+import { useThemeStyles } from '../hooks/useThemeStyles';
 
 import { Label } from './Label';
 import { RegularText } from './Text';
@@ -29,6 +31,8 @@ export const DropdownSelect = ({
   setData,
   showSearch
 }) => {
+  const { colors } = useTheme();
+  const styles = useThemeStyles(createStyles);
   const dropdownRef = useRef();
   const { orientation } = useContext(OrientationContext);
   const { left: safeAreaLeft } = useSafeAreaInsets();
@@ -94,7 +98,7 @@ export const DropdownSelect = ({
         </Wrapper>
       );
     },
-    [data, selectedValue, multipleSelect, placeholder]
+    [colors.darkText, colors.primary, data, multipleSelect, placeholder, selectedValue, styles]
   );
 
   const preselect = (index) => dropdownRef.current.select(index);
@@ -183,7 +187,7 @@ export const DropdownSelect = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   checkbox: {
     marginRight: normalize(10)
   },
@@ -200,6 +204,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: normalize(12)
   },
+
   dropdownDropdown: {
     backgroundColor: colors.lightestText,
     borderColor: colors.borderRgba,
@@ -212,14 +217,18 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5,
     shadowRadius: 3
   },
+
   dropdownDropdownText: baseFontStyle,
+
   dropdownRowWrapper: {
     backgroundColor: colors.lightestText
   },
+
   dropdownSeparator: {
     backgroundColor: colors.gray40,
     height: StyleSheet.hairlineWidth
   },
+
   selectedValueText: { width: '90%' }
 });
 

@@ -1,7 +1,7 @@
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
+import { RefreshControl, ScrollView, View } from 'react-native';
 
 import {
   BoldText,
@@ -14,9 +14,11 @@ import {
   WrapperWrap
 } from '../components';
 import { LoadingSpinner } from '../components/LoadingSpinner';
-import { colors, consts, normalize, texts } from '../config';
+import { consts, normalize, texts } from '../config';
 import { momentFormat } from '../helpers';
 import { useConstructionSites, useMatomoTrackScreenView } from '../hooks';
+import { useThemeStyles } from '../hooks/useThemeStyles';
+import { useTheme } from '../hooks/useTheme';
 
 const { MATOMO_TRACKING, MAP } = consts;
 
@@ -38,6 +40,9 @@ const formatDates = (startDate, endDate) => {
 
 // eslint-disable-next-line complexity
 export const ConstructionSiteDetailScreen = ({ route }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const id = route.params?.id;
   const queryVariables = { ids: id };
   const { constructionSites, loading, refresh, refreshing } = useConstructionSites(queryVariables);
@@ -151,13 +156,15 @@ export const ConstructionSiteDetailScreen = ({ route }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   verticalPadding: {
     paddingTop: normalize(14)
   },
+
   imageContainer: {
     alignSelf: 'center'
   },
+
   mapStyle: {
     height: normalize(300),
     width: '100%'

@@ -16,6 +16,7 @@ import { Calendar as RNCalendar } from 'react-native-calendars';
 import { Overlay } from 'react-native-elements';
 
 import {
+  AccessibilityHeader,
   BoldText,
   Button,
   CalendarListToggle,
@@ -33,11 +34,12 @@ import {
   Wrapper,
   WrapperRow
 } from '../components';
+import { HEADER_RIGHT_ICON_STROKE_WIDTH } from '../components/headerIconConfig';
 import { DayComponent } from '../components/DayComponent';
 import { FeedbackFooter } from '../components/FeedbackFooter';
-import { colors, consts, device, Icon, normalize, texts } from '../config';
+import { consts, device, Icon, normalize, texts } from '../config';
 import { momentFormat, parseListItemsFromQuery } from '../helpers';
-import { setupLocales } from '../helpers/calendarHelper';
+import { getCalendarTheme, setupLocales } from '../helpers/calendarHelper';
 import {
   useKeyboardHeight,
   useRenderSuggestions,
@@ -50,6 +52,8 @@ import {
 import { QUERY_TYPES } from '../queries';
 import { SettingsContext } from '../SettingsProvider';
 import { ScreenName } from '../types';
+import { useThemeStyles } from '../hooks/useThemeStyles';
+import { useTheme } from '../hooks/useTheme';
 
 setupLocales();
 
@@ -76,6 +80,9 @@ export const getLocationData = (streetData) => {
  */
 /* eslint-disable complexity */
 export const WasteCollectionScreen = ({ navigation }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const { globalSettings } = useContext(SettingsContext);
   const { navigation: navigationType, settings = {}, waste = {} } = globalSettings;
   const { wasteAddresses = {} } = settings;
@@ -86,6 +93,8 @@ export const WasteCollectionScreen = ({ navigation }) => {
     texts: wasteAddressesTexts = {},
     twoStep: hasWasteAddressesTwoStep = false
   } = wasteAddresses;
+  const [selectedStreetId, setSelectedStreetId] = useState(waste.streetId);
+  const [isReset, setIsReset] = useState(false);
   const renderSuggestions = useRenderSuggestions((item) => {
     if (item?.id) {
       setSelectedStreetId(item.id);
@@ -96,7 +105,6 @@ export const WasteCollectionScreen = ({ navigation }) => {
   const { setInputValue, setInputValueCity, setInputValueCitySelected } = renderSuggestions;
   const wasteTexts = { ...texts.wasteCalendar, ...wasteAddressesTexts };
   const [isRehydrating, setIsRehydrating] = useState(false);
-  const [selectedStreetId, setSelectedStreetId] = useState(waste.streetId);
   const [showCalendar, setShowCalendar] = useState(false);
   const [isDayOverlayVisible, setIsDayOverlayVisible] = useState(false);
   const [selectedDay, setSelectedDay] = useState('');
@@ -111,7 +119,6 @@ export const WasteCollectionScreen = ({ navigation }) => {
     selectedTypes: selectedTypes || typesData
   });
   const keyboardHeight = useKeyboardHeight();
-  const [isReset, setIsReset] = useState(false);
   const query = QUERY_TYPES.WASTE_STREET;
 
   const listItems = useMemo(() => {
@@ -130,7 +137,7 @@ export const WasteCollectionScreen = ({ navigation }) => {
 
       return item.listDate >= today && hasMatchesForItem;
     });
-  }, [markedDates, selectedTypes]);
+  }, [markedDates, query, selectedTypes]);
 
   useEffect(() => {
     if (
@@ -143,7 +150,13 @@ export const WasteCollectionScreen = ({ navigation }) => {
       setInputValueCity('');
       setInputValueCitySelected(false);
     }
-  }, [selectedStreetId, streetData?.wasteAddresses]);
+  }, [
+    selectedStreetId,
+    setInputValue,
+    setInputValueCity,
+    setInputValueCitySelected,
+    streetData?.wasteAddresses
+  ]);
 
   // Initializes the `selectedTypes` state based on the available waste types (`usedTypes`)
   // and the user's previously selected type keys (`waste.selectedTypeKeys`).
@@ -185,20 +198,29 @@ export const WasteCollectionScreen = ({ navigation }) => {
     navigation.setOptions({
       headerRight: () =>
         !!streetData && !!usedTypes ? (
-          <WrapperRow itemsCenter>
+          <WrapperRow itemsCenter style={styles.headerRight}>
             <HeaderLeft
               onPress={goToReminder}
               backImage={({ tintColor }) => (
-                <Icon.EditSetting color={tintColor} style={styles.icon} />
+                <Icon.EditSetting
+                  color={tintColor}
+                  size={normalize(20)}
+                  style={styles.icon}
+                  strokeWidth={HEADER_RIGHT_ICON_STROKE_WIDTH}
+                />
               )}
             />
+            <AccessibilityHeader style={styles.icon} />
 
             {navigationType === 'drawer' && (
               <DrawerHeader navigation={navigation} style={[styles.icon, styles.noPaddingLeft]} />
             )}
           </WrapperRow>
         ) : navigationType === 'drawer' ? (
-          <DrawerHeader navigation={navigation} style={[styles.icon, styles.noPaddingLeft]} />
+          <WrapperRow itemsCenter style={styles.headerRight}>
+            <AccessibilityHeader style={styles.icon} />
+            <DrawerHeader navigation={navigation} style={[styles.icon, styles.noPaddingLeft]} />
+          </WrapperRow>
         ) : null
     });
 
@@ -225,7 +247,16 @@ export const WasteCollectionScreen = ({ navigation }) => {
         headerLeft: () => <HeaderLeft onPress={navigation.goBack} />
       });
     }
-  }, [goToReminder, showCalendar, streetData, usedTypes, isReset, waste.streetId]);
+  }, [
+    goToReminder,
+    isReset,
+    navigation,
+    navigationType,
+    showCalendar,
+    streetData,
+    usedTypes,
+    waste.streetId
+  ]);
 
   const resetSelectedStreetId = useCallback(async () => {
     setSelectedStreetId(undefined);
@@ -233,7 +264,7 @@ export const WasteCollectionScreen = ({ navigation }) => {
     setInputValueCity('');
     setInputValueCitySelected(false);
     setIsReset(true);
-  }, []);
+  }, [setInputValue, setInputValueCity, setInputValueCitySelected]);
 
   const wasteHeader = useCallback(() => {
     return <WasteHeader locationData={locationData} onPress={resetSelectedStreetId} />;
@@ -247,7 +278,7 @@ export const WasteCollectionScreen = ({ navigation }) => {
         selectedTypes={selectedTypes}
       />
     );
-  }, [selectedStreetId, listItems, wasteHeader, query, selectedTypes]);
+  }, [selectedStreetId, listItems, query, selectedTypes]);
 
   const onDayPress = useCallback((day) => {
     setSelectedDay(day.dateString);
@@ -292,10 +323,7 @@ export const WasteCollectionScreen = ({ navigation }) => {
                   onDayPress={onDayPress}
                   renderArrow={renderArrow}
                   theme={{
-                    calendarBackground: colors.calendarBackground,
-                    todayTextColor: colors.calendarTodayText,
-                    selectedDayTextColor: colors.calendarSelectedDayText,
-                    indicatorColor: colors.refreshControl,
+                    ...getCalendarTheme(colors),
                     dotStyle: {
                       borderRadius: DOT_SIZE / 2,
                       height: DOT_SIZE,
@@ -330,6 +358,8 @@ export const WasteCollectionScreen = ({ navigation }) => {
                       <BoldText>{momentFormat(selectedDay, 'dddd, DD.MM.YYYY')}</BoldText>
 
                       <TouchableOpacity
+                        accessibilityLabel={consts.a11yLabel.closeIcon}
+                        accessibilityRole="button"
                         onPress={() => setIsDayOverlayVisible(false)}
                         style={styles.overlayCloseButton}
                       >
@@ -394,30 +424,41 @@ export const WasteCollectionScreen = ({ navigation }) => {
 };
 /* eslint-enable complexity */
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   exportButtonContainer: {
     alignSelf: 'center',
     position: 'absolute',
     width: '100%'
   },
+
   feedbackContainer: {
     justifyContent: 'flex-end',
     marginTop: normalize(10)
   },
+
+  headerRight: {
+    alignItems: 'center',
+    paddingRight: normalize(8)
+  },
+
   icon: {
     paddingHorizontal: normalize(16)
   },
+
   noPaddingLeft: {
     paddingLeft: 0
   },
+
   overlay: {
     borderRadius: normalize(8),
     padding: normalize(30),
     paddingBottom: normalize(9)
   },
+
   overlayWidth: {
     width: '80%'
   },
+
   paddingTop: {
     paddingTop: normalize(14)
   }

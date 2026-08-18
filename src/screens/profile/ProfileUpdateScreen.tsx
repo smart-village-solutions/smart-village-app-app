@@ -2,7 +2,7 @@ import { StackScreenProps } from '@react-navigation/stack';
 import moment from 'moment';
 import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { Alert, RefreshControl, ScrollView, StyleSheet } from 'react-native';
+import { Alert, RefreshControl, ScrollView } from 'react-native';
 import { useMutation } from 'react-query';
 
 import {
@@ -14,18 +14,22 @@ import {
   Input,
   LOGIN_MODAL,
   LoadingModal,
+  ReadAloudContent,
   SafeAreaViewFlex,
   SectionHeader,
   Wrapper,
   WrapperHorizontal,
   WrapperVertical
 } from '../../components';
-import { colors, texts } from '../../config';
+import { texts } from '../../config';
 import { storeProfileUserData } from '../../helpers';
 import { useStaticContent } from '../../hooks';
 import { useProfileContext } from '../../ProfileProvider';
 import { profileUpdate } from '../../queries/profile';
+import { useReadAloudScrollContentContainerStyle } from '../../ReadAloudAvailabilityProvider';
 import { ProfileUpdate, ScreenName } from '../../types';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 const showUpdateFailAlert = () =>
   Alert.alert(texts.profile.updateProfileFailedTitle, texts.profile.updateProfileFailedBody);
@@ -46,6 +50,10 @@ const genderData = [
 
 /* eslint-disable complexity */
 export const ProfileUpdateScreen = ({ navigation, route }: StackScreenProps<any>) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
+  const scrollContentContainerStyle = useReadAloudScrollContentContainerStyle();
   const { currentUserData } = useProfileContext();
   const member = route.params?.member ?? {};
   const from = route.params?.from ?? '';
@@ -129,6 +137,7 @@ export const ProfileUpdateScreen = ({ navigation, route }: StackScreenProps<any>
     <SafeAreaViewFlex>
       <DefaultKeyboardAvoidingView>
         <ScrollView
+          contentContainerStyle={scrollContentContainerStyle}
           keyboardShouldPersistTaps="handled"
           refreshControl={
             <RefreshControl
@@ -148,6 +157,10 @@ export const ProfileUpdateScreen = ({ navigation, route }: StackScreenProps<any>
 
           {!!dataProfileUpdateScreenTop && (
             <WrapperHorizontal>
+              <ReadAloudContent
+                content={dataProfileUpdateScreenTop}
+                contentId="profile-update-top-content"
+              />
               <HtmlView html={dataProfileUpdateScreenTop} />
             </WrapperHorizontal>
           )}
@@ -285,6 +298,10 @@ export const ProfileUpdateScreen = ({ navigation, route }: StackScreenProps<any>
 
           {!!dataProfileUpdateScreenBottom && (
             <WrapperHorizontal>
+              <ReadAloudContent
+                content={dataProfileUpdateScreenBottom}
+                contentId="profile-update-bottom-content"
+              />
               <HtmlView html={dataProfileUpdateScreenBottom} />
             </WrapperHorizontal>
           )}
@@ -305,7 +322,7 @@ export const ProfileUpdateScreen = ({ navigation, route }: StackScreenProps<any>
 };
 /* eslint-enable complexity */
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   center: {
     alignItems: 'center'
   }

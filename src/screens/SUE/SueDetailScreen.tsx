@@ -2,7 +2,7 @@ import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { StackScreenProps } from '@react-navigation/stack';
 import _upperFirst from 'lodash/upperFirst';
 import React, { useContext, useState } from 'react';
-import { ActivityIndicator, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, RefreshControl, ScrollView, View } from 'react-native';
 import { Divider } from 'react-native-elements';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
@@ -16,6 +16,7 @@ import {
   ImageSection,
   LoadingContainer,
   MapLibre,
+  ReadAloudContent,
   RegularText,
   SafeAreaViewFlex,
   SueCategory,
@@ -26,16 +27,23 @@ import {
   Wrapper,
   WrapperHorizontal
 } from '../../components';
-import { colors, device, normalize, texts } from '../../config';
+import { device, normalize, texts } from '../../config';
 import { QUERY_TYPES, getQuery } from '../../queries';
+import { useReadAloudScrollContentContainerStyle } from '../../ReadAloudAvailabilityProvider';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 /* eslint-disable complexity */
 export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { appDesignSystem = {} } = useContext(ConfigurationsContext);
   const { sueStatus = {} } = appDesignSystem;
   const { statuses } = sueStatus;
   const queryVariables = route.params?.queryVariables ?? {};
+  const scrollContentContainerStyle = useReadAloudScrollContentContainerStyle();
   const [refreshing, setRefreshing] = useState(false);
   const [isFullscreenMap, setIsFullscreenMap] = useState(false);
   const { bottom: safeAreaBottom, top: safeAreaTop } = useSafeAreaInsets();
@@ -91,6 +99,7 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
   return (
     <SafeAreaViewFlex>
       <ScrollView
+        contentContainerStyle={scrollContentContainerStyle}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -126,6 +135,10 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
             <>
               <Wrapper>
                 <BoldText>{texts.sue.description}</BoldText>
+                <ReadAloudContent
+                  content={description}
+                  contentId="sue-detail-description-content"
+                />
                 <HtmlView big={false} html={description} />
               </Wrapper>
 
@@ -204,6 +217,7 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
 
               <Wrapper>
                 <BoldText>{texts.sue.answer}</BoldText>
+                <ReadAloudContent content={serviceNotice} contentId="sue-detail-answer-content" />
                 <HtmlView big={false} html={serviceNotice} />
               </Wrapper>
             </>
@@ -215,18 +229,21 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
 };
 /* eslint-enable complexity */
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   fullscreenMap: {
     marginLeft: 0,
     width: device.width
   },
+
   map: {
     height: normalize(300),
     width: '100%'
   },
+
   sueImageContainer: {
     width: '100%'
   },
+
   wrapperHidden: {
     display: 'none'
   }

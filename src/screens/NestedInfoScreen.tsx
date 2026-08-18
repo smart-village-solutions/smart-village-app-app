@@ -7,16 +7,19 @@ import {
   LoadingContainer,
   LoadingSpinner,
   MultiButtonWithSubQuery,
+  ReadAloudContent,
   SafeAreaViewFlex,
   SectionHeader,
   WrapperVertical
 } from '../components';
-import { colors, normalize } from '../config';
+import { normalize } from '../config';
 import { useStaticContent } from '../hooks';
 import { useRenderItem } from '../hooks/listHooks';
 import { NetworkContext } from '../NetworkProvider';
 import { QUERY_TYPES } from '../queries';
+import { useReadAloudScrollContentContainerStyle } from '../ReadAloudAvailabilityProvider';
 import { SubQuery } from '../types';
+import { useTheme } from '../hooks/useTheme';
 
 type NestedInfo = {
   content?: string;
@@ -53,6 +56,7 @@ export const ListHeaderComponent = ({
 
   return (
     <WrapperVertical style={styles.noPaddingBottom}>
+      <ReadAloudContent content={html} contentId="nested-info-header-content" />
       {/* @ts-expect-error HtmlView uses memo in js, which is not inferred correctly */}
       <HtmlView html={html} />
       {!!navigationTitle && (
@@ -64,11 +68,14 @@ export const ListHeaderComponent = ({
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const NestedInfoScreen = ({ navigation, route }: StackScreenProps<any>) => {
+  const { colors } = useTheme();
+
   const { isConnected } = useContext(NetworkContext);
   const [refreshing, setRefreshing] = useState(false);
   const name = route.params?.name;
   const rootRouteName = route.params?.rootRouteName;
   const subQuery = route.params?.subQuery ?? undefined;
+  const listContentContainerStyle = useReadAloudScrollContentContainerStyle();
 
   const { data, loading, refetch } = useStaticContent<NestedInfo>({ name, type: 'json' });
   const {
@@ -90,7 +97,7 @@ export const NestedInfoScreen = ({ navigation, route }: StackScreenProps<any>) =
       await refetchHtml?.();
     }
     setRefreshing(false);
-  }, [isConnected, refetch]);
+  }, [isConnected, refetch, refetchHtml]);
 
   const renderItem = useRenderItem(QUERY_TYPES.PUBLIC_JSON_FILE, navigation);
 
@@ -126,6 +133,7 @@ export const NestedInfoScreen = ({ navigation, route }: StackScreenProps<any>) =
   return (
     <SafeAreaViewFlex>
       <SectionList
+        contentContainerStyle={listContentContainerStyle}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}

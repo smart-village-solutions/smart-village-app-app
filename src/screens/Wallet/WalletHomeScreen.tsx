@@ -1,12 +1,13 @@
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useCallback, useContext, useMemo, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 
 import {
   Button,
   HtmlView,
   LoadingSpinner,
+  ReadAloudContent,
   SafeAreaViewFlex,
   WalletHeader,
   WalletList,
@@ -14,13 +15,19 @@ import {
   WrapperRow,
   WrapperVertical
 } from '../../components';
-import { colors, Icon, normalize, texts } from '../../config';
+import { Icon, normalize, texts } from '../../config';
 import { getSavedCards } from '../../helpers';
 import { useStaticContent } from '../../hooks';
+import { useTheme } from '../../hooks/useTheme';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import {
+  useReadAloudPlayerBottomSpacing,
+  useReadAloudScrollContentContainerStyle
+} from '../../ReadAloudAvailabilityProvider';
 import { SettingsContext } from '../../SettingsProvider';
 import { ScreenName, TCard } from '../../types';
 
-const footer = ({
+const Footer = ({
   buttonText,
   infoIcon,
   infoText,
@@ -31,6 +38,8 @@ const footer = ({
   infoText: string;
   navigation: StackNavigationProp<Record<string, any>>;
 }) => {
+  const styles = useThemeStyles(createStyles);
+
   return (
     <>
       <Button
@@ -47,6 +56,7 @@ const footer = ({
           <Icon.NamedIcon name={infoIcon} style={styles.infoIcon} />
 
           <View style={styles.infoTextContainer}>
+            <ReadAloudContent content={infoText as string} contentId="wallet-home-info-content" />
             <HtmlView html={infoText as string} />
           </View>
         </WrapperRow>
@@ -56,7 +66,11 @@ const footer = ({
 };
 
 export const WalletHomeScreen = () => {
+  const { colors } = useTheme();
+  const styles = useThemeStyles(createStyles);
   const navigation = useNavigation<StackNavigationProp<Record<string, any>>>();
+  const listContentContainerStyle = useReadAloudScrollContentContainerStyle();
+  const readAloudPlayerBottomSpacing = useReadAloudPlayerBottomSpacing();
   const walletHomeTexts = texts.wallet.home;
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
@@ -129,7 +143,7 @@ export const WalletHomeScreen = () => {
 
   if (!savedCards?.length) {
     return (
-      <SafeAreaViewFlex>
+      <SafeAreaViewFlex style={{ paddingBottom: readAloudPlayerBottomSpacing }}>
         <WrapperVertical>
           <WalletHeader
             description={description}
@@ -139,7 +153,14 @@ export const WalletHomeScreen = () => {
             type={title}
           />
 
-          <Wrapper>{footer({ buttonText, infoIcon, infoText, navigation })}</Wrapper>
+          <Wrapper>
+            <Footer
+              buttonText={buttonText}
+              infoIcon={infoIcon}
+              infoText={infoText}
+              navigation={navigation}
+            />
+          </Wrapper>
         </WrapperVertical>
       </SafeAreaViewFlex>
     );
@@ -173,15 +194,23 @@ export const WalletHomeScreen = () => {
 
   return (
     <WalletList
+      contentContainerStyle={listContentContainerStyle}
       items={listItem}
       ListFooterComponent={() => (
-        <WrapperVertical>{footer({ buttonText, infoIcon, infoText, navigation })}</WrapperVertical>
+        <WrapperVertical>
+          <Footer
+            buttonText={buttonText}
+            infoIcon={infoIcon}
+            infoText={infoText}
+            navigation={navigation}
+          />
+        </WrapperVertical>
       )}
     />
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   iconContainer: {
     alignSelf: 'center',
     borderRadius: normalize(50)

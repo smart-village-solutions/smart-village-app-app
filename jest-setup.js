@@ -13,5 +13,8 @@ jest.mock('expo-updates', () => ({
   isEnabled: true,
   reloadAsync: jest.fn(async () => undefined)
 }));
+jest.mock('react-native-color-matrix-image-filters', () => ({
+  Grayscale: require('react').Fragment
+}));
 jest.mock('react-native-webview', () => ({ default: () => jest.fn() }));
 setUpTests();

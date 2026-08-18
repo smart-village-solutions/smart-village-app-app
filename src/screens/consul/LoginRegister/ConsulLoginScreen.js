@@ -132,7 +132,10 @@ export const ConsulLoginScreen = ({ navigation }) => {
               title={texts.consul.login}
               disabled={isLoading}
             />
-            <Touchable onPress={() => navigation.goBack()}>
+            <Touchable
+              accessibilityLabel={texts.accessibilityLabels.actions.back}
+              onPress={() => navigation.goBack()}
+            >
               <BoldText center primary underline>
                 {texts.consul.abort.toUpperCase()}
               </BoldText>

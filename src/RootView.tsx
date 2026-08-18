@@ -1,17 +1,25 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
-import React, { useCallback } from 'react';
+import React, { useCallback, useContext, useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 
+import { AccessibilityContext } from './AccessibilityProvider';
+import { AppWideGrayscaleFilter } from './components/AppWideGrayscaleFilter';
 import { fontConfig } from './config';
+import { useTheme } from './hooks/useTheme';
 import { SUE_REPORT_VALUES } from './screens';
 
 const RootView = ({ children }: { children: React.ReactNode }) => {
   const [isFontLoaded] = useFonts(fontConfig);
+  const { features, isGrayscaleEnabled, isHydrated } = useContext(AccessibilityContext);
+  const { colors } = useTheme();
+  const hasHandledInitialLayout = useRef(false);
 
   const onLayoutRootView = useCallback(async () => {
-    if (isFontLoaded) {
+    if (isFontLoaded && !hasHandledInitialLayout.current) {
+      hasHandledInitialLayout.current = true;
+
       // when the application is closed and reopened, the saved data in the sue report form is deleted
       await AsyncStorage.removeItem(SUE_REPORT_VALUES);
 
@@ -24,17 +32,19 @@ const RootView = ({ children }: { children: React.ReactNode }) => {
     }
   }, [isFontLoaded]);
 
-  if (!isFontLoaded) return null;
+  if (!isFontLoaded || (features?.theming && !isHydrated)) return null;
 
   return (
-    <View style={styles.flex} onLayout={onLayoutRootView}>
-      {children}
+    <View style={[styles.root, { backgroundColor: colors.background }]} onLayout={onLayoutRootView}>
+      <AppWideGrayscaleFilter isGrayscaleEnabled={isGrayscaleEnabled}>
+        {children}
+      </AppWideGrayscaleFilter>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  flex: {
+  root: {
     flex: 1
   }
 });

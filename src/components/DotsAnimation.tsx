@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -9,13 +9,15 @@ import Animated, {
   withTiming
 } from 'react-native-reanimated';
 
-import { colors, normalize } from '../config';
+import { normalize } from '../config';
+import { useThemeStyles } from '../hooks/useThemeStyles';
 
 /**
  * Animated typing indicator with three bouncing dots
  * Used to show that the bot is typing a response
  */
 export const DotsAnimation = () => {
+  const styles = useThemeStyles(createStyles);
   const dot1 = useSharedValue(0);
   const dot2 = useSharedValue(0);
   const dot3 = useSharedValue(0);
@@ -102,7 +104,7 @@ export const DotsAnimation = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   dotsContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -110,10 +112,12 @@ const styles = StyleSheet.create({
     gap: normalize(4),
     paddingTop: normalize(4)
   },
+
   dotWrapper: {
     alignItems: 'center',
     justifyContent: 'center'
   },
+
   dot: {
     width: normalize(8),
     height: normalize(8),

@@ -1,8 +1,10 @@
-import React from 'react';
-import { StyleSheet } from 'react-native';
+import React, { useContext, useMemo } from 'react';
+import { StyleSheet, View } from 'react-native';
 import { Overlay } from 'react-native-elements';
 
-import { normalize, texts } from '../config';
+import { AccessibilityContext } from '../AccessibilityProvider';
+import { consts, normalize, texts } from '../config';
+import { useTheme } from '../hooks/useTheme';
 
 import { BoldText } from './Text';
 import { Touchable } from './Touchable';
@@ -30,36 +32,49 @@ export const Modal = ({
   onModalVisible,
   overlayStyle
 }: TModal) => {
+  const { isReduceMotionEnabled } = useContext(AccessibilityContext);
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
+
   return (
     <Overlay
-      animationType="fade"
+      animationType={isReduceMotionEnabled ? 'none' : 'fade'}
       isVisible={isVisible}
       onBackdropPress={isBackdropPress ? onModalVisible : undefined}
       overlayStyle={[!isListView && styles.overlay, styles.overlayWidth, { height }, overlayStyle]}
       statusBarTranslucent
       supportedOrientations={['portrait', 'landscape']}
     >
-      <>
+      <View accessibilityViewIsModal importantForAccessibility="yes">
         {children}
 
         {closeButton || (
-          <Touchable onPress={onModalVisible}>
+          <Touchable
+            accessibilityLabel={consts.a11yLabel.closeIcon}
+            accessibilityRole="button"
+            onPress={onModalVisible}
+          >
             <BoldText center underline primary>
               {modalHiddenButtonName}
             </BoldText>
           </Touchable>
         )}
-      </>
+      </View>
     </Overlay>
   );
 };
 
-const styles = StyleSheet.create({
-  overlay: {
-    borderRadius: normalize(8),
-    padding: normalize(30)
-  },
-  overlayWidth: {
-    width: '80%'
-  }
-});
+/* Dynamic theme styles cannot be resolved by react-native/no-unused-styles. */
+/* eslint-disable react-native/no-unused-styles */
+const createStyles = (colors: ReturnType<typeof useTheme>['colors']) =>
+  StyleSheet.create({
+    overlay: {
+      backgroundColor: colors.surface,
+      borderRadius: normalize(8),
+      padding: normalize(30)
+    },
+    overlayWidth: {
+      width: '80%'
+    }
+  });
+/* eslint-enable react-native/no-unused-styles */

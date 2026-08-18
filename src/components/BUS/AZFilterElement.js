@@ -1,11 +1,12 @@
 import styled, { css } from 'styled-components/native';
 import { StyleSheet } from 'react-native';
 
-import { colors, normalize } from '../../config';
+import { normalize } from '../../config';
+import { lightColors } from '../../config/colors';
 
 export const AZFilterElement = styled.View`
   align-items: center;
-  border-color: ${colors.shadowRgba};
+  border-color: ${(props) => props.theme?.shadowRgba || lightColors.shadowRgba};
   border-radius: ${normalize(20)}px;
   border-width: ${StyleSheet.hairlineWidth};
   height: ${normalize(40)}px;
@@ -18,7 +19,7 @@ export const AZFilterElement = styled.View`
   ${(props) =>
     props.selected &&
     css`
-      background-color: ${colors.shadowRgba};
+      background-color: ${(props) => props.theme?.shadowRgba || lightColors.shadowRgba};
     `};
 
   ${(props) =>
@@ -36,6 +37,6 @@ export const AZFilterElement = styled.View`
   ${(props) =>
     props.backgroundContrast &&
     css`
-      background-color: ${colors.overlayRgba};
+      background-color: ${(props) => props.theme?.overlayRgba || lightColors.overlayRgba};
     `};
 `;

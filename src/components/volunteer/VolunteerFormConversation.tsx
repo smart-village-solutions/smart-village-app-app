@@ -167,7 +167,10 @@ export const VolunteerFormConversation = ({
           disabled={isLoading}
           notFullWidth
         />
-        <Touchable onPress={() => navigation.goBack()}>
+        <Touchable
+          accessibilityLabel={texts.accessibilityLabels.actions.back}
+          onPress={() => navigation.goBack()}
+        >
           <RegularText primary center>
             {texts.volunteer.abort}
           </RegularText>

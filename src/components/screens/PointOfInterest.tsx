@@ -42,10 +42,17 @@ type PointOfInterestProps = {
   data: any;
   hideMap?: boolean;
   navigation?: any;
+  readAloudControls?: React.ReactNode;
   route: any;
 };
 
-export const PointOfInterest = ({ data, hideMap, navigation, route }: PointOfInterestProps) => {
+export const PointOfInterest = ({
+  data,
+  hideMap,
+  navigation,
+  readAloudControls,
+  route
+}: PointOfInterestProps) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
@@ -197,9 +204,7 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }: PointOfInt
       )}
 
       {(!!addresses?.length || !!contact || !!openingHours?.length || !!webUrls?.length) && (
-        <Wrapper
-          noPaddingBottom={!!showDistanceDirection.poi && latitude != null && longitude != null}
-        >
+        <Wrapper noPaddingBottom>
           <InfoCard
             addresses={addresses}
             contact={contact}
@@ -210,6 +215,8 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }: PointOfInt
           />
         </Wrapper>
       )}
+
+      {readAloudControls}
 
       {!!showDistanceDirection.poi && latitude != null && longitude != null && (
         <DistanceDirectionCard targetPosition={{ latitude, longitude }} />

@@ -2,10 +2,13 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { ActivityIndicator } from 'react-native';
 
-import { colors, Icon, normalize } from '../../config';
+import { Icon, normalize } from '../../config';
 import { DOWNLOAD_TYPE } from '../../helpers';
+import { useTheme } from '../../hooks/useTheme';
 
 export const IconForDownloadType = ({ isListView, downloadType, showOnDetailPage }) => {
+  const { colors } = useTheme();
+
   if (showOnDetailPage) {
     return <Icon.ArrowRight color={colors.darkText} size={normalize(18)} />;
   }

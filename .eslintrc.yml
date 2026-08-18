@@ -24,6 +24,7 @@ plugins:
   - import
   - react
   - react-native
+  - react-native-a11y
   - '@typescript-eslint'
 rules:
   arrow-parens:
@@ -67,6 +68,15 @@ rules:
   react-native/no-inline-styles:
     - error
   react-native/no-color-literals:
+    - error
+  # Accessibility rules: require accessible labels and roles on interactive elements
+  react-native-a11y/has-accessibility-props:
+    - error
+  react-native-a11y/has-valid-accessibility-role:
+    - error
+  react-native-a11y/has-valid-accessibility-state:
+    - error
+  react-native-a11y/no-nested-touchables:
     - error
   '@typescript-eslint/no-unused-vars':
     - 2

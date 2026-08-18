@@ -1,10 +1,12 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { Keyboard, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native';
+import { Keyboard, TouchableOpacity, ViewStyle } from 'react-native';
 
-import { Icon, colors, consts, normalize, texts } from '../../config';
+import { Icon, consts, normalize, texts } from '../../config';
 import { WrapperRow } from '../Wrapper';
 import { Input } from '../form';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 const { a11yLabel } = consts;
 
@@ -23,6 +25,9 @@ export const Search = ({
   placeholder = 'Suche...',
   setQueryVariables
 }: TSearch) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const { control, handleSubmit } = useForm({
     defaultValues: {
       search: ''
@@ -57,15 +62,17 @@ export const Search = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   container: {
     flex: 1,
     height: normalize(42),
     marginRight: normalize(8)
   },
+
   inputContainer: {
     height: normalize(52)
   },
+
   searchButton: {
     alignItems: 'center',
     backgroundColor: colors.primary,

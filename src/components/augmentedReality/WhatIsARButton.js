@@ -1,16 +1,20 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { Icon, colors, normalize, texts } from '../../config';
+import { Icon, normalize, texts } from '../../config';
 import { ScreenName } from '../../types';
 import { RegularText } from '../Text';
 import { Touchable } from '../Touchable';
 import { Wrapper, WrapperRow } from '../Wrapper';
+import { useTheme } from '../../hooks/useTheme';
 
 export const WhatIsARButton = ({ data, isLoading, navigation, refetch }) => {
+  const { colors } = useTheme();
+
   return (
     <Wrapper>
       <Touchable
+        accessibilityLabel={texts.accessibilityLabels.actions.whatIsAugmentedReality}
         onPress={() => navigation.navigate(ScreenName.ARInfo, { data, isLoading, refetch })}
       >
         <WrapperRow spaceBetween>

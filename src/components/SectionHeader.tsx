@@ -1,7 +1,8 @@
 import React, { useContext } from 'react';
 import { StyleSheet } from 'react-native';
 
-import { colors, consts, device, Icon, normalize } from '../config';
+import { consts, device, Icon, normalize } from '../config';
+import { useTheme } from '../hooks/useTheme';
 import { SettingsContext } from '../SettingsProvider';
 
 import { Title, TitleContainer, TitleShadow } from './Title';
@@ -26,17 +27,19 @@ export const SectionHeader = ({
   title
 }: Props) => {
   const { globalSettings } = useContext(SettingsContext);
+  const { colors } = useTheme();
   const { settings = {} } = globalSettings;
   const { flat = true, uppercase = false } = settings;
 
   if (!title) return null;
+  const headingAccessibilityLabel = `(${title}) ${consts.a11yLabel.heading}`;
+  const pressableAccessibilityLabel = `${headingAccessibilityLabel} ${consts.a11yLabel.button}`;
 
   const innerComponent = (
     <WrapperRow spaceBetween>
       <Title
-        accessibilityLabel={`(${title}) ${consts.a11yLabel.heading} ${
-          onPress ? consts.a11yLabel.button : ''
-        } `}
+        accessibilityLabel={onPress ? pressableAccessibilityLabel : headingAccessibilityLabel}
+        accessibilityRole={onPress ? undefined : 'header'}
         big={big}
         center={center}
         onPress={onPress}
@@ -54,7 +57,13 @@ export const SectionHeader = ({
   return (
     <>
       <TitleContainer flat={flat} style={containerStyle}>
-        {onPress ? <Touchable onPress={onPress}>{innerComponent}</Touchable> : innerComponent}
+        {onPress ? (
+          <Touchable accessibilityLabel={pressableAccessibilityLabel} onPress={onPress}>
+            {innerComponent}
+          </Touchable>
+        ) : (
+          innerComponent
+        )}
       </TitleContainer>
       {!flat && device.platform === 'ios' && <TitleShadow />}
     </>

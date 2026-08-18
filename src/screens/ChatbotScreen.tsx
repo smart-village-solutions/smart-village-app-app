@@ -1,20 +1,34 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useContext, useEffect, useLayoutEffect, useMemo } from 'react';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useContext, useEffect, useLayoutEffect } from 'react';
+import { TouchableOpacity } from 'react-native';
 
-import { Button, Chat, EmptyMessage, LoadingSpinner, Wrapper } from '../components';
-import { colors, Icon, normalize, texts } from '../config';
+import {
+  AccessibilityHeader,
+  Button,
+  Chat,
+  EmptyMessage,
+  LoadingSpinner,
+  Wrapper,
+  WrapperRow
+} from '../components';
+import { HEADER_RIGHT_ICON_STROKE_WIDTH } from '../components/headerIconConfig';
+import { Icon, normalize, texts } from '../config';
 import { useChatbot, useStaticContent } from '../hooks';
 import { NetworkContext } from '../NetworkProvider';
 import { SettingsContext } from '../SettingsProvider';
 import { ChatbotConfig, ChatbotConnectionState } from '../types';
+import { useThemeStyles } from '../hooks/useThemeStyles';
+import { useTheme } from '../hooks/useTheme';
 
 export const ChatbotScreen = () => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const navigation = useNavigation();
   const { isConnected: isNetworkConnected } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
   const { settings } = globalSettings;
-  const { chatbotType } = (settings as any) || {};
+  const chatbotType = (settings as { chatbotType?: string } | undefined)?.chatbotType;
 
   const { data: chatbotConfiguration, loading: configLoading } = useStaticContent<ChatbotConfig>({
     name: `${chatbotType}-chatbotSettings`,
@@ -48,21 +62,27 @@ export const ChatbotScreen = () => {
     };
   }, [disconnect]);
 
-  const userId = useMemo(() => {
-    return '1';
-  }, [chatbotConfiguration]);
+  const userId = '1';
 
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <TouchableOpacity
-          onPress={retry}
-          style={styles.headerButton}
-          accessibilityLabel={texts.chatbot.headerButtonAccessibilityLabel}
-          accessibilityHint={texts.chatbot.headerButtonAccessibilityHint}
-        >
-          <Icon.NamedIcon name="refresh" size={normalize(24)} color={colors.darkText} />
-        </TouchableOpacity>
+        <WrapperRow style={styles.headerRight}>
+          <AccessibilityHeader style={styles.icon} />
+          <TouchableOpacity
+            onPress={retry}
+            style={styles.headerButton}
+            accessibilityLabel={texts.chatbot.headerButtonAccessibilityLabel}
+            accessibilityHint={texts.chatbot.headerButtonAccessibilityHint}
+          >
+            <Icon.NamedIcon
+              name="refresh"
+              size={normalize(24)}
+              color={colors.darkText}
+              strokeWidth={HEADER_RIGHT_ICON_STROKE_WIDTH}
+            />
+          </TouchableOpacity>
+        </WrapperRow>
       )
     });
   }, [navigation, retry]);
@@ -119,8 +139,17 @@ export const ChatbotScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
+  headerRight: {
+    alignItems: 'center',
+    paddingRight: normalize(8)
+  },
+
   headerButton: {
-    paddingHorizontal: normalize(14)
+    paddingHorizontal: normalize(10)
+  },
+
+  icon: {
+    paddingHorizontal: normalize(6)
   }
 });

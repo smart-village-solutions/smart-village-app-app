@@ -1,11 +1,12 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import PropTypes from 'prop-types';
-import React, { memo, NamedExoticComponent, Validator } from 'react';
-import { ImageStyle, StyleSheet, ViewStyle } from 'react-native';
+import React, { memo, NamedExoticComponent, useMemo, Validator } from 'react';
+import { ImageStyle, StyleSheet, TextStyle, ViewStyle } from 'react-native';
 import { ListItem } from 'react-native-elements';
 
-import { colors, consts, Icon, normalize } from '../config';
+import { consts, Icon, normalize } from '../config';
 import { isOpen, trimNewLines } from '../helpers';
+import { useTheme } from '../hooks/useTheme';
 
 import { Image } from './Image';
 import { ParticipationProjectStatusIndicator } from './ParticipationProjectStatusIndicator';
@@ -18,7 +19,11 @@ type ListNavigation = StackNavigationProp<Record<string, object | undefined>>;
 export type ItemData = {
   id: string;
   accessibilityLabel?: string;
-  badge?: { value: string; textStyle: { color: string } };
+  badge?: {
+    badgeStyle?: ViewStyle;
+    textStyle?: TextStyle;
+    value: string;
+  };
   bottomDivider?: boolean;
   count?: number;
   isHeadlineTitle?: boolean;
@@ -41,6 +46,7 @@ export type ItemData = {
 };
 
 type Props = {
+  accessibilityLabel?: string;
   containerStyle?: ViewStyle;
   imageContainerStyle?: ViewStyle;
   imageStyle?: ImageStyle;
@@ -65,6 +71,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
   defaultProps?: Partial<Props>;
 } = memo<Props>(
   ({
+    accessibilityLabel,
     containerStyle,
     imageContainerStyle,
     imageStyle,
@@ -81,9 +88,11 @@ export const TextListItem: NamedExoticComponent<Props> & {
     titleNumberOfLines,
     withCard = false
   }) => {
+    const { colors } = useTheme();
+    const styles = useMemo(() => createStyles(colors), [colors]);
     const {
       badge,
-      accessibilityLabel,
+      accessibilityLabel: itemAccessibilityLabel,
       bottomDivider,
       count,
       isHeadlineTitle = true,
@@ -123,6 +132,10 @@ export const TextListItem: NamedExoticComponent<Props> & {
     if (showOpenStatus) {
       status = isOpen(params?.details?.openingHours)?.open ? 'Jetzt geöffnet' : 'Geschlossen';
     }
+
+    const defaultAccessibilityLabel = overtitle
+      ? `${trimNewLines(overtitle)} (${trimNewLines(title)}) ${consts.a11yLabel.button}`
+      : `(${trimNewLines(title)}) ${consts.a11yLabel.button}`;
 
     if (teaserTitle) {
       titleText = (
@@ -165,12 +178,20 @@ export const TextListItem: NamedExoticComponent<Props> & {
         bottomDivider={bottomDivider !== undefined ? bottomDivider : true}
         topDivider={topDivider !== undefined ? topDivider : false}
         containerStyle={[styles.container, containerStyle]}
-        badge={badge}
+        badge={
+          badge && {
+            ...badge,
+            badgeStyle: [styles.badge, badge.badgeStyle],
+            textStyle: [styles.badgeText, badge.textStyle]
+          }
+        }
         onPress={() => (onPress ? onPress(navigation) : navigate())}
         disabled={!navigation}
         delayPressIn={0}
         Component={Touchable}
-        accessibilityLabel={accessibilityLabel || `(${title}) ${consts.a11yLabel.button}`}
+        accessibilityLabel={
+          accessibilityLabel || itemAccessibilityLabel || defaultAccessibilityLabel
+        }
       >
         {leftIcon ||
           (leftImage && !!picture?.url ? (
@@ -228,7 +249,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
         {count !== undefined && count !== null && <BoldText>{count}</BoldText>}
 
         {!listsWithoutArrows && !!navigation && !withCard && (
-          <Icon.ArrowRight color={colors.darkText} size={normalize(18)} />
+          <Icon.ArrowRight color={colors.text} size={normalize(18)} />
         )}
       </ListItem>
     );
@@ -236,43 +257,54 @@ export const TextListItem: NamedExoticComponent<Props> & {
 );
 /* eslint-enable complexity */
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: colors.transparent,
-    paddingHorizontal: 0,
-    paddingVertical: normalize(16)
-  },
-  overtitleMarginBottom: {
-    marginBottom: normalize(4)
-  },
-  smallImage: {
-    height: normalize(72),
-    width: normalize(96)
-  },
-  smallImageContainer: {
-    alignSelf: 'flex-start'
-  },
-  statusWrapper: {
-    marginBottom: normalize(6)
-  },
-  statustitleWrapper: {
-    marginTop: normalize(7)
-  },
-  subtitle: {
-    marginTop: normalize(6)
-  },
-  topMargin: {
-    marginTop: normalize(4)
-  },
-  withBigCardStyle: {
-    height: normalize(72),
-    width: normalize(96)
-  }
-});
+/* Dynamic theme styles cannot be resolved by react-native/no-unused-styles. */
+/* eslint-disable react-native/no-unused-styles */
+const createStyles = (colors: ReturnType<typeof useTheme>['colors']) =>
+  StyleSheet.create({
+    badge: {
+      backgroundColor: colors.primary
+    },
+    badgeText: {
+      color: colors.onPrimary
+    },
+    container: {
+      backgroundColor: colors.transparent,
+      paddingHorizontal: 0,
+      paddingVertical: normalize(16)
+    },
+    overtitleMarginBottom: {
+      marginBottom: normalize(4)
+    },
+    smallImage: {
+      height: normalize(72),
+      width: normalize(96)
+    },
+    smallImageContainer: {
+      alignSelf: 'flex-start'
+    },
+    statusWrapper: {
+      marginBottom: normalize(6)
+    },
+    statustitleWrapper: {
+      marginTop: normalize(7)
+    },
+    subtitle: {
+      marginTop: normalize(6)
+    },
+    topMargin: {
+      marginTop: normalize(4)
+    },
+    withBigCardStyle: {
+      height: normalize(72),
+      width: normalize(96)
+    }
+  });
+/* eslint-enable react-native/no-unused-styles */
 
 TextListItem.displayName = 'TextListItem';
 
 TextListItem.propTypes = {
+  accessibilityLabel: PropTypes.string,
   containerStyle: PropTypes.object,
   imageContainerStyle: PropTypes.object,
   imageStyle: PropTypes.object,

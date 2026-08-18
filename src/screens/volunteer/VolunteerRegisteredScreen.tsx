@@ -6,12 +6,14 @@ import {
   Button,
   HtmlView,
   LoadingSpinner,
+  ReadAloudContent,
   RegularText,
   SafeAreaViewFlex,
   Wrapper
 } from '../../components';
 import { texts } from '../../config';
 import { usePullToRefetch, useStaticContent } from '../../hooks';
+import { useReadAloudScrollContentContainerStyle } from '../../ReadAloudAvailabilityProvider';
 import { ScreenName } from '../../types';
 
 type Props = {
@@ -20,6 +22,7 @@ type Props = {
 };
 
 export const VolunteerRegisteredScreen = ({ navigation }: Props) => {
+  const scrollContentContainerStyle = useReadAloudScrollContentContainerStyle();
   const {
     data: registeredHtml = '',
     error,
@@ -48,8 +51,12 @@ export const VolunteerRegisteredScreen = ({ navigation }: Props) => {
 
   return (
     <SafeAreaViewFlex>
-      <ScrollView refreshControl={RefreshControl}>
+      <ScrollView
+        contentContainerStyle={scrollContentContainerStyle}
+        refreshControl={RefreshControl}
+      >
         <Wrapper>
+          <ReadAloudContent content={registeredHtml} contentId="volunteer-registered-content" />
           <HtmlView html={registeredHtml} />
         </Wrapper>
         <Wrapper>

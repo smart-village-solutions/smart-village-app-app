@@ -52,6 +52,12 @@ export const defaultAppDesignSystemConfig = {
         Abgeschlossen: ''
       }
     },
+    statusBorderColors: {
+      Abgeschlossen: '',
+      'In Bearbeitung': '',
+      'Wird geprüft': '',
+      disabled: ''
+    },
     statusTextColors: {
       Abgeschlossen: '',
       'In Bearbeitung': '',

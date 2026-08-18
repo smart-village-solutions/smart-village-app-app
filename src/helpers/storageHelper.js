@@ -8,6 +8,8 @@ export const removeFromStore = async (key) => await AsyncStorage.removeItem(key)
 export const resetStore = async () => await AsyncStorage.clear();
 
 export const storageHelper = {
+  accessibilityUserSettings: () => readFromStore('accessibilityUserSettings'),
+  setAccessibilityUserSettings: (settings) => addToStore('accessibilityUserSettings', settings),
   globalSettings: () => readFromStore('globalSettings'),
   setGlobalSettings: (globalSettings) => addToStore('globalSettings', globalSettings),
   locationSettings: () => readFromStore('locationSettings'),

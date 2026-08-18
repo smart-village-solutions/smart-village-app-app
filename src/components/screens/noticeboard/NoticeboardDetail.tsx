@@ -2,10 +2,10 @@ import { useFocusEffect } from '@react-navigation/native';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useLayoutEffect } from 'react';
 import { useMutation, useQuery } from 'react-apollo';
-import { Alert, StyleSheet, View } from 'react-native';
+import { Alert, View } from 'react-native';
 
 import { useProfileContext } from '../../../ProfileProvider';
-import { colors, Icon, normalize, texts } from '../../../config';
+import { Icon, normalize, texts } from '../../../config';
 import {
   filterGenericItems,
   getGenericItemMatomoName,
@@ -27,11 +27,23 @@ import { TextListItem } from '../../TextListItem';
 import { Wrapper, WrapperHorizontal, WrapperRow, WrapperVertical } from '../../Wrapper';
 import { InfoCard } from '../../infoCard';
 import { VolunteerAvatar } from '../../volunteer';
+import { useThemeStyles } from '../../../hooks/useThemeStyles';
+import { useTheme } from '../../../hooks/useTheme';
 
 const isImage = (mediaContent) => mediaContent.contentType === 'image';
 
 /* eslint-disable complexity */
-export const NoticeboardDetail = ({ data, navigation, fetchPolicy, refetch, route }) => {
+export const NoticeboardDetail = ({
+  data,
+  navigation,
+  fetchPolicy,
+  readAloudControls,
+  refetch,
+  route
+}) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const {
     id,
     categories,
@@ -128,6 +140,7 @@ export const NoticeboardDetail = ({ data, navigation, fetchPolicy, refetch, rout
       <WrapperVertical style={styles.noPaddingTop}>
         <ImageSection mediaContents={mediaContents?.filter(isImage)} />
       </WrapperVertical>
+      {readAloudControls}
 
       {isCurrentUser && (
         <Wrapper>
@@ -389,10 +402,11 @@ export const NoticeboardDetail = ({ data, navigation, fetchPolicy, refetch, rout
 };
 /* eslint-enable complexity */
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   noPaddingTop: {
     paddingTop: 0
   },
+
   paddingTop: {
     paddingTop: normalize(24)
   }
@@ -402,5 +416,6 @@ NoticeboardDetail.propTypes = {
   data: PropTypes.object.isRequired,
   fetchPolicy: PropTypes.string.isRequired,
   navigation: PropTypes.object.isRequired,
+  readAloudControls: PropTypes.node,
   route: PropTypes.object.isRequired
 };

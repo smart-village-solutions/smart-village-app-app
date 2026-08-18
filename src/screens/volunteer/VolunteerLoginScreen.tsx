@@ -165,7 +165,10 @@ export const VolunteerLoginScreen = ({ navigation }: StackScreenProps<any>) => {
               disabled={isLoading || isLoadingMe}
               notFullWidth
             />
-            <TouchableOpacity onPress={() => navigation.goBack()}>
+            <TouchableOpacity
+              accessibilityLabel={texts.accessibilityLabels.actions.back}
+              onPress={() => navigation.goBack()}
+            >
               <RegularText primary center>
                 {texts.volunteer.abort}
               </RegularText>

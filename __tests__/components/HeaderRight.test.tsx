@@ -1,90 +1,158 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
 
-import { HeaderRight } from '../../src/components/HeaderRight';
-
-jest.mock('../../src/config', () => ({
-  normalize: (value: number) => value
+jest.mock('../../src/helpers', () => ({
+  getAccessibilityHeaderEntryEnabled: jest.fn(() => true),
+  openShare: jest.fn()
 }));
 
-const createMockHeader = (testID: string) => () => {
-  const ReactLocal = require('react');
-
-  return ReactLocal.createElement('mock-header', { testID });
-};
-
-jest.mock('../../src/components/Wrapper', () => {
-  const ReactLocal = require('react');
-
-  return {
-    WrapperRow: ({ children }: { children: React.ReactNode }) => (
-      ReactLocal.createElement('mock-wrapper', null, children)
-    )
-  };
-});
-
-jest.mock('../../src/components/bookmarks', () => ({
-  BookmarkHeader: createMockHeader('bookmark-header')
+jest.mock('../../src/components/AccessibilitySettingsModal', () => ({
+  AccessibilitySettingsModal: () => null
 }));
 
 jest.mock('../../src/components/CalendarHeader', () => ({
-  CalendarHeader: createMockHeader('calendar-header')
+  CalendarHeader: () => null
 }));
 
 jest.mock('../../src/components/ChatHeader', () => ({
-  ChatHeader: createMockHeader('chat-header')
+  ChatHeader: () => null
 }));
 
 jest.mock('../../src/components/DeleteHeader', () => ({
-  DeleteHeader: createMockHeader('delete-header')
-}));
-
-jest.mock('../../src/components/DrawerHeader', () => ({
-  DrawerHeader: createMockHeader('drawer-header')
+  DeleteHeader: () => null
 }));
 
 jest.mock('../../src/components/EditHeader', () => ({
-  EditHeader: createMockHeader('edit-header')
+  EditHeader: () => null
 }));
 
 jest.mock('../../src/components/GroupHeader', () => ({
-  GroupHeader: createMockHeader('group-header')
+  GroupHeader: () => null
 }));
 
 jest.mock('../../src/components/InfoHeader', () => ({
-  InfoHeader: createMockHeader('info-header')
+  InfoHeader: () => null
 }));
 
 jest.mock('../../src/components/SearchHeader', () => ({
-  SearchHeader: createMockHeader('search-header')
+  SearchHeader: () => {
+    const ReactLocal = require('react');
+
+    return ReactLocal.createElement('mock-search-header');
+  }
 }));
 
-jest.mock('../../src/components/ShareHeader', () => ({
-  ShareHeader: createMockHeader('share-header')
+jest.mock('../../src/components/Wrapper', () => ({
+  WrapperRow: ({ children, style }) => {
+    const ReactLocal = require('react');
+
+    return ReactLocal.createElement('mock-wrapper-row', { style }, children);
+  }
 }));
+
+jest.mock('../../src/components/bookmarks', () => ({
+  BookmarkHeader: () => null
+}));
+
+jest.mock('../../src/config', () => {
+  const ReactLocal = require('react');
+
+  return {
+    colors: {
+      darkText: '#222222'
+    },
+    consts: {
+      a11yLabel: {
+        accessibilityIcon: 'Barrierefreiheit',
+        accessibilityIconHint: 'Öffnet die Barrierefreiheitseinstellungen',
+        openMenuHint: 'Öffnet das Menü',
+        openMenuIcon: 'Menü',
+        shareHint: 'Öffnet Teilen',
+        shareIcon: 'Teilen'
+      }
+    },
+    Icon: {
+      DrawerMenu: (props: unknown) => ReactLocal.createElement('mock-drawer-icon', props),
+      NamedIcon: (props: unknown) => ReactLocal.createElement('mock-named-icon', props),
+      Share: (props: unknown) => ReactLocal.createElement('mock-share-icon', props)
+    },
+    normalize: (value: number) => value
+  };
+});
+
+import { SettingsContext } from '../../src/SettingsProvider';
+import { AccessibilityHeader } from '../../src/components/AccessibilityHeader';
+import { DrawerHeader } from '../../src/components/DrawerHeader';
+import { HeaderRight } from '../../src/components/HeaderRight';
+import { ShareHeader } from '../../src/components/ShareHeader';
+
+const renderWithSettings = (element: React.ReactElement) => {
+  let tree: renderer.ReactTestRenderer;
+
+  renderer.act(() => {
+    tree = renderer.create(
+      <SettingsContext.Provider value={{ globalSettings: { settings: {} } } as never}>
+        {element}
+      </SettingsContext.Provider>
+    );
+  });
+
+  return tree!;
+};
 
 describe('HeaderRight', () => {
-  const navigation = { openDrawer: jest.fn() } as any;
-  const route = { key: 'detail', name: 'Detail', params: {} } as any;
-
-  it('renders the drawer icon as the rightmost header action when share is enabled', () => {
-    let testRenderer: renderer.ReactTestRenderer;
-    renderer.act(() => {
-      testRenderer = renderer.create(
-        <HeaderRight
-          navigation={navigation}
-          route={route}
-          withDrawer
-          withShare
-          shareContent={{ message: 'x' }}
-        />
-      );
-    });
-
-    const renderedChildren = testRenderer!.root.findAll(
-      (node) => typeof node.props.testID === 'string'
+  it('renders accessibility immediately before the drawer icon', () => {
+    const tree = renderWithSettings(
+      <HeaderRight
+        navigation={{ openDrawer: jest.fn() } as never}
+        route={
+          {
+            key: 'route-key',
+            name: 'route-name',
+            params: { shareContent: { message: 'x' } }
+          } as never
+        }
+        withAccessibility
+        withDrawer
+        withSearch
+        withShare
+      />
     );
 
-    expect(renderedChildren.map((node) => node.props.testID)).toEqual(['share-header', 'drawer-header']);
+    const renderedOrder = tree.root.children[0].findAll(
+      (node) =>
+        typeof node.type === 'string' &&
+        node.type.startsWith('mock-') &&
+        node.type !== 'mock-wrapper-row'
+    );
+
+    expect(renderedOrder.map((node) => node.type)).toEqual([
+      'mock-search-header',
+      'mock-share-icon',
+      'mock-named-icon',
+      'mock-drawer-icon'
+    ]);
+  });
+
+  it('uses a thicker stroke for the accessibility icon', () => {
+    const tree = renderWithSettings(<AccessibilityHeader style={undefined} />);
+
+    expect(tree.root.findByType('mock-named-icon').props.strokeWidth).toBe(1.75);
+  });
+
+  it('uses a thicker stroke for the share icon', () => {
+    const tree = renderWithSettings(
+      <ShareHeader shareContent={{ message: 'Jetzt teilen' }} style={undefined} />
+    );
+
+    expect(tree.root.findByType('mock-share-icon').props.strokeWidth).toBe(1.75);
+  });
+
+  it('uses a thicker stroke for the drawer icon', () => {
+    const tree = renderWithSettings(
+      <DrawerHeader navigation={{ openDrawer: jest.fn() } as never} style={undefined} />
+    );
+
+    expect(tree.root.findByType('mock-drawer-icon').props.strokeWidth).toBe(1.75);
   });
 });

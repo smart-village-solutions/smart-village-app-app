@@ -2,8 +2,16 @@ import { StackScreenProps } from '@react-navigation/stack';
 import React, { useCallback } from 'react';
 import { FlatList, ListRenderItem, StyleSheet } from 'react-native';
 
-import { Button, HtmlView, LoadingSpinner, SafeAreaViewFlex, Wrapper } from '../components';
+import {
+  Button,
+  HtmlView,
+  LoadingSpinner,
+  ReadAloudContent,
+  SafeAreaViewFlex,
+  Wrapper
+} from '../components';
 import { usePullToRefetch, useStaticContent } from '../hooks';
+import { useReadAloudScrollContentContainerStyle } from '../ReadAloudAvailabilityProvider';
 
 type EntryData = {
   text?: string;
@@ -14,6 +22,7 @@ type EntryData = {
 
 export const MultiButtonScreen = ({ navigation, route }: StackScreenProps<any>) => {
   const name = route.params?.name;
+  const listContentContainerStyle = useReadAloudScrollContentContainerStyle();
   const { data, error, loading, refetch } = useStaticContent<EntryData[]>({
     name,
     skip: !name,
@@ -25,6 +34,10 @@ export const MultiButtonScreen = ({ navigation, route }: StackScreenProps<any>) 
       <>
         {!!item.text?.length && (
           <Wrapper style={styles.noPaddingBottom}>
+            <ReadAloudContent
+              content={item.text}
+              contentId={`multi-button-text-${item.routeName}-${item.title}`}
+            />
             <HtmlView html={item.text} />
           </Wrapper>
         )}
@@ -46,6 +59,7 @@ export const MultiButtonScreen = ({ navigation, route }: StackScreenProps<any>) 
   return (
     <SafeAreaViewFlex>
       <FlatList
+        contentContainerStyle={listContentContainerStyle}
         refreshControl={RefreshControl}
         data={data}
         renderItem={renderItem}

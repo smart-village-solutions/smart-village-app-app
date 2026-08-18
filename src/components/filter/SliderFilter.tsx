@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, ViewStyle } from 'react-native';
+import { View, ViewStyle } from 'react-native';
 import { Slider } from 'react-native-elements';
 
-import { colors, normalize } from '../../config';
+import { normalize } from '../../config';
 import { Label } from '../Label';
 import { RegularText } from '../Text';
 import { WrapperRow } from '../Wrapper';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
 
 type Props = {
   index?: number;
@@ -29,6 +30,7 @@ export const SliderFilter = ({
   values = [],
   ...props
 }: Props) => {
+  const styles = useThemeStyles(createStyles);
   const minimumSliderValue: number = values?.length ? 0 : minimumValue;
   const maximumSliderValue: number = values?.length - 1 || maximumValue;
 
@@ -67,14 +69,16 @@ export const SliderFilter = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   alignItemsCenter: {
     alignItems: 'center'
   },
+
   slider: {
     flex: 1,
     marginHorizontal: normalize(10)
   },
+
   textContainer: {
     alignItems: 'center',
     borderRadius: normalize(5),
@@ -83,6 +87,7 @@ const styles = StyleSheet.create({
     paddingVertical: normalize(10),
     width: normalize(60)
   },
+
   thumbStyle: {
     backgroundColor: colors.primary,
     width: normalize(20),

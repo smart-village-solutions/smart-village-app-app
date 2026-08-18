@@ -1,13 +1,15 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import 'react-native';
 import { Divider, ListItem } from 'react-native-elements';
 
-import { IconUrl, colors, consts, normalize, texts } from '../../config';
+import { IconUrl, consts, normalize, texts } from '../../config';
 import { HtmlView } from '../HtmlView';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { SectionHeader } from '../SectionHeader';
 import { RegularText } from '../Text';
 import { WrapperHorizontal } from '../Wrapper';
+import { useTheme } from '../../hooks/useTheme';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
 
 const { HTML_REGEX } = consts;
 
@@ -79,6 +81,9 @@ export const AvailableVehicles = ({
   // Widened to match VehicleStatusFeature – string for named statuses, number for occupancy
   status: string | number | undefined;
 }) => {
+  const { colors } = useTheme();
+  const styles = useThemeStyles(createStyles);
+
   if (loading) {
     return <LoadingSpinner loading={loading} />;
   }
@@ -86,12 +91,11 @@ export const AvailableVehicles = ({
   if (status == null || (typeof status === 'string' && !status.length)) {
     return null;
   }
-
   const statusCircle =
     status === 'frei' ? (
-      <RegularText style={{ color: '#7cbb4d' }}> ⬤</RegularText>
+      <RegularText style={{ color: colors.primary }}> ⬤</RegularText>
     ) : status === 'belegt' ? (
-      <RegularText style={{ color: '#e60041' }}> ⬤</RegularText>
+      <RegularText style={{ color: colors.error }}> ⬤</RegularText>
     ) : null;
 
   if (isSpecialForParkHaus) {
@@ -110,7 +114,7 @@ export const AvailableVehicles = ({
         </ListItem>
 
         <WrapperHorizontal>
-          <Divider />
+          <Divider style={styles.divider} />
         </WrapperHorizontal>
       </>
     );
@@ -132,20 +136,25 @@ export const AvailableVehicles = ({
       </ListItem>
 
       <WrapperHorizontal>
-        <Divider />
+        <Divider style={styles.divider} />
       </WrapperHorizontal>
     </>
   );
 };
 /* eslint-enable complexity */
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   container: {
     backgroundColor: colors.transparent,
     padding: normalize(14)
   },
+
   contentContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between'
+  },
+
+  divider: {
+    backgroundColor: colors.placeholder
   }
 });

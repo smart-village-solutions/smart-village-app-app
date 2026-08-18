@@ -5,7 +5,7 @@ import * as ScreenOrientation from 'expo-screen-orientation';
 import { useVideoPlayer, VideoView } from 'expo-video';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
-import { Keyboard, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Keyboard, ScrollView, TouchableOpacity, View } from 'react-native';
 import {
   Actions,
   Bubble,
@@ -19,9 +19,11 @@ import {
 } from 'react-native-gifted-chat';
 import { QuickReplies } from 'react-native-gifted-chat/lib/QuickReplies';
 
-import { colors, consts, device, Icon, normalize, texts } from '../config';
+import { consts, device, Icon, normalize, texts } from '../config';
 import { deleteArrayItem, momentFormat, openLink } from '../helpers';
 import { MediaTypeOptions, useSelectDocument, useSelectImage } from '../hooks';
+import { useTheme } from '../hooks/useTheme';
+import { useThemeStyles } from '../hooks/useThemeStyles';
 import { ScreenName } from '../types';
 
 import { DotsAnimation } from './DotsAnimation';
@@ -29,6 +31,22 @@ import { Image } from './Image';
 import { RegularText } from './Text';
 import { VolunteerAvatar } from './volunteer';
 import { Wrapper } from './Wrapper';
+
+const MessageVideo = ({ styles, uri }) => {
+  const player = useVideoPlayer(uri, (videoPlayer) => {
+    videoPlayer.loop = true;
+    videoPlayer.play();
+  });
+
+  return (
+    <VideoView player={player} resizeMode="cover" style={styles.videoBubble} useNativeControls />
+  );
+};
+
+MessageVideo.propTypes = {
+  styles: PropTypes.object.isRequired,
+  uri: PropTypes.string.isRequired
+};
 
 const { IMAGE_TYPE_REGEX, MB_TO_BYTES, VIDEO_TYPE_REGEX } = consts;
 
@@ -61,6 +79,8 @@ export const Chat = ({
   textInputProps,
   userId
 }) => {
+  const { colors } = useTheme();
+  const styles = useThemeStyles(createStyles);
   const navigation = useNavigation();
   const [messages, setMessages] = useState(data);
   const [medias, setMedias] = useState([]);
@@ -189,7 +209,7 @@ export const Chat = ({
             {...props}
             options={mediaActionSheet}
             containerStyle={styles.actionButtonContainer}
-            icon={() => <Icon.Plus color={colors.darkText} />}
+            icon={() => <Icon.Plus color={colors.text} />}
           />
         );
       }}
@@ -205,7 +225,7 @@ export const Chat = ({
             },
             right: bubbleWrapperStyleRight || {
               // TODO: added manually because there is no similar color in the colors file
-              backgroundColor: '#E8F1E9'
+              backgroundColor: colors.lighterPrimaryRgba
             }
           }}
         />
@@ -221,6 +241,7 @@ export const Chat = ({
       renderCustomView={(props) =>
         props?.currentMessage?.pdf?.map(({ uri }, index) => (
           <TouchableOpacity
+            accessibilityLabel={texts.accessibilityLabels.actions.openPdf}
             key={`pdf-${index}`}
             onPress={() => openLink(uri)}
             style={styles.pdfBubble}
@@ -249,7 +270,7 @@ export const Chat = ({
               </View>
             )}
             {/* Show media preview if there are medias */}
-            {hasMedias && renderFooter(medias, setMedias)}
+            {hasMedias && renderFooter(medias, setMedias, colors, styles)}
           </View>
         );
       }}
@@ -280,23 +301,9 @@ export const Chat = ({
         ))
       }
       renderMessageVideo={(props) =>
-        props?.currentMessage?.video?.map(({ uri }, index) => {
-          const player = useVideoPlayer(uri, (player) => {
-            player.loop = true;
-            player.play();
-          });
-
-          return (
-            <VideoView
-              player={player}
-              key={`video-${index}`}
-              resizeMode="cover"
-              source={{ uri }}
-              style={styles.videoBubble}
-              useNativeControls
-            />
-          );
-        })
+        props?.currentMessage?.video?.map(({ uri }, index) => (
+          <MessageVideo key={`video-${index}`} styles={styles} uri={uri} />
+        ))
       }
       renderMessageText={(props) => (
         <MessageText
@@ -343,7 +350,7 @@ export const Chat = ({
           containerStyle={styles.sendButtonContainer}
           sendButtonProps={{ ...sendButtonProps, onPress: () => onSendMessages(text, onSend) }}
         >
-          <Icon.Send color={colors.lightestText} size={normalize(20)} />
+          <Icon.Send color={colors.onPrimary} size={normalize(20)} />
         </Send>
       )}
       renderTime={(props) => (
@@ -359,14 +366,14 @@ export const Chat = ({
             borderRadius: normalize(8),
             borderWidth: 0
           }}
-          quickReplyTextStyle={{ color: colors.lightestText }}
+          quickReplyTextStyle={{ color: colors.onPrimary }}
         />
       )}
     />
   );
 };
 
-const renderFooter = (medias, setMedias) => (
+const renderFooter = (medias, setMedias, colors, styles) => (
   <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.footerStyle}>
     {medias.map(({ uri, type }, index) => {
       return (
@@ -389,6 +396,7 @@ const renderFooter = (medias, setMedias) => (
           )}
           {type === 'pdf' && (
             <TouchableOpacity
+              accessibilityLabel={texts.accessibilityLabels.actions.openPdf}
               onPress={() => openLink(uri)}
               style={[styles.mediaBorder, styles.mediaPreview, styles.pdfPreview]}
             >
@@ -396,7 +404,10 @@ const renderFooter = (medias, setMedias) => (
             </TouchableOpacity>
           )}
           <View style={styles.mediaDeleteButton}>
-            <TouchableOpacity onPress={() => setMedias(deleteArrayItem(medias, index))}>
+            <TouchableOpacity
+              accessibilityLabel={texts.accessibilityLabels.actions.deleteMedium}
+              onPress={() => setMedias(deleteArrayItem(medias, index))}
+            >
               <Icon.CloseCircleOutline color={colors.surface} />
             </TouchableOpacity>
           </View>
@@ -406,7 +417,7 @@ const renderFooter = (medias, setMedias) => (
   </ScrollView>
 );
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   actionButtonContainer: {
     alignItems: 'center',
     height: normalize(30),
@@ -483,7 +494,7 @@ const styles = StyleSheet.create({
     paddingTop: normalize(10)
   },
   textStyle: {
-    color: colors.darkText,
+    color: colors.text,
     fontFamily: 'regular',
     fontSize: normalize(14),
     lineHeight: normalize(20)

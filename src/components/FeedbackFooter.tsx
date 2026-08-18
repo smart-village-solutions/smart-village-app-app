@@ -20,7 +20,12 @@ export const FeedbackFooter = ({ containerStyle }: { containerStyle?: StyleProp<
 
   return (
     <View style={[styles.container, containerStyle]}>
-      <Pressable onPress={() => navigation.navigate(ScreenName.Feedback)} style={styles.button}>
+      <Pressable
+        accessibilityLabel={texts.accessibilityLabels.actions.sendFeedback}
+        accessibilityRole="button"
+        onPress={() => navigation.navigate(ScreenName.Feedback)}
+        style={styles.button}
+      >
         <BoldText underline placeholder={!isReduceTransparencyEnabled}>
           {texts.feedbackLink.toUpperCase()}
         </BoldText>

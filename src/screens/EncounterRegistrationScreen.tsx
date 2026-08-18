@@ -5,7 +5,6 @@ import {
   Keyboard,
   Pressable,
   ScrollView,
-  StyleSheet,
   TextInput,
   TouchableOpacity,
   View
@@ -28,12 +27,14 @@ import {
   Wrapper,
   WrapperRow
 } from '../components';
-import { Icon, colors, consts, device, normalize, texts } from '../config';
+import { Icon, consts, device, normalize, texts } from '../config';
 import { createUserAsync } from '../encounterApi';
 import { momentFormat, storeEncounterUserId } from '../helpers';
 import { useSelectImage } from '../hooks';
 import { QUERY_TYPES } from '../queries';
 import { CreateUserData, ScreenName, User } from '../types';
+import { useThemeStyles } from '../hooks/useThemeStyles';
+import { useTheme } from '../hooks/useTheme';
 
 const isValidRegistrationData = (
   data: Partial<User> & { isPrivacyChecked: boolean }
@@ -55,6 +56,9 @@ const a11yLabels = consts.a11yLabel;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const EncounterRegistrationScreen = ({ navigation }: StackScreenProps<any>) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
   const [firstName, setFirstName] = useState<string>('');
   const [lastName, setLastName] = useState<string>('');
@@ -255,13 +259,15 @@ export const EncounterRegistrationScreen = ({ navigation }: StackScreenProps<any
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   circle: {
     backgroundColor: colors.shadowRgba
   },
+
   editIconContainer: {
     justifyContent: 'flex-end'
   },
+
   inputField: {
     backgroundColor: colors.surface,
     borderColor: colors.placeholder,
@@ -272,9 +278,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: normalize(14),
     paddingVertical: normalize(8)
   },
+
   privacyContainer: {
     alignItems: 'flex-start'
   },
+
   privacyTextContainer: {
     flexShrink: 1
   }

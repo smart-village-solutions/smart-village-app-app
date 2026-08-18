@@ -3,13 +3,14 @@ import React, { useContext } from 'react';
 import { useQuery } from 'react-apollo';
 import { ActivityIndicator, View } from 'react-native';
 
-import { colors, texts } from '../config';
+import { texts } from '../config';
 import { getTitleForQuery, graphqlFetchPolicy } from '../helpers';
 import { getGenericItemSectionTitle } from '../helpers/genericTypeHelper';
 import { useNewsCategories, useRefreshTime } from '../hooks';
 import { NetworkContext } from '../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../queries';
 import { GenericType } from '../types';
+import { useTheme } from '../hooks/useTheme';
 
 import { DataListSection } from './DataListSection';
 import { LoadingContainer } from './LoadingContainer';
@@ -60,6 +61,8 @@ const CrossDataSection = ({
   sectionTitle,
   sectionTitleDetail
 }: SectionProps) => {
+  const { colors } = useTheme();
+
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const refreshTime = useRefreshTime(
     `crossData-${query}-${dataProviderName}-${categoryId}-${genericType}`

@@ -34,7 +34,10 @@ export const VolunteerCommentAnswer = ({
   return (
     <>
       <WrapperRow>
-        <TouchableOpacity onPress={onPress}>
+        <TouchableOpacity
+          accessibilityLabel={texts.accessibilityLabels.actions.writeAnswer}
+          onPress={onPress}
+        >
           <WrapperRow>
             <RegularText small>
               {texts.volunteer.commentAnswerNew}

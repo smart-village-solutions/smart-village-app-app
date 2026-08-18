@@ -5,6 +5,7 @@ import { Alert, Keyboard, TouchableOpacity } from 'react-native';
 import { Divider } from 'react-native-elements';
 
 import { RegularText, Wrapper } from '../components';
+import { createWasteSuggestionStyles } from '../components/waste/wasteInputStyles';
 import { device, namespace, secrets, staticRestSuffix } from '../config';
 import { graphqlFetchPolicy, openLink } from '../helpers';
 import { NetworkContext } from '../NetworkProvider';
@@ -14,6 +15,7 @@ import { SettingsContext } from '../SettingsProvider';
 
 import { useStaticContent } from './staticContent';
 import { useRefreshTime } from './TimeHooks';
+import { useThemeStyles } from './useThemeStyles';
 
 export const useWasteAddresses = ({
   minSearchLength = 0,
@@ -116,7 +118,9 @@ export const useWasteMarkedDates = ({ streetData, selectedTypes }) =>
 
           const previousEntry = dates[pickupDate] ?? { marked: true, note: null, dots: [] };
           const colorExists = previousEntry.dots.some((dot) => dot.color === color);
-          const nextDots = colorExists ? previousEntry.dots : [...previousEntry.dots, { color, selectedColor }];
+          const nextDots = colorExists
+            ? previousEntry.dots
+            : [...previousEntry.dots, { color, selectedColor }];
           const nextNote = previousEntry.note ?? (typeof date.note === 'string' ? date.note : null);
 
           dates[pickupDate] = {
@@ -227,6 +231,7 @@ export const useFilterStreets = (inputValueCity: string, isStreetInputFocused: b
 };
 
 export const useRenderSuggestions = (selectionCallback?: (item: any) => void) => {
+  const styles = useThemeStyles(createWasteSuggestionStyles);
   const [inputValueCity, setInputValueCity] = useState('');
   const [inputValueCitySelected, setInputValueCitySelected] = useState(false);
   const [inputValue, setInputValue] = useState('');
@@ -235,20 +240,21 @@ export const useRenderSuggestions = (selectionCallback?: (item: any) => void) =>
   const renderSuggestionCities = useCallback(
     ({ item }) => (
       <TouchableOpacity
+        accessibilityLabel={item.city}
         onPress={() => {
-          setInputValue('');
           setInputValueCity(item.city);
+          setInputValue('');
           setInputValueCitySelected(true);
           Keyboard.dismiss();
         }}
       >
-        <Wrapper>
+        <Wrapper style={styles.row}>
           <RegularText small>{item.city}</RegularText>
         </Wrapper>
-        <Divider />
+        <Divider style={styles.divider} />
       </TouchableOpacity>
     ),
-    [setInputValue, setInputValueCity, setInputValueCitySelected]
+    [setInputValue, setInputValueCity, setInputValueCitySelected, styles.divider, styles.row]
   );
 
   const renderSuggestion = useCallback(
@@ -257,20 +263,21 @@ export const useRenderSuggestions = (selectionCallback?: (item: any) => void) =>
 
       return (
         <TouchableOpacity
+          accessibilityLabel={streetString}
           onPress={() => {
             setInputValue(streetString);
             selectionCallback?.(item);
             Keyboard.dismiss();
           }}
         >
-          <Wrapper>
+          <Wrapper style={styles.row}>
             <RegularText small>{streetString}</RegularText>
           </Wrapper>
-          <Divider />
+          <Divider style={styles.divider} />
         </TouchableOpacity>
       );
     },
-    [getStreetString, selectionCallback, setInputValue]
+    [getStreetString, selectionCallback, setInputValue, styles.divider, styles.row]
   );
 
   return {

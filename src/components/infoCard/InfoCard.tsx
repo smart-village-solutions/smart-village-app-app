@@ -1,13 +1,15 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 import { Divider, Icon as RNEIcon } from 'react-native-elements';
 
-import { colors, consts, normalize } from '../../config';
+import { consts, normalize } from '../../config';
 import { mergeWebUrls } from '../../helpers';
 import { Address, Contact, OpeningHour, SVA_Date, WebUrl } from '../../types';
 import { RegularText } from '../Text';
 import { InfoBox } from '../Wrapper';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 import { AddressSection } from './AddressSection';
 import { ContactSection } from './ContactSection';
@@ -46,46 +48,52 @@ export const InfoCard = ({
   openWebScreen,
   showOpeningTimes,
   webUrls
-}: Props) => (
-  <View>
-    {!!name && (
-      <InfoBox>
-        <RegularText>{name}</RegularText>
-      </InfoBox>
-    )}
+}: Props) => {
+  const { colors } = useTheme();
+  const styles = useThemeStyles(createStyles);
 
-    {!!category?.name && (
-      <InfoBox>
-        <RNEIcon name="list" type="material" color={colors.primary} iconStyle={styles.margin} />
-        <RegularText accessibilityLabel={`${consts.a11yLabel.category} (${category.name})`}>
-          {category.name}
-        </RegularText>
-      </InfoBox>
-    )}
+  return (
+    <View>
+      {!!name && (
+        <InfoBox>
+          <RegularText>{name}</RegularText>
+        </InfoBox>
+      )}
 
-    {(!!name || !!category?.name) && <Divider style={styles.divider} />}
+      {!!category?.name && (
+        <InfoBox>
+          <RNEIcon name="list" type="material" color={colors.primary} iconStyle={styles.margin} />
+          <RegularText accessibilityLabel={`${consts.a11yLabel.category} (${category.name})`}>
+            {category.name}
+          </RegularText>
+        </InfoBox>
+      )}
 
-    {showOpeningTimes && <OpenStatus openingHours={openingHours} />}
+      {(!!name || !!category?.name) && <Divider style={styles.divider} />}
 
-    <AddressSection
-      address={address}
-      addresses={addresses}
-      openWebScreen={openWebScreen}
-      title={name}
-    />
+      {showOpeningTimes && <OpenStatus openingHours={openingHours} />}
 
-    <ContactSection contact={contact} contacts={contacts} />
+      <AddressSection
+        address={address}
+        addresses={addresses}
+        openWebScreen={openWebScreen}
+        title={name}
+      />
 
-    <UrlSection webUrls={mergeWebUrls({ webUrls, contact, contacts })} />
+      <ContactSection contact={contact} contacts={contacts} />
 
-    <DateSection dates={dates} />
-  </View>
-);
+      <UrlSection webUrls={mergeWebUrls({ webUrls, contact, contacts })} />
 
-const styles = StyleSheet.create({
+      <DateSection dates={dates} />
+    </View>
+  );
+};
+
+const createStyles = (colors) => ({
   divider: {
     backgroundColor: colors.placeholder
   },
+
   margin: {
     marginRight: normalize(12)
   }

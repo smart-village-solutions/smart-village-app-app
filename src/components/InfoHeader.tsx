@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native';
+import { ScrollView, TouchableOpacity, View, ViewStyle } from 'react-native';
 import { Overlay } from 'react-native-elements';
 
-import { Icon, IconUrl, colors, consts, normalize } from './../config';
+import { useThemeStyles } from '../hooks/useThemeStyles';
+import { useTheme } from '../hooks/useTheme';
+
+import { Icon, IconUrl, consts, normalize } from './../config';
 import { useStaticContent } from './../hooks';
 import { HeadlineText, RegularText } from './Text';
 import { Wrapper, WrapperHorizontal } from './Wrapper';
@@ -25,6 +28,9 @@ type Props = {
 
 /* eslint-disable complexity */
 export const InfoHeader = ({ route, style }: Props) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const [isVisible, setIsVisible] = useState(false);
   const title = route.params?.title || route.params?.screenTitle || '';
 
@@ -63,6 +69,7 @@ export const InfoHeader = ({ route, style }: Props) => {
         onPress={() => setIsVisible(!isVisible)}
         accessibilityLabel={a11yLabel.informationIcon}
         accessibilityHint={a11yLabel.informationHint}
+        accessibilityRole="button"
       >
         <IconUrl iconName={iconName} color={colors.darkText} style={style} />
       </TouchableOpacity>
@@ -75,9 +82,14 @@ export const InfoHeader = ({ route, style }: Props) => {
         statusBarTranslucent
         supportedOrientations={['portrait', 'landscape']}
       >
-        <ScrollView style={[styles.containerRadius, { backgroundColor }]}>
-          <>
-            <TouchableOpacity onPress={() => setIsVisible(false)} style={styles.closeButton}>
+        <View accessibilityViewIsModal importantForAccessibility="yes">
+          <ScrollView style={[styles.containerRadius, { backgroundColor }]}>
+            <TouchableOpacity
+              accessibilityLabel={a11yLabel.closeIcon}
+              accessibilityRole="button"
+              onPress={() => setIsVisible(false)}
+              style={styles.closeButton}
+            >
               <Icon.Close color={colors.lighterPrimary} size={normalize(16)} />
             </TouchableOpacity>
 
@@ -98,15 +110,15 @@ export const InfoHeader = ({ route, style }: Props) => {
                 </WrapperHorizontal>
               </Wrapper>
             )}
-          </>
-        </ScrollView>
+          </ScrollView>
+        </View>
       </Overlay>
     </>
   );
 };
 /* eslint-enable complexity */
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   closeButton: {
     alignItems: 'center',
     backgroundColor: colors.darkText,
@@ -120,9 +132,11 @@ const styles = StyleSheet.create({
     width: normalize(32),
     zIndex: 1
   },
+
   containerRadius: {
     borderRadius: normalize(8)
   },
+
   overlayWidth: {
     borderRadius: normalize(8),
     height: 'auto',
@@ -130,11 +144,13 @@ const styles = StyleSheet.create({
     padding: 0,
     width: '95%'
   },
+
   headlineText: {
     fontSize: normalize(14),
     fontWeight: '700',
     lineHeight: normalize(16)
   },
+
   smallPaddingBottom: {
     paddingBottom: normalize(8)
   }

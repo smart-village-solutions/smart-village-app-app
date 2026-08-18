@@ -3,12 +3,12 @@ import { StackScreenProps } from '@react-navigation/stack';
 import moment from 'moment';
 import React, { useCallback, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { Alert, StyleSheet } from 'react-native';
+import { Alert } from 'react-native';
 import Collapsible from 'react-native-collapsible';
 import { Divider } from 'react-native-elements';
 import { useMutation } from 'react-query';
 
-import { colors, consts, device, Icon, normalize, texts } from '../../config';
+import { consts, device, Icon, normalize, texts } from '../../config';
 import { momentFormat } from '../../helpers';
 import { userEdit } from '../../queries/volunteer';
 import { countries, VolunteerUser } from '../../types';
@@ -20,6 +20,8 @@ import { Input } from '../form/Input';
 import { BoldText, RegularText } from '../Text';
 import { Touchable } from '../Touchable';
 import { Wrapper, WrapperRow } from '../Wrapper';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 const { EMAIL_REGEX, URL_REGEX } = consts;
 
@@ -35,6 +37,9 @@ export const VolunteerFormProfile = ({
   scrollToTop,
   userData
 }: StackScreenProps<any> & { scrollToTop: () => void; selectedUserIds?: number[] }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const [isCollapsedContact, setIsCollapsedContact] = useState(true);
   const [isCollapsedLinks, setIsCollapsedLinks] = useState(true);
 
@@ -301,7 +306,10 @@ export const VolunteerFormProfile = ({
         />
       </Wrapper>
       <Divider style={styles.divider} />
-      <Touchable onPress={onPressContactTitle}>
+      <Touchable
+        accessibilityLabel={texts.accessibilityLabels.actions.toggleCommunication}
+        onPress={onPressContactTitle}
+      >
         <Wrapper style={styles.wrapper}>
           <WrapperRow spaceBetween>
             <BoldText>Kommunikation</BoldText>
@@ -373,7 +381,10 @@ export const VolunteerFormProfile = ({
         </Wrapper>
       </Collapsible>
       <Divider style={styles.divider} />
-      <Touchable onPress={onPressLinksTitle}>
+      <Touchable
+        accessibilityLabel={texts.accessibilityLabels.actions.toggleLinks}
+        onPress={onPressLinksTitle}
+      >
         <Wrapper style={styles.wrapper}>
           <WrapperRow spaceBetween>
             <BoldText>Links</BoldText>
@@ -511,7 +522,10 @@ export const VolunteerFormProfile = ({
           title={texts.volunteer.send}
           disabled={isLoading}
         />
-        <Touchable onPress={() => navigation.goBack()}>
+        <Touchable
+          accessibilityLabel={texts.accessibilityLabels.actions.back}
+          onPress={() => navigation.goBack()}
+        >
           <RegularText primary center>
             {texts.volunteer.abort}
           </RegularText>
@@ -521,16 +535,18 @@ export const VolunteerFormProfile = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   checkboxContainerStyle: {
     backgroundColor: colors.surface,
     borderWidth: 0,
     marginLeft: 0,
     marginRight: 0
   },
+
   divider: {
     backgroundColor: colors.placeholder
   },
+
   wrapper: {
     paddingBottom: device.platform === 'ios' ? normalize(16) : normalize(14),
     paddingTop: device.platform === 'ios' ? normalize(16) : normalize(18)

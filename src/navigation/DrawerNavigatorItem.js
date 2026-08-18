@@ -4,9 +4,14 @@ import { StyleSheet, View } from 'react-native';
 import { Divider } from 'react-native-elements';
 
 import { Text, Touchable } from '../components';
-import { colors, normalize } from '../config';
+import { normalize } from '../config';
+import { useThemeStyles } from '../hooks/useThemeStyles';
+import { useTheme } from '../hooks/useTheme';
 
 export const DrawerNavigatorItem = ({ activeRoute, itemInfo, navigation, topDivider }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const focused =
     (activeRoute?.params?.rootRouteName ?? 'AppStack') === itemInfo.params.rootRouteName;
   const fontFamily = focused ? 'bold' : 'regular';
@@ -38,7 +43,7 @@ export const DrawerNavigatorItem = ({ activeRoute, itemInfo, navigation, topDivi
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   label: {
     fontFamily: 'regular',
     fontSize: normalize(16),
@@ -46,6 +51,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: normalize(15),
     paddingVertical: normalize(12)
   },
+
   divider: {
     backgroundColor: colors.surface,
     height: StyleSheet.hairlineWidth,

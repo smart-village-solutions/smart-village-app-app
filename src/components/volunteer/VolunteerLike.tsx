@@ -19,7 +19,13 @@ export const VolunteerLike = ({
   onToggleLike
 }: VolunteerLikeProps) => {
   return (
-    <TouchableOpacity onPress={onToggleLike} disabled={loading}>
+    <TouchableOpacity
+      accessibilityLabel={
+        liked ? texts.accessibilityLabels.actions.unlike : texts.accessibilityLabels.actions.like
+      }
+      onPress={onToggleLike}
+      disabled={loading}
+    >
       <WrapperRow>
         <RegularText small>
           {liked ? texts.volunteer.likeDelete : texts.volunteer.likeNew}

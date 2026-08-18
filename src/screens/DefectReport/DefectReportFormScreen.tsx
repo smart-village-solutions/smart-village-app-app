@@ -10,16 +10,18 @@ import {
   DefectReportLocationForm,
   HtmlView,
   LoadingContainer,
+  ReadAloudContent,
   SafeAreaViewFlex,
   Wrapper
 } from '../../components';
-import { colors } from '../../config';
 import { buildDefectReportCategoryOptions } from '../../helpers/defectReportCategoryOptions';
 import { graphqlFetchPolicy } from '../../helpers/graphqlHelper';
 import { useStaticContent } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
 import { GET_CATEGORIES } from '../../queries/categories';
+import { useReadAloudScrollContentContainerStyle } from '../../ReadAloudAvailabilityProvider';
 import { SettingsContext } from '../../SettingsProvider';
+import { useTheme } from '../../hooks/useTheme';
 
 /* eslint-disable complexity */
 export const DefectReportFormScreen = ({
@@ -30,7 +32,9 @@ export const DefectReportFormScreen = ({
   route: { params?: { consentForDataProcessingText?: string } };
 }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
+  const { colors } = useTheme();
   const { globalSettings } = useContext(SettingsContext);
+  const scrollContentContainerStyle = useReadAloudScrollContentContainerStyle();
   const [refreshing, setRefreshing] = useState(false);
   const [isLocationSelect, setIsLocationSelect] = useState(true);
   const [selectedPosition, setSelectedPosition] = useState<Location.LocationObjectCoords>();
@@ -86,6 +90,7 @@ export const DefectReportFormScreen = ({
     <SafeAreaViewFlex>
       <DefaultKeyboardAvoidingView>
         <ScrollView
+          contentContainerStyle={scrollContentContainerStyle}
           keyboardShouldPersistTaps="handled"
           refreshControl={
             <RefreshControl
@@ -98,6 +103,7 @@ export const DefectReportFormScreen = ({
         >
           {!!html && (
             <Wrapper>
+              <ReadAloudContent content={html} contentId="defect-report-intro-content" />
               {/* @ts-expect-error HtmlView uses memo in js, which is not inferred correctly */}
               <HtmlView html={html} />
             </Wrapper>

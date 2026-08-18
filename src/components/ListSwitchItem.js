@@ -1,7 +1,8 @@
 import styled from 'styled-components/native';
 import { StyleSheet } from 'react-native';
 
-import { colors, normalize } from '../config';
+import { normalize } from '../config';
+import { lightColors } from '../config/colors';
 
 import { WrapperRow } from './Wrapper';
 
@@ -12,11 +13,11 @@ export const ListSwitchItem = styled.View`
 
 export const ListSwitchItemBorder = styled.View`
   border-bottom-width: ${normalize(2)};
-  border-bottom-color: ${colors.primary};
+  border-bottom-color: ${(props) => props.theme?.primary || lightColors.primary};
   margin-top: ${normalize(4)}px;
 `;
 
 export const ListSwitchWrapper = styled(WrapperRow)`
   border-bottom-width: ${StyleSheet.hairlineWidth};
-  border-bottom-color: ${colors.shadow};
+  border-bottom-color: ${(props) => props.theme?.shadow || lightColors.shadow};
 `;

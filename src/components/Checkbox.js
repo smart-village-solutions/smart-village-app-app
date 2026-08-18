@@ -1,10 +1,11 @@
 import PropTypes from 'prop-types';
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 import { StyleSheet } from 'react-native';
 import { CheckBox } from 'react-native-elements';
 
-import { colors, consts, normalize, texts } from '../config';
+import { consts, normalize, texts } from '../config';
 import { useOpenWebScreen } from '../hooks';
+import { useTheme } from '../hooks/useTheme';
 import { OrientationContext } from '../OrientationProvider';
 
 import { BoldText, RegularText } from './Text';
@@ -50,6 +51,7 @@ export const Checkbox = ({
   checked = false,
   checkedIcon,
   containerStyle = {},
+  disabled = false,
   lightest = false,
   link = '',
   linkDescription = '',
@@ -60,6 +62,8 @@ export const Checkbox = ({
   ...props
 }) => {
   const { orientation, dimensions } = useContext(OrientationContext);
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const needLandscapeStyle =
     orientation === 'landscape' || dimensions.width > consts.DIMENSIONS.FULL_SCREEN_MAX_WIDTH;
   const headerTitle = title ?? '';
@@ -68,17 +72,18 @@ export const Checkbox = ({
 
   return (
     <CheckBox
-      accessibilityRole="button"
+      accessibilityRole="checkbox"
+      accessibilityState={{ checked, disabled }}
       accessibilityLabel={`${a11yLabel.checkbox} (${
         checked
           ? texts.accessibilityLabels.checkbox.active
           : texts.accessibilityLabels.checkbox.inactive
       }) ${title}`}
-      accessibilityValue={
-        checked
+      accessibilityValue={{
+        text: checked
           ? texts.accessibilityLabels.checkbox.active
           : texts.accessibilityLabels.checkbox.inactive
-      }
+      }}
       size={normalize(21)}
       center={center}
       title={renderTitleContent({
@@ -102,28 +107,33 @@ export const Checkbox = ({
       textStyle={styles.titleStyle}
       checkedColor={colors.primary}
       uncheckedColor={colors.placeholder}
+      disabled={disabled}
       {...props}
     />
   );
 };
 
-const styles = StyleSheet.create({
-  containerStyle: {
-    backgroundColor: colors.surface,
-    borderWidth: 0,
-    marginLeft: 0,
-    marginRight: 0,
-    padding: 0
-  },
-  containerStyleLandscape: {
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  titleStyle: {
-    color: colors.darkText,
-    fontWeight: 'normal'
-  }
-});
+/* Dynamic theme styles cannot be resolved by react-native/no-unused-styles. */
+/* eslint-disable react-native/no-unused-styles */
+const createStyles = (colors) =>
+  StyleSheet.create({
+    containerStyle: {
+      backgroundColor: colors.surface,
+      borderWidth: 0,
+      marginLeft: 0,
+      marginRight: 0,
+      padding: 0
+    },
+    containerStyleLandscape: {
+      alignItems: 'center',
+      justifyContent: 'center'
+    },
+    titleStyle: {
+      color: colors.text,
+      fontWeight: 'normal'
+    }
+  });
+/* eslint-enable react-native/no-unused-styles */
 
 Checkbox.propTypes = {
   boldTitle: PropTypes.bool,

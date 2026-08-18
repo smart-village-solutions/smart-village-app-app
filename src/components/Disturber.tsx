@@ -1,10 +1,12 @@
 import { DrawerNavigationProp } from '@react-navigation/drawer';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 
-import { Icon, colors, normalize } from '../config';
+import { Icon, normalize, texts } from '../config';
 import { addToStore, findClosestItem, isActive, readFromStore } from '../helpers';
 import { useHomeRefresh, useStaticContent } from '../hooks';
+import { useThemeStyles } from '../hooks/useThemeStyles';
+import { useTheme } from '../hooks/useTheme';
 
 import { Button } from './Button';
 import { ImagesCarousel } from './ImagesCarousel';
@@ -45,6 +47,9 @@ interface DataItem {
 
 // eslint-disable-next-line complexity
 export const Disturber = ({ navigation, publicJsonFile }: Props) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const [isVisible, setIsVisible] = useState(false);
 
   const { data, refetch } = useStaticContent<DataItem[]>({
@@ -106,7 +111,11 @@ export const Disturber = ({ navigation, publicJsonFile }: Props) => {
         {!!closestItem && (
           <>
             {showButtonToClose && (
-              <TouchableOpacity onPress={setDisturberComplete} style={styles.closeButton}>
+              <TouchableOpacity
+                accessibilityLabel={texts.accessibilityLabels.actions.close}
+                onPress={setDisturberComplete}
+                style={styles.closeButton}
+              >
                 <Icon.Close color={colors.lighterPrimary} size={normalize(16)} />
               </TouchableOpacity>
             )}
@@ -185,7 +194,7 @@ export const Disturber = ({ navigation, publicJsonFile }: Props) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   carouselContainer: {
     borderTopLeftRadius: normalize(8),
     borderTopRightRadius: normalize(8),
@@ -208,20 +217,25 @@ const styles = StyleSheet.create({
     width: normalize(32),
     zIndex: 1
   },
+
   containerRadius: {
     borderRadius: normalize(8)
   },
+
   headlineText: {
     fontSize: normalize(14),
     fontWeight: '700',
     lineHeight: normalize(16)
   },
+
   withoutImageMarginTop: {
     marginTop: normalize(21)
   },
+
   smallPaddingBottom: {
     paddingBottom: normalize(8)
   },
+
   wrapperPadding: {
     padding: normalize(24)
   }

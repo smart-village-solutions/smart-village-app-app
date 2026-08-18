@@ -36,6 +36,7 @@ import { getQuery, QUERY_TYPES } from './queries';
 import { ReactQueryProvider } from './ReactQueryProvider';
 import RootView from './RootView';
 import { initialContext, SettingsProvider } from './SettingsProvider';
+import { AppThemeProvider } from './ThemeProvider';
 import { UnreadMessagesProvider } from './UnreadMessagesProvider';
 import { OtaUpdateManager } from './components';
 
@@ -219,18 +220,22 @@ const MainAppWithApolloProvider = () => {
           initialConversationSettings
         }}
       >
-        <ConfigurationsProvider>
-          <OnboardingManager>
-            <ProfileProvider>
-              <UnreadMessagesProvider>
-                <RootView>
-                  <OtaUpdateManager />
-                  <Navigator navigationType={initialGlobalSettings.navigation} />
-                </RootView>
-              </UnreadMessagesProvider>
-            </ProfileProvider>
-          </OnboardingManager>
-        </ConfigurationsProvider>
+        <AccessibilityProvider>
+          <AppThemeProvider>
+            <ConfigurationsProvider>
+              <OnboardingManager>
+                <ProfileProvider>
+                  <UnreadMessagesProvider>
+                    <RootView>
+                      <OtaUpdateManager />
+                      <Navigator navigationType={initialGlobalSettings.navigation} />
+                    </RootView>
+                  </UnreadMessagesProvider>
+                </ProfileProvider>
+              </OnboardingManager>
+            </ConfigurationsProvider>
+          </AppThemeProvider>
+        </AccessibilityProvider>
       </SettingsProvider>
     </ApolloProvider>
   );
@@ -243,9 +248,7 @@ export const MainApp = () => (
         <PermanentFilterProvider>
           <ReactQueryProvider>
             <SafeAreaProvider>
-              <AccessibilityProvider>
-                <MainAppWithApolloProvider />
-              </AccessibilityProvider>
+              <MainAppWithApolloProvider />
             </SafeAreaProvider>
           </ReactQueryProvider>
         </PermanentFilterProvider>

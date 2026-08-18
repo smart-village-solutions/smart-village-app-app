@@ -1,12 +1,14 @@
 import { useIsFocused } from '@react-navigation/native';
 import _filter from 'lodash/filter';
-import React, { useCallback, useContext, useMemo, useState } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import React, { useCallback, useContext, useMemo, useRef, useState } from 'react';
+import { TouchableOpacity, View } from 'react-native';
 import { Easing } from 'react-native-reanimated';
-import Carousel from 'react-native-reanimated-carousel';
+import Carousel, { ICarouselInstance } from 'react-native-reanimated-carousel';
 
-import { colors, Icon, normalize } from '../config';
+import { consts, Icon, normalize, texts } from '../config';
 import { imageHeight, imageWidth } from '../helpers';
+import { useThemeStyles } from '../hooks/useThemeStyles';
+import { AccessibilityContext } from '../AccessibilityProvider';
 import { OrientationContext } from '../OrientationProvider';
 import { SettingsContext } from '../SettingsProvider';
 
@@ -37,6 +39,7 @@ const MediaCarouselItem = ({
   containerStyle?: object;
   item: MediaContent;
 }) => {
+  const styles = useThemeStyles(createStyles);
   if (item.contentType === 'image' || item.contentType === 'thumbnail') {
     const imageContainerStyle = containerStyle
       ? [styles.imageContainer, containerStyle]
@@ -56,7 +59,9 @@ const MediaCarouselItem = ({
 };
 
 export const MediaCarousel = ({ autoplayInterval, mediaContents }: MediaCarouselProps) => {
+  const styles = useThemeStyles(createStyles);
   const { dimensions } = useContext(OrientationContext);
+  const { isReduceMotionEnabled } = useContext(AccessibilityContext);
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { sliderPauseButton = {}, sliderSettings = {} } = settings as {
@@ -76,9 +81,9 @@ export const MediaCarousel = ({ autoplayInterval, mediaContents }: MediaCarousel
   };
 
   const [isPaused, setIsPaused] = useState(false);
+  const carouselRef = useRef<ICarouselInstance>(null);
 
   const isFocused = useIsFocused();
-
   const filteredContents = _filter(
     mediaContents,
     (mc: MediaContent) =>
@@ -133,7 +138,8 @@ export const MediaCarousel = ({ autoplayInterval, mediaContents }: MediaCarousel
   return (
     <View>
       <Carousel
-        autoPlay={isFocused && !isPaused}
+        ref={carouselRef}
+        autoPlay={isFocused && !isPaused && !isReduceMotionEnabled}
         autoPlayInterval={autoplayInterval || (sliderSettings.autoplayInterval as number) || 4000}
         data={filteredContents}
         defaultIndex={0}
@@ -146,13 +152,15 @@ export const MediaCarousel = ({ autoplayInterval, mediaContents }: MediaCarousel
       />
 
       {showSliderPauseButton &&
+        !isReduceMotionEnabled &&
         pauseButton(
           horizontalPosition,
           isCopyrighted,
           isPaused,
           setIsPaused,
           sizeSliderPauseButton,
-          verticalPosition
+          verticalPosition,
+          styles
         )}
     </View>
   );
@@ -164,10 +172,17 @@ const pauseButton = (
   isPaused: boolean,
   setIsPaused: (paused: boolean) => void,
   size: number,
-  verticalPosition: string
+  verticalPosition: string,
+  styles: ReturnType<typeof createStyles>
 ) => (
   <TouchableOpacity
     activeOpacity={0.8}
+    accessibilityLabel={
+      isPaused
+        ? `${texts.accessibilityLabels.actions.startPlayback} ${consts.a11yLabel.button}`
+        : `${texts.accessibilityLabels.actions.pausePlayback} ${consts.a11yLabel.button}`
+    }
+    accessibilityRole="button"
     style={[
       styles.pauseButton,
       {
@@ -183,7 +198,7 @@ const pauseButton = (
   </TouchableOpacity>
 );
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   center: {
     alignSelf: 'center'
   },

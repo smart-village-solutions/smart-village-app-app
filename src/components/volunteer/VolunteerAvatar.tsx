@@ -1,10 +1,11 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import 'react-native';
 import { Avatar } from 'react-native-elements';
 
-import { colors, normalize } from '../../config';
+import { normalize } from '../../config';
 import { volunteerProfileImage } from '../../helpers';
 import { VolunteerUser } from '../../types';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
 
 export const VolunteerAvatar = ({
   item,
@@ -17,6 +18,7 @@ export const VolunteerAvatar = ({
   totalCount: number;
   MAX_AVATARS_COUNT: number;
 }) => {
+  const styles = useThemeStyles(createStyles);
   const { user } = item;
   const { guid, display_name: displayName } = user || {};
 
@@ -60,27 +62,32 @@ export const VolunteerAvatar = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   border: {
     borderColor: colors.darkText,
     borderRadius: normalize(34),
     borderWidth: normalize(1)
   },
+
   containerStyle: {
     borderRadius: normalize(34),
     height: normalize(34),
     padding: normalize(2),
     width: normalize(34)
   },
+
   marginLeft: {
     marginLeft: normalize(-12)
   },
+
   overlayContainerStyle: {
     backgroundColor: colors.surface
   },
+
   placeholderStyle: {
     backgroundColor: colors.surface
   },
+
   titleStyle: {
     color: colors.darkText,
     fontSize: normalize(12)

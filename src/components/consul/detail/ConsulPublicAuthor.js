@@ -43,7 +43,10 @@ export const ConsulPublicAuthor = ({ authorData, onPress }) => {
               {publicAuthor?.id === userId && (
                 <>
                   <RegularText> · </RegularText>
-                  <Touchable onPress={onPress}>
+                  <Touchable
+                    accessibilityLabel={texts.accessibilityLabels.actions.edit}
+                    onPress={onPress}
+                  >
                     <RegularText primary smallest>
                       {texts.consul.startNew.editButtonLabelOnDetailScreen}
                     </RegularText>

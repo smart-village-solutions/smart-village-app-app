@@ -4,7 +4,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import _filter from 'lodash/filter';
 import moment from 'moment';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { RefreshControl, StyleSheet } from 'react-native';
+import { RefreshControl } from 'react-native';
 import { Divider } from 'react-native-elements';
 import { useInfiniteQuery, useQuery } from 'react-query';
 
@@ -22,10 +22,12 @@ import {
   SueLoadingIndicator,
   WrapperVertical
 } from '../../components';
-import { colors, consts, normalize, texts } from '../../config';
+import { consts, normalize, texts } from '../../config';
 import { parseListItemsFromQuery } from '../../helpers';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { StatusProps, SueViewType } from '../../types';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 import { SueMapScreen } from './SueMapScreen';
 
@@ -77,6 +79,9 @@ type Props = {
 };
 
 export const SueListScreen = ({ navigation, route }: Props) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const { isConnected } = useContext(NetworkContext);
   const { appDesignSystem = {} } = useContext(ConfigurationsContext);
   const { sueStatus = {}, sueListItem = {} } = appDesignSystem;
@@ -299,7 +304,7 @@ export const SueListScreen = ({ navigation, route }: Props) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   button: {
     alignItems: 'center',
     alignSelf: 'flex-start',
@@ -307,6 +312,7 @@ const styles = StyleSheet.create({
     paddingTop: normalize(16),
     position: 'absolute'
   },
+
   icon: {
     paddingLeft: normalize(8)
   }

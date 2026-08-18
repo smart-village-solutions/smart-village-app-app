@@ -9,7 +9,7 @@ import {
   SafeAreaViewFlex
 } from '../../components';
 import { ServiceList } from '../../components/BUS/ServiceList';
-import { colors, consts, texts } from '../../config';
+import { consts, texts } from '../../config';
 import { runAsyncTasksSafely, spaceNewLines } from '../../helpers';
 import { shareMessage } from '../../helpers/BUS/shareHelper';
 import { mapBusServicesToListItems, resolveBusCategoryServices } from '../../helpers/busListHelper';
@@ -21,6 +21,7 @@ import {
   useBusTop10,
   useMatomoTrackScreenView
 } from '../../hooks';
+import { useTheme } from '../../hooks/useTheme';
 import { SettingsContext } from '../../SettingsProvider';
 import { ScreenName } from '../../types';
 
@@ -187,6 +188,7 @@ const getIsListLoading = ({
 };
 
 export const IndexScreen = ({ navigation }) => {
+  const { colors } = useTheme();
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { bus = {} } = settings;

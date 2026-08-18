@@ -1,6 +1,6 @@
 import _camelCase from 'lodash/camelCase';
 import _upperFirst from 'lodash/upperFirst';
-import React, { ComponentProps } from 'react';
+import React from 'react';
 import { StyleProp, View, ViewStyle } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import * as Tabler from 'tabler-icons-react-native';
@@ -61,12 +61,13 @@ import {
   visible,
   voucher
 } from '../../icons';
-import { colors } from '../colors';
+import { useTheme } from '../../hooks/useTheme';
 import { normalize } from '../normalize';
 
 export type IconProps = {
   accessibilityLabel?: string;
   color?: string;
+  fillColor?: string;
   hasNoHitSlop?: boolean;
   iconStyle?: StyleProp<ViewStyle>;
   size?: number;
@@ -92,14 +93,19 @@ export const getHitSlops = (size: number) => {
 
 const SvgIcon = ({
   accessibilityLabel,
-  color = colors.primary,
+  color: colorProp,
+  fillColor: fillColorProp,
   iconStyle,
   size = normalize(24),
-  strokeColor = colors.transparent,
+  strokeColor: strokeColorProp,
   strokeWidth = 0,
   style,
   xml
 }: IconProps & { xml: (color: string, strokeColor: string, strokeWidth: number) => string }) => {
+  const { colors } = useTheme();
+  const color = fillColorProp ?? colorProp ?? colors.primary;
+  const strokeColor = strokeColorProp || color;
+
   return (
     <View accessibilityLabel={accessibilityLabel} style={style} hitSlop={getHitSlops(size)}>
       <SvgXml
@@ -114,27 +120,43 @@ const SvgIcon = ({
 
 type TablerIconName = keyof typeof Tabler;
 
+type TablerIconComponent = React.ComponentType<{
+  color?: string;
+  fill?: string;
+  size?: number;
+  stroke?: number;
+  style?: StyleProp<ViewStyle>;
+}>;
+
+const getTablerIcon = (name: unknown): TablerIconComponent | undefined => {
+  if (typeof name !== 'string' || !name.trim()) return undefined;
+
+  const tablerName = ('Icon' + _upperFirst(_camelCase(name))) as TablerIconName;
+  const icon = Tabler?.[tablerName];
+
+  return typeof icon === 'function' ? (icon as TablerIconComponent) : undefined;
+};
+
+export const hasNamedIcon = (name: unknown): boolean => !!getTablerIcon(name);
+
 const NamedIcon = ({
   accessibilityLabel,
-  color = colors.primary,
+  color: colorProp,
+  fillColor,
   hasNoHitSlop = false,
   iconStyle,
   name,
+  strokeColor: strokeColorProp,
   strokeWidth = 1,
   size = normalize(24),
   style
 }: IconProps & {
-  name: ComponentProps<typeof IconSet>['name'];
+  name: string;
   strokeWidth?: number;
 }) => {
-  let IconComponent: any;
-
-  if (IconSet === Tabler) {
-    const TablerName = ('Icon' + _upperFirst(_camelCase(name))) as TablerIconName;
-    IconComponent = Tabler?.[TablerName] || Tabler.IconQuestionMark;
-  } else {
-    IconComponent = IconSet;
-  }
+  const { colors } = useTheme();
+  const strokeColor = strokeColorProp ?? colorProp ?? colors.primary;
+  const SelectedIcon = getTablerIcon(name) || Tabler.IconQuestionMark;
 
   return (
     <View
@@ -142,7 +164,15 @@ const NamedIcon = ({
       style={style}
       hitSlop={hasNoHitSlop ? undefined : getHitSlops(size)}
     >
-      <IconComponent name={name} size={size} color={color} style={iconStyle} stroke={strokeWidth} />
+      {/* The component is selected from the static Tabler icon registry. */}
+      {/* eslint-disable-next-line react-hooks/static-components */}
+      <SelectedIcon
+        color={strokeColor}
+        {...(fillColor !== undefined ? { fill: fillColor } : {})}
+        size={size}
+        style={iconStyle}
+        stroke={strokeWidth}
+      />
     </View>
   );
 };
@@ -160,6 +190,8 @@ export const Icon = {
   ArrowUp: (props: IconProps) => <SvgIcon xml={arrowUp} {...props} />,
   ArrowNarrowUp: (props: IconProps) => <SvgIcon xml={arrowNarrowUp} {...props} />,
   At: (props: IconProps) => <NamedIcon name="at" {...props} />,
+  BookmarkEmpty: (props: IconProps) => <NamedIcon name="bookmark" {...props} />,
+  BookmarkFilled: (props: IconProps) => <NamedIcon name="bookmark-filled" {...props} />,
   Calendar: (props: IconProps) => <NamedIcon name="calendar-event" {...props} />,
   CalendarToggle: (props: IconProps) => <SvgIcon xml={calendarToggle} {...props} />,
   Camera: (props: IconProps) => <NamedIcon name="camera" {...props} />,
@@ -175,8 +207,12 @@ export const Icon = {
   ConstructionSite: (props: IconProps) => <SvgIcon xml={constructionSite} {...props} />,
   Copy: (props: IconProps) => <NamedIcon name="copy" {...props} />,
   Document: (props: IconProps) => <NamedIcon name="file-description" {...props} />,
-  DrawerMenu: (props: IconProps) => <SvgIcon xml={drawerMenu} {...props} />,
-  EditSetting: (props: IconProps) => <SvgIcon xml={editSetting} {...props} />,
+  DrawerMenu: (props: IconProps) => (
+    <SvgIcon xml={drawerMenu} {...props} strokeWidth={props.strokeWidth ?? 1.75} />
+  ),
+  EditSetting: (props: IconProps) => (
+    <SvgIcon xml={editSetting} {...props} strokeWidth={props.strokeWidth ?? 1.75} />
+  ),
   EmptySection: (props: IconProps) => <SvgIcon xml={emptySection} {...props} />,
   ExpandMap: (props: IconProps) => <NamedIcon name="maximize" {...props} />,
   Flag: (props: IconProps) => <NamedIcon name="flag-2" {...props} />,
@@ -191,8 +227,12 @@ export const Icon = {
   Like: (props: IconProps) => <SvgIcon xml={like} {...props} />,
   Link: (props: IconProps) => <SvgIcon xml={link} {...props} />,
   List: (props: IconProps) => <SvgIcon xml={list} {...props} />,
-  Location: (props: IconProps) => <SvgIcon xml={location} {...props} />,
-  LocationActive: (props: IconProps) => <SvgIcon xml={locationActive} {...props} />,
+  Location: (props: IconProps) => (
+    <SvgIcon xml={location} {...props} strokeWidth={props.strokeWidth ?? 1} />
+  ),
+  LocationActive: (props: IconProps) => (
+    <SvgIcon xml={locationActive} {...props} strokeWidth={props.strokeWidth ?? 1} />
+  ),
   Logo: (props: IconProps) => <SvgIcon xml={logo} {...props} />,
   Lunch: (props: IconProps) => <SvgIcon xml={lunch} {...props} />,
   Lupe: (props: IconProps) => <SvgIcon xml={lupe} {...props} />,
@@ -207,9 +247,13 @@ export const Icon = {
   OParlCalendar: (props: IconProps) => <SvgIcon xml={oParlCalendar} {...props} />,
   OParlOrganizations: (props: IconProps) => <SvgIcon xml={oParlOrganizations} {...props} />,
   OParlPeople: (props: IconProps) => <SvgIcon xml={oParlPeople} {...props} />,
-  OwnLocation: (props: IconProps) => <SvgIcon xml={ownLocation} {...props} />,
+  OwnLocation: (props: IconProps) => (
+    <SvgIcon xml={ownLocation} {...props} strokeWidth={props.strokeWidth ?? 1} />
+  ),
   Pause: (props: IconProps) => <NamedIcon name="player-pause" {...props} />,
-  Pen: (props: IconProps) => <SvgIcon xml={pen} {...props} />,
+  Pen: (props: IconProps) => (
+    <SvgIcon xml={pen} {...props} strokeWidth={props.strokeWidth ?? 1.75} />
+  ),
   Pencil: (props: IconProps) => <NamedIcon name="pencil" {...props} />,
   PencilPlus: (props: IconProps) => <NamedIcon name="pencil-plus" {...props} />,
   Phone: (props: IconProps) => <NamedIcon name="phone" {...props} />,

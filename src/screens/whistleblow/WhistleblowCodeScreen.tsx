@@ -7,15 +7,18 @@ import {
   HtmlView,
   Label,
   LoadingContainer,
+  ReadAloudContent,
   RegularText,
   SafeAreaViewFlex,
   WhistleblowReportCode,
   Wrapper
 } from '../../components';
-import { colors, texts } from '../../config';
+import { texts } from '../../config';
 import { useStaticContent } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
+import { useReadAloudScrollContentContainerStyle } from '../../ReadAloudAvailabilityProvider';
 import { SettingsContext } from '../../SettingsProvider';
+import { useTheme } from '../../hooks/useTheme';
 
 export type Report = {
   questionnaires: [
@@ -34,8 +37,11 @@ export const WhistleblowCodeScreen = ({
   navigation: StackNavigationProp<any>;
   route: any;
 }) => {
+  const { colors } = useTheme();
+
   const { isConnected } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
+  const scrollContentContainerStyle = useReadAloudScrollContentContainerStyle();
   const { whistleblow = {} } = globalSettings;
   const { globaleaks: globaleaksConfig = {} } = whistleblow;
   const { form: formConfig = {}, editInfo } = globaleaksConfig;
@@ -77,6 +83,7 @@ export const WhistleblowCodeScreen = ({
     <SafeAreaViewFlex>
       <DefaultKeyboardAvoidingView>
         <ScrollView
+          contentContainerStyle={scrollContentContainerStyle}
           keyboardShouldPersistTaps="handled"
           refreshControl={
             <RefreshControl
@@ -110,6 +117,7 @@ export const WhistleblowCodeScreen = ({
 
               {!!editInfo && (
                 <Wrapper>
+                  <ReadAloudContent content={editInfo} contentId="whistleblow-edit-info-content" />
                   {/* @ts-expect-error HtmlView uses memo in js, which is not inferred correctly */}
                   <HtmlView html={editInfo} />
                 </Wrapper>
@@ -119,6 +127,7 @@ export const WhistleblowCodeScreen = ({
             <>
               {!!html && (
                 <Wrapper>
+                  <ReadAloudContent content={html} contentId="whistleblow-code-content" />
                   {/* @ts-expect-error HtmlView uses memo in js, which is not inferred correctly */}
                   <HtmlView html={html} />
                 </Wrapper>

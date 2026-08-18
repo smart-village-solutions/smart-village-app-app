@@ -1,8 +1,10 @@
 import React from 'react';
-import { StyleSheet, TouchableHighlight, View } from 'react-native';
+import { TouchableHighlight, View } from 'react-native';
 import { Divider, Tab } from 'react-native-elements';
 
-import { colors, normalize } from '../../config';
+import { normalize } from '../../config';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 export const NoticeboardCategoryTabs = ({
   categoryIdsTabs,
@@ -15,6 +17,9 @@ export const NoticeboardCategoryTabs = ({
   selectedCategory?: number;
   setSelectedCategory: (category: number) => void;
 }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   return (
     <View style={styles.tabsContainer}>
       <Tab
@@ -38,23 +43,28 @@ export const NoticeboardCategoryTabs = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   boldText: {
     fontFamily: 'condbold'
   },
+
   divider: {
     backgroundColor: colors.placeholder
   },
+
   tabsContainer: {
     backgroundColor: colors.surface
   },
+
   tabsIndicator: {
     backgroundColor: colors.secondary
   },
+
   tabsTab: {
     backgroundColor: colors.surface,
     borderBottomWidth: 0
   },
+
   tabsTitle: {
     color: colors.primary,
     fontFamily: 'condbold-regular',

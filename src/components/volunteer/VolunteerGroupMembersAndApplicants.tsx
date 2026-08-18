@@ -105,6 +105,7 @@ export const VolunteerGroupMembersAndApplicants = ({
       {!hideMembers && !!groupMembers?.length && (
         <Wrapper>
           <TouchableOpacity
+            accessibilityLabel={texts.accessibilityLabels.actions.showMembers}
             onPress={() =>
               navigation.push(ScreenName.VolunteerIndex, {
                 title: texts.volunteer.members,
@@ -140,6 +141,7 @@ export const VolunteerGroupMembersAndApplicants = ({
       {isGroupOwner && !!groupApplicants?.length && (
         <Wrapper>
           <TouchableOpacity
+            accessibilityLabel={texts.accessibilityLabels.actions.showApplicants}
             onPress={() =>
               navigation.push(ScreenName.VolunteerIndex, {
                 title: texts.volunteer.applicants,

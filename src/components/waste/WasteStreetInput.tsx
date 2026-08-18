@@ -1,9 +1,10 @@
 import React, { useContext, useMemo } from 'react';
-import { Platform, StyleSheet } from 'react-native';
 import Autocomplete from 'react-native-autocomplete-input';
 
-import { colors, device, normalize, texts } from '../../config';
+import { device, normalize, texts } from '../../config';
 import { useFilterStreets, useKeyboardHeight, useWasteAddresses } from '../../hooks';
+import { useTheme } from '../../hooks/useTheme';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
 import { OrientationContext } from '../../OrientationProvider';
 import { SettingsContext } from '../../SettingsProvider';
 import { Label } from '../Label';
@@ -15,6 +16,7 @@ import {
   getAutocompleteListContainerHeight,
   getAutocompleteMaxDropdownHeight
 } from './autocompleteLayout';
+import { createWasteInputStyles } from './wasteInputStyles';
 
 type Props = {
   isFocused: boolean;
@@ -28,6 +30,8 @@ type Props = {
 };
 
 export const WasteStreetInput = ({ isFocused, renderSuggestions, setIsFocused }: Props) => {
+  const { colors } = useTheme();
+  const styles = useThemeStyles(createWasteInputStyles);
   const { dimensions } = useContext(OrientationContext);
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
@@ -108,6 +112,8 @@ export const WasteStreetInput = ({ isFocused, renderSuggestions, setIsFocused }:
         onChangeText={(text) => setInputValue(text)}
         onFocus={() => setIsFocused(true)}
         placeholder={wasteTexts.street}
+        placeholderTextColor={colors.placeholder}
+        selectionColor={colors.primary}
         style={styles.autoCompleteInput}
         value={inputValue}
       />
@@ -115,55 +121,3 @@ export const WasteStreetInput = ({ isFocused, renderSuggestions, setIsFocused }:
     </Wrapper>
   );
 };
-
-const styles = StyleSheet.create({
-  autoCompleteContainer: {
-    paddingHorizontal: 0
-  },
-  autoCompleteInputContainer: {
-    borderColor: colors.gray40,
-    borderRadius: normalize(8),
-    borderWidth: normalize(1),
-    height: normalize(42)
-  },
-  autoCompleteInput: {
-    backgroundColor: colors.transparent,
-    color: colors.darkText,
-    paddingLeft: normalize(12),
-    paddingRight: normalize(6),
-    paddingVertical: device.platform === 'ios' ? normalize(10) : normalize(8),
-    fontFamily: 'regular',
-    fontSize: normalize(14),
-    height: normalize(42),
-    lineHeight: normalize(20)
-  },
-  autoCompleteList: {
-    paddingHorizontal: normalize(6),
-    position: 'relative',
-    ...Platform.select({
-      ios: {
-        borderWidth: 0
-      },
-      android: {
-        borderColor: colors.gray20,
-        borderRadius: 0,
-        borderWidth: normalize(1),
-        maxHeight: normalize(300)
-      }
-    })
-  },
-  autoCompleteListContainer: {
-    elevation: 2,
-    shadowColor: colors.shadow,
-    shadowOffset: { height: 5, width: 0 },
-    shadowOpacity: 0.5,
-    shadowRadius: 3
-  },
-  noPaddingTop: {
-    paddingTop: 0
-  },
-  noBorderTop: {
-    borderTopWidth: 0,
-    marginTop: normalize(-1)
-  }
-});

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import React, { useContext, useState } from 'react';
 import { useMutation } from 'react-apollo';
 import { Controller, useForm } from 'react-hook-form';
-import { Alert, Keyboard, ScrollView, StyleSheet } from 'react-native';
+import { Alert, Keyboard, ScrollView } from 'react-native';
 
 import {
   Button,
@@ -14,15 +14,20 @@ import {
   SafeAreaViewFlex,
   Wrapper
 } from '../components';
-import { Icon, colors, consts, normalize, texts } from '../config';
-import { collectDeviceInfo } from '../helpers';
+import { Icon, consts, normalize, texts } from '../config';
+import { collectDeviceInfo } from '../helpers/appUserContentHelper';
 import { useAppInfo, useMatomoTrackScreenView } from '../hooks';
 import { QUERY_TYPES, createQuery } from '../queries';
 import { SettingsContext } from '../SettingsProvider';
+import { useThemeStyles } from '../hooks/useThemeStyles';
+import { useTheme } from '../hooks/useTheme';
 
 const { MATOMO_TRACKING, EMAIL_REGEX } = consts;
 
 export const FeedbackScreen = ({ route }) => {
+  const { colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
   const { globalSettings } = useContext(SettingsContext);
@@ -72,6 +77,16 @@ export const FeedbackScreen = ({ route }) => {
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.FEEDBACK);
 
   const [createAppUserContent] = useMutation(createQuery(QUERY_TYPES.APP_USER_CONTENT));
+
+  const onInvalid = (validationErrors) => {
+    const firstError = Object.values(validationErrors).find(
+      (error) => typeof error?.message === 'string'
+    );
+
+    if (firstError) {
+      Alert.alert(texts.feedbackScreen.inputsErrorMessages.hint, firstError.message);
+    }
+  };
 
   const onSubmit = async (createAppUserContentNewData) => {
     Keyboard.dismiss();
@@ -147,6 +162,9 @@ export const FeedbackScreen = ({ route }) => {
               boldLabel
               placeholder={texts.feedbackScreen.inputsLabel.email}
               keyboardType="email-address"
+              autoCapitalize="none"
+              autoComplete="email"
+              textContentType="emailAddress"
               validate
               rules={{
                 pattern: {
@@ -223,7 +241,7 @@ export const FeedbackScreen = ({ route }) => {
 
           <Wrapper noPaddingTop>
             <Button
-              onPress={handleSubmit(onSubmit)}
+              onPress={handleSubmit(onSubmit, onInvalid)}
               title={
                 loading
                   ? texts.feedbackScreen.sendButton.disabled
@@ -242,7 +260,7 @@ export const FeedbackScreen = ({ route }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   textArea: {
     height: normalize(100),
     padding: normalize(10)

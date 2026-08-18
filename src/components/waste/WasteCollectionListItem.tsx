@@ -1,15 +1,17 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 import { Divider } from 'react-native-elements';
 
-import { colors, normalize } from '../../config';
+import { normalize } from '../../config';
 import { momentFormat } from '../../helpers';
 import { HeadlineText, RegularText } from '../Text';
 import { Wrapper, WrapperHorizontal, WrapperRow } from '../Wrapper';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
 
 import { Dot } from './WasteCalendarLegendEntry';
 
 export const WasteCollectionListItem = ({ item: groupedItem, options }) => {
+  const styles = useThemeStyles(createStyles);
   const { groupKey, usedTypes } = options;
   const sectionHeaderTop = momentFormat(groupedItem[0][groupKey], 'dd');
   const sectionHeaderBottom = momentFormat(groupedItem[0][groupKey], 'DD');
@@ -57,22 +59,26 @@ export const WasteCollectionListItem = ({ item: groupedItem, options }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   cell: {
     backgroundColor: colors.surface
   },
+
   container: {
     marginBottom: normalize(8),
     alignItems: 'center'
   },
+
   labelContainer: {
     flex: 1,
     flexDirection: 'row',
     flexWrap: 'wrap'
   },
+
   width15: {
     width: '15%'
   },
+
   width85: {
     width: '85%'
   }

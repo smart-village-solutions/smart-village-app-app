@@ -11,11 +11,12 @@ import {
   Input,
   LoadingModal,
   RegularText,
+  ReadAloudContent,
   SafeAreaViewFlex,
   SectionHeader,
   Wrapper
 } from '../../components';
-import { colors, texts } from '../../config';
+import { consts, texts } from '../../config';
 import {
   storeVoucherAuthToken,
   storeVoucherMemberId,
@@ -23,14 +24,19 @@ import {
 } from '../../helpers/voucherHelper';
 import { useStaticContent } from '../../hooks';
 import { profileLogIn as logIn } from '../../queries/profile';
+import { useReadAloudScrollContentContainerStyle } from '../../ReadAloudAvailabilityProvider';
 import { ScreenName, VoucherLogin } from '../../types';
+import { useTheme } from '../../hooks/useTheme';
 
 const showLoginFailAlert = () =>
   Alert.alert(texts.voucher.loginFailedTitle, texts.voucher.loginFailedBody);
 
 // eslint-disable-next-line complexity
 export const VoucherLoginScreen = ({ navigation, route }: StackScreenProps<any>) => {
+  const { colors } = useTheme();
+
   const imageUri = route?.params?.imageUri;
+  const scrollContentContainerStyle = useReadAloudScrollContentContainerStyle();
 
   const {
     control,
@@ -80,6 +86,7 @@ export const VoucherLoginScreen = ({ navigation, route }: StackScreenProps<any>)
     <SafeAreaViewFlex>
       <DefaultKeyboardAvoidingView>
         <ScrollView
+          contentContainerStyle={scrollContentContainerStyle}
           keyboardShouldPersistTaps="handled"
           refreshControl={
             <RefreshControl
@@ -94,6 +101,7 @@ export const VoucherLoginScreen = ({ navigation, route }: StackScreenProps<any>)
 
           {!!dataLoginText && (
             <Wrapper noPaddingBottom>
+              <ReadAloudContent content={dataLoginText} contentId="voucher-login-content" />
               <HtmlView html={dataLoginText} />
             </Wrapper>
           )}
@@ -129,7 +137,11 @@ export const VoucherLoginScreen = ({ navigation, route }: StackScreenProps<any>)
               disabled={isLoading}
               notFullWidth
             />
-            <TouchableOpacity onPress={() => navigation.goBack()}>
+            <TouchableOpacity
+              accessibilityLabel={`${texts.voucher.abort} ${consts.a11yLabel.button}`}
+              accessibilityRole="button"
+              onPress={() => navigation.goBack()}
+            >
               <RegularText primary center>
                 {texts.voucher.abort}
               </RegularText>

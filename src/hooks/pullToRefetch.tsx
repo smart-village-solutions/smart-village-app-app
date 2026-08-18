@@ -1,9 +1,10 @@
 import React, { useCallback, useState } from 'react';
 import { RefreshControl } from 'react-native';
 
-import { colors } from '../config';
+import { useTheme } from './useTheme';
 
 export const usePullToRefetch = (refetch?: () => Promise<unknown>) => {
+  const { colors } = useTheme();
   const [refreshing, setRefreshing] = useState(false);
 
   const refresh = useCallback(async () => {

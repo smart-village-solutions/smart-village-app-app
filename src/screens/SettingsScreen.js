@@ -1,7 +1,7 @@
 import { isARSupportedOnDevice } from '@reactvision/react-viro';
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, SectionList, StyleSheet } from 'react-native';
+import { ActivityIndicator, Alert, SectionList } from 'react-native';
 
 import {
   AugmentedReality,
@@ -13,15 +13,17 @@ import {
   Wrapper
 } from '../components';
 import {
+  AccessibilitySettings,
   ListSettings,
   LocationSettings,
   MowasRegionSettings,
   PermanentFilterSettings,
   PersonalizedPushSettings
 } from '../components/settings';
-import { colors, consts, normalize, texts } from '../config';
+import { consts, normalize, texts } from '../config';
 import {
   addToStore,
+  getAccessibilitySettingsEntryEnabled,
   createMatomoUserId,
   matomoSettings,
   readFromStore,
@@ -41,12 +43,15 @@ import {
 } from '../pushNotifications';
 import { SettingsContext } from '../SettingsProvider';
 import { ScreenName } from '../types';
+import { useThemeStyles } from '../hooks/useThemeStyles';
+import { useTheme } from '../hooks/useTheme';
 
 const { MATOMO_TRACKING } = consts;
 
 const keyExtractor = (item, index) => `index${index}-item${item.title || item}`;
 
 export const SETTINGS_SCREENS = {
+  ACCESSIBILITY: 'accessibilitySettings',
   AR: 'augmentedRealitySettings',
   LIST: 'listSettings',
   LOCATION: 'locationSettings',
@@ -143,6 +148,23 @@ const renderItem = ({ item, navigation, listsWithoutArrows, settingsScreenListIt
         navigation={navigation}
       />
     );
+  } else if (item === SETTINGS_SCREENS.ACCESSIBILITY) {
+    component = (
+      <TextListItem
+        item={{
+          bottomDivider: false,
+          isHeadlineTitle: false,
+          params: {
+            setting: item,
+            title: title || texts.settingsContents.accessibility.setting
+          },
+          routeName: ScreenName.Settings,
+          title: title || texts.settingsContents.accessibility.setting
+        }}
+        listsWithoutArrows={listsWithoutArrows}
+        navigation={navigation}
+      />
+    );
   } else {
     component = <SettingsToggle needsConnection={false} item={item} />;
   }
@@ -191,7 +213,11 @@ export const onDeactivatePushNotifications = (revert) => {
     });
 };
 
+/* eslint-disable complexity */
 export const SettingsScreen = ({ navigation, route }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const { globalSettings } = useContext(SettingsContext);
   const { mowas, settings = {} } = globalSettings;
   const {
@@ -204,6 +230,8 @@ export const SettingsScreen = ({ navigation, route }) => {
 
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.SETTINGS);
 
+  // settings screen structure is intentionally built once per entry state
+  /* eslint-disable react-hooks/exhaustive-deps */
   useEffect(() => {
     /* eslint-disable complexity */
     const updateData = async () => {
@@ -364,6 +392,12 @@ export const SettingsScreen = ({ navigation, route }) => {
         });
       }
 
+      if (getAccessibilitySettingsEntryEnabled(globalSettings)) {
+        settingsList.push({
+          data: [SETTINGS_SCREENS.ACCESSIBILITY]
+        });
+      }
+
       settingsList.push({
         data: [SETTINGS_SCREENS.PERMANENT_FILTER]
       });
@@ -399,6 +433,7 @@ export const SettingsScreen = ({ navigation, route }) => {
 
     setting == '' && updateData();
   }, [setting]);
+  /* eslint-enable react-hooks/exhaustive-deps */
 
   if (setting == '' && !data.length) {
     return (
@@ -430,6 +465,9 @@ export const SettingsScreen = ({ navigation, route }) => {
     case SETTINGS_SCREENS.PERSONALIZED_PUSH:
       Component = <PersonalizedPushSettings />;
       break;
+    case SETTINGS_SCREENS.ACCESSIBILITY:
+      Component = <AccessibilitySettings />;
+      break;
     default:
       Component = (
         <SectionList
@@ -454,8 +492,9 @@ export const SettingsScreen = ({ navigation, route }) => {
 
   return <SafeAreaViewFlex>{Component}</SafeAreaViewFlex>;
 };
+/* eslint-enable complexity */
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   container: {
     paddingHorizontal: normalize(16)
   }

@@ -1,9 +1,11 @@
 import React, { useContext } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 
-import { colors, normalize, texts } from '../config';
+import { normalize, texts } from '../config';
 import { combineLanguages, getAnswerLabel } from '../helpers';
 import { useSurveyLanguages } from '../hooks';
+import { useTheme } from '../hooks/useTheme';
+import { useThemeStyles } from '../hooks/useThemeStyles';
 import { ResponseOption } from '../types';
 
 import { AccessibilityContext } from '../AccessibilityProvider';
@@ -37,6 +39,8 @@ const getCountLabel = (partial: number, total: number) => {
 
 const SingleResult = ({ isMultilingual, option, selected, totalCount }: SingleProps) => {
   const { isReduceTransparencyEnabled } = useContext(AccessibilityContext);
+  const { colors } = useTheme();
+  const styles = useThemeStyles(createStyles);
 
   const percentString = getPercent(option.votesCount, totalCount);
   const width = percentString === '0%' ? barBorderRadius * 2 : percentString;
@@ -68,6 +72,7 @@ const SingleResult = ({ isMultilingual, option, selected, totalCount }: SinglePr
 };
 
 export const Results = ({ isMultilingual, responseOptions, selectedOptions }: Props) => {
+  const styles = useThemeStyles(createStyles);
   const languages = useSurveyLanguages(isMultilingual);
   const sortedOptions = responseOptions
     .map((option, index) => ({ ...option, index }))
@@ -101,7 +106,7 @@ export const Results = ({ isMultilingual, responseOptions, selectedOptions }: Pr
 
 const barBorderRadius = 4;
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   barContainer: {
     flex: 1,
     justifyContent: 'center'

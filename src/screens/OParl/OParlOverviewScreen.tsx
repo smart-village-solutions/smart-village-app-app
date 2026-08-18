@@ -19,7 +19,7 @@ type TileProps = {
 const overviewTexts = texts.oparl.overview;
 
 const Tile = ({ icon, onPress, title }: TileProps) => (
-  <Touchable disabled={!onPress} onPress={onPress}>
+  <Touchable accessibilityLabel={title} disabled={!onPress} onPress={onPress}>
     <View style={styles.background}>
       <Wrapper>{icon}</Wrapper>
       <BoldText primary>{title}</BoldText>

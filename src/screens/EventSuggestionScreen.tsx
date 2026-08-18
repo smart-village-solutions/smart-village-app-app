@@ -2,7 +2,7 @@ import { NavigationProp } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { useMutation } from 'react-apollo';
 import { Controller, useForm } from 'react-hook-form';
-import { Alert, Keyboard, ScrollView, StyleSheet } from 'react-native';
+import { Alert, Keyboard, ScrollView } from 'react-native';
 
 import {
   Button,
@@ -11,13 +11,17 @@ import {
   HeadlineText,
   HtmlView,
   Input,
+  ReadAloudContent,
   RegularText,
   SafeAreaViewFlex,
   Wrapper,
   WrapperVertical
 } from '../components';
-import { colors, consts, normalize, texts } from '../config';
+import { consts, normalize, texts } from '../config';
 import { createQuery, QUERY_TYPES } from '../queries';
+import { useReadAloudScrollContentContainerStyle } from '../ReadAloudAvailabilityProvider';
+import { useThemeStyles } from '../hooks/useThemeStyles';
+import { useTheme } from '../hooks/useTheme';
 
 const { EMAIL_REGEX } = consts;
 
@@ -38,6 +42,10 @@ export const EventSuggestionScreen = ({
   navigation: NavigationProp<any>;
   route: { params: { formIntroText: string } };
 }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
+  const scrollContentContainerStyle = useReadAloudScrollContentContainerStyle();
   const [loading, setLoading] = useState(false);
   const introText = route.params.formIntroText || '';
 
@@ -106,8 +114,12 @@ export const EventSuggestionScreen = ({
   return (
     <SafeAreaViewFlex>
       <DefaultKeyboardAvoidingView>
-        <ScrollView keyboardShouldPersistTaps="handled">
+        <ScrollView
+          contentContainerStyle={scrollContentContainerStyle}
+          keyboardShouldPersistTaps="handled"
+        >
           <Wrapper>
+            <ReadAloudContent content={introText} contentId="event-suggestion-intro-content" />
             <HtmlView html={introText} />
 
             <WrapperVertical />
@@ -233,10 +245,11 @@ export const EventSuggestionScreen = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   checkboxContainerStyle: {
     marginTop: normalize(30)
   },
+
   textArea: {
     height: normalize(100),
     padding: normalize(10)

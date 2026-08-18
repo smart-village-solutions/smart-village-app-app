@@ -6,12 +6,13 @@ import { RefreshControl, ScrollView } from 'react-native';
 import { useProfileContext } from '../ProfileProvider';
 import { SettingsContext } from '../SettingsProvider';
 import { BookmarkSection, RegularText, SafeAreaViewFlex, Wrapper } from '../components';
-import { colors, consts, texts } from '../config';
+import { consts, texts } from '../config';
 import { getKeyFromTypeAndSuffix } from '../helpers';
 import { getGenericItemSectionTitle } from '../helpers/genericTypeHelper';
 import { useBookmarks, useMatomoTrackScreenView, useNewsCategories } from '../hooks';
 import { QUERY_TYPES } from '../queries';
 import { GenericType } from '../types';
+import { useTheme } from '../hooks/useTheme';
 
 const { LIST_TYPES, MATOMO_TRACKING } = consts;
 
@@ -49,6 +50,8 @@ const getBookmarkCount = (bookmarks, isLoggedIn) => {
 };
 
 export const BookmarkScreen = ({ navigation, route }) => {
+  const { colors } = useTheme();
+
   const bookmarks = useBookmarks();
   const { isLoggedIn, refresh } = useProfileContext();
   const categoriesNews = useNewsCategories();

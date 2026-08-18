@@ -1,10 +1,11 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 import { Divider } from 'react-native-elements';
 
-import { colors, normalize, texts } from '../../config';
+import { normalize, texts } from '../../config';
 import { search } from '../../helpers';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
 import { DropdownSelect } from '../DropdownSelect';
 import { IndexFilterWrapper } from '../IndexFilterElement';
 import { RegularText } from '../Text';
@@ -42,6 +43,7 @@ export const IndexFilter = ({
   setListItems,
   setSearchData
 }) => {
+  const styles = useThemeStyles(createStyles);
   const [categoryFilterData, setCategoryFilterData] = useState(initialCategoryFilterData);
   const listItemsCount = listItems.length;
   const renderAreaAutocomplete = () => (
@@ -146,7 +148,7 @@ export const IndexFilter = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   divider: {
     backgroundColor: colors.surface,
     height: normalize(18),

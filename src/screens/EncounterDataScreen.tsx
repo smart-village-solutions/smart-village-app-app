@@ -5,7 +5,6 @@ import {
   Pressable,
   RefreshControl,
   ScrollView,
-  StyleSheet,
   TextInput,
   TouchableOpacity,
   View
@@ -25,12 +24,14 @@ import {
   Wrapper,
   WrapperRow
 } from '../components';
-import { Icon, colors, consts, normalize, texts } from '../config';
+import { Icon, consts, normalize, texts } from '../config';
 import { updateUserAsync } from '../encounterApi';
 import { momentFormat } from '../helpers';
 import { useEncounterSupportId, useEncounterUser, useSelectImage } from '../hooks';
 import { QUERY_TYPES } from '../queries';
 import { ScreenName } from '../types';
+import { useThemeStyles } from '../hooks/useThemeStyles';
+import { useTheme } from '../hooks/useTheme';
 
 const INFO_ICON_SIZE = normalize(14);
 
@@ -50,6 +51,9 @@ const showChangeSuccessAlert = () =>
 
 // eslint-disable-next-line complexity, @typescript-eslint/no-explicit-any
 export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
   const [firstName, setFirstName] = useState<string>();
   const [lastName, setLastName] = useState<string>();
@@ -314,12 +318,14 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   editIconContainer: {
     justifyContent: 'flex-end'
   },
+
   icon: { marginLeft: normalize(8) },
   infoLabelContainer: { alignItems: 'center' },
+
   inputField: {
     backgroundColor: colors.surface,
     borderColor: colors.placeholder,
@@ -330,6 +336,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: normalize(14),
     paddingVertical: normalize(8)
   },
+
   supportIdContainer: {
     paddingBottom: normalize(7),
     paddingTop: normalize(9)

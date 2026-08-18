@@ -24,7 +24,7 @@ const { MATOMO_TRACKING } = consts;
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
-export const Tour = ({ data, navigation, route }) => {
+export const Tour = ({ data, navigation, readAloudControls, route }) => {
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { showDistanceDirection = {} } = settings;
@@ -85,12 +85,15 @@ export const Tour = ({ data, navigation, route }) => {
   return (
     <View>
       <ImageSection mediaContents={mediaContents} />
+
       <SectionHeader title={title} />
-      <Wrapper>
+      <Wrapper noPaddingBottom>
         {!!logo && <Logo source={{ uri: logo }} />}
 
         <InfoCard category={category} addresses={addresses} contact={contact} webUrls={webUrls} />
       </Wrapper>
+
+      {readAloudControls}
 
       {(!!tourAddresses.length || !!lengthKm) && (
         <TourCard lengthKm={lengthKm} tourAddresses={tourAddresses} payload={payload} />
@@ -135,5 +138,6 @@ export const Tour = ({ data, navigation, route }) => {
 Tour.propTypes = {
   data: PropTypes.object.isRequired,
   navigation: PropTypes.object,
+  readAloudControls: PropTypes.node,
   route: PropTypes.object.isRequired
 };

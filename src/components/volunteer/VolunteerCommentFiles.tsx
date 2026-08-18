@@ -3,10 +3,12 @@ import { Image as RNImage, StyleSheet } from 'react-native';
 import { ListItem } from 'react-native-elements';
 import Lightbox from 'react-native-lightbox-v2';
 
-import { colors, device, normalize } from '../../config';
+import { device, normalize } from '../../config';
 import { imageWidth, volunteerApiV1Url } from '../../helpers';
 import { VolunteerFileObject } from '../../types';
 import { Image } from '../Image';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 export const VolunteerCommentFiles = ({
   authToken,
@@ -17,6 +19,9 @@ export const VolunteerCommentFiles = ({
   files: VolunteerFileObject[];
   isAnswer: boolean;
 }) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const [filesWithImages, setFilesWithImages] = useState([]);
   const [aspectRatios, setAspectRatios] = useState<{ [key: string]: number }>({});
 
@@ -87,15 +92,17 @@ export const VolunteerCommentFiles = ({
   });
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   filesContainerStyle: {
     backgroundColor: colors.gray20,
     paddingHorizontal: normalize(12),
     paddingTop: 0
   },
+
   imageContainer: {
     alignSelf: 'center'
   },
+
   paddingBottom: {
     paddingBottom: normalize(12)
   }

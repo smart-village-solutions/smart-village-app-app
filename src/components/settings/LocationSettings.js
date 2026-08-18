@@ -147,6 +147,7 @@ export const LocationSettings = () => {
               />
 
               <Touchable
+                accessibilityLabel={texts.accessibilityLabels.actions.cancel}
                 onPress={() => {
                   updateSelectedPosition();
                   setShowMap(false);

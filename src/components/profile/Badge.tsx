@@ -1,9 +1,10 @@
 import React from 'react';
-import { StyleSheet, ViewStyle } from 'react-native';
+import { ViewStyle } from 'react-native';
 import { Badge as RNBadge } from 'react-native-elements';
 
-import { colors, normalize } from '../../config';
+import { normalize } from '../../config';
 import { useMessagesContext } from '../../UnreadMessagesProvider';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
 
 export const Badge = ({
   badgeStyle,
@@ -12,6 +13,7 @@ export const Badge = ({
   badgeStyle?: ViewStyle;
   containerStyle?: ViewStyle;
 }) => {
+  const styles = useThemeStyles(createStyles);
   const { count, loading } = useMessagesContext();
 
   if (loading || count === 0) {
@@ -27,12 +29,13 @@ export const Badge = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   badgeContainer: {
     position: 'absolute',
     right: normalize(60),
     top: normalize(17)
   },
+
   badgeStyle: {
     backgroundColor: colors.error
   }

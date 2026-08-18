@@ -1,9 +1,10 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { colors as RNEColors } from 'react-native-elements';
 
-import { Icon, colors, normalize } from '../../config';
+import { Icon, normalize } from '../../config';
 import { openLink, parseMarkdownLink } from '../../helpers';
+import { useTheme } from '../../hooks/useTheme';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
 import { BoldText, RegularText } from '../Text';
 import { Touchable } from '../Touchable';
 import { Wrapper, WrapperRow, WrapperWrap } from '../Wrapper';
@@ -34,6 +35,9 @@ export const Row = ({
   onPress?: () => void;
   smallLeft?: boolean;
 }) => {
+  const { colors } = useTheme();
+  const styles = useThemeStyles(createStyles);
+
   if (!right) return null;
 
   // Check if right is a markdown link
@@ -44,7 +48,7 @@ export const Row = ({
   const displayText = markdownLink ? markdownLink.text : right;
 
   return (
-    <Touchable onPress={handlePress} disabled={!handlePress}>
+    <Touchable accessibilityLabel={left} onPress={handlePress} disabled={!handlePress}>
       <WrapperRow style={topDivider ? styles.doubleLine : styles.line}>
         <Wrapper shrink style={[styles.left, { width: normalize(leftWidth) }]}>
           <RegularText small={smallLeft} numberOfLines={fullText ? undefined : 1}>
@@ -60,7 +64,7 @@ export const Row = ({
         </Wrapper>
         {!!handlePress && (
           <Wrapper style={styles.icon}>
-            <Icon.ArrowRight color={colors.darkText} size={normalize(18)} />
+            <Icon.ArrowRight color={colors.text} size={normalize(18)} />
           </Wrapper>
         )}
       </WrapperRow>
@@ -69,6 +73,8 @@ export const Row = ({
 };
 
 export const SimpleRow = ({ fullText, left, lineThrough, onPress, right, selectable }: Props) => {
+  const styles = useThemeStyles(createStyles);
+
   if (!right || (typeof right === 'string' && !right?.length)) {
     return null;
   }
@@ -93,7 +99,7 @@ export const SimpleRow = ({ fullText, left, lineThrough, onPress, right, selecta
     <SelectedWrapper style={styles.marginTop}>
       <BoldText>{left}</BoldText>
       {onPress ? (
-        <Touchable style={styles.shrink} onPress={onPress}>
+        <Touchable accessibilityLabel={left} style={styles.shrink} onPress={onPress}>
           {innerComponent}
         </Touchable>
       ) : (
@@ -103,7 +109,7 @@ export const SimpleRow = ({ fullText, left, lineThrough, onPress, right, selecta
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   shrink: {
     flexShrink: 1
   },
@@ -113,7 +119,7 @@ const styles = StyleSheet.create({
   doubleLine: {
     borderTopWidth: StyleSheet.hairlineWidth,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderColor: RNEColors.divider
+    borderColor: colors.border
   },
   icon: {
     justifyContent: 'center',
@@ -126,7 +132,7 @@ const styles = StyleSheet.create({
   },
   line: {
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderColor: RNEColors.divider
+    borderColor: colors.border
   },
   right: {
     flex: 1,

@@ -1,10 +1,12 @@
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
-import { Text as RNText } from 'react-native';
+import { StyleSheet, Text as RNText } from 'react-native';
 import styled, { css } from 'styled-components/native';
 
 import { AccessibilityContext } from '../AccessibilityProvider';
-import { colors, normalize } from '../config';
+import { normalize } from '../config';
+import { lightColors } from '../config/colors';
+import { useTheme } from '../hooks/useTheme';
 
 // example: S&#322;ubice -> Słubice
 function parseNumericCharacterReferences(text) {
@@ -33,15 +35,56 @@ function parseText(text) {
   return result;
 }
 
-export const Text = ({ children, style, italic, ...props }) => {
-  const { isBoldTextEnabled } = useContext(AccessibilityContext);
+const scaleTypography = (style, scale = 1) => {
+  if (!style || scale === 1) return style;
+
+  const scaledStyle = { ...style };
+  if (typeof style.fontSize === 'number') {
+    scaledStyle.fontSize = style.fontSize * scale;
+  }
+  if (typeof style.lineHeight === 'number') {
+    scaledStyle.lineHeight = style.lineHeight * scale;
+  }
+
+  return scaledStyle;
+};
+
+const updateColorForHighContrast = (style, isHighContrastEnabled, colors) => {
+  if (!style || !isHighContrastEnabled) return style;
+  if (!style.color) return style;
+
+  if (
+    style.color === colors.placeholder ||
+    style.color === colors.gray60 ||
+    style.color === colors.gray40
+  ) {
+    return {
+      ...style,
+      color: colors.darkText,
+      textDecorationColor: colors.darkText
+    };
+  }
+
+  return style;
+};
+
+export const Text = ({ children, style, italic, ignoreTextScale = false, ...props }) => {
+  const {
+    isBoldTextEnabled,
+    isHighContrastEnabled,
+    textScaleMultiplier = 1
+  } = useContext(AccessibilityContext);
+  const { colors } = useTheme();
+  const flattenedStyle = StyleSheet.flatten(style || {});
+  const baseStyle = scaleTypography(flattenedStyle, ignoreTextScale ? 1 : textScaleMultiplier);
+  const adjustedStyle = updateColorForHighContrast(baseStyle, isHighContrastEnabled, colors);
 
   /* eslint-disable react-native/no-inline-styles */
   return (
     <RNText
       {...props}
       style={[
-        ...style,
+        adjustedStyle,
         isBoldTextEnabled && { fontFamily: 'bold' },
         italic && { fontFamily: 'bold-italic' }
       ]}
@@ -52,14 +95,17 @@ export const Text = ({ children, style, italic, ...props }) => {
   /* eslint-enable react-native/no-inline-styles */
 };
 
+const themeColor = (props, token) => props.theme?.[token] || lightColors[token];
+
 Text.propTypes = {
   children: PropTypes.node,
-  style: PropTypes.array,
+  ignoreTextScale: PropTypes.bool,
+  style: PropTypes.oneOfType([PropTypes.array, PropTypes.number, PropTypes.object]),
   italic: PropTypes.bool
 };
 
 export const RegularText = styled(Text)`
-  color: ${colors.darkText};
+  color: ${(props) => themeColor(props, 'text')};
   font-family: regular;
   font-size: ${normalize(16)};
   line-height: ${normalize(22)};
@@ -106,57 +152,57 @@ export const RegularText = styled(Text)`
   ${(props) =>
     props.primary &&
     css`
-      color: ${colors.primary};
-      text-decoration-color: ${colors.primary};
+      color: ${themeColor(props, 'primary')};
+      text-decoration-color: ${themeColor(props, 'primary')};
     `};
 
   ${(props) =>
     props.secondary &&
     css`
-      color: ${colors.secondary};
-      text-decoration-color: ${colors.secondary};
+      color: ${themeColor(props, 'secondary')};
+      text-decoration-color: ${themeColor(props, 'secondary')};
     `};
 
   ${(props) =>
     props.lighter &&
     css`
-      color: ${colors.gray60};
-      text-decoration-color: ${colors.gray60};
+      color: ${themeColor(props, 'textMuted')};
+      text-decoration-color: ${themeColor(props, 'textMuted')};
     `};
 
   ${(props) =>
     props.lightest &&
     css`
-      color: ${colors.lightestText};
-      text-decoration-color: ${colors.lightestText};
+      color: ${themeColor(props, 'onPrimary')};
+      text-decoration-color: ${themeColor(props, 'onPrimary')};
     `};
 
   ${(props) =>
     props.placeholder &&
     css`
-      color: ${colors.placeholder};
-      text-decoration-color: ${colors.placeholder};
+      color: ${themeColor(props, 'placeholder')};
+      text-decoration-color: ${themeColor(props, 'placeholder')};
     `};
 
   ${(props) =>
     props.darker &&
     css`
-      color: ${colors.darkerPrimary};
-      text-decoration-color: ${colors.darkerPrimary};
+      color: ${themeColor(props, 'darkerPrimary')};
+      text-decoration-color: ${themeColor(props, 'darkerPrimary')};
     `};
 
   ${(props) =>
     props.error &&
     css`
-      color: ${colors.error};
-      text-decoration-color: ${colors.error};
+      color: ${themeColor(props, 'error')};
+      text-decoration-color: ${themeColor(props, 'error')};
     `};
 
   ${(props) =>
     props.blue &&
     css`
-      color: ${colors.blue};
-      text-decoration-color: ${colors.blue};
+      color: ${themeColor(props, 'blue')};
+      text-decoration-color: ${themeColor(props, 'blue')};
     `};
 
   ${(props) =>

@@ -1,10 +1,14 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useContext } from 'react';
-import { StyleProp, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native';
+import { StyleProp, TouchableOpacity, ViewStyle } from 'react-native';
 
-import { colors, consts, device, Icon, normalize } from '../config';
+import { consts, Icon, normalize } from '../config';
 import { SettingsContext } from '../SettingsProvider';
 import { ScreenName } from '../types';
+import { useThemeStyles } from '../hooks/useThemeStyles';
+import { useTheme } from '../hooks/useTheme';
+
+import { HEADER_RIGHT_ICON_STROKE_WIDTH } from './headerIconConfig';
 
 const { a11yLabel } = consts;
 
@@ -14,6 +18,9 @@ type Props = {
 };
 
 export const SearchHeader = ({ navigation, style }: Props) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { search } = settings;
@@ -29,17 +36,18 @@ export const SearchHeader = ({ navigation, style }: Props) => {
       }
       accessibilityLabel={a11yLabel.searchIcon}
       accessibilityHint={a11yLabel.searchHint}
+      accessibilityRole="button"
     >
       <Icon.Search
         color={colors.darkerPrimary}
         style={[style, styles.icon]}
-        strokeWidth={device.platform === 'ios' ? 1.3 : undefined}
+        strokeWidth={HEADER_RIGHT_ICON_STROKE_WIDTH}
       />
     </TouchableOpacity>
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   icon: {
     paddingHorizontal: normalize(3)
   }

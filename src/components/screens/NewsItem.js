@@ -17,7 +17,7 @@ const { MATOMO_TRACKING } = consts;
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
-export const NewsItem = ({ data, route }) => {
+export const NewsItem = ({ data, readAloudControls, route }) => {
   const { globalSettings } = useContext(SettingsContext);
   const { showImageRights, settings = {} } = globalSettings || {};
   const { detailDateFormat } = settings?.news || {};
@@ -91,6 +91,8 @@ export const NewsItem = ({ data, route }) => {
         mediaContents={contentBlocks?.[0]?.mediaContents}
       />
 
+      {readAloudControls}
+
       {!!contentBlocks?.length &&
         contentBlocks.map((contentBlock, index) => (
           <StorySection
@@ -117,5 +119,6 @@ const styles = StyleSheet.create({
 NewsItem.propTypes = {
   data: PropTypes.object.isRequired,
   navigation: PropTypes.object.isRequired,
+  readAloudControls: PropTypes.node,
   route: PropTypes.object.isRequired
 };

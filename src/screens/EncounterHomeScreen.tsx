@@ -1,6 +1,6 @@
 import * as Linking from 'expo-linking';
 import React, { useCallback, useContext, useEffect } from 'react';
-import { RefreshControl, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { RefreshControl, ScrollView, TouchableOpacity, View } from 'react-native';
 import { Divider } from 'react-native-elements';
 import QRCode from 'react-native-qrcode-svg';
 
@@ -12,13 +12,14 @@ import {
   EncounterWelcome,
   HtmlView,
   RegularText,
+  ReadAloudContent,
   SafeAreaViewFlex,
   SectionHeader,
   Wrapper,
   WrapperRow
 } from '../components';
 import { LoadingSpinner } from '../components/LoadingSpinner';
-import { colors, consts, device, Icon, normalize, texts } from '../config';
+import { consts, device, Icon, normalize, texts } from '../config';
 import {
   useEncounterPolling,
   useEncounterUser,
@@ -27,8 +28,11 @@ import {
   useStaticContent
 } from '../hooks';
 import { QUERY_TYPES } from '../queries';
+import { useReadAloudScrollContentContainerStyle } from '../ReadAloudAvailabilityProvider';
 import { SettingsContext } from '../SettingsProvider';
 import { ScreenName } from '../types';
+import { useThemeStyles } from '../hooks/useThemeStyles';
+import { useTheme } from '../hooks/useTheme';
 const { a11yLabel, HOST_NAMES } = consts;
 
 const INFO_ICON_SIZE = normalize(16);
@@ -36,6 +40,10 @@ const INFO_ICON_SIZE = normalize(16);
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 // eslint-disable-next-line complexity
 export const EncounterHomeScreen = ({ navigation, route }: any) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
+  const scrollContentContainerStyle = useReadAloudScrollContentContainerStyle();
   // @ts-expect-error settings are not properly typed
   const categoryId = useContext(SettingsContext).globalSettings?.settings?.encounter?.categoryId;
   const {
@@ -125,7 +133,10 @@ export const EncounterHomeScreen = ({ navigation, route }: any) => {
 
   return (
     <SafeAreaViewFlex>
-      <ScrollView refreshControl={<RefreshControl onRefresh={refresh} refreshing={refreshing} />}>
+      <ScrollView
+        contentContainerStyle={scrollContentContainerStyle}
+        refreshControl={<RefreshControl onRefresh={refresh} refreshing={refreshing} />}
+      >
         <SectionHeader title={texts.encounter.homeTitle} />
         <DiagonalGradient style={styles.gradient}>
           <View style={styles.container}>
@@ -180,8 +191,14 @@ export const EncounterHomeScreen = ({ navigation, route }: any) => {
             <Button invert title={texts.encounter.toCategory} onPress={onPressToCategory} />
           )}
           {!!additionalInfo?.length && (
-            // @ts-expect-error HtmlView memo is not typed in a way that the correct type can be inferred
-            <HtmlView html={additionalInfo} openWebScreen={openWebScreen} />
+            <>
+              <ReadAloudContent
+                content={additionalInfo}
+                contentId="encounter-home-additional-info"
+              />
+              {/* @ts-expect-error HtmlView memo is not typed in a way that the correct type can be inferred */}
+              <HtmlView html={additionalInfo} openWebScreen={openWebScreen} />
+            </>
           )}
         </Wrapper>
       </ScrollView>
@@ -189,18 +206,22 @@ export const EncounterHomeScreen = ({ navigation, route }: any) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   circle: {
     backgroundColor: colors.surface,
     marginBottom: normalize(12)
   },
+
   container: {
     alignItems: 'center'
   },
+
   divider: { backgroundColor: colors.surface },
+
   gradient: {
     justifyContent: 'center',
     paddingVertical: normalize(24)
   },
+
   icon: { marginLeft: normalize(8) }
 });

@@ -1,31 +1,42 @@
 import { useNavigation } from '@react-navigation/native';
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import { Icon } from '../config';
+import { resolveThemeOverrides } from '../helpers/appDesignSystemHelper';
+import { useTheme } from '../hooks/useTheme';
 
 import { Button } from './Button';
 import { Wrapper } from './Wrapper';
 
+export type TImageButtonStyle = {
+  big?: boolean;
+  dark?: Partial<TImageButtonStyle>;
+  disabled?: boolean;
+  iconColor?: string;
+  iconPosition?: 'left' | 'right';
+  invert?: boolean;
+  lightest?: boolean;
+  notFullWidth?: boolean;
+  small?: boolean;
+  smallest?: boolean;
+};
+
 export type TImageButton = {
+  dark?: Partial<TImageButton>;
   iconName?: keyof typeof Icon;
-  params?: any;
-  routeName: string;
-  style?: {
-    big?: boolean;
-    disabled?: boolean;
-    iconColor?: string;
-    iconPosition?: 'left' | 'right';
-    invert?: boolean;
-    lightest?: boolean;
-    notFullWidth?: boolean;
-    small?: boolean;
-    smallest?: boolean;
+  params?: {
+    query?: string;
+    [key: string]: unknown;
   };
+  routeName: string;
+  style?: TImageButtonStyle;
   title?: string;
 };
 
 export const ImageButton = ({ button }: { button: TImageButton }) => {
-  const { iconName, params, routeName, style = {}, title } = button;
+  const { mode } = useTheme();
+  const themedButton = useMemo(() => resolveThemeOverrides(button, mode), [button, mode]);
+  const { iconName, params, routeName, style = {}, title } = themedButton;
   const {
     big,
     disabled,

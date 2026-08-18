@@ -29,7 +29,7 @@ import {
   WrapperRow,
   WrapperVertical
 } from '../components';
-import { colors, consts, device, Icon, normalize, texts } from '../config';
+import { consts, device, Icon, normalize, texts } from '../config';
 import { formatTime, storageHelper } from '../helpers';
 import {
   useFilterStreets,
@@ -52,6 +52,8 @@ import { WasteSettingsActions, wasteSettingsReducer, WasteSettingsState } from '
 import { getLocationData, getPositionStyleByNavigation } from '../screens';
 import { SettingsContext } from '../SettingsProvider';
 import { WasteReminderSettingJson } from '../types';
+import { useThemeStyles } from '../hooks/useThemeStyles';
+import { useTheme } from '../hooks/useTheme';
 
 const keyExtractor = (item: string, index: number) => `index${index}-${item}`;
 
@@ -67,6 +69,9 @@ const initialWasteSettingsState: WasteSettingsState = {
 
 /* eslint-disable complexity */
 export const WasteCollectionSettingsScreen = () => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
   const navigation = useNavigation();
   const routeParams = useRoute().params;
   const { globalSettings, setGlobalSettings } = useContext(SettingsContext);
@@ -375,21 +380,26 @@ export const WasteCollectionSettingsScreen = () => {
                 renderItem={({ item, index }) => {
                   return (
                     <ListItem
+                      accessible={false}
                       bottomDivider={index < usedTypeKeys.length - 1}
                       containerStyle={styles.listItemContainer}
-                      accessibilityLabel={`(${usedTypes[item].label}) ${consts.a11yLabel.button}`}
+                      importantForAccessibility="no"
                     >
                       <ListItem.Content>
-                        <WrapperRow itemsCenter>
+                        <WrapperRow accessible={false} importantForAccessibility="no" itemsCenter>
                           <Dot color={usedTypes[item].color} />
                           {usedTypes[item].color !== usedTypes[item].selected_color && (
                             <Dot color={usedTypes[item].selected_color} />
                           )}
-                          <BoldText small> {usedTypes[item].label}</BoldText>
+                          <BoldText accessible={false} small>
+                            {' '}
+                            {usedTypes[item].label}
+                          </BoldText>
                         </WrapperRow>
                       </ListItem.Content>
 
                       <Switch
+                        accessibilityLabel={usedTypes[item].label}
                         switchValue={typeSettings[item]}
                         toggleSwitch={() => {
                           dispatch({
@@ -411,13 +421,17 @@ export const WasteCollectionSettingsScreen = () => {
               <RegularText big>{wasteTexts.notifications}</RegularText>
             </WrapperVertical>
             <ListItem
+              accessible={false}
               containerStyle={[styles.borderRadius, styles.listItemContainer]}
-              accessibilityLabel={`(${wasteTexts.notificationsOn}) ${consts.a11yLabel.button}`}
+              importantForAccessibility="no"
             >
               <ListItem.Content>
-                <BoldText small>{wasteTexts.notificationsOn}</BoldText>
+                <BoldText accessible={false} small>
+                  {wasteTexts.notificationsOn}
+                </BoldText>
               </ListItem.Content>
               <Switch
+                accessibilityLabel={wasteTexts.notificationsOn}
                 switchValue={showNotificationSettings}
                 toggleSwitch={async () => {
                   if (!isPushPermissionGranted) {
@@ -450,13 +464,23 @@ export const WasteCollectionSettingsScreen = () => {
                   height={normalize(70)}
                   popover={
                     <View>
-                      <TouchableOpacity onPress={() => onPressUpdateOnDayBefore(false)}>
+                      <TouchableOpacity
+                        accessibilityLabel={`(${wasteTexts.sameDay}) ${consts.a11yLabel.button}`}
+                        accessibilityRole="button"
+                        accessibilityState={{ selected: !onDayBefore }}
+                        onPress={() => onPressUpdateOnDayBefore(false)}
+                      >
                         <RegularText primary={!onDayBefore} style={styles.tooltipSelection}>
                           {wasteTexts.sameDay}
                         </RegularText>
                       </TouchableOpacity>
                       <Divider style={styles.dividerSmall} />
-                      <TouchableOpacity onPress={() => onPressUpdateOnDayBefore(true)}>
+                      <TouchableOpacity
+                        accessibilityLabel={`(${wasteTexts.oneDayBefore}) ${consts.a11yLabel.button}`}
+                        accessibilityRole="button"
+                        accessibilityState={{ selected: onDayBefore }}
+                        onPress={() => onPressUpdateOnDayBefore(true)}
+                      >
                         <RegularText primary={onDayBefore} style={styles.tooltipSelection}>
                           {wasteTexts.oneDayBefore}
                         </RegularText>
@@ -487,7 +511,11 @@ export const WasteCollectionSettingsScreen = () => {
                 <ListItem.Content>
                   <BoldText small>{wasteTexts.timeOfDay}</BoldText>
                 </ListItem.Content>
-                <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+                <TouchableOpacity
+                  accessibilityLabel={`(${wasteTexts.timeOfDay}) ${consts.a11yLabel.button}`}
+                  accessibilityRole="button"
+                  onPress={() => setShowDatePicker(true)}
+                >
                   <View style={[styles.smallBorderRadius, styles.timeContainer]}>
                     <RegularText small>{formatTime(reminderTime)} Uhr</RegularText>
                   </View>
@@ -497,6 +525,7 @@ export const WasteCollectionSettingsScreen = () => {
                     animationType="none"
                     transparent={true}
                     visible={showDatePicker}
+                    accessibilityViewIsModal
                     supportedOrientations={['landscape', 'portrait']}
                   >
                     <View style={styles.modalContainer}>
@@ -504,10 +533,18 @@ export const WasteCollectionSettingsScreen = () => {
                         <SafeAreaView>
                           <WrapperHorizontal style={styles.paddingTop}>
                             <WrapperRow spaceBetween>
-                              <TouchableOpacity onPress={() => setShowDatePicker(false)}>
+                              <TouchableOpacity
+                                accessibilityLabel={`${texts.dateTimePicker.cancel} ${consts.a11yLabel.button}`}
+                                accessibilityRole="button"
+                                onPress={() => setShowDatePicker(false)}
+                              >
                                 <BoldText primary>{texts.dateTimePicker.cancel}</BoldText>
                               </TouchableOpacity>
-                              <TouchableOpacity onPress={() => setShowDatePicker(false)}>
+                              <TouchableOpacity
+                                accessibilityLabel={`${texts.dateTimePicker.ok} ${consts.a11yLabel.button}`}
+                                accessibilityRole="button"
+                                onPress={() => setShowDatePicker(false)}
+                              >
                                 <BoldText primary>{texts.dateTimePicker.ok}</BoldText>
                               </TouchableOpacity>
                             </WrapperRow>
@@ -546,21 +583,26 @@ export const WasteCollectionSettingsScreen = () => {
                   renderItem={({ item, index }) => {
                     return (
                       <ListItem
+                        accessible={false}
                         bottomDivider={index < selectedTypeKeys.length - 1}
                         containerStyle={styles.listItemContainer}
-                        accessibilityLabel={`(${usedTypes[item].label}) ${consts.a11yLabel.button}`}
+                        importantForAccessibility="no"
                       >
                         <ListItem.Content>
-                          <WrapperRow itemsCenter>
+                          <WrapperRow accessible={false} importantForAccessibility="no" itemsCenter>
                             <Dot color={usedTypes[item].color} />
                             {usedTypes[item].color !== usedTypes[item].selected_color && (
                               <Dot color={usedTypes[item].selected_color} />
                             )}
-                            <BoldText small> {usedTypes[item].label}</BoldText>
+                            <BoldText accessible={false} small>
+                              {' '}
+                              {usedTypes[item].label}
+                            </BoldText>
                           </WrapperRow>
                         </ListItem.Content>
 
                         <Switch
+                          accessibilityLabel={usedTypes[item].label}
                           switchValue={notificationSettings[item]}
                           toggleSwitch={() => {
                             dispatch({
@@ -604,63 +646,79 @@ export const WasteCollectionSettingsScreen = () => {
 };
 /* eslint-enable complexity */
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   borderRadius: {
     borderRadius: normalize(10)
   },
+
   smallBorderRadius: {
     borderRadius: normalize(6)
   },
+
   borderRadiusTop: {
     borderTopLeftRadius: normalize(10),
     borderTopRightRadius: normalize(10)
   },
+
   borderRadiusBottom: {
     borderBottomLeftRadius: normalize(10),
     borderBottomRightRadius: normalize(10)
   },
+
   container: {
     backgroundColor: colors.surface
   },
+
   divider: {
     backgroundColor: colors.placeholder
   },
+
   dividerSmall: {
     backgroundColor: colors.placeholder,
     marginVertical: normalize(4),
     width: normalize(140)
   },
+
   listItemContainer: {
     backgroundColor: colors.surface,
     paddingHorizontal: 0
   },
+
   mediumPaddingVertical: {
     paddingBottom: normalize(8),
     paddingTop: normalize(8)
   },
+
   noPaddingBottom: {
     paddingBottom: 0
   },
+
   paddingHorizontal: {
     paddingHorizontal: normalize(16)
   },
+
   paddingTop: {
     paddingTop: normalize(14)
   },
+
   dateTimePickerContainerAndroid: {
     marginLeft: normalize(-14)
   },
+
   dateTimePickerContainerIOS: {
     backgroundColor: colors.surface
   },
+
   dateTimePickerIOS: {
     alignSelf: 'center'
   },
+
   modalContainer: {
     backgroundColor: colors.overlayRgba,
     flex: 1,
     justifyContent: 'flex-end'
   },
+
   timeContainer: {
     backgroundColor: colors.shadowRgba,
     paddingVertical: normalize(6),
@@ -674,17 +732,21 @@ const styles = StyleSheet.create({
       }
     })
   },
+
   resultsList: {
     padding: normalize(14)
   },
+
   saveButtonContainer: {
     alignSelf: 'center',
     position: 'absolute',
     width: '100%'
   },
+
   spacer: {
     height: normalize(70)
   },
+
   tooltipContainer: {
     borderColor: colors.shadowRgba,
     borderWidth: StyleSheet.hairlineWidth,
@@ -699,6 +761,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 1,
     shadowRadius: 8
   },
+
   tooltipSelection: {
     paddingHorizontal: normalize(8)
   }

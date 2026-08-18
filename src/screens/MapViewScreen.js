@@ -4,10 +4,12 @@ import { StyleSheet } from 'react-native';
 
 import { SettingsContext } from '../SettingsProvider';
 import { MapLibre, TextListItem, Wrapper } from '../components';
-import { colors, normalize } from '../config';
+import { normalize } from '../config';
 import { navigationToArtworksDetailScreen } from '../helpers';
+import { useThemeStyles } from '../hooks/useThemeStyles';
 
 export const MapViewScreen = ({ navigation, route }) => {
+  const styles = useThemeStyles(createStyles);
   const {
     geometryTourData,
     isAugmentedReality,
@@ -79,17 +81,20 @@ export const MapViewScreen = ({ navigation, route }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => ({
   augmentedRealityInfoContainer: {
     width: '90%'
   },
+
   map: {
     width: '100%',
     height: '100%'
   },
+
   marginTop: {
     marginTop: normalize(14)
   },
+
   listItemContainer: {
     backgroundColor: colors.surface,
     borderRadius: normalize(12),

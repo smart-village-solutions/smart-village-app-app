@@ -1,7 +1,7 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { Alert, Keyboard, RefreshControl, ScrollView, StyleSheet } from 'react-native';
+import { Alert, Keyboard, RefreshControl, ScrollView } from 'react-native';
 import { useMutation } from 'react-query';
 
 import {
@@ -10,17 +10,21 @@ import {
   HtmlView,
   Input,
   LoadingModal,
+  ReadAloudContent,
   SafeAreaViewFlex,
   SectionHeader,
   Wrapper,
   WrapperHorizontal,
   WrapperVertical
 } from '../../components';
-import { colors, consts, normalize, texts } from '../../config';
+import { consts, normalize, texts } from '../../config';
 import { storeProfileAuthToken } from '../../helpers';
 import { useStaticContent } from '../../hooks';
 import { profileEditMail } from '../../queries/profile';
+import { useReadAloudScrollContentContainerStyle } from '../../ReadAloudAvailabilityProvider';
 import { ProfileEditMail, ScreenName } from '../../types';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 const { EMAIL_REGEX } = consts;
 
@@ -40,6 +44,10 @@ const showUpdateSuccessAlert = ({ onPress }: { onPress: () => void }) =>
   );
 
 export const ProfileEditMailScreen = ({ navigation, route }: StackScreenProps<any>) => {
+  const { colors: colors } = useTheme();
+
+  const styles = useThemeStyles(createStyles);
+  const scrollContentContainerStyle = useReadAloudScrollContentContainerStyle();
   const {
     control,
     formState: { errors },
@@ -103,6 +111,7 @@ export const ProfileEditMailScreen = ({ navigation, route }: StackScreenProps<an
     <SafeAreaViewFlex>
       <DefaultKeyboardAvoidingView>
         <ScrollView
+          contentContainerStyle={scrollContentContainerStyle}
           keyboardShouldPersistTaps="handled"
           refreshControl={
             <RefreshControl
@@ -122,6 +131,10 @@ export const ProfileEditMailScreen = ({ navigation, route }: StackScreenProps<an
 
           {!!dataProfileEditMailScreenTop && (
             <WrapperHorizontal>
+              <ReadAloudContent
+                content={dataProfileEditMailScreenTop}
+                contentId="profile-edit-mail-top-content"
+              />
               <HtmlView html={dataProfileEditMailScreenTop} />
             </WrapperHorizontal>
           )}
@@ -190,6 +203,10 @@ export const ProfileEditMailScreen = ({ navigation, route }: StackScreenProps<an
 
           {!!dataProfileEditMailScreenBottom && (
             <WrapperHorizontal>
+              <ReadAloudContent
+                content={dataProfileEditMailScreenBottom}
+                contentId="profile-edit-mail-bottom-content"
+              />
               <HtmlView html={dataProfileEditMailScreenBottom} />
             </WrapperHorizontal>
           )}
@@ -209,10 +226,11 @@ export const ProfileEditMailScreen = ({ navigation, route }: StackScreenProps<an
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = () => ({
   center: {
     alignItems: 'center'
   },
+
   inputContainer: {
     height: normalize(45)
   }

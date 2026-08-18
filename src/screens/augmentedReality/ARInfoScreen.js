@@ -8,13 +8,16 @@ import {
   EmptyMessage,
   HtmlView,
   LoadingSpinner,
+  ReadAloudContent,
   SafeAreaViewFlex,
   Wrapper
 } from '../../components';
 import { texts } from '../../config';
 import { usePullToRefetch, useStaticContent } from '../../hooks';
+import { useReadAloudScrollContentContainerStyle } from '../../ReadAloudAvailabilityProvider';
 
 export const ARInfoScreen = ({ route }) => {
+  const scrollContentContainerStyle = useReadAloudScrollContentContainerStyle();
   const {
     data: arInfo = '',
     error,
@@ -42,8 +45,12 @@ export const ARInfoScreen = ({ route }) => {
 
   return (
     <SafeAreaViewFlex>
-      <ScrollView refreshControl={RefreshControl}>
+      <ScrollView
+        contentContainerStyle={scrollContentContainerStyle}
+        refreshControl={RefreshControl}
+      >
         <Wrapper>
+          <ReadAloudContent content={arInfo} contentId="ar-info-content" />
           <HtmlView html={arInfo} />
         </Wrapper>
         <Wrapper>

@@ -14,22 +14,27 @@ import {
   ImageSection,
   LoadingSpinner,
   OperatingCompany,
+  ReadAloudContent,
   RegularText,
   SectionHeader,
   VoucherListItem,
   VoucherRedeem,
   Wrapper
 } from '../../components';
-import { colors, texts } from '../../config';
+import { texts } from '../../config';
 import { dateOfAvailabilityText, parseListItemsFromQuery } from '../../helpers';
 import { getActiveVoucherDateRange } from '../../helpers/voucherAvailability';
 import { useOpenWebScreen, useVoucher } from '../../hooks';
 import { QUERY_TYPES, getQuery } from '../../queries';
+import { useReadAloudScrollContentContainerStyle } from '../../ReadAloudAvailabilityProvider';
 import { ScreenName, TVoucherContentBlock, TVoucherItem } from '../../types';
+import { useTheme } from '../../hooks/useTheme';
 
 /* eslint-disable complexity */
 export const VoucherDetailScreen = ({ navigation, route }: StackScreenProps<any>) => {
   const { autoLogin, isLoading: isVoucherSessionLoading, isLoggedIn, memberId } = useVoucher();
+  const { colors } = useTheme();
+  const scrollContentContainerStyle = useReadAloudScrollContentContainerStyle();
   const [refreshing, setRefreshing] = useState(false);
   const [loadedVoucherDataCount, setLoadedVoucherDataCount] = useState(INITIAL_VOUCHER_COUNT);
 
@@ -111,6 +116,7 @@ export const VoucherDetailScreen = ({ navigation, route }: StackScreenProps<any>
 
   return (
     <ScrollView
+      contentContainerStyle={scrollContentContainerStyle}
       refreshControl={
         <RefreshControl
           refreshing={refreshing}
@@ -181,7 +187,15 @@ export const VoucherDetailScreen = ({ navigation, route }: StackScreenProps<any>
         contentBlocks.map((item: TVoucherContentBlock, index: number) => (
           <Wrapper key={index}>
             {!!item.title && <BoldText>{item.title}</BoldText>}
-            {!!item.body && <HtmlView html={item.body} />}
+            {!!item.body && (
+              <>
+                <ReadAloudContent
+                  content={item.body}
+                  contentId={`voucher-detail-content-block-${id || 'unknown'}-${index}`}
+                />
+                <HtmlView html={item.body} />
+              </>
+            )}
           </Wrapper>
         ))}
 

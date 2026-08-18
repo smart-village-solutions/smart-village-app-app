@@ -1,11 +1,12 @@
 import PropTypes from 'prop-types';
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import Collapsible from 'react-native-collapsible';
 import { Divider, ListItem } from 'react-native-elements';
 
-import { colors, consts, device, Icon, normalize, texts } from '../config';
+import { consts, device, Icon, normalize, texts } from '../config';
 import { storageHelper } from '../helpers';
+import { useTheme } from '../hooks/useTheme';
 import { SettingsContext } from '../SettingsProvider';
 
 import { BoldText, RegularText } from './Text';
@@ -19,6 +20,8 @@ const RADIO_BUTTON_SIZE = normalize(16);
 // TODO: snack bar / toast als nutzerinfo
 export const ListSettingsItem = ({ item }) => {
   const { title, queryType } = item;
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const [isCollapsed, setIsCollapsed] = useState(true);
   const { listTypesSettings, setListTypesSettings } = useContext(SettingsContext);
   const listTypeForQuery = listTypesSettings[queryType];
@@ -48,7 +51,11 @@ export const ListSettingsItem = ({ item }) => {
         <Wrapper style={styles.wrapper}>
           <WrapperRow spaceBetween>
             <BoldText>{title}</BoldText>
-            {isCollapsed ? <Icon.ArrowDown /> : <Icon.ArrowUp />}
+            {isCollapsed ? (
+              <Icon.ArrowDown color={colors.text} />
+            ) : (
+              <Icon.ArrowUp color={colors.text} />
+            )}
           </WrapperRow>
         </Wrapper>
       </Touchable>
@@ -75,9 +82,9 @@ export const ListSettingsItem = ({ item }) => {
               </ListItem.Content>
 
               {listType === listTypeForQuery ? (
-                <Icon.RadioButtonFilled size={RADIO_BUTTON_SIZE} />
+                <Icon.RadioButtonFilled color={colors.primary} size={RADIO_BUTTON_SIZE} />
               ) : (
-                <Icon.RadioButtonEmpty color={colors.darkText} size={RADIO_BUTTON_SIZE} />
+                <Icon.RadioButtonEmpty color={colors.text} size={RADIO_BUTTON_SIZE} />
               )}
             </ListItem>
           );
@@ -87,20 +94,23 @@ export const ListSettingsItem = ({ item }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: colors.transparent,
-    paddingRight: normalize(18),
-    paddingVertical: normalize(12)
-  },
-  divider: {
-    backgroundColor: colors.placeholder
-  },
-  wrapper: {
-    paddingBottom: device.platform === 'ios' ? normalize(16) : normalize(14),
-    paddingTop: device.platform === 'ios' ? normalize(16) : normalize(18)
-  }
-});
+/* eslint-disable react-native/no-unused-styles */
+const createStyles = (colors) =>
+  StyleSheet.create({
+    container: {
+      backgroundColor: colors.transparent,
+      paddingRight: normalize(18),
+      paddingVertical: normalize(12)
+    },
+    divider: {
+      backgroundColor: colors.placeholder
+    },
+    wrapper: {
+      paddingBottom: device.platform === 'ios' ? normalize(16) : normalize(14),
+      paddingTop: device.platform === 'ios' ? normalize(16) : normalize(18)
+    }
+  });
+/* eslint-enable react-native/no-unused-styles */
 
 ListSettingsItem.propTypes = {
   item: PropTypes.object.isRequired

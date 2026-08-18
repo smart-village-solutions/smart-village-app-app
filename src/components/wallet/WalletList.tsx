@@ -1,12 +1,14 @@
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
+import { StyleProp, ViewStyle } from 'react-native';
 
 import { QUERY_TYPES } from '../../queries';
 import { ListComponent } from '../ListComponent';
 import { TCard } from '../../types';
 
 type WalletListProps = {
+  contentContainerStyle?: StyleProp<ViewStyle>;
   items: TCard[];
   ListEmptyComponent?: React.ReactNode;
   ListFooterComponent?: () => React.ReactNode;
@@ -15,6 +17,7 @@ type WalletListProps = {
 };
 
 export const WalletList = ({
+  contentContainerStyle,
   items,
   ListEmptyComponent,
   ListFooterComponent,
@@ -26,6 +29,7 @@ export const WalletList = ({
   return (
     <ListComponent
       data={items}
+      contentContainerStyle={contentContainerStyle}
       ListEmptyComponent={ListEmptyComponent}
       ListFooterComponent={ListFooterComponent}
       ListHeaderComponent={ListHeaderComponent}

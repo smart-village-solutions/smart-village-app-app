@@ -1,9 +1,11 @@
 import PropTypes from 'prop-types';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, DeviceEventEmitter, RefreshControl, ScrollView } from 'react-native';
 import { useQuery } from 'react-query';
 
+import { AccessibilityContext } from '../AccessibilityProvider';
 import {
+  DetailActions,
   EmptyMessage,
   EventRecord,
   LoadingContainer,
@@ -16,15 +18,21 @@ import {
   Tour
 } from '../components';
 import { FeedbackFooter } from '../components/FeedbackFooter';
-import { colors, consts, texts } from '../config';
+import { consts, texts } from '../config';
 import { graphqlFetchPolicy } from '../helpers';
+import { getDetailSpeechItems } from '../helpers/accessibility/detailSpeechParser';
 import { useRefreshTime } from '../hooks';
 import { DETAIL_REFRESH_EVENT } from '../hooks/DetailRefresh';
 import { NetworkContext } from '../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../queries';
 import { ReactQueryClient } from '../ReactQueryClient';
+import {
+  useReadAloudScrollContentContainerStyle,
+  useRegisterReadAloudContent
+} from '../ReadAloudAvailabilityProvider';
 import { SettingsContext } from '../SettingsProvider';
 import { GenericType } from '../types';
+import { useTheme } from '../hooks/useTheme';
 
 import { DefectReportFormScreen } from './DefectReport';
 import { NoticeboardFormScreen } from './Noticeboard';
@@ -86,8 +94,11 @@ const useRootRouteByCategory = (details, navigation) => {
   }, [id, categoriesNews]);
 };
 
-/* eslint-disable complexity */
+/* eslint-disable complexity, react-hooks/static-components */
 export const DetailScreen = ({ navigation, route }) => {
+  const { colors } = useTheme();
+
+  const { features } = useContext(AccessibilityContext);
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { conversations = false } = settings;
@@ -96,19 +107,14 @@ export const DetailScreen = ({ navigation, route }) => {
   const id = route.params?.id;
   const queryVariables = route.params?.queryVariables || (id ? { id } : {});
   const details = route.params?.details ?? {};
+  const hasValidDetailParams = !!query && !!queryVariables?.id;
+  const isSueDetail = query === QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID;
 
   const [refreshing, setRefreshing] = useState(false);
-
-  if (!query || !queryVariables || !queryVariables.id) return null;
-
   const refreshTime = useRefreshTime(`${query}-${queryVariables.id}`, getRefreshInterval(query));
+  const scrollContentContainerStyle = useReadAloudScrollContentContainerStyle();
 
   useRootRouteByCategory(details, navigation);
-
-  // Render SUE detail screen without the need of processing the rest of the code here
-  if (query === QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID) {
-    return <SueDetailScreen navigation={navigation} route={route} />;
-  }
 
   const refresh = async (refetch) => {
     setRefreshing(true);
@@ -139,9 +145,26 @@ export const DetailScreen = ({ navigation, route }) => {
       return await client.request(getQuery(query), { id: queryVariables.id });
     },
     {
-      enabled: !!refreshTime
+      enabled: !!refreshTime && hasValidDetailParams && !isSueDetail
     }
   );
+  const detailData = (data && data[query]) || details;
+  const detailSpeechItems = useMemo(
+    () => getDetailSpeechItems({ detail: detailData, query }),
+    [detailData, query]
+  );
+  useRegisterReadAloudContent(
+    `detail-${queryVariables.id}`,
+    detailSpeechItems,
+    features.readAloud && detailSpeechItems.length > 0
+  );
+
+  if (!hasValidDetailParams) return null;
+
+  // Render SUE detail screen without the need of processing the rest of the code here
+  if (isSueDetail) {
+    return <SueDetailScreen navigation={navigation} route={route} />;
+  }
 
   if (!refreshTime) {
     return (
@@ -193,9 +216,12 @@ export const DetailScreen = ({ navigation, route }) => {
 
   if (!Component) return null;
 
+  const detailActions = <DetailActions route={route} />;
+
   return (
     <SafeAreaViewFlex>
       <ScrollView
+        contentContainerStyle={scrollContentContainerStyle}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -206,9 +232,10 @@ export const DetailScreen = ({ navigation, route }) => {
         }
       >
         <Component
-          data={(data && data[query]) || details}
+          data={detailData}
           navigation={navigation}
           fetchPolicy={fetchPolicy}
+          readAloudControls={detailActions}
           refetch={refetch}
           route={route}
         />
@@ -217,7 +244,7 @@ export const DetailScreen = ({ navigation, route }) => {
     </SafeAreaViewFlex>
   );
 };
-/* eslint-enable complexity */
+/* eslint-enable complexity, react-hooks/static-components */
 
 DetailScreen.propTypes = {
   navigation: PropTypes.object.isRequired,

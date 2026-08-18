@@ -1,14 +1,17 @@
 import { useIsFocused } from '@react-navigation/native';
 import PropTypes from 'prop-types';
-import React, { useCallback, useContext, useMemo, useState } from 'react';
+import React, { useCallback, useContext, useMemo, useRef, useState } from 'react';
 import { Query } from 'react-apollo';
 import { ActivityIndicator, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Easing } from 'react-native-reanimated';
 import Carousel from 'react-native-reanimated-carousel';
 
-import { colors, Icon, normalize } from '../config';
+import { consts, Icon, normalize, texts } from '../config';
 import { graphqlFetchPolicy, imageHeight, imageWidth, isActive, shareMessage } from '../helpers';
 import { useRefreshTime } from '../hooks';
+import { useTheme } from '../hooks/useTheme';
+import { useThemeStyles } from '../hooks/useThemeStyles';
+import { AccessibilityContext } from '../AccessibilityProvider';
 import { NetworkContext } from '../NetworkProvider';
 import { OrientationContext } from '../OrientationProvider';
 import { getQuery } from '../queries';
@@ -17,6 +20,7 @@ import { SettingsContext } from '../SettingsProvider';
 import { ImagesCarouselItem } from './ImagesCarouselItem';
 import { LoadingContainer } from './LoadingContainer';
 
+/* eslint-disable complexity */
 export const ImagesCarousel = ({
   aspectRatio,
   autoplayInterval,
@@ -26,8 +30,11 @@ export const ImagesCarousel = ({
   navigation,
   refreshTimeKey
 }) => {
+  const { colors } = useTheme();
+  const styles = useThemeStyles(createStyles);
   const { dimensions } = useContext(OrientationContext);
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
+  const { isReduceMotionEnabled } = useContext(AccessibilityContext);
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { sliderPauseButton = {}, sliderSettings = {} } = settings;
@@ -37,12 +44,23 @@ export const ImagesCarousel = ({
     size: sizeSliderPauseButton = 25,
     verticalPosition = 'bottom'
   } = sliderPauseButton;
+  const { showNavigationButtons = false } = sliderSettings;
   const refreshTime = useRefreshTime(refreshTimeKey);
   const [isPaused, setIsPaused] = useState(false);
+  const carouselRef = useRef(null);
 
   const isFocused = useIsFocused();
 
-  const shouldShowPauseButton = showSliderPauseButton && !isDisturber;
+  const showPreviousItem = useCallback(() => {
+    carouselRef.current?.prev();
+  }, []);
+
+  const showNextItem = useCallback(() => {
+    carouselRef.current?.next();
+  }, []);
+
+  const shouldShowNavigationButtons = showNavigationButtons && !isDisturber;
+  const shouldShowPauseButton = showSliderPauseButton && !isDisturber && !isReduceMotionEnabled;
 
   const fetchPolicy = graphqlFetchPolicy({
     isConnected,
@@ -54,7 +72,7 @@ export const ImagesCarousel = ({
   const centerOffset = Math.max((dimensions.width - itemWidth) / 2, 0);
   const carouselItemContainerStyle = useMemo(
     () => StyleSheet.flatten([styles.imageContainer, { marginLeft: centerOffset }]),
-    [centerOffset]
+    [centerOffset, styles.imageContainer]
   );
   const withAnimation = useMemo(
     () => ({
@@ -134,7 +152,14 @@ export const ImagesCarousel = ({
         />
       );
     },
-    [navigation, fetchPolicy, aspectRatio, isImageFullWidth, carouselItemContainerStyle]
+    [
+      navigation,
+      fetchPolicy,
+      aspectRatio,
+      isImageFullWidth,
+      carouselItemContainerStyle,
+      colors.refreshControl
+    ]
   );
 
   if (!data || data.length === 0) return null;
@@ -154,7 +179,8 @@ export const ImagesCarousel = ({
   return (
     <View>
       <Carousel
-        autoPlay={isFocused && !isPaused}
+        ref={carouselRef}
+        autoPlay={isFocused && !isPaused && !isReduceMotionEnabled}
         autoPlayInterval={autoplayInterval || sliderSettings.autoplayInterval || 4000}
         data={carouselData}
         defaultIndex={0}
@@ -167,45 +193,118 @@ export const ImagesCarousel = ({
         withAnimation={withAnimation}
       />
 
-      {shouldShowPauseButton &&
-        pauseButton(
-          horizontalPosition,
-          isCopyrighted,
-          isPaused,
-          setIsPaused,
-          sizeSliderPauseButton,
-          verticalPosition
-        )}
+      {(shouldShowNavigationButtons || shouldShowPauseButton) && (
+        <CarouselControls
+          colors={colors}
+          horizontalPosition={horizontalPosition}
+          isCopyrighted={isCopyrighted}
+          isPaused={isPaused}
+          onNext={showNextItem}
+          onPrevious={showPreviousItem}
+          setIsPaused={setIsPaused}
+          showNavigationButtons={shouldShowNavigationButtons}
+          showPauseButton={shouldShowPauseButton}
+          size={sizeSliderPauseButton}
+          styles={styles}
+          verticalPosition={verticalPosition}
+        />
+      )}
     </View>
   );
 };
+/* eslint-enable complexity */
 
-const pauseButton = (
+const CarouselControls = ({
+  colors,
   horizontalPosition,
   isCopyrighted,
   isPaused,
+  onNext,
+  onPrevious,
   setIsPaused,
+  showNavigationButtons,
+  showPauseButton,
   size,
+  styles,
   verticalPosition
-) => (
-  <TouchableOpacity
-    activeOpacity={0.8}
+}) => (
+  <View
+    pointerEvents="box-none"
     style={[
-      styles.pauseButton,
+      styles.carouselControls,
       {
         [horizontalPosition]: normalize(12),
-        [verticalPosition]: isCopyrighted ? normalize(36) : normalize(12),
-        borderRadius: normalize(size * 2),
-        padding: normalize(size / 2)
+        [verticalPosition]: isCopyrighted ? normalize(36) : normalize(12)
       }
     ]}
-    onPress={() => setIsPaused(!isPaused)}
   >
-    {isPaused ? <Icon.Play size={normalize(size)} /> : <Icon.Pause size={normalize(size)} />}
+    {showNavigationButtons &&
+      navigationButton(
+        texts.accessibilityLabels.actions.previousCarouselItem,
+        <Icon.ArrowLeft color={colors.darkText} size={normalize(size)} />,
+        onPrevious,
+        size,
+        styles
+      )}
+    {showPauseButton && (
+      <TouchableOpacity
+        activeOpacity={0.8}
+        accessibilityLabel={
+          isPaused
+            ? `${texts.accessibilityLabels.actions.startPlayback} ${consts.a11yLabel.button}`
+            : `${texts.accessibilityLabels.actions.pausePlayback} ${consts.a11yLabel.button}`
+        }
+        accessibilityRole="button"
+        style={[styles.controlButton, controlButtonSize(size)]}
+        onPress={() => setIsPaused(!isPaused)}
+      >
+        {isPaused ? <Icon.Play size={normalize(size)} /> : <Icon.Pause size={normalize(size)} />}
+      </TouchableOpacity>
+    )}
+    {showNavigationButtons &&
+      navigationButton(
+        texts.accessibilityLabels.actions.nextCarouselItem,
+        <Icon.ArrowRight color={colors.darkText} size={normalize(size)} />,
+        onNext,
+        size,
+        styles
+      )}
+  </View>
+);
+
+CarouselControls.propTypes = {
+  colors: PropTypes.object.isRequired,
+  horizontalPosition: PropTypes.string.isRequired,
+  isCopyrighted: PropTypes.bool.isRequired,
+  isPaused: PropTypes.bool.isRequired,
+  onNext: PropTypes.func.isRequired,
+  onPrevious: PropTypes.func.isRequired,
+  setIsPaused: PropTypes.func.isRequired,
+  showNavigationButtons: PropTypes.bool.isRequired,
+  showPauseButton: PropTypes.bool.isRequired,
+  size: PropTypes.number.isRequired,
+  styles: PropTypes.object.isRequired,
+  verticalPosition: PropTypes.string.isRequired
+};
+
+const navigationButton = (accessibilityLabel, icon, onPress, size, styles) => (
+  <TouchableOpacity
+    activeOpacity={0.8}
+    accessibilityLabel={`${accessibilityLabel} ${consts.a11yLabel.button}`}
+    accessibilityRole="button"
+    onPress={onPress}
+    style={[styles.controlButton, controlButtonSize(size)]}
+  >
+    {icon}
   </TouchableOpacity>
 );
 
-const styles = StyleSheet.create({
+const controlButtonSize = (size) => ({
+  borderRadius: normalize(size * 2),
+  padding: normalize(size / 2)
+});
+
+const createStyles = (colors) => ({
   center: {
     alignSelf: 'center'
   },
@@ -214,13 +313,18 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     width: '100%'
   },
-  pauseButton: {
+  carouselControls: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: normalize(4),
+    position: 'absolute',
+    zIndex: 1
+  },
+  controlButton: {
     alignItems: 'center',
     alignSelf: 'center',
     backgroundColor: colors.surface,
-    justifyContent: 'center',
-    position: 'absolute',
-    zIndex: 1
+    justifyContent: 'center'
   }
 });
 
