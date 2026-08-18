@@ -1,5 +1,4 @@
 import { DarkTheme, DefaultTheme, NavigationContainer } from '@react-navigation/native';
-import { StatusBar } from 'expo-status-bar';
 import React, { useMemo } from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -54,7 +53,6 @@ export const Navigator = ({ navigationType }: { navigationType: NavigationType }
     <NavigationContainer ref={navigationRef} theme={navigationTheme} linking={linkingConfig}>
       <ReadAloudAvailabilityProvider>
         <View style={rootStyle}>
-          <StatusBar style={isDark ? 'light' : 'dark'} translucent backgroundColor="transparent" />
           {navigationType === NavigationType.DRAWER ? <DrawerNavigator /> : <MainTabNavigator />}
           <FloatingButton publicJsonFile="floatingButton" bottomOffset={tabBottomOffset} />
         </View>

@@ -6,9 +6,9 @@ import { StyleSheet, View } from 'react-native';
 
 import { AccessibilityContext } from './AccessibilityProvider';
 import { AppWideGrayscaleFilter } from './components/AppWideGrayscaleFilter';
-import { fontConfig } from './config';
+import { AppStatusBar } from './components/AppStatusBar';
+import { fontConfig, SUE_REPORT_VALUES } from './config';
 import { useTheme } from './hooks/useTheme';
-import { SUE_REPORT_VALUES } from './screens';
 
 const RootView = ({ children }: { children: React.ReactNode }) => {
   const [isFontLoaded] = useFonts(fontConfig);
@@ -23,11 +23,9 @@ const RootView = ({ children }: { children: React.ReactNode }) => {
       // when the application is closed and reopened, the saved data in the sue report form is deleted
       await AsyncStorage.removeItem(SUE_REPORT_VALUES);
 
-      // This tells the splash screen to hide immediately! If we call this after
-      // `isFontLoaded`, then we may see a blank screen while the app is
-      // loading its initial state and rendering its first pixels. So instead,
-      // we hide the splash screen once we know the root view has already
-      // performed layout.
+      // Keep the native splash visible until the hydrated theme has rendered
+      // and the root view has performed layout. This prevents a light blank
+      // frame from appearing before a dark-themed app becomes visible.
       await SplashScreen.hideAsync();
     }
   }, [isFontLoaded]);
@@ -36,6 +34,7 @@ const RootView = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <View style={[styles.root, { backgroundColor: colors.background }]} onLayout={onLayoutRootView}>
+      <AppStatusBar backgroundColor={colors.background} />
       <AppWideGrayscaleFilter isGrayscaleEnabled={isGrayscaleEnabled}>
         {children}
       </AppWideGrayscaleFilter>

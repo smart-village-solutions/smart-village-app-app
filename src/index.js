@@ -34,7 +34,6 @@ import { PermanentFilterProvider } from './PermanentFilterProvider';
 import { ProfileProvider } from './ProfileProvider';
 import { getQuery, QUERY_TYPES } from './queries';
 import { ReactQueryProvider } from './ReactQueryProvider';
-import RootView from './RootView';
 import { initialContext, SettingsProvider } from './SettingsProvider';
 import { AppThemeProvider } from './ThemeProvider';
 import { UnreadMessagesProvider } from './UnreadMessagesProvider';
@@ -226,10 +225,8 @@ const MainAppWithApolloProvider = () => {
               <OnboardingManager>
                 <ProfileProvider>
                   <UnreadMessagesProvider>
-                    <RootView>
-                      <OtaUpdateManager />
-                      <Navigator navigationType={initialGlobalSettings.navigation} />
-                    </RootView>
+                    <OtaUpdateManager />
+                    <Navigator navigationType={initialGlobalSettings.navigation} />
                   </UnreadMessagesProvider>
                 </ProfileProvider>
               </OnboardingManager>

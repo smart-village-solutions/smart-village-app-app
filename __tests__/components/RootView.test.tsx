@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import React from 'react';
-import { View } from 'react-native';
+import { StatusBar, View } from 'react-native';
 import renderer from 'react-test-renderer';
 
 const mockRemoveItem = jest.fn();
@@ -36,25 +37,33 @@ jest.mock('../../src/AccessibilityProvider', () => {
 });
 
 jest.mock('../../src/config', () => ({
-  fontConfig: {}
-}));
-
-jest.mock('../../src/screens', () => ({
+  fontConfig: {},
   SUE_REPORT_VALUES: 'sueReportValues'
 }));
 
 import { AccessibilityContext } from '../../src/AccessibilityProvider';
+import { darkColors, lightColors } from '../../src/config/colors';
 import RootView from '../../src/RootView';
+import { ThemeContext } from '../../src/ThemeContext';
 
-const renderRootView = (isGrayscaleEnabled: boolean) => {
+const renderRootView = (
+  isGrayscaleEnabled: boolean,
+  mode: 'dark' | 'light' = 'light',
+  isHydrated = true
+) => {
   let testRenderer: renderer.ReactTestRenderer;
+  const colors = mode === 'dark' ? darkColors : lightColors;
 
   renderer.act(() => {
     testRenderer = renderer.create(
-      <AccessibilityContext.Provider value={{ isGrayscaleEnabled } as never}>
-        <RootView>
-          <View testID="child" />
-        </RootView>
+      <AccessibilityContext.Provider
+        value={{ features: { theming: true }, isGrayscaleEnabled, isHydrated } as never}
+      >
+        <ThemeContext.Provider value={{ colors, isDark: mode === 'dark', mode }}>
+          <RootView>
+            <View testID="child" />
+          </RootView>
+        </ThemeContext.Provider>
       </AccessibilityContext.Provider>
     );
   });
@@ -78,10 +87,16 @@ describe('RootView', () => {
 
     await renderer.act(async () => {
       tree.update(
-        <AccessibilityContext.Provider value={{ isGrayscaleEnabled: true } as never}>
-          <RootView>
-            <View testID="child" />
-          </RootView>
+        <AccessibilityContext.Provider
+          value={
+            { features: { theming: true }, isGrayscaleEnabled: true, isHydrated: true } as never
+          }
+        >
+          <ThemeContext.Provider value={{ colors: lightColors, isDark: false, mode: 'light' }}>
+            <RootView>
+              <View testID="child" />
+            </RootView>
+          </ThemeContext.Provider>
         </AccessibilityContext.Provider>
       );
     });
@@ -95,5 +110,46 @@ describe('RootView', () => {
     expect(mockRemoveItem).toHaveBeenCalledTimes(1);
     expect(mockRemoveItem).toHaveBeenCalledWith('sueReportValues');
     expect(mockHideAsync).toHaveBeenCalledTimes(1);
+  });
+
+  it.each([
+    ['dark', 'light-content'],
+    ['light', 'dark-content']
+  ] as const)('uses the %s root surface for status bar contrast', (mode, expectedBarStyle) => {
+    const tree = renderRootView(false, mode);
+
+    expect(tree.root.findByType(StatusBar).props.barStyle).toBe(expectedBarStyle);
+  });
+
+  it('keeps the splash visible until the saved theme has hydrated and the root has laid out', async () => {
+    const tree = renderRootView(false, 'dark', false);
+
+    expect(tree.toJSON()).toBeNull();
+    expect(mockHideAsync).not.toHaveBeenCalled();
+
+    await renderer.act(async () => {
+      tree.update(
+        <AccessibilityContext.Provider
+          value={
+            { features: { theming: true }, isGrayscaleEnabled: false, isHydrated: true } as never
+          }
+        >
+          <ThemeContext.Provider value={{ colors: darkColors, isDark: true, mode: 'dark' }}>
+            <RootView>
+              <View testID="child" />
+            </RootView>
+          </ThemeContext.Provider>
+        </AccessibilityContext.Provider>
+      );
+    });
+
+    const rootView = tree.root.findAllByType(View)[0];
+
+    await renderer.act(async () => {
+      await rootView.props.onLayout();
+    });
+
+    expect(mockHideAsync).toHaveBeenCalledTimes(1);
+    expect(tree.root.findByType(StatusBar).props.barStyle).toBe('light-content');
   });
 });

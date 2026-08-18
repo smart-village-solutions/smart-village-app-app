@@ -1,4 +1,3 @@
-import { StatusBar } from 'expo-status-bar';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import {
   Alert,
@@ -14,7 +13,15 @@ import AppIntroSlider from 'react-native-app-intro-slider';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 
-import { BoldText, Checkbox, Image, RegularText, SafeAreaViewFlex, Wrapper } from '../components';
+import {
+  AppStatusBar,
+  BoldText,
+  Checkbox,
+  Image,
+  RegularText,
+  SafeAreaViewFlex,
+  Wrapper
+} from '../components';
 import { consts, device, Icon, normalize, texts } from '../config';
 import { addToStore, Initializer, readFromStore } from '../helpers';
 import { useStaticContent } from '../hooks';
@@ -259,7 +266,7 @@ export const AppIntroScreen = ({
   onlyTermsAndConditions,
   backgroundColor: backgroundColorProp
 }: Props) => {
-  const { colors, isDark } = useTheme();
+  const { colors } = useTheme();
   const styles = useThemeStyles(createStyles);
   const backgroundColor = backgroundColorProp || colors.surface;
   const { isReduceMotionEnabled } = useContext(AccessibilityContext);
@@ -370,7 +377,7 @@ export const AppIntroScreen = ({
 
   return (
     <SafeAreaViewFlex style={[styles.background, { backgroundColor }]} edges={['top', 'bottom']}>
-      <StatusBar style={isDark ? 'light' : 'dark'} translucent backgroundColor="transparent" />
+      <AppStatusBar backgroundColor={backgroundColor} />
       <AppIntroSlider<AppIntroSlide>
         activeDotStyle={onlyTermsAndConditions ? styles.hiddenDot : styles.activeDot}
         bottomButton

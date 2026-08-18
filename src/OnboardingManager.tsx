@@ -1,10 +1,10 @@
 import * as ScreenOrientation from 'expo-screen-orientation';
-import * as SplashScreen from 'expo-splash-screen';
 import React, { useContext, useEffect, useState } from 'react';
 
 import { CustomMatomoProvider } from './CustomMatomoProvider';
 import { Initializer, Initializers } from './helpers/initializationHelper';
 import { addToStore, readFromStore } from './helpers/storageHelper';
+import RootView from './RootView';
 import { AppIntroScreen } from './screens/AppIntroScreen';
 import { SettingsContext } from './SettingsProvider';
 
@@ -97,10 +97,9 @@ export const OnboardingManager = ({ children }: { children: React.ReactNode }) =
         }
       } catch (e) {
         setOnboardingStatus('complete');
+        setTermsAndConditionsStatus('accepted');
 
         console.error(e);
-      } finally {
-        await SplashScreen.hideAsync();
       }
     };
 
@@ -109,32 +108,32 @@ export const OnboardingManager = ({ children }: { children: React.ReactNode }) =
     } else {
       setOnboardingStatus('complete');
       setTermsAndConditionsStatus('accepted');
-      SplashScreen.hideAsync();
     }
   }, []);
 
   useInitializeAfterOnboarding(onboardingStatus === 'complete');
 
-  // render null while onboarding status is loading from AsyncStorage
+  let content: React.ReactNode = null;
+
+  // Keep RootView mounted while onboarding status is loading from AsyncStorage.
+  // Its themed background also remains visible while the main providers initialize.
   if (
     onboardingStatus === 'loading' ||
     (onboardingStatus === 'complete' && termsAndConditionsStatus === 'unknown')
   ) {
-    return null;
-  }
-
-  if (onboardingStatus === 'incomplete') {
-    return <AppIntroScreen setOnboardingComplete={setOnboardingComplete} />;
-  }
-
-  if (onboardingStatus === 'complete' && termsAndConditionsStatus === 'declined') {
-    return (
+    content = null;
+  } else if (onboardingStatus === 'incomplete') {
+    content = <AppIntroScreen setOnboardingComplete={setOnboardingComplete} />;
+  } else if (termsAndConditionsStatus === 'declined') {
+    content = (
       <AppIntroScreen
         setOnboardingComplete={setTermsAndConditionsAccepted}
         onlyTermsAndConditions
       />
     );
+  } else {
+    content = <CustomMatomoProvider>{children}</CustomMatomoProvider>;
   }
 
-  return <CustomMatomoProvider>{children}</CustomMatomoProvider>;
+  return <RootView>{content}</RootView>;
 };

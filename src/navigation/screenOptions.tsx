@@ -4,9 +4,17 @@ import { CardStyleInterpolators, StackNavigationOptions } from '@react-navigatio
 import React from 'react';
 import { StyleSheet } from 'react-native';
 
-import { DiagonalGradient, FavoritesHeader, HeaderLeft, HeaderRight } from '../components';
+import {
+  AppStatusBar,
+  DiagonalGradient,
+  FavoritesHeader,
+  HeaderLeft,
+  HeaderRight
+} from '../components';
+import type { AppStatusBarProps } from '../components/AppStatusBar';
 import { normalize } from '../config';
 import { useTheme } from '../hooks/useTheme';
+import { ThemeColorPalette } from '../types/Theme';
 
 type NavigationParams = Record<string, object | undefined>;
 
@@ -15,8 +23,14 @@ type OptionProps = {
   navigation: NavigationProp<NavigationParams>;
 };
 
-type OptionConfig = {
+type ThemeValue<T> = T | ((colors: ThemeColorPalette) => T);
+
+export type ScreenOptionConfig = {
   cardStyleInterpolator?: StackNavigationOptions['cardStyleInterpolator'];
+  /** A solid header surface, or a resolver for theme-specific app branding. */
+  headerBackgroundColor?: ThemeValue<string>;
+  /** Overrides automatic contrast for image-based or otherwise custom headers. */
+  headerStatusBarStyle?: ThemeValue<AppStatusBarProps['barStyle']>;
   noHeaderLeft?: boolean;
   withBookmark?: boolean;
   withAccessibility?: boolean;
@@ -28,15 +42,37 @@ type OptionConfig = {
   withShare?: boolean;
 };
 
-const HeaderBackground = () => {
-  const { colors } = useTheme();
+type HeaderBackgroundProps = Pick<
+  ScreenOptionConfig,
+  'headerBackgroundColor' | 'headerStatusBarStyle'
+>;
 
-  return <DiagonalGradient colors={[colors.surface, colors.surface]} />;
+const HeaderBackground = ({
+  headerBackgroundColor,
+  headerStatusBarStyle
+}: HeaderBackgroundProps) => {
+  const { colors } = useTheme();
+  const backgroundColor =
+    typeof headerBackgroundColor === 'function'
+      ? headerBackgroundColor(colors)
+      : headerBackgroundColor || colors.surface;
+  const barStyle =
+    typeof headerStatusBarStyle === 'function'
+      ? headerStatusBarStyle(colors)
+      : headerStatusBarStyle;
+
+  return (
+    <DiagonalGradient colors={[backgroundColor, backgroundColor]}>
+      <AppStatusBar backgroundColor={backgroundColor} barStyle={barStyle} />
+    </DiagonalGradient>
+  );
 };
 
 export const getScreenOptions =
   ({
     cardStyleInterpolator,
+    headerBackgroundColor,
+    headerStatusBarStyle,
     noHeaderLeft = false,
     withBookmark,
     withAccessibility = true,
@@ -46,12 +82,17 @@ export const getScreenOptions =
     withInfo,
     withSearch,
     withShare
-  }: OptionConfig): ((props: OptionProps) => StackNavigationOptions) =>
+  }: ScreenOptionConfig): ((props: OptionProps) => StackNavigationOptions) =>
   ({ navigation, route }) => {
     return {
       // header gradient:
       // https://stackoverflow.com/questions/44924323/react-navigation-gradient-color-for-header
-      headerBackground: HeaderBackground,
+      headerBackground: () => (
+        <HeaderBackground
+          headerBackgroundColor={headerBackgroundColor}
+          headerStatusBarStyle={headerStatusBarStyle}
+        />
+      ),
       headerTitleStyle: styles.headerTitleStyle,
       headerTitleAlign: 'center',
       headerRight: () => (
