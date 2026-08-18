@@ -1,6 +1,7 @@
-import { RouteProp } from '@react-navigation/core';
-import { NavigationProp } from '@react-navigation/native';
-import { CardStyleInterpolators, StackNavigationOptions } from '@react-navigation/stack';
+import { CardStyleInterpolators } from 'expo-router/build/react-navigation/stack';
+import { StackNavigationOptions } from 'expo-router/js-stack';
+import { NavigationProp, RouteProp } from 'expo-router/react-navigation';
+
 import React from 'react';
 import { StyleSheet } from 'react-native';
 

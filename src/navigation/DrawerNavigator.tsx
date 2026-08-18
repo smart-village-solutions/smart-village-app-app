@@ -1,4 +1,4 @@
-import { createDrawerNavigator } from '@react-navigation/drawer';
+import { createDrawerNavigator } from 'expo-router/build/react-navigation/drawer';
 import _isEmpty from 'lodash/isEmpty';
 import _reduce from 'lodash/reduce';
 import React, { useContext, useEffect, useState } from 'react';

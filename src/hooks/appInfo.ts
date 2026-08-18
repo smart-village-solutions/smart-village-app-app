@@ -1,4 +1,4 @@
-import { ParamListBase, useNavigation } from '@react-navigation/native';
+import { ParamListBase, useNavigation } from 'expo-router/react-navigation';
 
 import appJson from '../../app.json';
 import { device } from '../config';

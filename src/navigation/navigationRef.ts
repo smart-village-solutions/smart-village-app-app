@@ -1,4 +1,4 @@
-import { createNavigationContainerRef } from '@react-navigation/native';
+import { createNavigationContainerRef } from 'expo-router/react-navigation';
 
 /**
  * Param list for the global navigation ref.

@@ -1,4 +1,4 @@
-import { StackNavigationProp } from '@react-navigation/stack';
+import { StackNavigationProp } from 'expo-router/js-stack';
 import { useCallback, useEffect, useState } from 'react';
 
 import { createEncounterAsync, getEncountersAsync, pollEncountersAsync } from '../../encounterApi';

@@ -1,4 +1,4 @@
-import { StackNavigationProp } from '@react-navigation/stack';
+import { StackNavigationProp } from 'expo-router/js-stack';
 import _findKey from 'lodash/findKey';
 import moment from 'moment';
 import { extendMoment } from 'moment-range';

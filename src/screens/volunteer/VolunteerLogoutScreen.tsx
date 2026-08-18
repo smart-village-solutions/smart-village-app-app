@@ -1,4 +1,4 @@
-import { StackScreenProps } from '@react-navigation/stack';
+import { StackScreenProps } from 'expo-router/js-stack';
 import { useEffect } from 'react';
 import { Alert } from 'react-native';
 import { useMutation } from 'react-query';

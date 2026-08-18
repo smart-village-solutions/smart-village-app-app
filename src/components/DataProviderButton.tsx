@@ -1,5 +1,5 @@
-import { useNavigation } from '@react-navigation/core';
-import { StackNavigationProp } from '@react-navigation/stack';
+import { useNavigation } from 'expo-router/react-navigation';
+import { StackNavigationProp } from 'expo-router/js-stack';
 import React, { useCallback } from 'react';
 
 import { texts } from '../config';

@@ -132,6 +132,8 @@
           }
         }
       ],
+      "expo-router",
+      "expo-status-bar",
       [
         "expo-notifications",
         {
@@ -144,7 +146,6 @@
       "@maplibre/maplibre-react-native",
       "@react-native-community/datetimepicker",
       "@rnrepo/expo-config-plugin",
-      "@sentry/react-native",
       "expo-asset",
       "expo-font",
       "expo-image-picker",

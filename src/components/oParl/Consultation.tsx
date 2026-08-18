@@ -1,4 +1,4 @@
-import { StackNavigationProp } from '@react-navigation/stack';
+import { StackNavigationProp } from 'expo-router/js-stack';
 import React from 'react';
 
 import { texts } from '../../config';
@@ -60,14 +60,14 @@ export const Consultation = ({ data, navigation }: Props) => {
       />
       <Wrapper>
         {authoritative != undefined && ( // also filter out null
-          <SimpleRow
+          (<SimpleRow
             left={consultationTexts.authoritative}
             right={
               authoritative
                 ? consultationTexts.isAuthoritative
                 : consultationTexts.isNotAuthoritative
             }
-          />
+          />)
         )}
         <SimpleRow left={consultationTexts.role} right={role} />
         <KeywordSection keyword={keyword} />

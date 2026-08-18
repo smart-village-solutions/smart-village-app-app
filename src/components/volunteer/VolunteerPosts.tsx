@@ -1,4 +1,4 @@
-import { StackScreenProps } from '@react-navigation/stack';
+import { StackScreenProps } from 'expo-router/js-stack';
 import React, { useEffect, useState } from 'react';
 import 'react-native';
 import { Badge } from 'react-native-elements';

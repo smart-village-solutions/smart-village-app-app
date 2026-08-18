@@ -1,5 +1,5 @@
-import { useFocusEffect } from '@react-navigation/native';
-import { StackScreenProps } from '@react-navigation/stack';
+import { useFocusEffect } from 'expo-router/react-navigation';
+import { StackScreenProps } from 'expo-router/js-stack';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useMutation } from 'react-apollo';
 import { Alert, StyleSheet, View } from 'react-native';

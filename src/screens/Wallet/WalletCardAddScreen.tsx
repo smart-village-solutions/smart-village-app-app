@@ -1,4 +1,4 @@
-import { RouteProp } from '@react-navigation/native';
+import { RouteProp } from 'expo-router/react-navigation';
 import React, { useState } from 'react';
 import { ScrollView } from 'react-native';
 

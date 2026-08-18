@@ -1,5 +1,5 @@
 import React from 'react';
-import renderer from 'react-test-renderer';
+import renderer, { act } from 'react-test-renderer';
 
 import { hasNamedIcon, Icon } from '../../src/config';
 import { darkColors, lightColors } from '../../src/config/colors';

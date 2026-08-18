@@ -1,4 +1,4 @@
-import { StackNavigationProp } from '@react-navigation/stack';
+import { StackNavigationProp } from 'expo-router/js-stack';
 import React, { useContext } from 'react';
 import { StyleProp, TouchableOpacity, ViewStyle } from 'react-native';
 

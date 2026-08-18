@@ -1,4 +1,4 @@
-import { StackScreenProps } from '@react-navigation/stack';
+import { StackScreenProps } from 'expo-router/js-stack';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Alert, ScrollView, TouchableOpacity } from 'react-native';

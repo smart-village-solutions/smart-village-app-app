@@ -1,4 +1,9 @@
-import { NavigationProp, ParamListBase, RouteProp, useNavigation } from '@react-navigation/native';
+import {
+  NavigationProp,
+  ParamListBase,
+  RouteProp,
+  useNavigation
+} from 'expo-router/react-navigation';
 import React, { useContext, useLayoutEffect, useMemo } from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
 

@@ -5,7 +5,7 @@ import { useQuery } from 'react-query';
 import { consts, device, normalize } from '../../../config';
 import { imageHeight } from '../../../helpers';
 import { QUERY_TYPES, getQuery } from '../../../queries';
-import { TService } from '../../../screens';
+import { TService } from '../../../screens/SUE/SueReportScreen';
 import { LoadingSpinner } from '../../LoadingSpinner';
 import { BoldText } from '../../Text';
 import { useTheme } from '../../../hooks/useTheme';

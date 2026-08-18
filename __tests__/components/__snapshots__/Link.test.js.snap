@@ -3,6 +3,23 @@
 exports[`Link renders a Link that opens a WebScreen 1`] = `
 <View
   accessibilityLabel="(description) (Link)"
+  accessibilityState={
+    {
+      "busy": undefined,
+      "checked": undefined,
+      "disabled": undefined,
+      "expanded": undefined,
+      "selected": undefined,
+    }
+  }
+  accessibilityValue={
+    {
+      "max": undefined,
+      "min": undefined,
+      "now": undefined,
+      "text": undefined,
+    }
+  }
   accessible={true}
   collapsable={false}
   focusable={true}
@@ -14,15 +31,15 @@ exports[`Link renders a Link that opens a WebScreen 1`] = `
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
   style={
-    Object {
+    {
       "opacity": 1,
     }
   }
 >
   <View
     style={
-      Array [
-        Object {
+      [
+        {
           "flexDirection": "row",
         },
       ]
@@ -30,55 +47,55 @@ exports[`Link renders a Link that opens a WebScreen 1`] = `
   >
     <View
       hitSlop={
-        Object {
-          "bottom": 8.559999999999999,
-          "left": 8.559999999999999,
-          "right": 8.559999999999999,
-          "top": 8.559999999999999,
+        {
+          "bottom": 15.75,
+          "left": 15.75,
+          "right": 15.75,
+          "top": 15.75,
         }
       }
       style={
-        Object {
-          "marginRight": 5.6000000000000005,
-          "marginTop": 3.3600000000000003,
+        {
+          "marginRight": 8,
+          "marginTop": 4.5,
         }
       }
     >
       <RNSVGSvgView
         align="xMidYMid"
-        bbHeight={26.880000000000003}
-        bbWidth={26.880000000000003}
+        bbHeight={37.5}
+        bbWidth={37.5}
         focusable={false}
-        height={26.880000000000003}
+        height={37.5}
         meetOrSlice={0}
         minX={0}
         minY={0}
         style={
-          Array [
-            Object {
+          [
+            {
               "backgroundColor": "transparent",
               "borderWidth": 0,
             },
-            Object {
+            {
               "flex": 0,
-              "height": 26,
-              "width": 26,
+              "height": 37,
+              "width": 37,
             },
           ]
         }
         vbHeight={24}
         vbWidth={24}
         version={1.1}
-        width={26.880000000000003}
+        width={37.5}
         xml="
-  <?xml version=\\"1.0\\" encoding=\\"UTF-8\\"?>
-  <svg width=\\"24px\\" height=\\"24px\\" viewBox=\\"0 0 24 24\\" version=\\"1.1\\" xmlns=\\"http://www.w3.org/2000/svg\\" xmlns:xlink=\\"http://www.w3.org/1999/xlink\\">
-    <g stroke=\\"none\\" stroke-width=\\"1\\" fill=\\"none\\" fill-rule=\\"evenodd\\">
-      <g transform=\\"translate(3.000000, 3.000000)\\" fill=\\"#107821\\">
-        <path d=\\"M10.7496,1.3135 L18.5286,0.6065 L17.8206,8.3845 L16.6426,7.2065 L17.1136,2.0205
+  <?xml version="1.0" encoding="UTF-8"?>
+  <svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+      <g transform="translate(3.000000, 3.000000)" fill="#107821">
+        <path d="M10.7496,1.3135 L18.5286,0.6065 L17.8206,8.3845 L16.6426,7.2065 L17.1136,2.0205
           L11.9286,2.4925 L10.7496,1.3135 Z M0,3.3214 L5.75,3.3214 L5.75,4.8204 L1.5,4.8204
           L1.5,17.3204 L15,17.3204 L15,13.4044 L16.5,13.4044 L16.5,18.8214 L0,18.8214 L0,3.3214 Z
-          M7.2803,12.6015 L6.2193,11.5405 L14.2193,3.5405 L15.2803,4.6015 L7.2803,12.6015 Z\\"></path>
+          M7.2803,12.6015 L6.2193,11.5405 L14.2193,3.5405 L15.2803,4.6015 L7.2803,12.6015 Z"></path>
       </g>
     </g>
   </svg>
@@ -86,12 +103,19 @@ exports[`Link renders a Link that opens a WebScreen 1`] = `
         xmlns="http://www.w3.org/2000/svg"
         xmlnsXlink="http://www.w3.org/1999/xlink"
       >
-        <RNSVGGroup>
+        <RNSVGGroup
+          fill={
+            {
+              "payload": 4278190080,
+              "type": 0,
+            }
+          }
+        >
           <RNSVGGroup
             fill={null}
             fillRule={0}
             propList={
-              Array [
+              [
                 "fill",
                 "fillRule",
                 "stroke",
@@ -102,9 +126,14 @@ exports[`Link renders a Link that opens a WebScreen 1`] = `
             strokeWidth={1}
           >
             <RNSVGGroup
-              fill={4279269409}
+              fill={
+                {
+                  "payload": 4279269409,
+                  "type": 0,
+                }
+              }
               matrix={
-                Array [
+                [
                   1,
                   0,
                   0,
@@ -114,7 +143,7 @@ exports[`Link renders a Link that opens a WebScreen 1`] = `
                 ]
               }
               propList={
-                Array [
+                [
                   "fill",
                 ]
               }
@@ -124,6 +153,12 @@ exports[`Link renders a Link that opens a WebScreen 1`] = `
           L11.9286,2.4925 L10.7496,1.3135 Z M0,3.3214 L5.75,3.3214 L5.75,4.8204 L1.5,4.8204
           L1.5,17.3204 L15,17.3204 L15,13.4044 L16.5,13.4044 L16.5,18.8214 L0,18.8214 L0,3.3214 Z
           M7.2803,12.6015 L6.2193,11.5405 L14.2193,3.5405 L15.2803,4.6015 L7.2803,12.6015 Z"
+                fill={
+                  {
+                    "payload": 4278190080,
+                    "type": 0,
+                  }
+                }
               />
             </RNSVGGroup>
           </RNSVGGroup>
@@ -162,6 +197,23 @@ exports[`Link renders a Link that opens a WebScreen 1`] = `
 exports[`Link renders a default Link 1`] = `
 <View
   accessibilityLabel="(description) (Link)"
+  accessibilityState={
+    {
+      "busy": undefined,
+      "checked": undefined,
+      "disabled": undefined,
+      "expanded": undefined,
+      "selected": undefined,
+    }
+  }
+  accessibilityValue={
+    {
+      "max": undefined,
+      "min": undefined,
+      "now": undefined,
+      "text": undefined,
+    }
+  }
   accessible={true}
   collapsable={false}
   focusable={true}
@@ -173,15 +225,15 @@ exports[`Link renders a default Link 1`] = `
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
   style={
-    Object {
+    {
       "opacity": 1,
     }
   }
 >
   <View
     style={
-      Array [
-        Object {
+      [
+        {
           "flexDirection": "row",
         },
       ]
@@ -189,55 +241,55 @@ exports[`Link renders a default Link 1`] = `
   >
     <View
       hitSlop={
-        Object {
-          "bottom": 8.559999999999999,
-          "left": 8.559999999999999,
-          "right": 8.559999999999999,
-          "top": 8.559999999999999,
+        {
+          "bottom": 15.75,
+          "left": 15.75,
+          "right": 15.75,
+          "top": 15.75,
         }
       }
       style={
-        Object {
-          "marginRight": 5.6000000000000005,
-          "marginTop": 3.3600000000000003,
+        {
+          "marginRight": 8,
+          "marginTop": 4.5,
         }
       }
     >
       <RNSVGSvgView
         align="xMidYMid"
-        bbHeight={26.880000000000003}
-        bbWidth={26.880000000000003}
+        bbHeight={37.5}
+        bbWidth={37.5}
         focusable={false}
-        height={26.880000000000003}
+        height={37.5}
         meetOrSlice={0}
         minX={0}
         minY={0}
         style={
-          Array [
-            Object {
+          [
+            {
               "backgroundColor": "transparent",
               "borderWidth": 0,
             },
-            Object {
+            {
               "flex": 0,
-              "height": 26,
-              "width": 26,
+              "height": 37,
+              "width": 37,
             },
           ]
         }
         vbHeight={24}
         vbWidth={24}
         version={1.1}
-        width={26.880000000000003}
+        width={37.5}
         xml="
-  <?xml version=\\"1.0\\" encoding=\\"UTF-8\\"?>
-  <svg width=\\"24px\\" height=\\"24px\\" viewBox=\\"0 0 24 24\\" version=\\"1.1\\" xmlns=\\"http://www.w3.org/2000/svg\\" xmlns:xlink=\\"http://www.w3.org/1999/xlink\\">
-    <g stroke=\\"none\\" stroke-width=\\"1\\" fill=\\"none\\" fill-rule=\\"evenodd\\">
-      <g transform=\\"translate(3.000000, 3.000000)\\" fill=\\"#107821\\">
-        <path d=\\"M10.7496,1.3135 L18.5286,0.6065 L17.8206,8.3845 L16.6426,7.2065 L17.1136,2.0205
+  <?xml version="1.0" encoding="UTF-8"?>
+  <svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+      <g transform="translate(3.000000, 3.000000)" fill="#107821">
+        <path d="M10.7496,1.3135 L18.5286,0.6065 L17.8206,8.3845 L16.6426,7.2065 L17.1136,2.0205
           L11.9286,2.4925 L10.7496,1.3135 Z M0,3.3214 L5.75,3.3214 L5.75,4.8204 L1.5,4.8204
           L1.5,17.3204 L15,17.3204 L15,13.4044 L16.5,13.4044 L16.5,18.8214 L0,18.8214 L0,3.3214 Z
-          M7.2803,12.6015 L6.2193,11.5405 L14.2193,3.5405 L15.2803,4.6015 L7.2803,12.6015 Z\\"></path>
+          M7.2803,12.6015 L6.2193,11.5405 L14.2193,3.5405 L15.2803,4.6015 L7.2803,12.6015 Z"></path>
       </g>
     </g>
   </svg>
@@ -245,12 +297,19 @@ exports[`Link renders a default Link 1`] = `
         xmlns="http://www.w3.org/2000/svg"
         xmlnsXlink="http://www.w3.org/1999/xlink"
       >
-        <RNSVGGroup>
+        <RNSVGGroup
+          fill={
+            {
+              "payload": 4278190080,
+              "type": 0,
+            }
+          }
+        >
           <RNSVGGroup
             fill={null}
             fillRule={0}
             propList={
-              Array [
+              [
                 "fill",
                 "fillRule",
                 "stroke",
@@ -261,9 +320,14 @@ exports[`Link renders a default Link 1`] = `
             strokeWidth={1}
           >
             <RNSVGGroup
-              fill={4279269409}
+              fill={
+                {
+                  "payload": 4279269409,
+                  "type": 0,
+                }
+              }
               matrix={
-                Array [
+                [
                   1,
                   0,
                   0,
@@ -273,7 +337,7 @@ exports[`Link renders a default Link 1`] = `
                 ]
               }
               propList={
-                Array [
+                [
                   "fill",
                 ]
               }
@@ -283,6 +347,12 @@ exports[`Link renders a default Link 1`] = `
           L11.9286,2.4925 L10.7496,1.3135 Z M0,3.3214 L5.75,3.3214 L5.75,4.8204 L1.5,4.8204
           L1.5,17.3204 L15,17.3204 L15,13.4044 L16.5,13.4044 L16.5,18.8214 L0,18.8214 L0,3.3214 Z
           M7.2803,12.6015 L6.2193,11.5405 L14.2193,3.5405 L15.2803,4.6015 L7.2803,12.6015 Z"
+                fill={
+                  {
+                    "payload": 4278190080,
+                    "type": 0,
+                  }
+                }
               />
             </RNSVGGroup>
           </RNSVGGroup>

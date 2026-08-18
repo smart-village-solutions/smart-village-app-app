@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/core';
+import { useNavigation } from 'expo-router/react-navigation';
 import React, { useCallback } from 'react';
 
 import { Icon, texts } from '../../config';

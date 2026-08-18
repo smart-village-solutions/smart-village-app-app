@@ -1,9 +1,10 @@
-import { CardStyleInterpolators } from '@react-navigation/stack';
+import { CardStyleInterpolators } from 'expo-router/build/react-navigation/stack';
 import React from 'react';
 
 import { HeaderLeft, TourStopDetail } from '../../components';
 import { getScreenOptions } from '../../navigation/screenOptions';
 import { QUERY_TYPES } from '../../queries';
+import { getTilesScreen } from '../../screens/TilesScreen';
 import {
   ARInfoScreen,
   ARShowScreen,
@@ -100,8 +101,7 @@ import {
   WeatherScreen,
   WebScreen,
   WhistleblowCodeScreen,
-  WhistleblowFormScreen,
-  getTilesScreen
+  WhistleblowFormScreen
 } from '../../screens';
 import {
   CategoryScreen as BusCategoryScreen,

@@ -1,4 +1,4 @@
-import { NavigationProp, ParamListBase } from '@react-navigation/native';
+import { NavigationProp, ParamListBase } from 'expo-router/react-navigation';
 import React, { useContext, useEffect, useState } from 'react';
 import { TouchableOpacity, View } from 'react-native';
 import Pdf from 'react-native-pdf';

@@ -1,4 +1,4 @@
-import { StackNavigationProp } from '@react-navigation/stack';
+import { StackNavigationProp } from 'expo-router/js-stack';
 import { setStringAsync } from 'expo-clipboard';
 import React, { useCallback, useContext, useState } from 'react';
 import { ActivityIndicator, RefreshControl, ScrollView, TouchableOpacity } from 'react-native';

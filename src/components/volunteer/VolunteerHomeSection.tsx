@@ -1,4 +1,4 @@
-import { StackNavigationProp } from '@react-navigation/stack';
+import { StackNavigationProp } from 'expo-router/js-stack';
 import _isNumber from 'lodash/isNumber';
 import React, { useContext, useState } from 'react';
 import { View } from 'react-native';

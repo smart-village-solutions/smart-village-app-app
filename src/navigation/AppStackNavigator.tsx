@@ -1,4 +1,7 @@
-import { CardStyleInterpolators, createStackNavigator } from '@react-navigation/stack';
+import {
+  CardStyleInterpolators,
+  createStackNavigator
+} from 'expo-router/build/react-navigation/stack';
 import React, { useContext } from 'react';
 
 import { AccessibilityContext } from '../AccessibilityProvider';

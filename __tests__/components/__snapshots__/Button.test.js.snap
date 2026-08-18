@@ -3,19 +3,45 @@
 exports[`Button renders a button with Outline style 1`] = `
 <View
   style={
-    Object {
-      "alignItems": "center",
-      "borderRadius": 3,
-      "justifyContent": "center",
-      "marginBottom": 23.520000000000003,
-    }
+    [
+      {
+        "borderRadius": 3,
+        "overflow": "hidden",
+      },
+      {
+        "borderRadius": 3,
+      },
+      [
+        {
+          "marginBottom": 25,
+        },
+        {
+          "alignItems": "center",
+          "justifyContent": "center",
+        },
+      ],
+      false,
+    ]
   }
 >
   <View
     accessibilityLabel="title (Taste)"
+    accessibilityRole="button"
     accessibilityState={
-      Object {
+      {
+        "busy": false,
+        "checked": undefined,
         "disabled": false,
+        "expanded": undefined,
+        "selected": undefined,
+      }
+    }
+    accessibilityValue={
+      {
+        "max": undefined,
+        "min": undefined,
+        "now": undefined,
+        "text": undefined,
       }
     }
     accessible={true}
@@ -29,21 +55,22 @@ exports[`Button renders a button with Outline style 1`] = `
     onResponderTerminationRequest={[Function]}
     onStartShouldSetResponder={[Function]}
     style={
-      Object {
+      {
         "opacity": 1,
       }
     }
   >
     <View
       style={
-        Object {
+        {
           "alignItems": "center",
           "backgroundColor": "transparent",
           "borderColor": "#107821",
-          "borderRadius": 3,
+          "borderRadius": 12.5,
           "borderStyle": "solid",
-          "borderWidth": 2,
-          "flexDirection": "row",
+          "borderWidth": 1.5,
+          "flexDirection": "row-reverse",
+          "height": 75,
           "justifyContent": "center",
           "padding": 8,
         }
@@ -51,13 +78,13 @@ exports[`Button renders a button with Outline style 1`] = `
     >
       <Text
         style={
-          Object {
+          {
             "color": "#107821",
             "fontFamily": "bold",
-            "fontSize": 18,
-            "paddingBottom": 1,
-            "paddingHorizontal": 15.680000000000001,
-            "paddingTop": 2,
+            "fontSize": 22,
+            "fontWeight": "600",
+            "paddingHorizontal": 22,
+            "paddingVertical": 1,
             "textAlign": "center",
           }
         }
@@ -72,19 +99,45 @@ exports[`Button renders a button with Outline style 1`] = `
 exports[`Button renders a default button 1`] = `
 <View
   style={
-    Object {
-      "alignItems": "center",
-      "borderRadius": 3,
-      "justifyContent": "center",
-      "marginBottom": 23.520000000000003,
-    }
+    [
+      {
+        "borderRadius": 3,
+        "overflow": "hidden",
+      },
+      {
+        "borderRadius": 3,
+      },
+      [
+        {
+          "marginBottom": 25,
+        },
+        {
+          "alignItems": "center",
+          "justifyContent": "center",
+        },
+      ],
+      false,
+    ]
   }
 >
   <View
     accessibilityLabel="title (Taste)"
+    accessibilityRole="button"
     accessibilityState={
-      Object {
+      {
+        "busy": false,
+        "checked": undefined,
         "disabled": false,
+        "expanded": undefined,
+        "selected": undefined,
+      }
+    }
+    accessibilityValue={
+      {
+        "max": undefined,
+        "min": undefined,
+        "now": undefined,
+        "text": undefined,
       }
     }
     accessible={true}
@@ -98,58 +151,47 @@ exports[`Button renders a default button 1`] = `
     onResponderTerminationRequest={[Function]}
     onStartShouldSetResponder={[Function]}
     style={
-      Object {
+      {
         "opacity": 1,
       }
     }
   >
-    <ViewManagerAdapter_ExpoLinearGradient
-      proxiedProperties={
-        Object {
-          "colors": Array [
-            4279269409,
-            4278798396,
-          ],
-          "endPoint": Array [
-            1,
-            1,
-          ],
-          "locations": undefined,
-          "startPoint": Array [
-            0,
-            0,
-          ],
-        }
-      }
+    <View
       style={
-        Object {
-          "alignItems": "center",
-          "backgroundColor": "#2089dc",
-          "borderColor": "#2089dc",
-          "borderRadius": 3,
-          "borderWidth": 0,
-          "flexDirection": "row",
-          "justifyContent": "center",
-          "padding": 8,
-        }
+        [
+          {
+            "alignItems": "center",
+            "backgroundColor": "#2089dc",
+            "borderColor": "#2089dc",
+            "borderRadius": 12.5,
+            "borderWidth": 0,
+            "flexDirection": "row-reverse",
+            "height": 75,
+            "justifyContent": "center",
+            "padding": 8,
+          },
+          {
+            "backgroundColor": "#107821",
+          },
+        ]
       }
     >
       <Text
         style={
-          Object {
+          {
             "color": "#FFFFFF",
             "fontFamily": "bold",
-            "fontSize": 18,
-            "paddingBottom": 1,
-            "paddingHorizontal": 15.680000000000001,
-            "paddingTop": 2,
+            "fontSize": 22,
+            "fontWeight": "600",
+            "paddingHorizontal": 22,
+            "paddingVertical": 1,
             "textAlign": "center",
           }
         }
       >
         title
       </Text>
-    </ViewManagerAdapter_ExpoLinearGradient>
+    </View>
   </View>
 </View>
 `;

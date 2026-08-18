@@ -1,5 +1,5 @@
-import { RouteProp } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
+import { RouteProp } from 'expo-router/react-navigation';
+import { StackNavigationProp } from 'expo-router/js-stack';
 import { LocationObject, LocationObjectCoords } from 'expo-location';
 import _upperFirst from 'lodash/upperFirst';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';

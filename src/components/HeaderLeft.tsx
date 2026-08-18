@@ -1,4 +1,4 @@
-import { HeaderBackButtonProps } from '@react-navigation/elements';
+import { HeaderBackButtonProps } from 'expo-router/react-navigation';
 import React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 

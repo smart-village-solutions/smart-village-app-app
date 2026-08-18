@@ -1,6 +1,6 @@
 /* eslint-disable complexity */
-import { RouteProp } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
+import { RouteProp } from 'expo-router/react-navigation';
+import { StackNavigationProp } from 'expo-router/js-stack';
 import _filter from 'lodash/filter';
 import moment from 'moment';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';

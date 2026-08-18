@@ -1,5 +1,5 @@
-import { useFocusEffect } from '@react-navigation/native';
-import { StackScreenProps } from '@react-navigation/stack';
+import { useFocusEffect } from 'expo-router/react-navigation';
+import { StackScreenProps } from 'expo-router/js-stack';
 import React, { useCallback, useContext, useEffect, useLayoutEffect, useState } from 'react';
 import { TouchableOpacity, View } from 'react-native';
 import Markdown from 'react-native-markdown-display';

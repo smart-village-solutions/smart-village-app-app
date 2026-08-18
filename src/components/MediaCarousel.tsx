@@ -1,4 +1,4 @@
-import { useIsFocused } from '@react-navigation/native';
+import { useIsFocused } from 'expo-router/react-navigation';
 import _filter from 'lodash/filter';
 import React, { useCallback, useContext, useMemo, useRef, useState } from 'react';
 import { TouchableOpacity, View } from 'react-native';

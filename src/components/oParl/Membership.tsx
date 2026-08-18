@@ -1,5 +1,5 @@
 import React from 'react';
-import { StackNavigationProp } from '@react-navigation/stack';
+import { StackNavigationProp } from 'expo-router/js-stack';
 
 import { texts } from '../../config';
 import { getFullName, momentFormat } from '../../helpers';

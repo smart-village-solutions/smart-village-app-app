@@ -1,4 +1,4 @@
-import { StackNavigationProp } from '@react-navigation/stack';
+import { StackNavigationProp } from 'expo-router/js-stack';
 import React from 'react';
 import 'react-native';
 import { ListItem } from 'react-native-elements';

@@ -1,4 +1,4 @@
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect } from 'expo-router/react-navigation';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useState } from 'react';
 import { RefreshControl, ScrollView } from 'react-native';

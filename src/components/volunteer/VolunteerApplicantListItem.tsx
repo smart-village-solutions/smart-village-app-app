@@ -1,5 +1,5 @@
-import { useRoute } from '@react-navigation/native';
-import { StackScreenProps } from '@react-navigation/stack';
+import { useRoute } from 'expo-router/react-navigation';
+import { StackScreenProps } from 'expo-router/js-stack';
 import React from 'react';
 import { View } from 'react-native';
 import { ListItem } from 'react-native-elements';

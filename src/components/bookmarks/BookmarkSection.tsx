@@ -1,5 +1,5 @@
-import { useFocusEffect } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
+import { useFocusEffect } from 'expo-router/react-navigation';
+import { StackNavigationProp } from 'expo-router/js-stack';
 import React, { useCallback, useContext, useEffect } from 'react';
 import { useQuery as RQuseQuery } from 'react-query';
 

@@ -1,4 +1,4 @@
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect } from 'expo-router/react-navigation';
 import _isArray from 'lodash/isArray';
 import _sortBy from 'lodash/sortBy';
 import moment from 'moment';

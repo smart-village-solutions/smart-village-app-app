@@ -1,4 +1,4 @@
-import { StackNavigationProp } from '@react-navigation/stack';
+import { StackNavigationProp } from 'expo-router/js-stack';
 import _shuffle from 'lodash/shuffle';
 import _sortBy from 'lodash/sortBy';
 import React from 'react';

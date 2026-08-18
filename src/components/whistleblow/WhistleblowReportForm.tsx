@@ -1,4 +1,4 @@
-import { StackNavigationProp } from '@react-navigation/stack';
+import { StackNavigationProp } from 'expo-router/js-stack';
 import React, { useContext, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Keyboard } from 'react-native';

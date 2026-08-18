@@ -1,5 +1,5 @@
-import { useFocusEffect } from '@react-navigation/native';
-import { StackScreenProps } from '@react-navigation/stack';
+import { useFocusEffect } from 'expo-router/react-navigation';
+import { StackScreenProps } from 'expo-router/js-stack';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { RefreshControl, ScrollView } from 'react-native';
 

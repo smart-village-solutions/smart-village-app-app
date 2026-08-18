@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/core';
+import { useNavigation } from 'expo-router/react-navigation';
 import React, { useCallback, useContext } from 'react';
 import { useQuery } from 'react-apollo';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';

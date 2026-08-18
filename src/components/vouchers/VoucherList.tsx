@@ -1,4 +1,4 @@
-import { StackScreenProps } from '@react-navigation/stack';
+import { StackScreenProps } from 'expo-router/js-stack';
 import { FlashList } from '@shopify/flash-list';
 import React, { useEffect, useState } from 'react';
 

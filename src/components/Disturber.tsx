@@ -1,4 +1,4 @@
-import { DrawerNavigationProp } from '@react-navigation/drawer';
+import { DrawerNavigationProp } from 'expo-router/drawer';
 import React, { useEffect, useState } from 'react';
 import { TouchableOpacity, View } from 'react-native';
 

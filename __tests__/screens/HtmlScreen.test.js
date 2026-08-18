@@ -1,13 +1,23 @@
 import React from 'react';
-import renderer from 'react-test-renderer';
+import renderer, { act } from 'react-test-renderer';
 
-import { HtmlScreen } from '../../src/screens';
+import { HtmlScreen } from '../../src/screens/HtmlScreen';
+
+const renderToJSON = (element) => {
+  let component;
+
+  act(() => {
+    component = renderer.create(element);
+  });
+
+  return component.toJSON();
+};
 
 describe('HtmlScreen', () => {
   const navigation = { navigate: jest.fn() };
 
   it('renders correctly', () => {
-    const tree = renderer.create(<HtmlScreen navigation={navigation} route={{}} />).toJSON();
+    const tree = renderToJSON(<HtmlScreen navigation={navigation} route={{}} />);
     expect(tree).toMatchSnapshot();
   });
 
