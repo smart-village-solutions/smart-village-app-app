@@ -1,6 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
 import 'dayjs/locale/de';
-import * as FileSystem from 'expo-file-system/legacy';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { useVideoPlayer, VideoView } from 'expo-video';
 import PropTypes from 'prop-types';
@@ -20,7 +19,7 @@ import {
 import { QuickReplies } from 'react-native-gifted-chat/lib/QuickReplies';
 
 import { consts, device, Icon, normalize, texts } from '../config';
-import { deleteArrayItem, momentFormat, openLink } from '../helpers';
+import { deleteArrayItem, getFileSize, momentFormat, openLink } from '../helpers';
 import { MediaTypeOptions, useSelectDocument, useSelectImage } from '../hooks';
 import { useTheme } from '../hooks/useTheme';
 import { useThemeStyles } from '../hooks/useThemeStyles';
@@ -120,7 +119,7 @@ export const Chat = ({
   };
 
   const errorHandler = async (uri) => {
-    const { size } = await FileSystem.getInfoAsync(uri);
+    const size = getFileSize(uri);
     const errorText = size > MB_TO_BYTES[10] && {
       title: texts.errors.image.title,
       message: texts.volunteer.mediaGreater10MBError

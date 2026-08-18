@@ -1,13 +1,12 @@
 /* eslint-disable no-case-declarations */
-import * as FileSystem from 'expo-file-system/legacy';
-
 import { consts, texts } from '../../config';
+import { getFileSize } from '../fileSystem';
 import { formatSize, formatSizeStandard } from '../fileSizeHelper';
 
 const { IMAGE_SELECTOR_ERROR_TYPES, JPG_TYPE_REGEX, MB_TO_BYTES, PDF_TYPE_REGEX } = consts;
 
 export const documentErrorMessageGenerator = async (uri, maxFileSize = 3145728) => {
-  const { size } = await FileSystem.getInfoAsync(uri);
+  const size = getFileSize(uri);
 
   const isPDF = PDF_TYPE_REGEX.test(uri);
   const isGreaterMaxFileSize = size > maxFileSize;
@@ -25,7 +24,7 @@ export const documentErrorMessageGenerator = async (uri, maxFileSize = 3145728) 
 };
 
 export const imageErrorMessageGenerator = async (uri) => {
-  const { size } = await FileSystem.getInfoAsync(uri);
+  const size = getFileSize(uri);
 
   const isJPG = JPG_TYPE_REGEX.test(uri);
   const isGreater1MB = size > MB_TO_BYTES[1];
@@ -50,7 +49,7 @@ export const errorTextGenerator = async ({
   setInfoAndErrorText,
   uri
 }) => {
-  const { size } = await FileSystem.getInfoAsync(uri);
+  const size = getFileSize(uri);
 
   switch (errorType) {
     case IMAGE_SELECTOR_ERROR_TYPES.CONSUL:

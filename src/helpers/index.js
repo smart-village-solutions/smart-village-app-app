@@ -1,4 +1,5 @@
 export * from './augmentedReality';
+export * from './fileSystem';
 export * from './consul';
 export * from './parser';
 export * from './whistleblow';

@@ -1,10 +1,11 @@
-import { documentDirectory } from 'expo-file-system/legacy';
+import { Paths } from 'expo-file-system';
 
 import { consts } from '../../config';
 
 const { IMAGE_TYPE_REGEX } = consts;
 
 export const storageNameCreator = ({ dataItem, objectItem, sceneIndex }) => {
+  const documentDirectory = Paths.document.uri;
   const dataItemTitleWithoutSpaces = dataItem.title?.replace(/\s+/g, '');
   const dataItemTitleWithoutUmlauts = dataItemTitleWithoutSpaces?.replace(/[äöüÄÖÜß]/g, '');
   const dataDirectoryName = `${dataItemTitleWithoutUmlauts}_${dataItem.id}_${sceneIndex}`;

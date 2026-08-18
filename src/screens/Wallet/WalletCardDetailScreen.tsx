@@ -1,6 +1,6 @@
 import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import * as FileSystem from 'expo-file-system/legacy';
+import { File, Paths } from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
@@ -137,7 +137,7 @@ export const WalletCardDetailScreen = ({
   }, [apiConnection, cardNumber, pinCode]);
 
   const handleShare = async () => {
-    const fileUri = `${FileSystem.cacheDirectory}${cardName ? cardName : title}.png`;
+    const file = new File(Paths.cache, `${cardName ? cardName : title}.png`);
 
     try {
       setIsCapturing(true);
@@ -145,18 +145,18 @@ export const WalletCardDetailScreen = ({
       // Wait for ViewShot to mount
       await new Promise((resolve) => setTimeout(resolve, 50));
 
-      const base64 = await viewShotRef?.current?.capture();
+      const base64 = await viewShotRef.current?.capture?.();
 
       if (!base64) {
         throw new Error('Failed to capture wallet card image');
       }
 
       // as URL sharing is not possible on Android, we need to save the file. On iOS, direct sharing of base64 data is supported
-      await FileSystem.writeAsStringAsync(fileUri, base64, {
-        encoding: FileSystem.EncodingType.Base64
+      file.write(base64, {
+        encoding: 'base64'
       });
 
-      await Sharing.shareAsync(fileUri);
+      await Sharing.shareAsync(file.uri);
     } catch (e) {
       console.error(e);
       Alert.alert(texts.wallet.detail.errorTitle, texts.wallet.detail.shareErrorMessage);
@@ -164,7 +164,9 @@ export const WalletCardDetailScreen = ({
       setIsCapturing(false);
 
       // Clean up the temporary file
-      await FileSystem.deleteAsync(fileUri, { idempotent: true });
+      if (file.exists) {
+        file.delete();
+      }
     }
   };
 

@@ -1,4 +1,4 @@
-import * as FileSystem from 'expo-file-system/legacy';
+import { File } from 'expo-file-system';
 import { Alert } from 'react-native';
 
 import { texts } from '../../config';
@@ -25,7 +25,11 @@ export const deleteObject = async ({ index, data, setData }) => {
 
       try {
         if (objectItem?.uri) {
-          await FileSystem.deleteAsync(objectItem.uri);
+          const file = new File(objectItem.uri);
+
+          if (file.exists) {
+            file.delete();
+          }
         }
         removeFromStore(storageName);
 
