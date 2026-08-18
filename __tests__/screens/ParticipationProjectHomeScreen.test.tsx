@@ -87,7 +87,7 @@ jest.mock('../../src/config', () => ({
   }
 }));
 
-jest.mock('../../src/helpers', () => ({
+jest.mock('../../src/helpers/participationProjectHelper', () => ({
   PARTICIPATION_PROJECT_DEFAULT_STATUSES: ['active'],
   PARTICIPATION_PROJECT_STATUS: {
     ACTIVE: 'active',
@@ -103,7 +103,6 @@ jest.mock('../../src/helpers', () => ({
     REPLACE_TEASER: 'replaceTeaser'
   },
   PARTICIPATION_PROJECT_STATUS_POSITION_PARAM: 'participationStatusPosition',
-  subtitle: jest.fn((...parts) => parts.filter(Boolean).join(' | ')),
   getParticipationProjectStatus: jest.fn(
     (item) =>
       ({
@@ -119,13 +118,26 @@ jest.mock('../../src/helpers', () => ({
   isParticipationProjectActive: jest.fn(
     (item) => item.payload?.status?.trim().toLowerCase() === 'active'
   ),
-  mainImageOfMediaContents: jest.fn(),
-  matomoTrackingString: jest.fn((parts) => parts.join(' / ')),
   normalizeParticipationProjectStatusPosition: jest.fn((value) =>
     value === 'replaceTeaser' ? 'replaceTeaser' : 'belowTeaser'
-  ),
+  )
+}));
+
+jest.mock('../../src/helpers/htmlViewHelper', () => ({
   removeHtml: jest.fn((value) => value),
   trimNewLines: jest.fn((value) => value)
+}));
+
+jest.mock('../../src/helpers/imageHelper', () => ({
+  mainImageOfMediaContents: jest.fn()
+}));
+
+jest.mock('../../src/helpers/matomoHelper', () => ({
+  matomoTrackingString: jest.fn((parts) => parts.join(' / '))
+}));
+
+jest.mock('../../src/helpers/textHelper', () => ({
+  subtitle: jest.fn((...parts) => parts.filter(Boolean).join(' | '))
 }));
 
 const { useQuery } = jest.requireMock('react-query') as {

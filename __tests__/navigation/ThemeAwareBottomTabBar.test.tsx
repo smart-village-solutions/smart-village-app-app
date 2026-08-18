@@ -12,7 +12,7 @@ import {
 const mockMount = jest.fn();
 const mockUnmount = jest.fn();
 
-jest.mock('@react-navigation/bottom-tabs', () => {
+jest.mock('expo-router/js-tabs', () => {
   const ReactLocal = require('react');
 
   return {

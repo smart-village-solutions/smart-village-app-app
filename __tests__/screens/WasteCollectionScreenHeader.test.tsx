@@ -15,7 +15,7 @@ const mockStreetData = {
   wasteAddresses: [{ city: 'X', street: 'Y', zip: 'Z' }]
 };
 
-jest.mock('@react-navigation/native', () => ({
+jest.mock('expo-router/react-navigation', () => ({
   useFocusEffect: jest.fn()
 }));
 

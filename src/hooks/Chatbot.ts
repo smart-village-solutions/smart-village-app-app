@@ -50,7 +50,7 @@ export const useChatbot = (
       return {
         _id: messageId,
         text: botMessage.text,
-        createdAt: new Date(),
+        createdAt: Date.now(),
         user: {
           _id: 2,
           display_name: config?.title || 'Bot'
@@ -94,7 +94,7 @@ export const useChatbot = (
       const userMessage: ChatbotMessage = {
         _id: Date.now().toString(),
         text: trimmedText,
-        createdAt: new Date(),
+        createdAt: Date.now(),
         user: {
           _id: 1
         }
@@ -169,7 +169,7 @@ export const useChatbot = (
           const userMessage: ChatbotMessage = {
             _id: Date.now().toString(),
             text: config.initPayload,
-            createdAt: new Date(),
+            createdAt: Date.now(),
             user: {
               _id: 1
             }

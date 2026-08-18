@@ -1,4 +1,4 @@
-import { NavigationRouteContext } from '@react-navigation/native';
+import { NavigationRouteContext } from 'expo-router/react-navigation';
 import React, {
   createContext,
   useCallback,

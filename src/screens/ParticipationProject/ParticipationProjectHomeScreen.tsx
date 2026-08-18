@@ -1,4 +1,4 @@
-import { StackScreenProps } from '@react-navigation/stack';
+import { StackScreenProps } from 'expo-router/js-stack';
 import React, { useCallback, useMemo, useState } from 'react';
 import { DeviceEventEmitter, FlatList, RefreshControl } from 'react-native';
 import { useQuery } from 'react-query';
@@ -15,24 +15,23 @@ import {
   WrapperVertical
 } from '../../components';
 import { consts, normalize, texts } from '../../config';
+import { removeHtml, trimNewLines } from '../../helpers/htmlViewHelper';
+import { mainImageOfMediaContents } from '../../helpers/imageHelper';
+import { matomoTrackingString } from '../../helpers/matomoHelper';
 import {
-  subtitle as formatSubtitle,
   getParticipationProjectStatusColor,
   getParticipationProjectStatusLabel,
   getParticipationProjectPreviewDate,
   isParticipationProjectActive,
-  mainImageOfMediaContents,
-  matomoTrackingString,
   normalizeParticipationProjectStatusPosition,
   PARTICIPATION_PROJECT_DEFAULT_STATUSES,
   PARTICIPATION_PROJECT_STATUS_FILTER,
   PARTICIPATION_PROJECT_STATUS_POSITION,
   PARTICIPATION_PROJECT_STATUS_POSITION_PARAM,
   ParticipationProject,
-  ParticipationProjectStatusPosition,
-  removeHtml,
-  trimNewLines
-} from '../../helpers';
+  ParticipationProjectStatusPosition
+} from '../../helpers/participationProjectHelper';
+import { subtitle as formatSubtitle } from '../../helpers/textHelper';
 import { HOME_REFRESH_EVENT, useMatomoTrackScreenView, useStaticContent } from '../../hooks';
 import { useTheme } from '../../hooks/useTheme';
 import { useThemeStyles } from '../../hooks/useThemeStyles';

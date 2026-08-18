@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { StackScreenProps } from '@react-navigation/stack';
+import { StackScreenProps } from 'expo-router/js-stack';
 import React, { useLayoutEffect, useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useQuery } from 'react-query';
@@ -25,7 +25,7 @@ import {
   PARTICIPATION_PROJECT_STATUS_FILTER,
   PARTICIPATION_PROJECT_STATUS_POSITION_PARAM,
   ParticipationProject
-} from '../../helpers';
+} from '../../helpers/participationProjectHelper';
 import { useThemeStyles } from '../../hooks/useThemeStyles';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { GenericType, MapMarker, ScreenName, ThemeColorPalette } from '../../types';

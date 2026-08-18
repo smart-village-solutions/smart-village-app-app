@@ -40,6 +40,7 @@ type ImageProps = {
   imageRightsPosition?: 'inside-bottom-right' | 'outside-bottom';
   isImageFullWidth?: boolean;
   message?: string;
+  onContentHeightChange?: (height: number) => void;
   PlaceholderContent?: React.ReactNode;
   placeholderStyle?: object | object[];
   refreshInterval?: number;
@@ -65,6 +66,7 @@ export const Image = ({
   imageRightsPosition,
   isImageFullWidth,
   message,
+  onContentHeightChange,
   PlaceholderContent: placeholderContent,
   placeholderStyle: placeholderStyleProp,
   refreshInterval,
@@ -73,6 +75,8 @@ export const Image = ({
   style
 }: ImageProps) => {
   const { colors: colors } = useTheme();
+
+  const [contentHeight, setContentHeight] = useState(0);
 
   const styles = useThemeStyles(createStyles);
   const PlaceholderContent =
@@ -130,19 +134,27 @@ export const Image = ({
       : { hasError: !hasRenderableSource, key: sourceKey, loading: hasRenderableSource };
   const { hasError, loading } = currentLoadState;
 
+  const sourceMetadata = typeof sourceProp === 'number' ? undefined : sourceProp;
+  const showImageRights = !!globalSettings?.showImageRights && !!sourceMetadata?.copyright;
+  const additionalButtons = buttons.filter(
+    (item) => !button || item.routeName !== button.routeName || item.title !== button.title
+  );
+  const showChildren = !!message || !!button || !!additionalButtons.length || showImageRights;
+  const showFallback = hasError && fallbackContent !== undefined;
   const defaultImageStyle = stylesForImage(aspectRatio, isImageFullWidth).defaultStyle;
 
   const imageStyle = useMemo(
     () => [style || defaultImageStyle, { borderRadius }],
     [style, defaultImageStyle, borderRadius]
   );
+  const imageDimensions = useMemo(() => {
+    const { height, width } = StyleSheet.flatten(imageStyle);
+
+    return { height, width };
+  }, [imageStyle]);
+  const overlayStyle = [styles.overlayFill, imageDimensions];
 
   if (typeof source !== 'number' && source?.uri === NO_IMAGE.uri) return null;
-
-  const sourceMetadata = typeof sourceProp === 'number' ? undefined : sourceProp;
-  const showImageRights = !!globalSettings?.showImageRights && !!sourceMetadata?.copyright;
-  const showChildren = !!message || !!button || showImageRights;
-  const showFallback = hasError && fallbackContent !== undefined;
 
   const imageElement = hasRenderableSource ? (
     <ExpoImage
@@ -173,27 +185,40 @@ export const Image = ({
     <View style={[containerStyle, placeholderStyle]}>
       {isGrayscaleEnabled ? <Grayscale>{imageElement}</Grayscale> : imageElement}
 
-      {(loading || showFallback || showChildren) && (
-        <View style={styles.overlayFill} pointerEvents="box-none">
-          {loading && (
-            <View style={[styles.overlayFill, styles.loadingStyle]}>{PlaceholderContent}</View>
-          )}
-          {showFallback && (
-            <View style={[styles.overlayFill, styles.loadingStyle]}>{fallbackContent}</View>
-          )}
-          {showChildren && (
-            <View style={[styles.overlayFill, styles.contentContainerStyle]}>
-              {!!message && <ImageMessage message={message} />}
-              {!!button && <ImageButton button={button} />}
-              {!!buttons?.length &&
-                buttons.map((button, index) => (
-                  <ImageButton key={`${button.title}-${index}`} button={button} />
-                ))}
-              {!imageRightsPosition && showImageRights && (
-                <ImageRights imageRights={sourceMetadata?.copyright || ''} />
-              )}
-            </View>
-          )}
+      {loading && (
+        <View style={[overlayStyle, styles.loadingStyle]} pointerEvents="none">
+          {PlaceholderContent}
+        </View>
+      )}
+      {showFallback && (
+        <View style={[overlayStyle, styles.loadingStyle]}>{fallbackContent}</View>
+      )}
+      {showChildren && (
+        <View style={[overlayStyle, styles.contentContainerStyle]} pointerEvents="box-none">
+          <View
+            style={[
+              styles.content,
+              { top: Math.max(imageDimensions.height - contentHeight, 0) }
+            ]}
+            onLayout={({ nativeEvent }) => {
+              const nextContentHeight = nativeEvent.layout.height;
+
+              if (nextContentHeight === contentHeight) return;
+
+              setContentHeight(nextContentHeight);
+              onContentHeightChange?.(nextContentHeight);
+            }}
+          >
+            {!!message && <ImageMessage message={message} />}
+            {!!button && <ImageButton button={button} />}
+            {!!additionalButtons.length &&
+              additionalButtons.map((button, index) => (
+                <ImageButton key={`${button.title}-${index}`} button={button} />
+              ))}
+            {!imageRightsPosition && showImageRights && (
+              <ImageRights imageRights={sourceMetadata?.copyright || ''} />
+            )}
+          </View>
         </View>
       )}
       {!!imageRightsPosition && showImageRights && (
@@ -208,9 +233,13 @@ export const Image = ({
 /* eslint-enable complexity */
 
 const createStyles = (colors) => ({
+  content: {
+    left: 0,
+    position: 'absolute',
+    right: 0
+  },
   contentContainerStyle: {
-    height: '100%',
-    justifyContent: 'flex-end'
+    zIndex: 1
   },
 
   loadingStyle: {
@@ -219,7 +248,10 @@ const createStyles = (colors) => ({
   },
 
   overlayFill: {
-    ...StyleSheet.absoluteFillObject
+    left: 0,
+    position: 'absolute',
+    top: 0,
+    zIndex: 1
   },
 
   placeholderStyle: {

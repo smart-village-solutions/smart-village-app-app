@@ -2,7 +2,7 @@
 
 # Smart Village App - Mobile App
 
-![Project version](https://img.shields.io/badge/version-4.3.0-informational.svg) ![Node version](https://img.shields.io/badge/node-22.13.0-informational.svg) ![Yarn version](https://img.shields.io/badge/yarn-1.22.22-informational.svg) ![Expo version](https://img.shields.io/badge/expo-54.0.34-informational.svg)
+![Project version](https://img.shields.io/badge/version-4.3.0-informational.svg) ![Node version](https://img.shields.io/badge/node-22.13.0-informational.svg) ![Yarn version](https://img.shields.io/badge/yarn-1.22.22-informational.svg) ![Expo version](https://img.shields.io/badge/expo-57.0.10-informational.svg)
 
 The Smart Village App is a open source mobile app for villages, communities and counties. It is made with React Native for Android and iOS.
 

@@ -86,7 +86,7 @@ export const ImagesCarousel = ({
   );
 
   const renderItem = useCallback(
-    ({ item, refreshInterval }) => {
+    ({ height = itemHeight, item, onContentHeightChange, refreshInterval }) => {
       const { routeName: name, params } = item.picture || {};
 
       // params are available, but missing `shareContent` and `details`
@@ -129,6 +129,7 @@ export const ImagesCarousel = ({
                   isImageFullWidth={isImageFullWidth}
                   message={item.message}
                   navigation={navigation}
+                  onContentHeightChange={onContentHeightChange}
                   refreshInterval={item.refreshInterval || refreshInterval}
                   source={source}
                 />
@@ -147,8 +148,10 @@ export const ImagesCarousel = ({
           isImageFullWidth={isImageFullWidth}
           message={item.message}
           navigation={navigation}
+          onContentHeightChange={onContentHeightChange}
           refreshInterval={item.refreshInterval || refreshInterval}
           source={item.picture}
+          style={{ height, width: itemWidth }}
         />
       );
     },
@@ -177,7 +180,7 @@ export const ImagesCarousel = ({
   const isCopyrighted = data.some((item) => item.picture?.copyright);
 
   return (
-    <View>
+    <View style={[styles.carouselContainer, { height: itemHeight }]}>
       <Carousel
         ref={carouselRef}
         autoPlay={isFocused && !isPaused && !isReduceMotionEnabled}
@@ -189,7 +192,7 @@ export const ImagesCarousel = ({
         renderItem={({ item }) =>
           renderItem({ item, refreshInterval: sliderSettings.refreshInterval })
         }
-        style={[styles.center, { height: itemHeight, width: dimensions.width }]}
+        style={[styles.carousel, { height: itemHeight, width: dimensions.width }]}
         withAnimation={withAnimation}
       />
 
@@ -305,12 +308,22 @@ const controlButtonSize = (size) => ({
 });
 
 const createStyles = (colors) => ({
+  carousel: {
+    flex: 0,
+    height: '100%'
+  },
+  carouselContainer: {
+    alignSelf: 'center',
+    width: '100%'
+  },
   center: {
     alignSelf: 'center'
   },
   imageContainer: {
     alignItems: 'center',
     alignSelf: 'center',
+    overflow: 'hidden',
+    position: 'relative',
     width: '100%'
   },
   carouselControls: {

@@ -24,7 +24,7 @@ jest.mock('react-native', () => {
   };
 });
 
-jest.mock('@react-navigation/native', () => ({
+jest.mock('expo-router/react-navigation', () => ({
   useNavigation: () => ({
     goBack: mockGoBack,
     navigate: jest.fn()

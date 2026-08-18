@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/core';
+import { useNavigation } from 'expo-router/react-navigation';
 import React from 'react';
 import { render } from '@testing-library/react-native';
 import { useQuery } from 'react-apollo';
@@ -9,7 +9,7 @@ import { DefaultWidget } from '../../src/components/widgets/DefaultWidget';
 import { WeatherWidget } from '../../src/components/widgets/WeatherWidget';
 import { WebWidget } from '../../src/components/widgets/WebWidget';
 
-jest.mock('@react-navigation/core', () => ({
+jest.mock('expo-router/react-navigation', () => ({
   useNavigation: jest.fn()
 }));
 

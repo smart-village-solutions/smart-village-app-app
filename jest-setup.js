@@ -1,6 +1,8 @@
 import 'whatwg-fetch';
 import 'react-native-gesture-handler/jestSetup';
 import mockAsyncStorage from '@react-native-async-storage/async-storage/jest/async-storage-mock';
+import mockReact from 'react';
+import { Image as MockReactNativeImage } from 'react-native';
 
 jest.mock('@react-native-async-storage/async-storage', () => mockAsyncStorage);
 jest.mock(
@@ -49,6 +51,14 @@ jest.mock('expo-video', () => ({
   }),
   VideoView: () => null
 }));
+jest.mock('expo-image', () => {
+  return {
+    // eslint-disable-next-line react/prop-types
+    Image: mockReact.forwardRef(({ contentFit, ...props }, ref) =>
+      mockReact.createElement(MockReactNativeImage, { ...props, ref, resizeMode: contentFit })
+    )
+  };
+});
 jest.mock('@maplibre/maplibre-react-native', () => {
   const React = require('react');
 

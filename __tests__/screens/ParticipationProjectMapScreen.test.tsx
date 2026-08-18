@@ -25,7 +25,7 @@ jest.mock('../../src/queries', () => ({
   getQuery: jest.fn()
 }));
 
-jest.mock('../../src/helpers', () => ({
+jest.mock('../../src/helpers/participationProjectHelper', () => ({
   PARTICIPATION_PROJECT_DEFAULT_STATUSES: ['active', 'announced'],
   PARTICIPATION_PROJECT_STATUS_FILTER: 'participationStatus',
   PARTICIPATION_PROJECT_STATUS_POSITION_PARAM: 'participationStatusPosition',

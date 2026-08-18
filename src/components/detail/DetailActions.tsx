@@ -1,4 +1,4 @@
-import { RouteProp } from '@react-navigation/native';
+import { RouteProp } from 'expo-router/react-navigation';
 import React, { useMemo } from 'react';
 import { ShareContent, View, ViewStyle } from 'react-native';
 

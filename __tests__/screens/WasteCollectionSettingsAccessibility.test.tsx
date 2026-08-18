@@ -20,7 +20,7 @@ const mockWasteStreetData = {
 
 jest.mock('@react-native-community/datetimepicker', () => 'mock-date-time-picker');
 
-jest.mock('@react-navigation/native', () => ({
+jest.mock('expo-router/react-navigation', () => ({
   useNavigation: () => ({
     goBack: jest.fn()
   }),

@@ -1,4 +1,4 @@
-import { BottomTabBar, BottomTabBarProps } from '@react-navigation/bottom-tabs';
+import { BottomTabBar, BottomTabBarProps } from 'expo-router/js-tabs';
 import React from 'react';
 
 import { useTheme } from '../hooks/useTheme';

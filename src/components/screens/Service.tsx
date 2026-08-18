@@ -1,5 +1,5 @@
 import { useNavigation } from 'expo-router/react-navigation';
-import { StackNavigationProp } from '@react-navigation/stack';
+import { StackNavigationProp } from 'expo-router/js-stack';
 import React, { useCallback, useContext, useMemo } from 'react';
 import { TouchableOpacity, View } from 'react-native';
 

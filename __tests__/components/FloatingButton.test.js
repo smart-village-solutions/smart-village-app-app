@@ -65,7 +65,7 @@ jest.mock('../../src/components/FloatingReadAloudPlayer', () => ({
   FloatingReadAloudPlayer: 'mock-read-aloud-player'
 }));
 
-jest.mock('@react-navigation/native', () => ({
+jest.mock('expo-router/react-navigation', () => ({
   useNavigationState: (selector) => selector({})
 }));
 

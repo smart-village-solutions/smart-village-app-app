@@ -1,7 +1,7 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
 
-jest.mock('@react-navigation/native', () => {
+jest.mock('expo-router/react-navigation', () => {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const ReactLocal = require('react');
 

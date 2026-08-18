@@ -10,6 +10,8 @@ import { Wrapper, WrapperRow } from '../../Wrapper';
 import { useThemeStyles } from '../../../hooks/useThemeStyles';
 import { useTheme } from '../../../hooks/useTheme';
 
+const PROGRESS_RADIUS = normalize(30);
+
 type TProgress = {
   title: string;
   subtitle: string;
@@ -34,18 +36,19 @@ export const SueReportProgress = ({
   return (
     <Wrapper style={[styles.noPaddingBottom, isFullscreenMap && styles.wrapperHidden]}>
       <WrapperRow spaceBetween>
-        <View accessibilityElementsHidden>
+        <View accessibilityElementsHidden style={styles.progressContainer}>
           <CircularProgress
             value={(100 * currentProgress) / progress.length}
             activeStrokeColor={colors.primary}
             inActiveStrokeColor={colors.primary + '10'}
-            progressValueColor={colors.darkText}
-            radius={normalize(30)}
+            radius={PROGRESS_RADIUS}
             showProgressValue={false}
-            title={`${currentProgress} / ${progress.length}`}
-            titleColor={colors.darkText}
-            titleStyle={{ fontSize: normalize(12) }}
           />
+          <View pointerEvents="none" style={styles.progressValueContainer}>
+            <RegularText smallest center testID="sue-report-progress-value">
+              {`${currentProgress} / ${progress.length}`}
+            </RegularText>
+          </View>
         </View>
 
         {progress?.map(
@@ -85,7 +88,20 @@ const createStyles = () => ({
   noPaddingBottom: {
     paddingBottom: 0
   },
-
+  progressContainer: {
+    height: PROGRESS_RADIUS * 2,
+    width: PROGRESS_RADIUS * 2
+  },
+  progressValueContainer: {
+    alignItems: 'center',
+    bottom: 0,
+    justifyContent: 'center',
+    left: 0,
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    zIndex: 1
+  },
   textContainer: {
     width: '80%'
   },
