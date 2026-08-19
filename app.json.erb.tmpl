@@ -55,7 +55,8 @@
         "CFBundleLocalizations": ["de"],
         "CFBundleDevelopmentRegion": "de_DE",
         "LSApplicationQueriesSchemes": ["whatsapp", "youtube"],
-        "LSMinimumSystemVersion": "12.0"
+        "LSMinimumSystemVersion": "12.0",
+        "UIDesignRequiresCompatibility": true
       },
       "config": {
         "usesNonExemptEncryption": false
@@ -128,15 +129,28 @@
           "image": "./assets/icon.png"
         }
       ],
+      "expo-router",
+      "expo-status-bar",
+      [
+        "expo-notifications",
+        {
+          "color": "#000000",
+          "icon": "./assets/notification-icon.png"
+        }
+      ],
       "@maplibre/maplibre-react-native",
       "@config-plugins/react-native-blob-util",
       "@config-plugins/react-native-pdf",
+      "@maplibre/maplibre-react-native",
+      "@react-native-community/datetimepicker",
       "@rnrepo/expo-config-plugin",
       "expo-asset",
       "expo-font",
       "expo-image-picker",
+      "expo-image",
       "expo-localization",
       "expo-secure-store",
+      "expo-sharing",
       "expo-video",
       "expo-web-browser",
       "./config-plugins/withAndroidMailQueriesAndWhatsappPackage"
