@@ -16,6 +16,7 @@ type TModal = {
   isBackdropPress: boolean;
   isListView: boolean;
   isVisible: boolean;
+  onModalHide?: () => void;
   modalHiddenButtonName?: string;
   onModalVisible: () => void;
   overlayStyle?: object;
@@ -28,6 +29,7 @@ export const Modal = ({
   isBackdropPress,
   isListView,
   isVisible,
+  onModalHide,
   modalHiddenButtonName = texts.settingsTitles.arListLayouts.hide,
   onModalVisible,
   overlayStyle
@@ -40,6 +42,7 @@ export const Modal = ({
     <Overlay
       animationType={isReduceMotionEnabled ? 'none' : 'fade'}
       isVisible={isVisible}
+      onDismiss={onModalHide}
       onBackdropPress={isBackdropPress ? onModalVisible : undefined}
       overlayStyle={[!isListView && styles.overlay, styles.overlayWidth, { height }, overlayStyle]}
       statusBarTranslucent

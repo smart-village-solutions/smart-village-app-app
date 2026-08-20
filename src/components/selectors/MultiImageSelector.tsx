@@ -96,6 +96,10 @@ export const MultiImageSelector = ({
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [hasInitialized, setHasInitialized] = useState(false);
+  const [pendingImageSelection, setPendingImageSelection] = useState<{
+    from?: string;
+    imageFunction: () => Promise<ImagePickerAsset | undefined>;
+  }>();
 
   const { selectImage } = useSelectImage({
     allowsEditing: false,
@@ -150,6 +154,22 @@ export const MultiImageSelector = ({
 
     setIsModalVisible(false);
     setLoading(false);
+  };
+
+  const requestImageSelect = (
+    imageFunction: () => Promise<ImagePickerAsset | undefined>,
+    from?: string
+  ) => {
+    setPendingImageSelection({ from, imageFunction });
+    setIsModalVisible(false);
+  };
+
+  const handleModalHide = () => {
+    if (!pendingImageSelection) return;
+
+    const { from, imageFunction } = pendingImageSelection;
+    setPendingImageSelection(undefined);
+    void imageSelect(imageFunction, from);
   };
 
   const imageDelete = async (index: number) => {
@@ -243,6 +263,7 @@ export const MultiImageSelector = ({
           }
           isBackdropPress
           isVisible={isModalVisible}
+          onModalHide={handleModalHide}
           onModalVisible={() => setIsModalVisible(false)}
           overlayStyle={styles.overlay}
         >
@@ -264,7 +285,7 @@ export const MultiImageSelector = ({
                   icon={<Icon.Camera size={normalize(16)} strokeWidth={normalize(2)} />}
                   iconPosition="left"
                   invert
-                  onPress={() => imageSelect(captureImage, IMAGE_FROM.CAMERA)}
+                  onPress={() => requestImageSelect(captureImage, IMAGE_FROM.CAMERA)}
                   title={texts.sue.report.alerts.imageSelectAlert.camera}
                 />
                 <Button
@@ -272,7 +293,7 @@ export const MultiImageSelector = ({
                   icon={<Icon.Albums size={normalize(16)} strokeWidth={normalize(2)} />}
                   iconPosition="left"
                   invert
-                  onPress={() => imageSelect(selectImage)}
+                  onPress={() => requestImageSelect(selectImage)}
                   title={texts.sue.report.alerts.imageSelectAlert.gallery}
                 />
               </>
