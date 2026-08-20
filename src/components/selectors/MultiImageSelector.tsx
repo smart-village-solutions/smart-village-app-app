@@ -262,6 +262,7 @@ export const MultiImageSelector = ({
             </TouchableOpacity>
           }
           isBackdropPress
+          isListView={false}
           isVisible={isModalVisible}
           onModalHide={handleModalHide}
           onModalVisible={() => setIsModalVisible(false)}
