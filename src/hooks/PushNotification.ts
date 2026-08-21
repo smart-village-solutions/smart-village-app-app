@@ -1,6 +1,6 @@
 import * as Notifications from 'expo-notifications';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { AppState, AppStateStatus } from 'react-native';
+import { AppState, AppStateStatus, InteractionManager } from 'react-native';
 
 import { readFromStore } from '../helpers';
 import {
@@ -27,16 +27,14 @@ export const usePushNotifications = (
   // like this enabling or disabling the pushNotifications requires an app restart.
   const [isActive] = useState(active);
 
-  if (isActive === false) return;
-
   const notificationListener = useRef<Notifications.EventSubscription | null>(null);
   const responseListener = useRef<Notifications.EventSubscription | null>(null);
 
-  const [currentAppState, setCurrentAppState] = useState<AppStateStatus>();
+  const currentAppState = useRef<AppStateStatus>();
 
   const onGetActive = useCallback(async (nextState: AppStateStatus) => {
-    if (currentAppState !== nextState) {
-      setCurrentAppState(nextState);
+    if (currentAppState.current !== nextState) {
+      currentAppState.current = nextState;
 
       // timeout is needed due to ios system push permission popup triggering appstate change
       // no timeout causes the onGetActive to fire an additional request to our server
@@ -52,6 +50,8 @@ export const usePushNotifications = (
   }, []); // empty dependencies because it will only used once in the "mountEffect" below
 
   useEffect(() => {
+    if (isActive === false) return;
+
     Notifications.setNotificationHandler({
       handleNotification: async () =>
         behavior ?? {
@@ -91,7 +91,9 @@ export const usePushNotifications = (
 
         if (id !== lastHandledNotificationId) {
           lastHandledNotificationId = id;
-          interactionHandler(lastResponse);
+          InteractionManager.runAfterInteractions(() => {
+            interactionHandler(lastResponse);
+          });
         }
       }
     }
