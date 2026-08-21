@@ -1,7 +1,7 @@
-import { useBottomTabBarHeight } from 'expo-router/js-tabs';
 import { StackScreenProps } from 'expo-router/js-stack';
+import { useBottomTabBarHeight } from 'expo-router/js-tabs';
 import _upperFirst from 'lodash/upperFirst';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, RefreshControl, ScrollView, View } from 'react-native';
 import { Divider } from 'react-native-elements';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -10,8 +10,10 @@ import { useQuery } from 'react-query';
 
 import { ConfigurationsContext } from '../../ConfigurationsProvider';
 import { NetworkContext } from '../../NetworkProvider';
+import { useReadAloudScrollContentContainerStyle } from '../../ReadAloudAvailabilityProvider';
 import {
   BoldText,
+  Button,
   HtmlView,
   ImageSection,
   LoadingContainer,
@@ -21,17 +23,19 @@ import {
   SafeAreaViewFlex,
   SueCategory,
   SueDatetime,
-  SueImageFallback,
   SueStatus,
   SueStatuses,
   Wrapper,
   WrapperHorizontal
 } from '../../components';
 import { device, normalize, texts } from '../../config';
-import { QUERY_TYPES, getQuery } from '../../queries';
-import { useReadAloudScrollContentContainerStyle } from '../../ReadAloudAvailabilityProvider';
-import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { readFromStore } from '../../helpers';
 import { useTheme } from '../../hooks/useTheme';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { QUERY_TYPES, getQuery } from '../../queries';
+import { ScreenName } from '../../types';
+
+import { SUE_MY_REPORTS } from './SueReportScreen';
 
 /* eslint-disable complexity */
 export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) => {
@@ -42,10 +46,12 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
   const { appDesignSystem = {} } = useContext(ConfigurationsContext);
   const { sueStatus = {} } = appDesignSystem;
   const { statuses } = sueStatus;
+  const query = route.params?.query ?? QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID;
   const queryVariables = route.params?.queryVariables ?? {};
   const scrollContentContainerStyle = useReadAloudScrollContentContainerStyle();
   const [refreshing, setRefreshing] = useState(false);
   const [isFullscreenMap, setIsFullscreenMap] = useState(false);
+  const [isMyReport, setIsMyReport] = useState<boolean>(false);
   const { bottom: safeAreaBottom, top: safeAreaTop } = useSafeAreaInsets();
   const bottomTabBarHeight = useBottomTabBarHeight();
 
@@ -54,7 +60,27 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
     () => getQuery(QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID)(queryVariables?.id)
   );
 
-  if (isLoading) {
+  useEffect(() => {
+    const checkIfMyReport = async () => {
+      try {
+        const myReportsJson = await readFromStore(SUE_MY_REPORTS);
+        if (myReportsJson) {
+          const myReports = JSON.parse(myReportsJson);
+          const found = myReports.some(
+            (report: any) => report.serviceRequestId === route.params?.details?.serviceRequestId
+          );
+
+          setIsMyReport(!!found);
+        }
+      } catch (e) {
+        console.error('Error checking if report is my report', e);
+      }
+    };
+
+    checkIfMyReport();
+  }, [data, queryVariables, route.params]);
+
+  if (query === QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID && isLoading) {
     return (
       <LoadingContainer>
         <ActivityIndicator color={colors.refreshControl} />
@@ -75,7 +101,7 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
     serviceRequestId,
     status,
     title
-  } = data;
+  } = query === QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID ? data : route.params?.details;
 
   const refresh = async () => {
     setRefreshing(true);
@@ -111,7 +137,6 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
       >
         <View style={[isFullscreenMap && styles.wrapperHidden]}>
           <ImageSection mediaContents={mediaContents} />
-          {!mediaContents?.length && <SueImageFallback style={styles.sueImageContainer} />}
 
           {!!serviceName && !!requestedDatetime && (
             <SueCategory serviceName={serviceName} requestedDatetime={requestedDatetime} />
@@ -119,7 +144,7 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
 
           {!!title && (
             <WrapperHorizontal>
-              <BoldText big>{title}</BoldText>
+              <BoldText big>{serviceRequestId ? `#${serviceRequestId} ${title}` : title}</BoldText>
             </WrapperHorizontal>
           )}
 
@@ -130,6 +155,65 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
           <WrapperHorizontal>
             <Divider />
           </WrapperHorizontal>
+
+          {((query === QUERY_TYPES.SUE.MY_REQUEST_WITH_SERVICE_REQUEST_ID &&
+            !!data &&
+            data?.status !== 404) ||
+            (query === QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID && isMyReport)) && (
+            <Wrapper noPaddingBottom>
+              <Button
+                big={false}
+                disabled={false}
+                icon=""
+                invert
+                small={false}
+                smallest={false}
+                onPress={async () => {
+                  // Determine which query we are navigating to
+                  const targetQuery =
+                    query === QUERY_TYPES.SUE.MY_REQUEST_WITH_SERVICE_REQUEST_ID
+                      ? QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID
+                      : QUERY_TYPES.SUE.MY_REQUEST_WITH_SERVICE_REQUEST_ID;
+                  let details = route.params?.details;
+
+                  // When navigating to "Mein gespeicherter Bericht", prefer local data from SUE_MY_REPORTS
+                  if (targetQuery === QUERY_TYPES.SUE.MY_REQUEST_WITH_SERVICE_REQUEST_ID) {
+                    try {
+                      const storedReportsJson = await readFromStore(SUE_MY_REPORTS);
+
+                      if (storedReportsJson) {
+                        const storedReports = JSON.parse(storedReportsJson);
+                        const matchingReport = Array.isArray(storedReports)
+                          ? storedReports.find(
+                              (report: any) => report?.serviceRequestId === serviceRequestId
+                            )
+                          : null;
+
+                        if (matchingReport) {
+                          details = matchingReport;
+                        }
+                      }
+                    } catch (e) {
+                      // In case of any storage error, fall back to existing route params
+                    }
+                  }
+
+                  navigation.push(ScreenName.Detail, {
+                    bookmarkable: false,
+                    details,
+                    query: targetQuery,
+                    queryVariables: { id: serviceRequestId },
+                    title: `#${serviceRequestId} ${title}`
+                  });
+                }}
+                title={
+                  query === QUERY_TYPES.SUE.MY_REQUEST_WITH_SERVICE_REQUEST_ID
+                    ? texts.sue.viewOfficialReportDetail
+                    : texts.sue.viewMyReportDetail
+                }
+              />
+            </Wrapper>
+          )}
 
           {!!description && (
             <>

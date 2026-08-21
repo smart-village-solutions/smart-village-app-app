@@ -220,11 +220,15 @@ type Props = {
     geometry: {
       coordinates: number[];
     };
-  }) => { isLocationSelectable: boolean };
+  }) => void | Promise<void>;
   onMarkerPress?: (arg0?: string) => void;
   onMapReady?: () => void;
   onMaximizeButtonPress?: () => void;
-  onMyLocationButtonPress?: ({ isFullScreenMap }: { isFullScreenMap?: boolean }) => void;
+  onMyLocationButtonPress?: ({
+    isFullScreenMap
+  }: {
+    isFullScreenMap?: boolean;
+  }) => void | Promise<void>;
   selectedMarker?: string;
   selectedPosition?: LocationObjectCoords;
   setPinEnabled?: boolean;
@@ -277,11 +281,11 @@ export const MapLibre = ({
   const {
     clusterCircleColor,
     clusterRadius = 50,
+    labelStyles,
     clusterMaxZoom,
     clusterMinPoints = 2,
     clusterProperties,
     clusterTextColor,
-    labelStyles = {},
     layerStyles = {},
     loading,
     markerImages,
@@ -316,10 +320,24 @@ export const MapLibre = ({
   const [selectedFeature, setSelectedFeature] = useState<GeoJSON.Feature | null>(null);
   const [isMarkerSelected, setIsMarkerSelected] = useState(false);
   const [mapReady, setMapReady] = useState(false);
-  const [newPins, setNewPins] = useState<GeoJSON.Feature[]>([]);
   const [isFullscreenMap, setIsFullscreenMap] = useState(false);
 
   const suppressAutoFitRef = useRef(false);
+  const safelyHandleOnMapPress = useCallback(
+    async (geometry: { coordinates: number[] }) => {
+      if (!onMapPress) {
+        return;
+      }
+
+      try {
+        await onMapPress({ geometry });
+      } catch (error) {
+        console.error('onMapPress handler failed:', error);
+      }
+    },
+    [onMapPress]
+  );
+
   const clearSelection = useCallback(
     (notifyParent = false, reason?: string) => {
       if (reason) {
@@ -474,6 +492,25 @@ export const MapLibre = ({
     });
   }, [isOwnLocation, selectedPosition]);
 
+  const newPins = useMemo(() => {
+    if (!selectedPosition) {
+      return [];
+    }
+
+    const { latitude, longitude } = selectedPosition;
+
+    if (latitude == null || longitude == null) {
+      return [];
+    }
+
+    return [
+      point([longitude, latitude], {
+        iconName: isOwnLocation ? MAP.OWN_LOCATION_PIN : `${MAP.DEFAULT_PIN}Active`,
+        id: 'selected-position-pin'
+      })
+    ];
+  }, [isOwnLocation, selectedPosition]);
+
   useEffect(() => {
     if (!selectedFeature?.properties?.id) return;
 
@@ -523,33 +560,12 @@ export const MapLibre = ({
     });
   }, [mapReady, preserveZoomOnSelectedPosition, selectedPosition, zoomLevel?.singleMarker]);
 
-  const handleMapPressToSetNewPin = async (event: {
-    geometry: {
-      coordinates: [number, number];
-    };
-    features?: unknown[];
-  }) => {
-    if (event?.features && event.features.length > 0) return;
-
-    const { geometry } = event;
-    if (!geometry) return;
+  const handleMapPressToSetNewPin = async (lngLat: [number, number]) => {
     clearSelection(true, 'set-pin');
 
-    const coordinates = geometry.coordinates as number[];
-    if (!coordinates?.length) return;
+    if (!lngLat?.length) return;
 
-    const { isLocationSelectable = false } = (await onMapPress?.({ geometry })) ?? {};
-
-    if (!isLocationSelectable) {
-      setNewPins([]);
-      return;
-    }
-
-    const newPin = point(coordinates, {
-      iconName: isOwnLocation ? MAP.OWN_LOCATION_PIN : `${MAP.DEFAULT_PIN}Active`,
-      id: `new-pin-${Date.now()}`
-    });
-    setNewPins([newPin]);
+    await safelyHandleOnMapPress({ coordinates: lngLat });
   };
 
   const handleMapPress = (
@@ -588,17 +604,15 @@ export const MapLibre = ({
 
     if (mapPressTimeoutRef.current) clearTimeout(mapPressTimeoutRef.current);
 
-    mapPressTimeoutRef.current = setTimeout(() => {
+    mapPressTimeoutRef.current = setTimeout(async () => {
       if (setPinEnabled && nativeEvent?.lngLat) {
-        handleMapPressToSetNewPin({
-          geometry: { coordinates: nativeEvent.lngLat as [number, number] }
-        });
+        await handleMapPressToSetNewPin(nativeEvent.lngLat as [number, number]);
       } else if (nativeEvent?.lngLat) {
         clearSelection(true, 'map-press-empty');
-        onMapPress?.({ geometry: { coordinates: nativeEvent.lngLat } });
+        await safelyHandleOnMapPress({ coordinates: nativeEvent.lngLat as number[] });
       } else if (!setPinEnabled) {
         clearSelection(true, 'map-press-empty');
-        onMapPress?.({ geometry: { coordinates: [] } });
+        await safelyHandleOnMapPress({ coordinates: [] });
       }
       mapPressTimeoutRef.current = null;
     }, MAP_PRESS_DEBOUNCE);
@@ -648,7 +662,7 @@ export const MapLibre = ({
     if (!feature) {
       clearSelection(true, 'shape-source-press-empty');
       if (nativeEvent?.lngLat) {
-        onMapPress?.({ geometry: { coordinates: nativeEvent.lngLat } });
+        await safelyHandleOnMapPress({ coordinates: nativeEvent.lngLat as number[] });
       }
       return;
     }
@@ -739,6 +753,24 @@ export const MapLibre = ({
     circleColor: clusterCircleColor,
     circlePitchAlignment: 'map'
   });
+  const { paint: clusterRingOuterPaint } = splitLayerStyle('circle', {
+    circleColor: clusterCircleColor,
+    circleRadius: clusterRingOuterRadius,
+    circleOpacity: 0.2,
+    circlePitchAlignment: 'map'
+  });
+  const { paint: clusterRingMidPaint } = splitLayerStyle('circle', {
+    circleColor: clusterCircleColor,
+    circleRadius: clusterRingMidRadius,
+    circleOpacity: 0.3,
+    circlePitchAlignment: 'map'
+  });
+  const { paint: clusterRingInnerPaint } = splitLayerStyle('circle', {
+    circleColor: clusterCircleColor,
+    circleRadius: clusterRingInnerRadius,
+    circleOpacity: 0.5,
+    circlePitchAlignment: 'map'
+  });
   const { paint: clusterCountPaint, layout: clusterCountLayout } = splitLayerStyle('symbol', {
     ...layerStyles.clusterCount,
     textColor: clusterTextColor,
@@ -776,6 +808,8 @@ export const MapLibre = ({
   const maximizeFullscreenStyle = isFullscreenMap
     ? { bottom: normalize(15) + (safeAreaBottom ? 0 : bottomTabBarHeight), right: 0 as const }
     : undefined;
+  const hasCurrentPosition =
+    currentPosition?.coords?.latitude != null && currentPosition?.coords?.longitude != null;
 
   return (
     <View style={[styles.container, style]}>
@@ -860,12 +894,7 @@ export const MapLibre = ({
                   type="circle"
                   filter={['has', 'point_count']}
                   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  paint={{
-                    'circle-color': clusterCircleColor as any,
-                    'circle-radius': clusterRingOuterRadius as any,
-                    'circle-opacity': 0.2,
-                    'circle-pitch-alignment': 'map'
-                  }}
+                  paint={clusterRingOuterPaint as any}
                 />
               )}
 
@@ -875,12 +904,7 @@ export const MapLibre = ({
                   type="circle"
                   filter={['has', 'point_count']}
                   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  paint={{
-                    'circle-color': clusterCircleColor as any,
-                    'circle-radius': clusterRingMidRadius as any,
-                    'circle-opacity': 0.3,
-                    'circle-pitch-alignment': 'map'
-                  }}
+                  paint={clusterRingMidPaint as any}
                 />
               )}
 
@@ -890,12 +914,7 @@ export const MapLibre = ({
                   type="circle"
                   filter={['has', 'point_count']}
                   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  paint={{
-                    'circle-color': clusterCircleColor as any,
-                    'circle-radius': clusterRingInnerRadius as any,
-                    'circle-opacity': 0.5,
-                    'circle-pitch-alignment': 'map'
-                  }}
+                  paint={clusterRingInnerPaint as any}
                 />
               )}
 
@@ -982,14 +1001,29 @@ export const MapLibre = ({
         )}
       </Map>
 
-      {isMyLocationButtonVisible && showsUserLocation && (
+      {isMyLocationButtonVisible && (
         <TouchableOpacity
           accessibilityLabel={`${texts.components.map} ${a11yLabel.button}`}
           accessibilityRole="button"
-          onPress={() => {
-            setFollowsUserLocation(true);
-            onMyLocationButtonPress?.({});
-            setTimeout(() => setFollowsUserLocation(false), FOLLOW_USER_TIMEOUT);
+          onPress={async () => {
+            try {
+              await onMyLocationButtonPress?.({ isFullScreenMap: isFullscreenMap });
+            } catch (error) {
+              console.error('My location button press failed', error);
+            }
+
+            if (!showsUserLocation) {
+              return;
+            }
+
+            // Android can crash when user tracking is enabled before a valid
+            // runtime-granted location is available on the native layer.
+            const canFollowUserLocation = hasCurrentPosition || !onMyLocationButtonPress;
+
+            if (canFollowUserLocation) {
+              setFollowsUserLocation(true);
+              setTimeout(() => setFollowsUserLocation(false), FOLLOW_USER_TIMEOUT);
+            }
           }}
           style={[
             styles.buttonsContainer,

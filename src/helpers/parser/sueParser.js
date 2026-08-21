@@ -5,7 +5,7 @@ import { mainImageOfMediaContents, parsedImageAspectRatio } from '../imageHelper
 
 const { ROOT_ROUTE_NAMES } = consts;
 
-export const parseSueData = (data, appDesignSystem) => {
+export const parseSueData = (data, query, appDesignSystem) => {
   const { sueStatus = {} } = appDesignSystem;
   const { statuses } = sueStatus;
 
@@ -37,8 +37,11 @@ export const parseSueData = (data, appDesignSystem) => {
       bottomDivider: false,
       iconName: matchedStatus?.iconName,
       params: {
-        title: item.title,
-        query: QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID,
+        title: `#${item.serviceRequestId} ${item.title}`,
+        query:
+          query === QUERY_TYPES.SUE.MY_REQUESTS
+            ? QUERY_TYPES.SUE.MY_REQUEST_WITH_SERVICE_REQUEST_ID
+            : QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID,
         queryVariables: { id: item.serviceRequestId },
         rootRouteName: ROOT_ROUTE_NAMES.SUE,
         bookmarkable: false,
@@ -47,7 +50,8 @@ export const parseSueData = (data, appDesignSystem) => {
       picture: { url: mainImageOfMediaContents(parsedMediaUrl) },
       routeName: ScreenName.Detail,
       status: matchedStatus?.status,
-      subtitle: undefined
+      subtitle: undefined,
+      title: `#${item.serviceRequestId} ${item.title}`
     };
   });
 };

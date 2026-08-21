@@ -92,7 +92,7 @@ export const ConfigurationsProvider = ({ children }: { children?: ReactNode }) =
   });
 
   const mergedConfig = useMemo(() => {
-    const isSueConfigEmpty = !Object.keys(sue).length;
+    const isSueConfigEmpty = !hasSueSettings;
     const isResourceFiltersEmpty = !resourceFiltersData?.resourceFilters?.length;
     const isAppDesignSystemEmpty = !Object.keys(themedAppDesignSystem).length;
 
@@ -110,7 +110,15 @@ export const ConfigurationsProvider = ({ children }: { children?: ReactNode }) =
       resourceFilters,
       sueConfig: { ...sue, ...sueConfigData, sueProgress }
     });
-  }, [resourceFiltersData, sue, sueConfigData, sueProgress, themedAppDesignSystem]);
+  }, [
+    appDesignSystem,
+    hasSueSettings,
+    resourceFiltersData,
+    sue,
+    sueConfigData,
+    sueProgress,
+    themedAppDesignSystem
+  ]);
 
   const reloadCallback = useCallback(async () => {
     setIsLoading(true);

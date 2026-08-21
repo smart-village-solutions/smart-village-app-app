@@ -4,7 +4,7 @@ import { StackNavigationProp } from 'expo-router/js-stack';
 import _filter from 'lodash/filter';
 import moment from 'moment';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { RefreshControl } from 'react-native';
+import { ActivityIndicator, RefreshControl, StyleSheet, View } from 'react-native';
 import { Divider } from 'react-native-elements';
 import { useInfiniteQuery, useQuery } from 'react-query';
 
@@ -102,31 +102,37 @@ export const SueListScreen = ({ navigation, route }: Props) => {
   const [isOpening, setIsOpening] = useState(true);
   const [viewType, setViewType] = useState(route.params?.viewType || SueViewType.List);
 
-  const { data, isLoading, refetch, fetchNextPage, hasNextPage } = useInfiniteQuery(
-    [
-      query,
-      {
-        ...queryVariables,
-        sort_attribute: queryVariables.sortBy || SORT_BY.REQUESTED_DATE_TIME
-      }
-    ],
-    ({ pageParam = 0 }) =>
-      getQuery(query)({
-        ...queryVariables,
-        sort_attribute: queryVariables.sortBy || SORT_BY.REQUESTED_DATE_TIME,
-        offset: pageParam
-      }),
-    {
-      getNextPageParam: (lastPage, allPages) => {
-        if (lastPage.length < limit) {
-          return undefined;
-        }
+  // Separate search from the rest so it does not become part of the React Query
+  // cache key or get sent to the API (which does not support server-side search).
+  // Filtering is done client-side over all loaded pages.
+  const { search: searchTerm, ...queryVariablesWithoutSearch } = queryVariables;
 
-        return allPages.length * limit;
-      },
-      cacheTime: moment().endOf('day').diff(moment(), 'milliseconds')
-    }
-  );
+  const { data, isLoading, isError, refetch, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useInfiniteQuery(
+      [
+        query,
+        {
+          ...queryVariablesWithoutSearch,
+          sort_attribute: queryVariablesWithoutSearch.sortBy || SORT_BY.REQUESTED_DATE_TIME
+        }
+      ],
+      ({ pageParam = 0 }) =>
+        getQuery(query)({
+          ...queryVariablesWithoutSearch,
+          sort_attribute: queryVariablesWithoutSearch.sortBy || SORT_BY.REQUESTED_DATE_TIME,
+          offset: pageParam
+        }),
+      {
+        getNextPageParam: (lastPage, allPages) => {
+          if (lastPage.length < limit) {
+            return undefined;
+          }
+
+          return allPages.length * limit;
+        },
+        cacheTime: moment().endOf('day').diff(moment(), 'milliseconds')
+      }
+    );
 
   const { data: servicesData } = useQuery([QUERY_TYPES.SUE.SERVICES], () =>
     getQuery(QUERY_TYPES.SUE.SERVICES)()
@@ -134,7 +140,10 @@ export const SueListScreen = ({ navigation, route }: Props) => {
 
   const { data: dataCount } = useQuery(
     [QUERY_TYPES.SUE.LOCATION, { dataCountQueryVariables }],
-    () => getQuery(QUERY_TYPES.SUE.LOCATION)(dataCountQueryVariables)
+    () => getQuery(QUERY_TYPES.SUE.LOCATION)(dataCountQueryVariables),
+    {
+      enabled: query !== QUERY_TYPES.SUE.MY_REQUESTS
+    }
   );
 
   const services = useMemo(() => {
@@ -162,6 +171,16 @@ export const SueListScreen = ({ navigation, route }: Props) => {
     setDataCountQueryVariables(rest);
   }, [queryVariables]);
 
+  // When a search term is active, automatically load all remaining pages so that
+  // client-side filtering covers the full data set, not just the already-loaded pages.
+  // Guard against a retry loop: stop auto-fetching when offline or after a fetch error.
+  // Auto-fetching resumes once the search term or filters change (which resets isError).
+  useEffect(() => {
+    if (searchTerm && hasNextPage && !isFetchingNextPage && isConnected && !isError) {
+      fetchNextPage();
+    }
+  }, [searchTerm, hasNextPage, isFetchingNextPage, isConnected, isError, fetchNextPage]);
+
   const listItems = useMemo(() => {
     if (!data?.pages?.length) return [];
 
@@ -174,17 +193,26 @@ export const SueListScreen = ({ navigation, route }: Props) => {
       }
     );
 
-    if (queryVariables.search) {
+    if (searchTerm) {
+      const lowerSearch = searchTerm.toLowerCase();
+
       parsedListItem = _filter(
         parsedListItem,
         (item) =>
-          item.title?.toLowerCase().includes(queryVariables.search.toLowerCase()) ||
-          item.description?.toLowerCase().includes(queryVariables.search.toLowerCase())
+          item.title?.toLowerCase().includes(lowerSearch) ||
+          item.description?.toLowerCase().includes(lowerSearch) ||
+          item.address?.toLowerCase().includes(lowerSearch)
       );
     }
 
     return parsedListItem;
-  }, [data, query, queryVariables]);
+  }, [appDesignSystem, data, query, searchTerm]);
+
+  const displayCount = useMemo(() => {
+    return searchTerm || query === QUERY_TYPES.SUE.MY_REQUESTS
+      ? listItems.length
+      : dataCount?.length;
+  }, [searchTerm, query, listItems.length, dataCount?.length]);
 
   const refresh = async () => {
     setRefreshing(true);
@@ -223,69 +251,86 @@ export const SueListScreen = ({ navigation, route }: Props) => {
           ListHeaderComponent={
             <>
               <WrapperVertical>
-                <Search setQueryVariables={setQueryVariables} placeholder={texts.filter.search} />
-              </WrapperVertical>
-
-              <WrapperVertical>
-                {!!showViewSwitcherButton && (
-                  <MapAndListSwitcher viewType={viewType} setViewType={setViewType} />
-                )}
-                <Filter
-                  filterTypes={[
-                    {
-                      type: FILTER_TYPES.DATE,
-                      name: 'date',
-                      data: [
-                        {
-                          hasFutureDates: false,
-                          hasPastDates: true,
-                          name: 'start_date',
-                          placeholder: texts.sue.filter.createdBy
-                        },
-                        {
-                          hasFutureDates: false,
-                          hasPastDates: true,
-                          name: 'end_date',
-                          placeholder: texts.sue.filter.createdUntil
-                        }
-                      ]
-                    },
-                    {
-                      type: FILTER_TYPES.DROPDOWN,
-                      label: texts.sue.filter.selectCategory,
-                      name: 'service_code',
-                      data: services,
-                      placeholder: texts.sue.filter.allCategories
-                    },
-                    {
-                      type: FILTER_TYPES.SUE.STATUS,
-                      label: texts.sue.filter.status,
-                      name: 'status',
-                      data: statuses
-                    },
-                    {
-                      type: FILTER_TYPES.DROPDOWN,
-                      label: texts.sue.filter.sortBy,
-                      name: 'sortBy',
-                      data: SORT_OPTIONS,
-                      placeholder: texts.sue.filter.allSortingTypes
-                    }
-                  ]}
-                  queryVariables={initialQueryVariables}
+                <Search
                   setQueryVariables={setQueryVariables}
-                  withSearch
+                  placeholder={texts.sue.filter.search}
                 />
               </WrapperVertical>
 
-              <WrapperVertical>
-                <Divider />
-              </WrapperVertical>
+              {query !== QUERY_TYPES.SUE.MY_REQUESTS && (
+                <>
+                  <WrapperVertical>
+                    {!!showViewSwitcherButton && (
+                      <MapAndListSwitcher viewType={viewType} setViewType={setViewType} />
+                    )}
+                    <Filter
+                      filterTypes={[
+                        {
+                          type: FILTER_TYPES.DATE,
+                          name: 'date',
+                          data: [
+                            {
+                              hasFutureDates: false,
+                              hasPastDates: true,
+                              name: 'start_date',
+                              placeholder: texts.sue.filter.createdBy
+                            },
+                            {
+                              hasFutureDates: false,
+                              hasPastDates: true,
+                              name: 'end_date',
+                              placeholder: texts.sue.filter.createdUntil
+                            }
+                          ]
+                        },
+                        {
+                          type: FILTER_TYPES.DROPDOWN,
+                          label: texts.sue.filter.selectCategory,
+                          name: 'service_code',
+                          data: services,
+                          placeholder: texts.sue.filter.allCategories
+                        },
+                        {
+                          type: FILTER_TYPES.SUE.STATUS,
+                          label: texts.sue.filter.status,
+                          name: 'status',
+                          data: statuses
+                        },
+                        {
+                          type: FILTER_TYPES.DROPDOWN,
+                          label: texts.sue.filter.sortBy,
+                          name: 'sortBy',
+                          data: SORT_OPTIONS,
+                          placeholder: texts.sue.filter.allSortingTypes
+                        }
+                      ]}
+                      queryVariables={initialQueryVariables}
+                      setQueryVariables={setQueryVariables}
+                      withSearch
+                    />
+                  </WrapperVertical>
 
-              {!!dataCount?.length && (
-                <RegularText small>
-                  {dataCount.length}{' '}
-                  {dataCount.length === 1 ? texts.filter.result : texts.filter.results}
-                </RegularText>
+                  <WrapperVertical>
+                    <Divider />
+                  </WrapperVertical>
+                </>
+              )}
+
+              {displayCount != null && (
+                <View style={styles.countRow}>
+                  <RegularText small>
+                    {displayCount} {displayCount === 1 ? texts.filter.result : texts.filter.results}
+                  </RegularText>
+                  {/* Show a spinner next to the count while we are still auto-fetching
+                      all pages to cover the full data set for client-side search. */}
+                  {!!searchTerm && (hasNextPage || isFetchingNextPage) && (
+                    <ActivityIndicator
+                      color={colors.refreshControl}
+                      size="small"
+                      style={styles.countSpinner}
+                    />
+                  )}
+                </View>
               )}
             </>
           }
@@ -305,15 +350,11 @@ export const SueListScreen = ({ navigation, route }: Props) => {
 };
 
 const createStyles = () => ({
-  button: {
+  countRow: {
     alignItems: 'center',
-    alignSelf: 'flex-start',
-    flexDirection: 'row',
-    paddingTop: normalize(16),
-    position: 'absolute'
+    flexDirection: 'row'
   },
-
-  icon: {
-    paddingLeft: normalize(8)
+  countSpinner: {
+    marginLeft: normalize(8)
   }
 });

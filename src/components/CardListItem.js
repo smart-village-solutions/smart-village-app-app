@@ -4,11 +4,11 @@ import { Platform, StyleSheet, View } from 'react-native';
 import { Card, Divider } from 'react-native-elements';
 
 import { consts, normalize } from '../config';
-import { imageHeight, imageWidth, momentFormat, trimNewLines } from '../helpers';
+import { imageHeight, imageWidth, momentFormat, navigateToRoute, trimNewLines } from '../helpers';
 import { useTheme } from '../hooks/useTheme';
 
 import { Image } from './Image';
-import { SueCategory, SueImageFallback, SueStatus } from './SUE';
+import { SueCategory, SueStatus } from './SUE';
 import { HeadlineText, RegularText } from './Text';
 import { Touchable } from './Touchable';
 import { Wrapper, WrapperHorizontal } from './Wrapper';
@@ -36,7 +36,8 @@ const renderCardContent = (bigTitle, horizontal, index, isSue, item, noOvertitle
     imageBorderRadius = normalize(8),
     imageStyle,
     textsStyle = {}
-  } = sueListItem;
+  } = isSue ? sueListItem : appDesignSystem;
+
   const { generalStyle, subtitleStyle, titleStyle, overtitleStyle } = textsStyle;
 
   const cardContent = [];
@@ -57,11 +58,6 @@ const renderCardContent = (bigTitle, horizontal, index, isSue, item, noOvertitle
           key={keyExtractor(picture.url, index)}
           placeholderStyle={themedStyles.placeholderStyle}
           source={{ uri: picture.url }}
-        />
-      ) : isSue ? (
-        <SueImageFallback
-          key={keyExtractor('fallbackImage', index)}
-          style={[stylesWithProps({ aspectRatio, horizontal }).image, styles.sueImage]}
         />
       ) : null,
     overtitle: () =>
@@ -189,6 +185,7 @@ export const CardListItem = memo(
       requestedDatetime,
       routeName: name,
       serviceName,
+      targetTabIndex,
       subtitle,
       title
     } = item;
@@ -208,7 +205,16 @@ export const CardListItem = memo(
     return (
       <Touchable
         accessibilityLabel={`${accessibilityLabel} ${consts.a11yLabel.button}`}
-        onPress={() => navigation && navigation.push(name, params)}
+        onPress={() =>
+          navigation &&
+          navigateToRoute({
+            navigation,
+            params,
+            routeName: name,
+            targetTabIndex,
+            usePush: true
+          })
+        }
         disabled={!navigation}
       >
         <View>

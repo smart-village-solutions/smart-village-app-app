@@ -21,8 +21,9 @@ import {
   WrapperRow,
   WrapperVertical
 } from '../../components';
-import { normalize, texts } from '../../config';
+import { Icon, normalize, texts } from '../../config';
 import { ConfigurationsContext } from '../../ConfigurationsProvider';
+import { navigateToRoute } from '../../helpers';
 import { useStaticContent, useVersionCheck } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
 import { SettingsContext } from '../../SettingsProvider';
@@ -38,19 +39,37 @@ const LIST_NAVIGATION_BUTTON = {
   TOP: 'top'
 };
 
-const ReportListNavigationButton = () => {
-  const navigation = useNavigation<NavigationProp<ParamListBase>>();
+const ReportListNavigationButton = ({
+  buttonTitle = texts.sue.viewReports,
+  icon,
+  query = QUERY_TYPES.SUE.REQUESTS,
+  targetTabIndex,
+  title = texts.sue.reports
+}: {
+  buttonTitle?: string;
+  icon?: React.ReactNode;
+  query?: string;
+  targetTabIndex?: number;
+  title?: string;
+}) => {
+  const navigation = useNavigation<NavigationProp<any>>();
 
   return (
     <Button
+      icon={icon}
       invert
       onPress={() =>
-        navigation.navigate(ScreenName.SueList, {
-          query: QUERY_TYPES.SUE.REQUESTS,
-          title: texts.sue.reports
+        navigateToRoute({
+          navigation,
+          params: {
+            query,
+            title
+          },
+          routeName: ScreenName.SueList,
+          targetTabIndex
         })
       }
-      title={texts.sue.viewReports}
+      title={buttonTitle}
     />
   );
 };
@@ -59,7 +78,7 @@ export const SueHomeScreen = ({ navigation }: HomeScreenProps) => {
   const { appDesignSystem = {} } = useContext(ConfigurationsContext);
   const { globalSettings } = useContext(SettingsContext);
   const { sections = {} } = globalSettings;
-  const { staticContentList = {}, sueReportListNavigationButton } = sections;
+  const { staticContentList = {}, sueListTargetTabIndex, sueReportListNavigationButton } = sections;
   const {
     staticContentName = 'staticContentList',
     staticContentListDescription,
@@ -67,7 +86,6 @@ export const SueHomeScreen = ({ navigation }: HomeScreenProps) => {
     showStaticContentList = true,
     staticContentListTitle
   } = staticContentList;
-
   useVersionCheck();
 
   const { data } = useStaticContent({
@@ -114,6 +132,9 @@ export const SueHomeScreen = ({ navigation }: HomeScreenProps) => {
     });
   }, [navigation]);
 
+  const hasTopListNavigationButton =
+    sueReportListNavigationButton && sueReportListNavigationButton === LIST_NAVIGATION_BUTTON.TOP;
+
   return (
     <SafeAreaViewFlex>
       <ScrollView>
@@ -123,22 +144,17 @@ export const SueHomeScreen = ({ navigation }: HomeScreenProps) => {
           publicJsonFile="sueHomeCarousel"
         />
 
-        {!!sueReportListNavigationButton &&
-          sueReportListNavigationButton === LIST_NAVIGATION_BUTTON.TOP && (
-            <Wrapper noPaddingBottom style={styles.paddingTop}>
-              <ReportListNavigationButton />
-            </Wrapper>
-          )}
+        {hasTopListNavigationButton && (
+          <Wrapper noPaddingBottom style={styles.paddingTop}>
+            <ReportListNavigationButton
+              icon={<Icon.ArrowRight />}
+              targetTabIndex={sueListTargetTabIndex}
+            />
+          </Wrapper>
+        )}
 
         {!!staticContentListTitle && (
-          <WrapperVertical
-            style={[
-              styles.noPaddingBottom,
-              !!sueReportListNavigationButton &&
-                sueReportListNavigationButton === LIST_NAVIGATION_BUTTON.TOP &&
-                styles.noPaddingTop
-            ]}
-          >
+          <WrapperVertical noPaddingBottom noPaddingTop={hasTopListNavigationButton}>
             <SectionHeader title={staticContentListTitle} />
           </WrapperVertical>
         )}
@@ -156,10 +172,13 @@ export const SueHomeScreen = ({ navigation }: HomeScreenProps) => {
           query={QUERY_TYPES.STATIC_CONTENT_LIST}
         />
 
-        {!!sueReportListNavigationButton &&
+        {sueReportListNavigationButton &&
           sueReportListNavigationButton === LIST_NAVIGATION_BUTTON.BOTTOM && (
             <Wrapper noPaddingBottom>
-              <ReportListNavigationButton />
+              <ReportListNavigationButton
+                icon={<Icon.ArrowRight />}
+                targetTabIndex={sueListTargetTabIndex}
+              />
             </Wrapper>
           )}
       </ScrollView>
@@ -179,12 +198,6 @@ const styles = StyleSheet.create({
     height: normalize(30),
     marginHorizontal: normalize(6),
     width: normalize(30)
-  },
-  noPaddingBottom: {
-    paddingBottom: 0
-  },
-  noPaddingTop: {
-    paddingTop: 0
   },
   paddingTop: {
     paddingTop: normalize(16)

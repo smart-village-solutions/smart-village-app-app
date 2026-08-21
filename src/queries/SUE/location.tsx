@@ -15,22 +15,50 @@ enum StatusMapping {
 }
 /* eslint-enable @typescript-eslint/no-duplicate-enum-values */
 
-export const locations = async (queryVariables) => {
-  const queryParams = new URLSearchParams(queryVariables);
-  const { sueFetchObj = {}, sueLocationsUrl = '' } = await fetchSueEndpoints();
+const DEFAULT_PAGE_SIZE = 100;
 
-  const response = await (
-    await fetch(`${sueLocationsUrl}?${queryParams.toString()}`, sueFetchObj)
-  ).json();
+const mapLocationItem = (item: Record<string, unknown>) => {
+  const camelCasedItem = _mapKeys(item, (value, key) => _camelCase(key));
+  const status = StatusMapping[item.status_code as keyof typeof StatusMapping];
+
+  return { ...camelCasedItem, status };
+};
+
+const fetchLocationPage = async (sueLocationsUrl, sueFetchObj, queryVariables) => {
+  const queryParams = new URLSearchParams(queryVariables);
+  const response = await fetch(`${sueLocationsUrl}?${queryParams.toString()}`, sueFetchObj);
+
+  return response.json();
+};
+
+export const locations = async (queryVariables) => {
+  const { sueFetchObj = {}, sueLocationsUrl = '' } = await fetchSueEndpoints();
+  const hasExplicitPagination =
+    queryVariables?.limit !== undefined || queryVariables?.offset !== undefined;
+
+  let response = [];
+
+  if (hasExplicitPagination) {
+    response = await fetchLocationPage(sueLocationsUrl, sueFetchObj, queryVariables);
+  } else {
+    let offset = 0;
+    let hasMorePages = true;
+
+    while (hasMorePages) {
+      const page = await fetchLocationPage(sueLocationsUrl, sueFetchObj, {
+        ...queryVariables,
+        limit: DEFAULT_PAGE_SIZE,
+        offset
+      });
+
+      response.push(...page);
+
+      hasMorePages = page.length === DEFAULT_PAGE_SIZE;
+      offset += DEFAULT_PAGE_SIZE;
+    }
+  }
 
   return new Promise((resolve) => {
-    resolve(
-      response.map((item: any) => {
-        const camelCasedItem = _mapKeys(item, (value, key) => _camelCase(key));
-        const status = StatusMapping[item.status_code as keyof typeof StatusMapping];
-
-        return { ...camelCasedItem, status };
-      })
-    );
+    resolve(response.map((item: Record<string, unknown>) => mapLocationItem(item)));
   });
 };

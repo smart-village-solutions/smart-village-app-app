@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { StackScreenProps } from 'expo-router/js-stack';
 import * as Location from 'expo-location';
+import { StackScreenProps } from 'expo-router/js-stack';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import parsePhoneNumber from 'libphonenumber-js';
 import React, {
@@ -24,8 +24,8 @@ import {
   Button,
   DefaultKeyboardAvoidingView,
   HeaderRight,
+  HtmlView,
   LoadingContainer,
-  RegularText,
   SafeAreaViewFlex,
   SueReportDescription,
   SueReportLocation,
@@ -36,14 +36,19 @@ import {
   Wrapper
 } from '../../components';
 import { SUE_REPORT_VALUES, consts, device, normalize, texts } from '../../config';
-import { addToStore, formatSizeStandard, readFromStore } from '../../helpers';
+import {
+  addToStore,
+  formatSizeStandard,
+  getSueLimitOfAreaCity,
+  readFromStore
+} from '../../helpers';
 import { useKeyboardHeight } from '../../hooks';
+import { useTheme } from '../../hooks/useTheme';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { postRequests } from '../../queries/SUE';
-import { useThemeStyles } from '../../hooks/useThemeStyles';
-import { useTheme } from '../../hooks/useTheme';
 
-export { SUE_REPORT_VALUES } from '../../config';
+export const SUE_MY_REPORTS = 'sueMyReports';
 
 const { INPUT_KEYS, MB_TO_BYTES } = consts;
 
@@ -83,6 +88,17 @@ const sueProgressWithRequiredInputs = (
 
     return item;
   });
+};
+
+const clampProgress = (progress: unknown, maxProgress: number) => {
+  const numericProgress = typeof progress === 'number' ? progress : Number(progress);
+  const normalizedProgress = Number.isFinite(numericProgress) ? Math.trunc(numericProgress) : 0;
+
+  if (maxProgress < 0) {
+    return 0;
+  }
+
+  return Math.min(Math.max(normalizedProgress, 0), maxProgress);
 };
 
 export type TValues = {
@@ -131,6 +147,7 @@ type TContent = {
   requiredInputs: keyof TValues[];
   selectedPosition?: Location.LocationObjectCoords;
   service?: TService;
+  storeReportValues: () => Promise<void>;
   setIsFullscreenMap: (value: boolean) => void;
   setSelectedPosition: (position?: Location.LocationObjectCoords) => void;
   setService: any;
@@ -152,6 +169,7 @@ const Content = ({
   requiredInputs,
   selectedPosition,
   service,
+  storeReportValues,
   setIsFullscreenMap,
   setSelectedPosition,
   setService,
@@ -170,6 +188,7 @@ const Content = ({
           errorMessage={errorMessage}
           requiredInputs={requiredInputs}
           selectedPosition={selectedPosition}
+          storeReportValues={storeReportValues}
           setSelectedPosition={setSelectedPosition}
           setShowCoordinatesFromImageAlert={setShowCoordinatesFromImageAlert}
           setUpdateRegionFromImage={setUpdateRegionFromImage}
@@ -189,6 +208,7 @@ const Content = ({
           selectedPosition={selectedPosition}
           setIsFullscreenMap={setIsFullscreenMap}
           setSelectedPosition={setSelectedPosition}
+          setShowCoordinatesFromImageAlert={setShowCoordinatesFromImageAlert}
           setUpdateRegionFromImage={setUpdateRegionFromImage}
           setValue={setValue}
           updateRegionFromImage={updateRegionFromImage}
@@ -222,6 +242,12 @@ type TReports = {
   street: string;
   termsOfService: string;
   title: string;
+};
+
+type TStoredValues = Partial<TReports> & {
+  currentProgress?: number;
+  selectedPosition?: Location.LocationObjectCoords;
+  service?: TService;
 };
 
 type TProgress = {
@@ -258,17 +284,33 @@ export const SueReportScreen = ({
   const {
     city: limitOfCity = '',
     postalCodes: limitOfPostalCodes = [],
-    errorMessage = texts.sue.report.alerts.limitOfArea(limitOfArea.city || '')
+    errorMessage: configuredErrorMessage = ''
   } = limitOfArea;
+  const limitOfAreaCity = getSueLimitOfAreaCity({
+    areaName: geoMap?.areas?.[0]?.name,
+    configuredCity: limitOfCity
+  });
+  const areaServiceAreaId =
+    geoMap?.areas?.[0]?.id ||
+    (sueConfig as { apiConfig?: { areaService?: { id?: string } } })?.apiConfig?.areaService?.id ||
+    '';
+  const errorMessage =
+    configuredErrorMessage || texts.sue.report.alerts.limitOfArea(limitOfAreaCity);
 
-  const [showCoordinatesFromImageAlert, setShowCoordinatesFromImageAlert] = useState(false);
+  // useRef instead of useState: the flag must be read synchronously inside
+  // alertTextGeneratorForMissingData to prevent React async-batching from
+  // causing the "coordinates from image" alert to fire more than once.
+  const showCoordinatesFromImageAlertRef = useRef(false);
+  const setShowCoordinatesFromImageAlert = useCallback((value: boolean) => {
+    showCoordinatesFromImageAlertRef.current = value;
+  }, []);
   const [currentProgress, setCurrentProgress] = useState(0);
   const [service, setService] = useState<TService>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isLoadingStoredData, setIsLoadingStoredData] = useState<boolean>(true);
   const [selectedPosition, setSelectedPosition] = useState<Location.LocationObjectCoords>();
   const [isDone, setIsDone] = useState(false);
-  const [storedValues, setStoredValues] = useState<TReports>();
+  const [storedValues, setStoredValues] = useState<TStoredValues>();
   const [updateRegionFromImage, setUpdateRegionFromImage] = useState(false);
   const [contentHeights, setContentHeights] = useState([]);
   const [isFullscreenMap, setIsFullscreenMap] = useState(false);
@@ -284,6 +326,7 @@ export const SueReportScreen = ({
 
   const scrollViewRef = useRef(null);
   const scrollViewContentRef = useRef([]);
+  const hasAppliedInitialProgressRef = useRef(false);
 
   const keyboardHeight = useKeyboardHeight();
 
@@ -335,9 +378,9 @@ export const SueReportScreen = ({
   });
 
   const { data: areaServiceData, isLoading: areaServiceLoading } = useQuery(
-    [QUERY_TYPES.SUE.AREA_SERVICE],
+    [QUERY_TYPES.SUE.AREA_SERVICE, areaServiceAreaId, limitOfAreaCity],
     () => getQuery(QUERY_TYPES.SUE.AREA_SERVICE)(),
-    { enabled: !!limitOfCity }
+    { enabled: !!limitOfAreaCity }
   );
 
   const { mutateAsync } = useMutation(postRequests);
@@ -384,7 +427,7 @@ export const SueReportScreen = ({
             alertText = texts.sue.report.alerts.imagesTotalSizeError(
               formatSizeStandard(totalSizeLimit, 0)
             );
-          } else if (selectedPosition && !showCoordinatesFromImageAlert) {
+          } else if (selectedPosition && !showCoordinatesFromImageAlertRef.current) {
             setShowCoordinatesFromImageAlert(true);
             Alert.alert(texts.sue.report.alerts.hint, texts.sue.report.alerts.imageLocation);
           }
@@ -450,30 +493,55 @@ export const SueReportScreen = ({
     [requiredFields, geoMap, sueProgress]
   );
 
-  const storeReportValues = useCallback(async () => {
-    await addToStore(SUE_REPORT_VALUES, {
-      selectedPosition,
-      service,
-      ...getValues()
-    });
-  }, [selectedPosition, service, getValues]);
+  const storeReportValues = useCallback(
+    async (progress = currentProgress) => {
+      await addToStore(SUE_REPORT_VALUES, {
+        currentProgress: progress,
+        selectedPosition,
+        service,
+        ...getValues()
+      });
+    },
+    [currentProgress, selectedPosition, service, getValues]
+  );
 
-  const readReportValuesFromStore = async () => {
-    const storedValues = await readFromStore(SUE_REPORT_VALUES);
+  const storeMyReportsValues = async (newReport: any) => {
+    try {
+      const jsonValue = await readFromStore(SUE_MY_REPORTS);
+      let myReports = [];
 
-    if (storedValues) {
-      setStoredValues(storedValues);
-      setService(storedValues.service);
-      setSelectedPosition(storedValues.selectedPosition);
-      Object.entries(storedValues).forEach(([key, value]) => {
-        if (key !== 'service' && key !== 'selectedPosition') {
-          setValue(key, value);
+      if (jsonValue != null) {
+        myReports = JSON.parse(jsonValue);
+      }
+      myReports.unshift(newReport);
+
+      await addToStore(SUE_MY_REPORTS, JSON.stringify(myReports));
+    } catch (error) {
+      console.error('Error storing my reports values to AsyncStorage', error);
+    }
+  };
+
+  async function readReportValuesFromStore() {
+    const savedValues = (await readFromStore(SUE_REPORT_VALUES)) as TStoredValues | undefined;
+
+    if (savedValues) {
+      const restoredProgress = clampProgress(
+        savedValues.currentProgress,
+        sueProgressWithConfig.length - 1
+      );
+      setStoredValues(savedValues);
+      setService(savedValues.service);
+      setSelectedPosition(savedValues.selectedPosition);
+      setCurrentProgress(restoredProgress);
+      Object.entries(savedValues).forEach(([key, value]) => {
+        if (key !== 'currentProgress' && key !== 'service' && key !== 'selectedPosition') {
+          setValue(key as keyof TValues, value);
         }
       });
     }
 
     setIsLoadingStoredData(false);
-  };
+  }
 
   const resetStoredValues = useCallback(async () => {
     setIsLoadingStoredData(true);
@@ -488,8 +556,25 @@ export const SueReportScreen = ({
       animated: true
     });
     setCurrentProgress(0);
+    hasAppliedInitialProgressRef.current = false;
     setIsLoadingStoredData(false);
   }, [reset]);
+
+  useEffect(() => {
+    if (isLoadingStoredData || hasAppliedInitialProgressRef.current) {
+      return;
+    }
+
+    if (currentProgress > 0) {
+      scrollViewRef?.current?.scrollTo({
+        x: device.width * currentProgress,
+        y: 0,
+        animated: false
+      });
+    }
+
+    hasAppliedInitialProgressRef.current = true;
+  }, [isLoadingStoredData, currentProgress]);
 
   const handleNextPage = useCallback(async () => {
     Keyboard.dismiss();
@@ -498,12 +583,13 @@ export const SueReportScreen = ({
       return Alert.alert(texts.sue.report.alerts.hint, alertTextGeneratorForMissingData());
     }
 
-    await storeReportValues();
+    const nextProgress = Math.min(currentProgress + 1, sueProgressWithConfig.length - 1);
+    await storeReportValues(nextProgress);
 
     if (currentProgress < sueProgressWithConfig.length - 1) {
-      setCurrentProgress(currentProgress + 1);
+      setCurrentProgress(nextProgress);
       scrollViewRef?.current?.scrollTo({
-        x: device.width * (currentProgress + 1),
+        x: device.width * nextProgress,
         y: 0,
         animated: true
       });
@@ -518,14 +604,16 @@ export const SueReportScreen = ({
   const handlePrevPage = useCallback(() => {
     Keyboard.dismiss();
     if (currentProgress > 0) {
-      setCurrentProgress(currentProgress - 1);
+      const prevProgress = currentProgress - 1;
+      void storeReportValues(prevProgress);
+      setCurrentProgress(prevProgress);
       scrollViewRef?.current?.scrollTo({
-        x: device.width * (currentProgress - 1),
+        x: device.width * prevProgress,
         y: 0,
         animated: true
       });
     }
-  }, [currentProgress]);
+  }, [currentProgress, storeReportValues]);
 
   // Ensure map fullscreen mode is exited when navigating between steps
   useEffect(() => {
@@ -570,7 +658,7 @@ export const SueReportScreen = ({
 
           return Alert.alert(texts.defectReport.alerts.hint, texts.defectReport.alerts.error);
         },
-        onSuccess: (data) => {
+        onSuccess: async (data) => {
           if (data?.status && data.status !== 200) {
             setIsLoading(false);
             setCurrentProgress(0);
@@ -578,6 +666,41 @@ export const SueReportScreen = ({
             return Alert.alert(texts.defectReport.alerts.hint, texts.defectReport.alerts.error);
           }
 
+          const serviceRequestId = Array.isArray(data)
+            ? data[0]?.service_request_id
+            : data?.service_request_id;
+
+          if (!serviceRequestId) {
+            setIsLoading(false);
+            setCurrentProgress(0);
+
+            return Alert.alert(texts.defectReport.alerts.hint, texts.defectReport.alerts.error);
+          }
+
+          let parsedImages = [];
+          try {
+            parsedImages = JSON.parse(formData.images) || [];
+          } catch (e) {
+            // fallback to empty list if images JSON is invalid
+          }
+
+          await storeMyReportsValues({
+            address: `${sueReportData.street} ${sueReportData.houseNumber}\r\n ${sueReportData.postalCode} ${sueReportData.city}`,
+            id: serviceRequestId,
+            media_url: JSON.stringify(
+              parsedImages.map((image: any, index: number) => ({
+                contentType: 'image',
+                id: `local-${index}`,
+                url: image.uri,
+                visible: true
+              }))
+            ),
+            requestedDatetime: new Date().toISOString(),
+            serviceName: service?.serviceName,
+            serviceRequestId,
+            status: 'Unbearbeitet',
+            ...formData
+          });
           setIsDone(true);
           resetStoredValues();
           setIsLoading(false);
@@ -696,6 +819,7 @@ export const SueReportScreen = ({
                   requiredInputs={item.requiredInputs}
                   selectedPosition={selectedPosition}
                   service={service}
+                  storeReportValues={storeReportValues}
                   setIsFullscreenMap={setIsFullscreenMap}
                   setSelectedPosition={setSelectedPosition}
                   setService={setService}
@@ -718,7 +842,7 @@ export const SueReportScreen = ({
         {!!service?.serviceName && !!service.description && currentProgress === 0 && (
           <Wrapper style={styles.noPaddingBottom}>
             <BoldText>{service.serviceName}</BoldText>
-            <RegularText>{service.description}</RegularText>
+            <HtmlView big={false} html={service.description} />
           </Wrapper>
         )}
 

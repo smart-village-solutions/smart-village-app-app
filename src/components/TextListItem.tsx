@@ -5,7 +5,7 @@ import { ImageStyle, StyleSheet, TextStyle, ViewStyle } from 'react-native';
 import { ListItem } from 'react-native-elements';
 
 import { consts, Icon, normalize } from '../config';
-import { isOpen, trimNewLines } from '../helpers';
+import { isOpen, navigateToRoute, trimNewLines } from '../helpers';
 import { useTheme } from '../hooks/useTheme';
 
 import { Image } from './Image';
@@ -40,6 +40,7 @@ export type ItemData = {
   statusLabel?: string;
   statusPosition?: 'belowTeaser' | 'replaceTeaser';
   subtitle?: string;
+  targetTabIndex?: number;
   teaserTitle?: string;
   title: string;
   topDivider?: boolean;
@@ -109,11 +110,20 @@ export const TextListItem: NamedExoticComponent<Props> & {
       statusLabel,
       statusPosition = 'belowTeaser',
       subtitle,
+      targetTabIndex,
       teaserTitle,
       title,
       topDivider
     } = item;
-    const navigate = () => navigation && navigation.push(name, params);
+    const navigate = () =>
+      navigation &&
+      navigateToRoute({
+        navigation,
+        params,
+        routeName: name,
+        targetTabIndex,
+        usePush: true
+      });
     let titleText = isHeadlineTitle ? (
       <HeadlineText small numberOfLines={titleNumberOfLines}>
         {trimNewLines(title)}

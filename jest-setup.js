@@ -3,11 +3,11 @@ import 'react-native-gesture-handler/jestSetup';
 import mockAsyncStorage from '@react-native-async-storage/async-storage/jest/async-storage-mock';
 import mockReact from 'react';
 import { Image as MockReactNativeImage } from 'react-native';
+import { setUpTests } from 'react-native-reanimated/src/jestUtils';
 
 jest.mock('@react-native-async-storage/async-storage', () => mockAsyncStorage);
-jest.mock(
-  '@react-native-community/netinfo',
-  () => require('@react-native-community/netinfo/jest/netinfo-mock')
+jest.mock('@react-native-community/netinfo', () =>
+  require('@react-native-community/netinfo/jest/netinfo-mock')
 );
 jest.mock('@apollo/react-hooks', () => ({
   useLazyQuery: jest.fn(() => [jest.fn(), { data: undefined, loading: false }]),

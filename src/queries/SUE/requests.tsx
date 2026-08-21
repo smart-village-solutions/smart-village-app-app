@@ -1,7 +1,14 @@
 import _camelCase from 'lodash/camelCase';
 import _mapKeys from 'lodash/mapKeys';
 
-import { fetchSueEndpoints } from '../../helpers';
+import { SUE_STATUS } from '../../components';
+import { addToStore, fetchSueEndpoints, readFromStore } from '../../helpers';
+import { SUE_MY_REPORTS } from '../../screens';
+
+import { requestsWithServiceRequestId } from './requestsWithServiceRequestId';
+
+// TTL for how often we refresh the status of a stored report (in ms)
+const STATUS_TTL_MS = 5 * 60 * 1000; // 5 minutes
 
 export const requests = async (queryVariables) => {
   const queryParams = new URLSearchParams(queryVariables);
@@ -16,8 +23,13 @@ export const requests = async (queryVariables) => {
     resolve(
       response.map((item: any) => {
         // convert media_url to JSON, as it is returned as a string by the API
-        if (item?.media_url) {
-          item.media_url = JSON.parse(item.media_url);
+        if (item?.media_url && typeof item.media_url === 'string') {
+          try {
+            item.media_url = JSON.parse(item.media_url);
+          } catch (e) {
+            // Do not let malformed media_url break the whole response
+            console.error('Error parsing media_url from SUE requests response', e);
+          }
         }
 
         return _mapKeys(item, (value, key) => _camelCase(key));
@@ -25,6 +37,73 @@ export const requests = async (queryVariables) => {
     );
   });
 };
+
+/* eslint-disable complexity */
+export const myRequests = async (): Promise<any[]> => {
+  let myReports = [];
+  const now = Date.now();
+
+  try {
+    const jsonValue = await readFromStore(SUE_MY_REPORTS);
+
+    if (jsonValue?.length) {
+      myReports = JSON.parse(jsonValue);
+    }
+  } catch (e) {
+    console.error('Error reading my reports values from AsyncStorage', e);
+  }
+
+  // Process all reports and update statuses where needed
+  const updatedReports = await Promise.all(
+    myReports.map(async (item: any) => {
+      if (!item) return item;
+
+      // Parse media_url if it exists and is a string
+      if (item.media_url && typeof item.media_url === 'string') {
+        try {
+          item.media_url = JSON.parse(item.media_url);
+        } catch (e) {
+          // Do not let malformed stored media_url break the whole Promise.all
+          console.error('Error parsing media_url for stored SUE report', e);
+        }
+      }
+
+      const isFinalStatus = item.status === SUE_STATUS.CLOSED || item.status === SUE_STATUS.INVALID;
+
+      // Only refresh non-final reports if the last check is older than our TTL (or missing)
+      const shouldRefreshStatus =
+        item.serviceRequestId &&
+        !isFinalStatus &&
+        (!item.lastStatusCheck || now - item.lastStatusCheck > STATUS_TTL_MS);
+
+      if (shouldRefreshStatus) {
+        try {
+          const onlineReport = await requestsWithServiceRequestId(item.serviceRequestId);
+
+          // Update status if it changed
+          if (onlineReport?.status && onlineReport.status !== item.status) {
+            item.status = onlineReport.status;
+            item.lastStatusCheck = now;
+          }
+        } catch (e) {
+          console.error(`Error fetching status for ${item.serviceRequestId}`, e);
+        }
+      }
+
+      return _mapKeys(item, (value, key) => _camelCase(key));
+    })
+  );
+
+  // Save updated reports back to AsyncStorage
+  try {
+    await addToStore(SUE_MY_REPORTS, JSON.stringify(myReports));
+  } catch (e) {
+    console.error('Error saving updated reports to AsyncStorage', e);
+  }
+
+  return updatedReports;
+};
+/* eslint-enable complexity */
 
 /* eslint-disable complexity */
 export const postRequests = async (data: any) => {

@@ -3,17 +3,16 @@ import React, { useContext } from 'react';
 import { View } from 'react-native';
 
 import { texts } from '../config';
+import { navigateToRoute } from '../helpers';
 import { useHomeRefresh, useStaticContent } from '../hooks';
 import { SettingsContext } from '../SettingsProvider';
-import { ScreenName } from '../types';
+import { RouteTarget } from '../types';
 
 import { Button } from './Button';
 import { SectionHeader } from './SectionHeader';
 import { Wrapper } from './Wrapper';
 
-type TButton = {
-  params?: any;
-  routeName: ScreenName;
+type TButton = RouteTarget & {
   title: string;
 };
 
@@ -41,7 +40,7 @@ export const HomeButtons = ({ publicJsonFile }: { publicJsonFile: string }) => {
         {data?.map((item, index) => (
           <Button
             key={`${item.title}-${index}`}
-            onPress={() => navigation.navigate(item.routeName, item.params)}
+            onPress={() => navigateToRoute({ navigation, ...item })}
             title={item.title}
           />
         ))}

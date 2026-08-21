@@ -3,12 +3,30 @@ import { storageHelper } from './storageHelper';
 export const getSueApiConfig = (apiConfig: Record<string, any> = {}) =>
   (apiConfig?.whichApi ? apiConfig?.[apiConfig.whichApi] : undefined) || apiConfig;
 
-export const hasSueApiConfiguration = (
-  sueConfig: { apiConfig?: Record<string, unknown> } = {}
-) => {
+export const hasSueApiConfiguration = (sueConfig: { apiConfig?: Record<string, unknown> } = {}) => {
   const { apiKey, serverUrl } = getSueApiConfig(sueConfig.apiConfig);
 
   return !!(apiKey && serverUrl);
+};
+
+/**
+ * Resolves the SUE limit-of-area city with the following priority:
+ * 1. Use the explicitly configured city from `globalSettings`.
+ * 2. Otherwise derive it from the first SUE configs geo map area name.
+ * 3. Remove bracketed suffixes like "[kreisfreie Stadt]" from the derived name.
+ */
+export const getSueLimitOfAreaCity = ({
+  areaName = '',
+  configuredCity = ''
+}: {
+  areaName?: string;
+  configuredCity?: string;
+}) => {
+  if (configuredCity) {
+    return configuredCity;
+  }
+
+  return areaName.replace(/\s*\[[^\]]*]\s*/g, '').trim();
 };
 
 export const fetchSueEndpoints = async (serviceRequestId?: number) => {

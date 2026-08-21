@@ -2,18 +2,19 @@ import {
   launchCameraAsync,
   launchImageLibraryAsync,
   PermissionStatus,
-  requestCameraPermissionsAsync,
-  requestMediaLibraryPermissionsAsync
+  requestCameraPermissionsAsync
 } from 'expo-image-picker';
 import {
   addAssetsToAlbumAsync,
   createAlbumAsync,
   createAssetAsync,
   getAlbumAsync,
-  requestPermissionsAsync
+  getPermissionsAsync,
+  requestPermissionsAsync,
+  saveToLibraryAsync
 } from 'expo-media-library';
 import { useCallback, useState } from 'react';
-import { Alert } from 'react-native';
+import { Alert, Linking } from 'react-native';
 
 import appJson from '../../app.json';
 import { device, texts } from '../config';
@@ -27,18 +28,52 @@ export const MediaTypeOptions: Record<'Images' | 'Videos' | 'All', TMediaTypeOpt
 };
 
 const saveImageToGallery = async (uri: string) => {
-  const { status } = await requestPermissionsAsync(undefined, ['photo']);
+  if (device.platform === 'android') {
+    try {
+      await saveToLibraryAsync(uri);
+    } catch (error) {
+      try {
+        const { status } = await requestPermissionsAsync(true);
+
+        if (status === PermissionStatus.GRANTED) {
+          await saveToLibraryAsync(uri);
+        }
+      } catch (permissionError) {
+        console.error(permissionError);
+      }
+
+      console.error(error);
+    }
+    return;
+  }
+
+  // Check existing permission status first to avoid triggering the iOS photo
+  // picker overlay when the user previously granted only limited access.
+  const { status: existingStatus, canAskAgain } = await getPermissionsAsync();
   const appName = appJson.expo.name;
 
-  if (status !== PermissionStatus.GRANTED) {
-    return;
+  if (existingStatus !== PermissionStatus.GRANTED) {
+    if (!canAskAgain) {
+      Alert.alert(texts.errors.image.title, texts.errors.image.saveBody, [
+        { text: texts.errors.image.cancel, style: 'cancel' },
+        { text: texts.errors.image.openSettings, onPress: () => Linking.openSettings() }
+      ]);
+      return;
+    }
+
+    const { status } = await requestPermissionsAsync(undefined, ['photo']);
+
+    if (status !== PermissionStatus.GRANTED) {
+      Alert.alert(texts.errors.image.title, texts.errors.image.saveBody, [
+        { text: texts.errors.image.cancel, style: 'cancel' },
+        { text: texts.errors.image.openSettings, onPress: () => Linking.openSettings() }
+      ]);
+      return;
+    }
   }
 
   try {
     const asset = await createAssetAsync(uri);
-
-    if (device.platform === 'android') return;
-
     const album = await getAlbumAsync(appName);
 
     if (!album) {
@@ -71,13 +106,6 @@ export const useSelectImage = ({
   const [imageUri, setImageUri] = useState<string>();
 
   const selectImage = useCallback(async () => {
-    const { status } = await requestMediaLibraryPermissionsAsync();
-
-    if (status !== PermissionStatus.GRANTED) {
-      Alert.alert(texts.errors.image.title, texts.errors.image.body);
-      return;
-    }
-
     // this allows for proper selecting and cropping to 1:1 images (and not videos)
     // for more details about options see: https://docs.expo.dev/versions/latest/sdk/imagepicker/#imagepickermediatypeoptions
     const result = await launchImageLibraryAsync({
@@ -94,7 +122,7 @@ export const useSelectImage = ({
 
       return result.assets[0];
     }
-  }, [onChange]);
+  }, [allowsEditing, aspect, exif, mediaTypes, onChange, quality]);
 
   return { imageUri, selectImage };
 };
@@ -124,7 +152,10 @@ export const useCaptureImage = ({
     const { status } = await requestCameraPermissionsAsync();
 
     if (status !== PermissionStatus.GRANTED) {
-      Alert.alert(texts.errors.image.title, texts.errors.image.body);
+      Alert.alert(texts.errors.image.title, texts.errors.image.cameraBody, [
+        { text: texts.errors.image.cancel, style: 'cancel' },
+        { text: texts.errors.image.openSettings, onPress: () => Linking.openSettings() }
+      ]);
       return;
     }
 
@@ -142,13 +173,37 @@ export const useCaptureImage = ({
       const uri = result.assets[0].uri;
       onChange ? onChange(setImageUri)(uri) : setImageUri(uri);
 
+      // Run gallery save flow without blocking the image selection result.
       if (saveImage) {
-        await saveImageToGallery(uri);
+        if (device.platform === 'android') {
+          void saveImageToGallery(uri);
+        } else {
+          void (async () => {
+            try {
+              const { status: mediaStatus } = await getPermissionsAsync();
+
+              if (mediaStatus !== PermissionStatus.GRANTED) {
+                // Ask user before requesting gallery save permission.
+                Alert.alert(texts.errors.image.title, texts.errors.image.saveConfirmBody, [
+                  { text: texts.errors.image.cancel, style: 'cancel' },
+                  {
+                    text: texts.errors.image.save,
+                    onPress: async () => await saveImageToGallery(uri)
+                  }
+                ]);
+              } else {
+                await saveImageToGallery(uri);
+              }
+            } catch (error) {
+              console.error('Non-blocking gallery save flow failed', error);
+            }
+          })();
+        }
       }
 
       return result.assets[0];
     }
-  }, [onChange]);
+  }, [allowsEditing, aspect, exif, mediaTypes, onChange, quality, saveImage]);
 
   return { imageUri, captureImage };
 };

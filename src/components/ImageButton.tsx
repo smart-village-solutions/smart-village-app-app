@@ -1,9 +1,12 @@
 import { useNavigation } from 'expo-router/react-navigation';
-import React, { useMemo } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 
-import { Icon } from '../config';
+import { Icon, normalize } from '../config';
 import { resolveThemeOverrides } from '../helpers/appDesignSystemHelper';
 import { useTheme } from '../hooks/useTheme';
+import { navigateToRoute } from '../helpers';
+import { QUERY_TYPES } from '../queries';
+import { myRequests } from '../queries/SUE';
 
 import { Button } from './Button';
 import { Wrapper } from './Wrapper';
@@ -30,13 +33,14 @@ export type TImageButton = {
   };
   routeName: string;
   style?: TImageButtonStyle;
+  targetTabIndex?: number;
   title?: string;
 };
 
 export const ImageButton = ({ button }: { button: TImageButton }) => {
   const { mode } = useTheme();
   const themedButton = useMemo(() => resolveThemeOverrides(button, mode), [button, mode]);
-  const { iconName, params, routeName, style = {}, title } = themedButton;
+  const { iconName, params, routeName, style = {}, targetTabIndex, title } = themedButton;
   const {
     big,
     disabled,
@@ -52,16 +56,31 @@ export const ImageButton = ({ button }: { button: TImageButton }) => {
   const SelectedIcon = Icon[iconName as keyof typeof Icon];
   const navigation = useNavigation();
 
+  // Hide buttons that require saved reports until the async check completes
+  const [isVisible, setIsVisible] = useState(params?.query !== QUERY_TYPES.SUE.MY_REQUESTS);
+
+  useEffect(() => {
+    if (params?.query !== QUERY_TYPES.SUE.MY_REQUESTS) return;
+
+    myRequests().then((reports) => {
+      setIsVisible(!!reports?.length);
+    });
+  }, [params?.query]);
+
   if (!params || !routeName) {
+    return null;
+  }
+
+  if (!isVisible) {
     return null;
   }
 
   return (
     <Wrapper noPaddingTop noPaddingBottom>
       <Button
-        icon={!!iconName && <SelectedIcon color={iconColor} />}
+        icon={!!iconName && <SelectedIcon color={iconColor} size={normalize(16)} />}
         title={title}
-        onPress={() => navigation.navigate(routeName, params)}
+        onPress={() => navigateToRoute({ navigation, params, routeName, targetTabIndex })}
         {...{ big, disabled, iconPosition, invert, lightest, notFullWidth, small, smallest }}
       />
     </Wrapper>

@@ -116,6 +116,14 @@ export const DetailScreen = ({ navigation, route }) => {
 
   useRootRouteByCategory(details, navigation);
 
+  // Render SUE detail screen without the need of processing the rest of the code here
+  if (
+    query === QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID ||
+    query === QUERY_TYPES.SUE.MY_REQUEST_WITH_SERVICE_REQUEST_ID
+  ) {
+    return <SueDetailScreen navigation={navigation} route={route} />;
+  }
+
   const refresh = async (refetch) => {
     setRefreshing(true);
 

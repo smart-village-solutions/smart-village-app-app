@@ -64,6 +64,7 @@ export const MultiImageSelector = ({
   field,
   imageId,
   item,
+  onBeforeNativeImagePicker,
   selectorType
 }: {
   authToken: string | null;
@@ -74,6 +75,7 @@ export const MultiImageSelector = ({
   field: any;
   imageId?: number | string;
   item: any;
+  onBeforeNativeImagePicker?: () => Promise<void>;
   selectorType: string;
 }) => {
   const { colors: colors } = useTheme();
@@ -134,26 +136,32 @@ export const MultiImageSelector = ({
     imageFunction: () => Promise<ImagePickerAsset | undefined>,
     from?: string
   ) => {
-    setLoading(true);
-    await onImageSelect({
-      configuration,
-      coordinateCheck,
-      errorType,
-      from,
-      imageFunction,
-      imagesAttributes,
-      infoAndErrorText,
-      lastKnownPosition,
-      maxFileSize,
-      position,
-      reverseGeocode,
-      selectorType,
-      setImagesAttributes,
-      setInfoAndErrorText
-    });
+    try {
+      await onBeforeNativeImagePicker?.();
 
-    setIsModalVisible(false);
-    setLoading(false);
+      setLoading(true);
+      await onImageSelect({
+        configuration,
+        coordinateCheck,
+        errorType,
+        from,
+        imageFunction,
+        imagesAttributes,
+        infoAndErrorText,
+        lastKnownPosition,
+        maxFileSize,
+        position,
+        reverseGeocode,
+        selectorType,
+        setImagesAttributes,
+        setInfoAndErrorText
+      });
+    } catch (error) {
+      Alert.alert(texts.sue.report.alerts.hint, texts.defectReport.alerts.error);
+    } finally {
+      setIsModalVisible(false);
+      setLoading(false);
+    }
   };
 
   const requestImageSelect = (
