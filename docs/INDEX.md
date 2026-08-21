@@ -73,3 +73,8 @@ For module setup and static content examples see [the Participation Project docs
 ## Accessibility
 
 For detailed documentation see [the accessibility settings docs](./accessibility-settings.md).
+
+## Version Migrations
+
+For the complete app, Main-Server and remote configuration checklist see the
+[v4.3.0 to v5.0.0 migration guide](./MIGRATION_V4.3.0_TO_V5.0.0.md).
