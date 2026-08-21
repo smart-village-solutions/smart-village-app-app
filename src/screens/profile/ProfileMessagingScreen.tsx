@@ -6,6 +6,7 @@ import { StyleSheet } from 'react-native';
 
 import { Button, Chat, LoadingSpinner, SafeAreaViewFlex, Wrapper } from '../../components';
 import { colors, normalize, texts } from '../../config';
+import { AUTH_MODE_USER, getApolloAuthContext } from '../../graphqlAuth';
 import { shareMessage } from '../../helpers';
 import { useProfileContext } from '../../ProfileProvider';
 import { QUERY_TYPES, getQuery } from '../../queries';
@@ -42,6 +43,7 @@ export const ProfileMessagingScreen = ({ navigation, route }: StackScreenProps<a
     loading,
     refetch
   } = useQuery(getQuery(query), {
+    ...getApolloAuthContext(AUTH_MODE_USER),
     variables: { conversationId: queryVariables.id },
     pollInterval: 10000, // 10 seconds
     skip: !queryVariables.id
@@ -69,7 +71,7 @@ export const ProfileMessagingScreen = ({ navigation, route }: StackScreenProps<a
     }
   }, [messages]);
 
-  const [sendMessage] = useMutation(CREATE_MESSAGE);
+  const [sendMessage] = useMutation(CREATE_MESSAGE, getApolloAuthContext(AUTH_MODE_USER));
 
   const onSend = async (newMessageData: {
     conversationableId: number;
@@ -91,7 +93,10 @@ export const ProfileMessagingScreen = ({ navigation, route }: StackScreenProps<a
     }
   };
 
-  const [markMessagesAsRead] = useMutation(MARK_MESSAGES_AS_READ);
+  const [markMessagesAsRead] = useMutation(
+    MARK_MESSAGES_AS_READ,
+    getApolloAuthContext(AUTH_MODE_USER)
+  );
 
   useEffect(() => {
     if (messages?.[query]?.length && !loading && !!queryVariables.id) {
