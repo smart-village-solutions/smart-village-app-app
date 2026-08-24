@@ -1,7 +1,8 @@
 import { DrawerNavigationProp } from 'expo-router/drawer';
-import React from 'react';
+import React, { useContext } from 'react';
 import { StyleProp, ViewStyle } from 'react-native';
 
+import { BookmarkContext } from '../BookmarkProvider';
 import { consts, texts } from '../config';
 import { useTheme } from '../hooks/useTheme';
 
@@ -18,6 +19,8 @@ type Props = {
 
 export const FavoritesHeader = ({ navigation, style }: Props) => {
   const { colors } = useTheme();
+  const { bookmarks } = useContext(BookmarkContext);
+  const hasBookmarks = Object.values(bookmarks ?? {}).some((items) => items.length > 0);
 
   return (
     <HeaderIconButton
@@ -27,7 +30,7 @@ export const FavoritesHeader = ({ navigation, style }: Props) => {
     >
       <ConfiguredBookmarkIcon
         color={colors.darkText}
-        selected
+        selected={hasBookmarks}
         size={HEADER_RIGHT_ICON_SIZE}
         style={style}
       />

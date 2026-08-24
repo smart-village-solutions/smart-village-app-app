@@ -74,6 +74,7 @@ jest.mock('../../src/components/Text', () => ({
 }));
 
 import { SettingsContext } from '../../src/SettingsProvider';
+import { BookmarkContext } from '../../src/BookmarkProvider';
 import {
   type BookmarkIconConfiguration,
   resolveBookmarkIconConfiguration
@@ -92,14 +93,17 @@ const route = {
 
 const renderWithIcon = (
   bookmarkIcon: BookmarkIconConfiguration | undefined,
-  child: React.ReactNode
+  child: React.ReactNode,
+  bookmarks?: Record<string, string[]>
 ) => {
   let tree: renderer.ReactTestRenderer;
 
   renderer.act(() => {
     tree = renderer.create(
       <SettingsContext.Provider value={{ globalSettings: { settings: { bookmarkIcon } } } as never}>
-        {child}
+        <BookmarkContext.Provider value={{ bookmarks, toggleBookmark: jest.fn() }}>
+          {child}
+        </BookmarkContext.Provider>
       </SettingsContext.Provider>
     );
   });
@@ -110,10 +114,14 @@ const renderWithIcon = (
 const renderBookmark = (bookmarkIcon?: BookmarkIconConfiguration) =>
   renderWithIcon(bookmarkIcon, <BookmarkHeader label="Nachricht merken" route={route} />);
 
-const renderFavoritesHeader = (bookmarkIcon?: BookmarkIconConfiguration) =>
+const renderFavoritesHeader = (
+  bookmarkIcon?: BookmarkIconConfiguration,
+  bookmarks: Record<string, string[]> = { newsItems: ['42'] }
+) =>
   renderWithIcon(
     bookmarkIcon,
-    <FavoritesHeader navigation={{ navigate: jest.fn() } as never} style={{}} />
+    <FavoritesHeader navigation={{ navigate: jest.fn() } as never} style={{}} />,
+    bookmarks
   );
 
 describe('BookmarkHeader icon configuration', () => {
@@ -125,6 +133,13 @@ describe('BookmarkHeader icon configuration', () => {
   it('uses the configured preset in detail actions and the header-left shortcut', () => {
     expect(renderBookmark('bookmark').root.findByType('mock-bookmark-empty')).toBeTruthy();
     expect(renderFavoritesHeader('bookmark').root.findByType('mock-bookmark-filled')).toBeTruthy();
+  });
+
+  it('shows the empty header-left shortcut when no bookmarks exist', () => {
+    expect(renderFavoritesHeader(undefined, {}).root.findByType('mock-heart-empty')).toBeTruthy();
+    expect(
+      renderFavoritesHeader('bookmark', { newsItems: [] }).root.findByType('mock-bookmark-empty')
+    ).toBeTruthy();
   });
 
   it('uses the same iconName and activeIconName contract as custom tabs', () => {
