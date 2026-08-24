@@ -4,8 +4,13 @@ import { ShareContent, ViewStyle } from 'react-native';
 import { Divider } from 'react-native-elements';
 
 import { normalize, texts } from '../../config';
+import {
+  getParticipationProjectType,
+  ParticipationProject
+} from '../../helpers/participationProjectHelper';
 import { shareMessage } from '../../helpers/shareHelper';
 import { useTheme } from '../../hooks/useTheme';
+import { GenericType } from '../../types/GenericType';
 import { BookmarkHeader } from '../bookmarks';
 import { ShareHeader } from '../ShareHeader';
 import { WrapperHorizontal } from '../Wrapper';
@@ -38,6 +43,19 @@ const resolveShareContent = (
   return { message: shareMessage(data, query) };
 };
 
+const resolveDetailTitle = (
+  data: Record<string, unknown> | undefined,
+  routeTitle: string | undefined,
+  suffix: number | string | undefined
+) => {
+  const participationType =
+    suffix === GenericType.ParticipationProject && data
+      ? getParticipationProjectType(data as ParticipationProject)
+      : undefined;
+
+  return participationType || routeTitle?.trim();
+};
+
 export const DetailActions = ({ data, route, shareContent, suffix }: Props) => {
   const { colors } = useTheme();
   const styles = useMemo(() => createStyles(colors), [colors]);
@@ -52,7 +70,7 @@ export const DetailActions = ({ data, route, shareContent, suffix }: Props) => {
   );
   const showBookmark = route.params?.bookmarkable !== false && !!query && id !== undefined;
   const showShare = !!resolvedShareContent;
-  const detailTitle = route.params?.title?.trim();
+  const detailTitle = resolveDetailTitle(data, route.params?.title, suffix);
   const bookmarkLabel = detailTitle
     ? texts.detailActions.remember.replace('{{title}}', detailTitle)
     : texts.detailActions.rememberFallback;

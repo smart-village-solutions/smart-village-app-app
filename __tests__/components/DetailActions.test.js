@@ -23,6 +23,10 @@ jest.mock('../../src/helpers/shareHelper', () => ({
   shareMessage: (data) => `Teilen: ${data.title}`
 }));
 
+jest.mock('../../src/helpers/participationProjectHelper', () => ({
+  getParticipationProjectType: (data) => data.payload?.type || data.categories?.[0]?.name
+}));
+
 jest.mock('../../src/config', () => ({
   normalize: (value) => value,
   texts: {
@@ -120,5 +124,20 @@ describe('DetailActions', () => {
     expect(tree.root.findByType('mock-share-action').props.shareContent.message).toContain(
       'Beteiligung zum Stadtpark'
     );
+  });
+
+  it.each([
+    ['payload type', { payload: { type: 'Dialog' } }, 'Dialog'],
+    ['category', { categories: [{ name: 'Umfrage' }] }, 'Umfrage']
+  ])('uses the participation %s in action labels', (_source, data, expectedTitle) => {
+    const tree = renderDetailActions({
+      data,
+      suffix: 'ParticipationProject'
+    });
+
+    expect(tree.root.findByType('mock-bookmark-action').props.label).toBe(
+      `${expectedTitle} merken`
+    );
+    expect(tree.root.findByType('mock-share-action').props.label).toBe(`${expectedTitle} teilen`);
   });
 });
