@@ -99,17 +99,23 @@ const ParticipationProjectInfo = ({
   );
 };
 
-const ParticipationProjectAppointments = ({ data }: { data: ParticipationProject }) => {
+const ParticipationProjectAppointments = ({
+  data,
+  noPaddingTop = false
+}: {
+  data: ParticipationProject;
+  noPaddingTop?: boolean;
+}) => {
   const appointments = normalizeParticipationProjectDates(data);
   const openingHours = data.openingHours || [];
 
   if (!appointments.length && !openingHours.length) return null;
 
   return (
-    <WrapperVertical noPaddingBottom>
+    <WrapperVertical noPaddingBottom noPaddingTop={noPaddingTop}>
       <SectionHeader title={texts.eventRecord.appointments} />
       <OpeningTimesCard
-        leftAligned
+        inlineDateTime
         openingHours={appointments.length ? appointments : openingHours}
       />
     </WrapperVertical>
@@ -274,7 +280,7 @@ export const ParticipationProjectDetail = ({ data, readAloudControls, route }: P
         <Divider />
       </WrapperHorizontal>
       {readAloudControls}
-      <ParticipationProjectAppointments data={data} />
+      <ParticipationProjectAppointments data={data} noPaddingTop={!!readAloudControls} />
       <ParticipationProjectContent data={data} openWebScreen={openWebScreen} />
 
       {!!link && (

@@ -144,7 +144,7 @@ export const EventRecord = ({ data, readAloudControls, route }) => {
         <SectionHeader title={texts.eventRecord.details} />
       )}
 
-      <Wrapper noPaddingBottom>
+      <Wrapper noPaddingBottom={!!readAloudControls}>
         <InfoCard
           addresses={addresses}
           contacts={contacts}
@@ -154,10 +154,8 @@ export const EventRecord = ({ data, readAloudControls, route }) => {
       </Wrapper>
       {readAloudControls}
 
-      {readAloudControls}
-
       {!!eventDates?.length && (
-        <WrapperVertical>
+        <WrapperVertical noPaddingTop={!!readAloudControls}>
           <SectionHeader title={texts.eventRecord.appointments} />
           <OpeningTimesCard
             openingHours={eventDates}

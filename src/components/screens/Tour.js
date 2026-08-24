@@ -86,7 +86,7 @@ export const Tour = ({ data, navigation, readAloudControls, route }) => {
     <View>
       <ImageSection mediaContents={mediaContents} />
       <SectionHeader title={title} />
-      <Wrapper noPaddingBottom>
+      <Wrapper noPaddingBottom={!!readAloudControls}>
         {!!logo && <Logo source={{ uri: logo }} />}
 
         <InfoCard category={category} addresses={addresses} contact={contact} webUrls={webUrls} />

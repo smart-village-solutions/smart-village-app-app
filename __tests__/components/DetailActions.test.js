@@ -11,6 +11,10 @@ jest.mock('../../src/components/ShareHeader', () => ({
   ShareHeader: 'mock-share-action'
 }));
 
+jest.mock('../../src/components/Wrapper', () => ({
+  WrapperHorizontal: 'mock-wrapper-horizontal'
+}));
+
 jest.mock('react-native-elements', () => ({
   Divider: 'mock-divider'
 }));
@@ -63,11 +67,13 @@ describe('DetailActions', () => {
     expect(tree.root.findAllByType('mock-bookmark-action')).toHaveLength(1);
     expect(tree.root.findAllByType('mock-divider')).toHaveLength(1);
     expect(tree.root.findAllByType('mock-share-action')).toHaveLength(1);
+    expect(tree.root.findAllByType('mock-wrapper-horizontal')).toHaveLength(1);
     expect(tree.root.findAll((node) => node.props.accessibilityRole === 'switch')).toHaveLength(0);
     expect(tree.root.findByType('mock-bookmark-action').props.label).toBe('Nachricht merken');
     expect(tree.root.findByType('mock-share-action').props.label).toBe('Nachricht teilen');
     expect(tree.root.findByType('mock-bookmark-action').props.buttonStyle).toMatchObject({
       flexDirection: 'row',
+      paddingVertical: 16,
       width: '100%'
     });
     expect(tree.root.findByProps({ accessibilityRole: 'toolbar' }).props.style).not.toHaveProperty(

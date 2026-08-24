@@ -5,6 +5,8 @@ import { StyleSheet, Text, View } from 'react-native';
 
 import { ParticipationProjectDetail } from '../../src/components/screens/ParticipationProjectDetail';
 
+const mockOpeningTimesCard = jest.fn(() => null);
+
 jest.mock('../../src/config', () => ({
   colors: {
     accent: '#006600',
@@ -112,13 +114,17 @@ jest.mock('../../src/components/Wrapper', () => {
 });
 jest.mock('../../src/components/infoCard', () => ({ InfoCard: () => null }));
 jest.mock('../../src/components/screens/OpeningTimesCard', () => ({
-  OpeningTimesCard: () => null
+  OpeningTimesCard: (props) => mockOpeningTimesCard(props)
 }));
 jest.mock('../../src/components/screens/OperatingCompany', () => ({
   OperatingCompany: () => null
 }));
 
 describe('ParticipationProjectDetail status', () => {
+  beforeEach(() => {
+    mockOpeningTimesCard.mockClear();
+  });
+
   it('renders detail actions at the end of the overview section', () => {
     const screen = render(
       <ParticipationProjectDetail
@@ -130,6 +136,7 @@ describe('ParticipationProjectDetail status', () => {
             dates: [],
             id: 'participation-project-actions',
             mediaContents: [],
+            openingHours: [{ id: 'appointment-1' }],
             payload: {},
             title: 'Beteiligung mit Aktionen',
             webUrls: []
@@ -147,6 +154,14 @@ describe('ParticipationProjectDetail status', () => {
     expect(renderedTexts.indexOf('Termin speichern')).toBeLessThan(
       renderedTexts.indexOf('Bookmark und Teilen')
     );
+    expect(
+      screen
+        .UNSAFE_getAllByType(View)
+        .some((view) => view.props.noPaddingBottom && view.props.noPaddingTop)
+    ).toBe(true);
+    expect(mockOpeningTimesCard.mock.calls[0][0]).toMatchObject({
+      inlineDateTime: true
+    });
   });
 
   it('renders status color and text with one screen-reader label', () => {

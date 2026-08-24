@@ -1,6 +1,6 @@
 import { RouteProp } from 'expo-router/react-navigation';
 import React, { useMemo } from 'react';
-import { ShareContent, View, ViewStyle } from 'react-native';
+import { ShareContent, ViewStyle } from 'react-native';
 import { Divider } from 'react-native-elements';
 
 import { normalize, texts } from '../../config';
@@ -8,6 +8,7 @@ import { shareMessage } from '../../helpers/shareHelper';
 import { useTheme } from '../../hooks/useTheme';
 import { BookmarkHeader } from '../bookmarks';
 import { ShareHeader } from '../ShareHeader';
+import { WrapperHorizontal } from '../Wrapper';
 
 type DetailRouteParams = {
   bookmarkable?: boolean;
@@ -62,7 +63,7 @@ export const DetailActions = ({ data, route, shareContent, suffix }: Props) => {
   if (!showBookmark && !showShare) return null;
 
   return (
-    <View accessibilityRole="toolbar" style={styles.container}>
+    <WrapperHorizontal accessibilityRole="toolbar" style={styles.container}>
       {showBookmark && (
         <BookmarkHeader
           buttonStyle={styles.actionButton}
@@ -83,7 +84,7 @@ export const DetailActions = ({ data, route, shareContent, suffix }: Props) => {
           style={styles.actionIcon}
         />
       )}
-    </View>
+    </WrapperHorizontal>
   );
 };
 
@@ -93,7 +94,7 @@ const createStyles = (colors: Record<string, string>): Record<string, ViewStyle>
     flexDirection: 'row',
     justifyContent: 'flex-start',
     minHeight: 48,
-    paddingVertical: normalize(8),
+    paddingVertical: normalize(16),
     width: '100%'
   },
   actionIcon: {
@@ -102,9 +103,6 @@ const createStyles = (colors: Record<string, string>): Record<string, ViewStyle>
   },
   container: {
     alignItems: 'flex-start',
-    paddingBottom: normalize(16),
-    paddingHorizontal: normalize(16),
-    paddingTop: normalize(4),
     width: '100%'
   },
   divider: {

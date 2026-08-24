@@ -137,7 +137,7 @@ export const NoticeboardDetail = ({
 
   return (
     <View>
-      <WrapperVertical style={styles.noPaddingTop}>
+      <WrapperVertical noPaddingBottom={!!readAloudControls} style={styles.noPaddingTop}>
         <ImageSection mediaContents={mediaContents?.filter(isImage)} />
       </WrapperVertical>
       {readAloudControls}

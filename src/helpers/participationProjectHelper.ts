@@ -348,7 +348,7 @@ export const getParticipationProjectPreviewDate = (item: {
     date.timeStart || date.timeFrom || payloadStartTime
   );
 
-  return formatSubtitle(formattedDate, undefined, time);
+  return [formattedDate, time ? `${time} Uhr` : undefined].filter(Boolean).join(' ');
 };
 
 export const buildParticipationProjectPreviewItem = (

@@ -23,6 +23,30 @@ jest.mock('../../src/helpers/parser/voucherParser', () => ({
 }));
 
 describe('Participation Project list parser', () => {
+  it('renders the date before the imported time in the overtitle', () => {
+    const [item] = parseListItemsFromQuery(
+      QUERY_TYPES.GENERIC_ITEMS,
+      {
+        [QUERY_TYPES.GENERIC_ITEMS]: [
+          {
+            contentBlocks: [],
+            dates: [{ dateStart: '2026-09-01', id: 'date-1', timeStart: '18:30' }],
+            genericType: GenericType.ParticipationProject,
+            id: 'participation-project-with-time',
+            mediaContents: [],
+            payload: { status: 'Aktiv', type: 'Dialog' },
+            title: 'Beteiligung mit Uhrzeit',
+            webUrls: []
+          }
+        ]
+      },
+      '',
+      {}
+    );
+
+    expect(item.overtitle).toBe('01.09.2026 18:30 Uhr | Dialog');
+  });
+
   it('omits the untertitle while preserving the status presentation', () => {
     const [item] = parseListItemsFromQuery(
       QUERY_TYPES.GENERIC_ITEMS,

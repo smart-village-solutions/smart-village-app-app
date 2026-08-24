@@ -27,10 +27,44 @@ const DateBox = styled(TimeBox)`
     `};
 `;
 
+const normalizeTimeLabel = (time) => time?.replace(/\s*Uhr\s*$/i, '').trim();
+
+const formatTimeLabel = (time) => {
+  const normalizedTime = normalizeTimeLabel(time);
+
+  return normalizedTime ? `${normalizedTime} Uhr` : undefined;
+};
+
+const formatInlineDateTime = ({ dateFrom, datePrefix, dateTo, timeFrom, timeTo, useYear }) => {
+  const returnFormatDate = useYear ? 'DD.MM.YYYY' : 'DD.MM.';
+  const formattedDateFrom = dateFrom ? momentFormat(dateFrom, returnFormatDate) : undefined;
+  const formattedDateTo = dateTo ? momentFormat(dateTo, returnFormatDate) : undefined;
+  const normalizedTimeFrom = normalizeTimeLabel(timeFrom);
+  const normalizedTimeTo = normalizeTimeLabel(timeTo);
+  const startDate = [datePrefix, formattedDateFrom].filter(Boolean).join(' ');
+
+  if (!dateTo || dateTo === dateFrom) {
+    const timeRange =
+      normalizedTimeFrom && normalizedTimeTo && normalizedTimeFrom !== normalizedTimeTo
+        ? `${normalizedTimeFrom} - ${normalizedTimeTo} Uhr`
+        : formatTimeLabel(normalizedTimeFrom || normalizedTimeTo);
+
+    return [startDate, timeRange].filter(Boolean).join(' ');
+  }
+
+  const startDateTime = [startDate, formatTimeLabel(normalizedTimeFrom)].filter(Boolean).join(' ');
+  const endDateTime = [formattedDateTo, formatTimeLabel(normalizedTimeTo)]
+    .filter(Boolean)
+    .join(' ');
+
+  return [startDateTime, endDateTime].filter(Boolean).join(' bis ');
+};
+
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
 export const OpeningTimesCard = ({
   appointmentsShowMoreButton = texts.eventRecord.appointmentsShowMoreButton,
+  inlineDateTime = false,
   leftAligned = false,
   MAX_INITIAL_NUM_TO_RENDER = 15,
   openingHours
@@ -59,6 +93,8 @@ export const OpeningTimesCard = ({
             useYear = false
           } = item;
           const returnFormatDate = useYear ? 'DD.MM.YYYY' : 'DD.MM.';
+          const hasDateOrTime = !!timeFrom || !!timeTo || !!dateFrom || !!dateTo;
+          const showInlineDateTime = inlineDateTime && open !== false;
 
           return (
             <WrapperVertical
@@ -72,7 +108,20 @@ export const OpeningTimesCard = ({
             >
               {!!weekday && <BoldText style={styles.marginBottom}>{weekday}</BoldText>}
 
-              {(!!timeFrom || !!timeTo || !!dateFrom || !!dateTo) && (
+              {hasDateOrTime && showInlineDateTime && (
+                <RegularText>
+                  {formatInlineDateTime({
+                    dateFrom,
+                    datePrefix,
+                    dateTo,
+                    timeFrom,
+                    timeTo,
+                    useYear
+                  })}
+                </RegularText>
+              )}
+
+              {hasDateOrTime && !showInlineDateTime && (
                 <WrapperRow>
                   {open !== false && (!!timeFrom || !!timeTo) && (
                     <TimeBox>
@@ -166,6 +215,7 @@ const createStyles = (colors) => ({
 
 OpeningTimesCard.propTypes = {
   appointmentsShowMoreButton: PropTypes.string,
+  inlineDateTime: PropTypes.bool,
   leftAligned: PropTypes.bool,
   MAX_INITIAL_NUM_TO_RENDER: PropTypes.number,
   openingHours: PropTypes.arrayOf(

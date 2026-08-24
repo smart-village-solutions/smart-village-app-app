@@ -204,7 +204,7 @@ export const PointOfInterest = ({
       )}
 
       {(!!addresses?.length || !!contact || !!openingHours?.length || !!webUrls?.length) && (
-        <Wrapper noPaddingBottom>
+        <Wrapper noPaddingBottom={!!readAloudControls}>
           <InfoCard
             addresses={addresses}
             contact={contact}
@@ -215,8 +215,6 @@ export const PointOfInterest = ({
           />
         </Wrapper>
       )}
-      {readAloudControls}
-
       {readAloudControls}
 
       {!!showDistanceDirection.poi && latitude != null && longitude != null && (

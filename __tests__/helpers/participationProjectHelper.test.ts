@@ -86,7 +86,7 @@ describe('participation project list dates', () => {
     });
 
     expect(getParticipationProjectPreviewDate(buildParticipationProject(date))).toBe(
-      '01.09.2026, 18:30 Uhr'
+      '01.09.2026 18:30 Uhr'
     );
   });
 
@@ -96,7 +96,7 @@ describe('participation project list dates', () => {
       payload: { startTime: '18:30 Uhr' }
     };
 
-    expect(getParticipationProjectPreviewDate(project)).toBe('01.09.2026, 18:30 Uhr');
+    expect(getParticipationProjectPreviewDate(project)).toBe('01.09.2026 18:30 Uhr');
   });
 
   it('keeps the explicit open-start marker for participations without an end date', () => {
