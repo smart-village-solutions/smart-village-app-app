@@ -226,6 +226,22 @@ describe('HtmlView accessibility', () => {
     expect(image.props.accessibilityLabel).toBe('(Bild)');
   });
 
+  it('uses the complete available width only for full-width images', () => {
+    const regularTree = renderWithAct(
+      <HtmlView html={'<img src="https://example.com/regular.png">'} />
+    );
+    const fullWidthTree = renderWithAct(
+      <HtmlView html={'<img src="https://example.com/full-width.png">'} isImageFullWidth />
+    );
+
+    expect(regularTree.root.findByType('mock-html').props.contentWidth).toBe(292);
+    expect(
+      regularTree.root.findByType('mock-html').props.tagsStyles.img?.minWidth
+    ).toBeUndefined();
+    expect(fullWidthTree.root.findByType('mock-html').props.contentWidth).toBe(320);
+    expect(fullWidthTree.root.findByType('mock-html').props.tagsStyles.img.minWidth).toBe(320);
+  });
+
   it('marks unordered lists and list items with accessibility semantics', () => {
     const tree = renderWithAct(
       <HtmlView html={'<ul><li>Erster Punkt</li><li>Zweiter Punkt</li></ul>'} />

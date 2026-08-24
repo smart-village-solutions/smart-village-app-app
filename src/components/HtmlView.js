@@ -397,7 +397,18 @@ export const HtmlView = memo(
       calculatedWidth = calculatedWidth * 0.7;
     }
 
-    const maxWidth = calculatedWidth - 2 * normalize(14); // width of an image minus paddings
+    // Full-width media uses all available space. Regular media keeps the existing inset so text
+    // and images retain their previous layout.
+    const maxWidth = isImageFullWidth ? calculatedWidth : calculatedWidth - 2 * normalize(14);
+    const renderedTagsStyles = isImageFullWidth
+      ? {
+          ...scaledTagStyles,
+          img: {
+            ...scaledTagStyles.img,
+            minWidth: maxWidth
+          }
+        }
+      : scaledTagStyles;
 
     if (!html?.match(HTML_REGEX)) {
       return (
@@ -424,7 +435,7 @@ export const HtmlView = memo(
           },
           table: { cssRules: getCssRules(colors, textScaleMultiplier) }
         }}
-        tagsStyles={scaledTagStyles}
+        tagsStyles={renderedTagsStyles}
         emSize={normalize(16) * textScaleMultiplier}
         baseStyle={scaledBaseStyle}
         ignoredStyles={['width', 'height']}

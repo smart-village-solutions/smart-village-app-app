@@ -92,7 +92,7 @@ export const ServiceTiles = ({
             )}
 
             {!!contentForAbove && (
-              <Wrapper>
+              <Wrapper style={contentForAboveFullWidth ? styles.fullWidthHtmlContent : undefined}>
                 <HtmlView html={contentForAbove} isImageFullWidth={contentForAboveFullWidth} />
               </Wrapper>
             )}
@@ -102,7 +102,7 @@ export const ServiceTiles = ({
             </View>
 
             {!!contentForBelow && (
-              <Wrapper>
+              <Wrapper style={contentForBelowFullWidth ? styles.fullWidthHtmlContent : undefined}>
                 <HtmlView html={contentForBelow} isImageFullWidth={contentForBelowFullWidth} />
               </Wrapper>
             )}
@@ -114,6 +114,10 @@ export const ServiceTiles = ({
 };
 
 const createStyles = () => ({
+  fullWidthHtmlContent: {
+    paddingHorizontal: 0
+  },
+
   imageContainerStyle: {
     alignSelf: 'center'
   },
