@@ -215,6 +215,7 @@ export const PointOfInterest = ({
           />
         </Wrapper>
       )}
+      {readAloudControls}
 
       {readAloudControls}
 

@@ -11,6 +11,14 @@ jest.mock('../../src/components/ShareHeader', () => ({
   ShareHeader: 'mock-share-action'
 }));
 
+jest.mock('react-native-elements', () => ({
+  Divider: 'mock-divider'
+}));
+
+jest.mock('../../src/helpers/shareHelper', () => ({
+  shareMessage: (data) => `Teilen: ${data.title}`
+}));
+
 jest.mock('../../src/config', () => ({
   normalize: (value) => value,
   texts: {
@@ -34,11 +42,11 @@ const route = {
   }
 };
 
-const renderDetailActions = () => {
+const renderDetailActions = (props = {}) => {
   let tree;
 
   renderer.act(() => {
-    tree = renderer.create(<DetailActions route={route} />);
+    tree = renderer.create(<DetailActions route={route} {...props} />);
   });
 
   return tree;
@@ -53,6 +61,7 @@ describe('DetailActions', () => {
     const tree = renderDetailActions();
 
     expect(tree.root.findAllByType('mock-bookmark-action')).toHaveLength(1);
+    expect(tree.root.findAllByType('mock-divider')).toHaveLength(1);
     expect(tree.root.findAllByType('mock-share-action')).toHaveLength(1);
     expect(tree.root.findAll((node) => node.props.accessibilityRole === 'switch')).toHaveLength(0);
     expect(tree.root.findByType('mock-bookmark-action').props.label).toBe('Nachricht merken');
@@ -64,6 +73,46 @@ describe('DetailActions', () => {
     expect(tree.root.findByProps({ accessibilityRole: 'toolbar' }).props.style).not.toHaveProperty(
       'flexDirection',
       'row'
+    );
+    expect(tree.root.findByType('mock-divider').props.style).toMatchObject({
+      backgroundColor: expect.any(String),
+      width: '100%'
+    });
+  });
+
+  it('does not render a divider when only one action is available', () => {
+    const tree = renderDetailActions({
+      route: {
+        ...route,
+        params: {
+          ...route.params,
+          shareContent: undefined
+        }
+      }
+    });
+
+    expect(tree.root.findAllByType('mock-bookmark-action')).toHaveLength(1);
+    expect(tree.root.findAllByType('mock-divider')).toHaveLength(0);
+    expect(tree.root.findAllByType('mock-share-action')).toHaveLength(0);
+  });
+
+  it('derives missing share content and the bookmark category from loaded detail data', () => {
+    const routeWithoutActionMetadata = {
+      ...route,
+      params: {
+        ...route.params,
+        shareContent: undefined
+      }
+    };
+    const tree = renderDetailActions({
+      data: { id: '42', title: 'Beteiligung zum Stadtpark' },
+      route: routeWithoutActionMetadata,
+      suffix: 'ParticipationProject'
+    });
+
+    expect(tree.root.findByType('mock-bookmark-action').props.suffix).toBe('ParticipationProject');
+    expect(tree.root.findByType('mock-share-action').props.shareContent.message).toContain(
+      'Beteiligung zum Stadtpark'
     );
   });
 });

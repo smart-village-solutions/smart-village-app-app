@@ -40,8 +40,11 @@ jest.mock('../../src/components', () => {
     LoadingSpinner: () => <Text>loading</Text>,
     SafeAreaViewFlex: ({ children }) => <View>{children}</View>,
     SectionHeader: ({ title }) => <Text>{title}</Text>,
-    TextListItem: ({ item }) => (
-      <Text testID={`list-item-${item.id}`}>
+    TextListItem: ({ item, navigation }) => (
+      <Text
+        testID={`list-item-${item.id}`}
+        onPress={() => navigation.navigate(item.routeName, item.params)}
+      >
         {[item.title, item.count, item.subtitle].filter((value) => value !== undefined).join('|')}
       </Text>
     ),
@@ -125,6 +128,7 @@ jest.mock('../../src/helpers/participationProjectHelper', () => ({
 
 jest.mock('../../src/helpers/htmlViewHelper', () => ({
   removeHtml: jest.fn((value) => value),
+  shareMessage: jest.fn((item) => `Teilen: ${item.title}`),
   trimNewLines: jest.fn((value) => value)
 }));
 
@@ -198,7 +202,7 @@ describe('ParticipationProjectHomeScreen', () => {
         genericItems: [
           {
             categories: [{ id: 'dialog', name: 'Dialog' }],
-            contentBlocks: [],
+            contentBlocks: [{ body: 'Untertitel des aktiven Projekts', id: 'active-body' }],
             dates: [],
             id: 'active-project',
             mediaContents: [],
@@ -250,6 +254,16 @@ describe('ParticipationProjectHomeScreen', () => {
             },
             title: 'Kürzlich beendetes Projekt',
             webUrls: []
+          },
+          {
+            categories: [{ id: 'archive', name: 'Archiv' }],
+            contentBlocks: [],
+            dates: [],
+            id: 'archived-project',
+            mediaContents: [],
+            payload: { itemIndex: 6, status: 'completed', type: 'Dialog' },
+            title: 'Archiviertes Projekt',
+            webUrls: []
           }
         ]
       },
@@ -262,10 +276,22 @@ describe('ParticipationProjectHomeScreen', () => {
 
     expect(screen.getByText('Dialog|1')).toBeTruthy();
     expect(screen.getByText('Aktives Projekt')).toBeTruthy();
+    expect(screen.queryByText('Untertitel des aktiven Projekts')).toBeNull();
     expect(screen.queryByText('Angekündigtes Projekt')).toBeNull();
     expect(screen.queryByText('Abgeschlossenes Projekt')).toBeNull();
     expect(screen.queryByText('Beendetes Projekt')).toBeNull();
     expect(screen.queryByText('Kürzlich beendetes Projekt')).toBeNull();
+    expect(screen.queryByText('Archiv|0')).toBeNull();
+
+    fireEvent.press(screen.getByText('Aktives Projekt'));
+
+    expect(navigation.navigate).toHaveBeenCalledWith(
+      'Detail',
+      expect.objectContaining({
+        shareContent: { message: 'Teilen: Aktives Projekt' },
+        suffix: 'ParticipationProject'
+      })
+    );
 
     fireEvent.press(screen.getByText('Alle Beteiligungen ansehen'));
 

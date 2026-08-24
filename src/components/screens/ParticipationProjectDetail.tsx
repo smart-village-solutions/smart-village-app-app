@@ -1,5 +1,6 @@
 import React from 'react';
 import { TouchableOpacity, View } from 'react-native';
+import { Divider } from 'react-native-elements';
 
 import { consts, Icon, normalize, texts } from '../../config';
 import {
@@ -221,7 +222,7 @@ const ParticipationProjectDetailStatusIndicator = ({ data }: { data: Participati
 };
 
 /* eslint-disable complexity */
-export const ParticipationProjectDetail = ({ data, route }: Props) => {
+export const ParticipationProjectDetail = ({ data, readAloudControls, route }: Props) => {
   const { companies, dataProvider, genericType, mediaContents, title, webUrls } = data;
   const link = webUrls?.[0]?.url;
   const imageMediaContents = mediaContents?.filter(isImage) || [];
@@ -269,6 +270,10 @@ export const ParticipationProjectDetail = ({ data, route }: Props) => {
 
       <ParticipationProjectInfo data={data} openWebScreen={openWebScreen} />
       <ParticipationProjectCalendarExport data={data} />
+      <WrapperHorizontal>
+        <Divider />
+      </WrapperHorizontal>
+      {readAloudControls}
       <ParticipationProjectAppointments data={data} />
       <ParticipationProjectContent data={data} openWebScreen={openWebScreen} />
 

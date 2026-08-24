@@ -18,8 +18,7 @@ type TileGridThreshold = {
 const TILE_GRID_THRESHOLDS: TileGridThreshold[] = [
   { maxScale: 0.95, portraitColumns: 4, landscapeColumns: 6 },
   { maxScale: 1.1, portraitColumns: 3, landscapeColumns: 5 },
-  { maxScale: 1.25, portraitColumns: 2, landscapeColumns: 4 },
-  { maxScale: Number.POSITIVE_INFINITY, portraitColumns: 1, landscapeColumns: 2 }
+  { maxScale: Number.POSITIVE_INFINITY, portraitColumns: 2, landscapeColumns: 4 }
 ];
 
 const normalizeTextScale = (textScaleMultiplier: number) =>

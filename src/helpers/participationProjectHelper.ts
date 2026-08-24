@@ -2,12 +2,13 @@ import { LocationObjectCoords } from 'expo-location';
 
 import { consts, texts } from '../config';
 import { QUERY_TYPES } from '../queries';
-import { GenericItem, OpeningHour, ScreenName, SVA_Date } from '../types';
+import { GenericItem, GenericType, OpeningHour, ScreenName, SVA_Date } from '../types';
 
 import { formatAddress } from './addressHelper';
 import { removeHtml, trimNewLines } from './htmlViewHelper';
 import { mainImageOfMediaContents } from './imageHelper';
 import { momentFormatUtcToLocal } from './momentHelper';
+import { shareMessage } from './shareHelper';
 import { subtitle as formatSubtitle } from './textHelper';
 
 export type ParticipationProjectPayload = {
@@ -88,6 +89,10 @@ type ParticipationProjectPreviewItem = {
       id: string;
     };
     rootRouteName: string;
+    shareContent: {
+      message: string;
+    };
+    suffix: GenericType.ParticipationProject;
     title: string;
   };
   picture: {
@@ -97,7 +102,6 @@ type ParticipationProjectPreviewItem = {
   statusColor?: string;
   statusLabel?: string;
   statusPosition: ParticipationProjectStatusPosition;
-  subtitle?: string;
   title: string;
 };
 
@@ -311,23 +315,40 @@ export const getParticipationProjectPlainBody = (data: ParticipationProject) =>
     trimNewLines(removeHtml(getParticipationProjectBody(data) || ''))
   );
 
-const normalizeParticipationProjectPreviewText = (text?: string) =>
-  trimNewLines(removeHtml(text || ''))
-    ?.replace(/\s+/g, ' ')
-    .trim();
+const getParticipationProjectPreviewTime = (value?: unknown) => {
+  const time = normalizeParticipationProjectValue(value)?.match(/\b\d{1,2}:\d{2}\b/)?.[0];
 
-export const getParticipationProjectPreviewSubtitle = (item: ParticipationProject) =>
-  normalizeParticipationProjectPreviewText(item.contentBlocks?.[0]?.body);
+  if (!time) return;
 
-export const getParticipationProjectPreviewDate = (item: Pick<ParticipationProject, 'dates'>) => {
+  const [hours, minutes] = time.split(':');
+
+  return `${hours.padStart(2, '0')}:${minutes}`;
+};
+
+export const getParticipationProjectPreviewDate = (item: {
+  dates?: SVA_Date[];
+  payload?: unknown;
+}) => {
   const date = item.dates?.[0];
   const dateStart = date?.dateStart;
 
   if (!dateStart) return;
 
-  return [getParticipationProjectListDatePrefix(date), momentFormatUtcToLocal(dateStart)]
+  const formattedDate = [
+    getParticipationProjectListDatePrefix(date),
+    momentFormatUtcToLocal(dateStart)
+  ]
     .filter(Boolean)
     .join(' ');
+  const payloadStartTime =
+    item.payload && typeof item.payload === 'object'
+      ? (item.payload as ParticipationProjectPayload).startTime
+      : undefined;
+  const time = getParticipationProjectPreviewTime(
+    date.timeStart || date.timeFrom || payloadStartTime
+  );
+
+  return formatSubtitle(formattedDate, undefined, time);
 };
 
 export const buildParticipationProjectPreviewItem = (
@@ -345,16 +366,10 @@ export const buildParticipationProjectPreviewItem = (
   } = {}
 ): ParticipationProjectPreviewItem => {
   const type = getParticipationProjectType(item);
-  const subtitle = getParticipationProjectPreviewSubtitle(item);
   const statusLabel = getParticipationProjectStatusLabel(item);
   const previewDate = getParticipationProjectPreviewDate(item);
   const overtitle = formatSubtitle(previewDate, type, '');
-  const accessibilityLabel = [
-    overtitle,
-    statusLabel,
-    item.title,
-    statusPosition === PARTICIPATION_PROJECT_STATUS_POSITION.REPLACE_TEASER ? undefined : subtitle
-  ]
+  const accessibilityLabel = [overtitle, item.title, statusLabel]
     .filter(Boolean)
     .map((text) => `(${text})`)
     .join(' ');
@@ -369,13 +384,16 @@ export const buildParticipationProjectPreviewItem = (
       query: QUERY_TYPES.GENERIC_ITEM,
       queryVariables: { id: `${item.id}` },
       rootRouteName,
+      shareContent: {
+        message: shareMessage(item, QUERY_TYPES.GENERIC_ITEM)
+      },
+      suffix: GenericType.ParticipationProject,
       details: item
     },
     picture: {
       url: mainImageOfMediaContents(item.mediaContents)
     },
     routeName: ScreenName.Detail,
-    subtitle,
     statusColor: getParticipationProjectStatusColor(item),
     statusLabel,
     statusPosition,

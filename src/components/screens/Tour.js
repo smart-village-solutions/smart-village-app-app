@@ -85,14 +85,12 @@ export const Tour = ({ data, navigation, readAloudControls, route }) => {
   return (
     <View>
       <ImageSection mediaContents={mediaContents} />
-
       <SectionHeader title={title} />
       <Wrapper noPaddingBottom>
         {!!logo && <Logo source={{ uri: logo }} />}
 
         <InfoCard category={category} addresses={addresses} contact={contact} webUrls={webUrls} />
       </Wrapper>
-
       {readAloudControls}
 
       {(!!tourAddresses.length || !!lengthKm) && (

@@ -9,6 +9,7 @@ import {
   Button,
   Checkbox,
   DefaultKeyboardAvoidingView,
+  HtmlView,
   Input,
   RegularText,
   SafeAreaViewFlex,
@@ -16,13 +17,33 @@ import {
 } from '../components';
 import { Icon, consts, device, normalize, texts } from '../config';
 import { collectDeviceInfo } from '../helpers/appUserContentHelper';
-import { useAppInfo, useMatomoTrackScreenView } from '../hooks';
+import { useAppInfo, useMatomoTrackScreenView, useStaticContent } from '../hooks';
 import { QUERY_TYPES, createQuery } from '../queries';
 import { SettingsContext } from '../SettingsProvider';
 import { useThemeStyles } from '../hooks/useThemeStyles';
 import { useTheme } from '../hooks/useTheme';
 
 const { MATOMO_TRACKING, EMAIL_REGEX } = consts;
+const DEFAULT_FEEDBACK_CONTENT_NAME = 'feedbackContent';
+
+const getFeedbackContentName = (settings) =>
+  settings.htmlContentName || DEFAULT_FEEDBACK_CONTENT_NAME;
+
+const FeedbackContent = ({ name }) => {
+  const { data } = useStaticContent({ name, type: 'html' });
+
+  if (!data) return null;
+
+  return (
+    <Wrapper noPaddingTop>
+      <HtmlView html={data} />
+    </Wrapper>
+  );
+};
+
+FeedbackContent.propTypes = {
+  name: PropTypes.string.isRequired
+};
 
 const diagnosticSettingKeys = [
   'includePermissions',
@@ -83,6 +104,7 @@ export const FeedbackScreen = ({ route }) => {
   const [loading, setLoading] = useState(false);
   const { globalSettings } = useContext(SettingsContext);
   const feedbackSettings = globalSettings?.settings?.feedback || {};
+  const feedbackContentName = getFeedbackContentName(feedbackSettings);
   const hasDiagnosticInformation = hasEnabledDiagnosticSetting(feedbackSettings);
   const {
     link,
@@ -305,6 +327,8 @@ export const FeedbackScreen = ({ route }) => {
               {texts.feedbackScreen.inputsLabel.requiredFields}
             </RegularText>
           </Wrapper>
+
+          <FeedbackContent name={feedbackContentName} />
         </ScrollView>
       </DefaultKeyboardAvoidingView>
     </SafeAreaViewFlex>

@@ -1,4 +1,5 @@
 import {
+  buildParticipationProjectPreviewItem,
   getParticipationProjectStatus,
   getParticipationProjectStatusColor,
   getParticipationProjectStatusCounts,
@@ -13,11 +14,15 @@ import {
   PARTICIPATION_PROJECT_DEFAULT_STATUSES,
   ParticipationProject
 } from '../../src/helpers/participationProjectHelper';
-import { GenericItem, SVA_Date } from '../../src/types';
+import { GenericItem, GenericType, SVA_Date } from '../../src/types';
 
 jest.mock('../../src/queries', () => ({
   QUERY_TYPES: {
-    GENERIC_ITEM: 'genericItem'
+    GENERIC_ITEM: 'genericItem',
+    VOLUNTEER: {
+      CALENDAR: 'volunteerCalendar',
+      GROUP: 'volunteerGroup'
+    }
   }
 }));
 
@@ -74,6 +79,26 @@ describe('participation project list dates', () => {
     expect(getParticipationProjectListDatePrefix(date)).toBeUndefined();
   });
 
+  it('adds the imported start time to the participation preview date', () => {
+    const date = buildDate({
+      dateStart: '2026-09-01',
+      timeStart: '18:30'
+    });
+
+    expect(getParticipationProjectPreviewDate(buildParticipationProject(date))).toBe(
+      '01.09.2026, 18:30 Uhr'
+    );
+  });
+
+  it('uses the payload start time when legacy imports do not populate the date time', () => {
+    const project = {
+      ...buildParticipationProject(buildDate({ dateStart: '2026-09-01' })),
+      payload: { startTime: '18:30 Uhr' }
+    };
+
+    expect(getParticipationProjectPreviewDate(project)).toBe('01.09.2026, 18:30 Uhr');
+  });
+
   it('keeps the explicit open-start marker for participations without an end date', () => {
     const date = buildDate({
       dateStart: '2026-01-28',
@@ -81,6 +106,20 @@ describe('participation project list dates', () => {
     });
 
     expect(getParticipationProjectListDatePrefix(date)).toBe('ab');
+  });
+});
+
+describe('participation project preview actions', () => {
+  it('provides share content and the participation bookmark category to detail routes', () => {
+    const project = {
+      ...buildParticipationProjectWithStatus('active'),
+      title: 'Beteiligung zum Stadtpark'
+    };
+    const previewItem = buildParticipationProjectPreviewItem(project);
+
+    expect(previewItem.params.suffix).toBe(GenericType.ParticipationProject);
+    expect(previewItem.params.shareContent.message).toContain('Beteiligung zum Stadtpark');
+    expect(previewItem).not.toHaveProperty('subtitle');
   });
 });
 

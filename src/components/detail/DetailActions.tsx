@@ -4,6 +4,7 @@ import { ShareContent, View, ViewStyle } from 'react-native';
 import { Divider } from 'react-native-elements';
 
 import { normalize, texts } from '../../config';
+import { shareMessage } from '../../helpers/shareHelper';
 import { useTheme } from '../../hooks/useTheme';
 import { BookmarkHeader } from '../bookmarks';
 import { ShareHeader } from '../ShareHeader';
@@ -17,18 +18,39 @@ type DetailRouteParams = {
 };
 
 type Props = {
+  data?: Record<string, unknown>;
   route: RouteProp<Record<string, DetailRouteParams | undefined>, string>;
   shareContent?: ShareContent;
+  suffix?: number | string;
 };
 
-export const DetailActions = ({ route, shareContent = route.params?.shareContent }: Props) => {
+const resolveShareContent = (
+  shareContent: ShareContent | undefined,
+  routeShareContent: ShareContent | undefined,
+  data: Record<string, unknown> | undefined,
+  query: string | undefined
+) => {
+  if (shareContent) return shareContent;
+  if (routeShareContent) return routeShareContent;
+  if (!data?.id || !query) return;
+
+  return { message: shareMessage(data, query) };
+};
+
+export const DetailActions = ({ data, route, shareContent, suffix }: Props) => {
   const { colors } = useTheme();
   const styles = useMemo(() => createStyles(colors), [colors]);
 
   const query = route.params?.query;
   const id = route.params?.queryVariables?.id;
+  const resolvedShareContent = resolveShareContent(
+    shareContent,
+    route.params?.shareContent,
+    data,
+    query
+  );
   const showBookmark = route.params?.bookmarkable !== false && !!query && id !== undefined;
-  const showShare = !!shareContent;
+  const showShare = !!resolvedShareContent;
   const detailTitle = route.params?.title?.trim();
   const bookmarkLabel = detailTitle
     ? texts.detailActions.remember.replace('{{title}}', detailTitle)
@@ -42,23 +64,22 @@ export const DetailActions = ({ route, shareContent = route.params?.shareContent
   return (
     <View accessibilityRole="toolbar" style={styles.container}>
       {showBookmark && (
-        <>
-          <BookmarkHeader
-            buttonStyle={styles.actionButton}
-            label={bookmarkLabel}
-            route={route}
-            style={styles.actionIcon}
-          />
-
-          <Divider style={styles.divider} />
-        </>
+        <BookmarkHeader
+          buttonStyle={styles.actionButton}
+          label={bookmarkLabel}
+          route={route}
+          style={styles.actionIcon}
+          suffix={suffix}
+        />
       )}
+
+      {showBookmark && showShare && <Divider style={styles.divider} />}
 
       {showShare && (
         <ShareHeader
           buttonStyle={styles.actionButton}
           label={shareLabel}
-          shareContent={shareContent}
+          shareContent={resolvedShareContent}
           style={styles.actionIcon}
         />
       )}

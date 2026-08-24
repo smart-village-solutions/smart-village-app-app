@@ -12,7 +12,6 @@ import {
   getGenericItemRootRouteName,
   getGenericItemSubtitle
 } from '../genericTypeHelper';
-import { removeHtml, trimNewLines } from '../htmlViewHelper';
 import { mainImageOfMediaContents } from '../imageHelper';
 import { momentFormatUtcToLocal } from '../momentHelper';
 import {
@@ -20,7 +19,6 @@ import {
   getParticipationProjectStatusColor,
   getParticipationProjectStatusLabel,
   normalizeParticipationProjectStatusPosition,
-  PARTICIPATION_PROJECT_STATUS_POSITION,
   PARTICIPATION_PROJECT_STATUS_POSITION_PARAM
 } from '../participationProjectHelper';
 import { shareMessage } from '../shareHelper';
@@ -40,29 +38,14 @@ const GENERIC_TYPES_WITH_DATES = [
   GenericType.Noticeboard
 ];
 
-const normalizeParticipationProjectText = (text) =>
-  trimNewLines(removeHtml(text || ''))
-    ?.replace(/\s+/g, ' ')
-    ?.trim();
-
-const getParticipationProjectSubtitle = (genericItem) =>
-  normalizeParticipationProjectText(genericItem.contentBlocks?.[0]?.body);
-
 const getParticipationProjectListPresentation = (genericItem, queryVariables) => {
   if (genericItem.genericType !== GenericType.ParticipationProject) return;
 
-  const listSubtitle = getParticipationProjectSubtitle(genericItem);
   const statusLabel = getParticipationProjectStatusLabel(genericItem);
   const statusPosition = normalizeParticipationProjectStatusPosition(
     queryVariables?.[PARTICIPATION_PROJECT_STATUS_POSITION_PARAM]
   );
-  const accessibilityLabel = [
-    genericItem.title,
-    statusPosition === PARTICIPATION_PROJECT_STATUS_POSITION.REPLACE_TEASER
-      ? undefined
-      : listSubtitle,
-    statusLabel
-  ]
+  const accessibilityLabel = [genericItem.title, statusLabel]
     .filter(Boolean)
     .map((value) => `(${value})`)
     .join(' ');
@@ -72,8 +55,7 @@ const getParticipationProjectListPresentation = (genericItem, queryVariables) =>
     overtitle: subtitle(getParticipationProjectPreviewDate(genericItem), genericItem.payload?.type),
     statusColor: getParticipationProjectStatusColor(genericItem),
     statusLabel,
-    statusPosition,
-    subtitle: listSubtitle
+    statusPosition
   };
 };
 

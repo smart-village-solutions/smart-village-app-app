@@ -31,6 +31,7 @@ import {
   ParticipationProject,
   ParticipationProjectStatusPosition
 } from '../../helpers/participationProjectHelper';
+import { shareMessage } from '../../helpers/shareHelper';
 import { subtitle as formatSubtitle } from '../../helpers/textHelper';
 import { HOME_REFRESH_EVENT, useMatomoTrackScreenView, useStaticContent } from '../../hooks';
 import { useTheme } from '../../hooks/useTheme';
@@ -182,38 +183,18 @@ const getPayloadType = (payload: unknown) => {
   return (payload as ParticipationProjectPayload).type;
 };
 
-const getContentBlockText = (item: GenericItem) => {
-  const body = item.contentBlocks?.[0]?.body;
-
-  if (!body) return;
-
-  const normalizedBody = trimNewLines(removeHtml(body) || '');
-
-  if (!normalizedBody) return;
-
-  return normalizedBody.replace(/\s+/g, ' ').trim();
-};
-
-const getProjectSubtitle = (item: GenericItem) => getContentBlockText(item);
-
 const buildProjectListItem = (
   item: GenericItem,
   statusPosition: ParticipationProjectStatusPosition,
   bottomDivider = true
 ) => {
   const type = getPayloadType(item.payload);
-  const subtitle = getProjectSubtitle(item);
   const listDate = getParticipationProjectPreviewDate(item);
   const statusLabel = getParticipationProjectStatusLabel(item as ParticipationProject);
 
   const overtitle = formatSubtitle(listDate, type, '');
 
-  const accessibilityLabel = [
-    overtitle,
-    item.title,
-    statusPosition === PARTICIPATION_PROJECT_STATUS_POSITION.REPLACE_TEASER ? undefined : subtitle,
-    statusLabel
-  ]
+  const accessibilityLabel = [overtitle, item.title, statusLabel]
     .filter(Boolean)
     .map((text) => `(${text})`)
     .join(' ');
@@ -228,6 +209,10 @@ const buildProjectListItem = (
       query: QUERY_TYPES.GENERIC_ITEM,
       queryVariables: { id: `${item.id}` },
       rootRouteName: consts.ROOT_ROUTE_NAMES.PARTICIPATION_PROJECTS,
+      shareContent: {
+        message: shareMessage(item, QUERY_TYPES.GENERIC_ITEM)
+      },
+      suffix: GenericType.ParticipationProject,
       details: item
     },
     picture: {
@@ -237,7 +222,6 @@ const buildProjectListItem = (
     statusColor: getParticipationProjectStatusColor(item as ParticipationProject),
     statusLabel,
     statusPosition,
-    subtitle,
     title: item.title || texts.participationProject.participationProject
   };
 };
@@ -383,44 +367,46 @@ export const ParticipationProjectHomeScreen = ({
     const genericItems = data?.[QUERY_TYPES.GENERIC_ITEMS] || [];
     const categoryGroups = buildCategoryItems({ config: homeConfig, items: genericItems });
 
-    return categoryGroups.map((category) => {
-      const activeCountText = texts.participationProject.categoryCount(category.activeCount);
-      const categoryQueryVariables = category.categoryId
-        ? {
-            categoryId: category.categoryId,
-            genericType: GenericType.ParticipationProject,
-            limit: homeConfig.indexLimit,
-            participationOrder: homeConfig.indexOrder,
-            [PARTICIPATION_PROJECT_STATUS_POSITION_PARAM]: homeConfig.statusPosition,
-            [PARTICIPATION_PROJECT_STATUS_FILTER]: [...PARTICIPATION_PROJECT_DEFAULT_STATUSES],
-            subtitleNumberOfLines: homeConfig.subtitleNumberOfLines,
-            titleNumberOfLines: homeConfig.titleNumberOfLines
-          }
-        : {
-            genericType: GenericType.ParticipationProject,
-            ids: category.itemIds,
-            limit: homeConfig.indexLimit,
-            participationOrder: homeConfig.indexOrder,
-            [PARTICIPATION_PROJECT_STATUS_POSITION_PARAM]: homeConfig.statusPosition,
-            [PARTICIPATION_PROJECT_STATUS_FILTER]: [...PARTICIPATION_PROJECT_DEFAULT_STATUSES],
-            subtitleNumberOfLines: homeConfig.subtitleNumberOfLines,
-            titleNumberOfLines: homeConfig.titleNumberOfLines
-          };
+    return categoryGroups
+      .filter((category) => category.activeCount > 0)
+      .map((category) => {
+        const activeCountText = texts.participationProject.categoryCount(category.activeCount);
+        const categoryQueryVariables = category.categoryId
+          ? {
+              categoryId: category.categoryId,
+              genericType: GenericType.ParticipationProject,
+              limit: homeConfig.indexLimit,
+              participationOrder: homeConfig.indexOrder,
+              [PARTICIPATION_PROJECT_STATUS_POSITION_PARAM]: homeConfig.statusPosition,
+              [PARTICIPATION_PROJECT_STATUS_FILTER]: [...PARTICIPATION_PROJECT_DEFAULT_STATUSES],
+              subtitleNumberOfLines: homeConfig.subtitleNumberOfLines,
+              titleNumberOfLines: homeConfig.titleNumberOfLines
+            }
+          : {
+              genericType: GenericType.ParticipationProject,
+              ids: category.itemIds,
+              limit: homeConfig.indexLimit,
+              participationOrder: homeConfig.indexOrder,
+              [PARTICIPATION_PROJECT_STATUS_POSITION_PARAM]: homeConfig.statusPosition,
+              [PARTICIPATION_PROJECT_STATUS_FILTER]: [...PARTICIPATION_PROJECT_DEFAULT_STATUSES],
+              subtitleNumberOfLines: homeConfig.subtitleNumberOfLines,
+              titleNumberOfLines: homeConfig.titleNumberOfLines
+            };
 
-      return {
-        accessibilityLabel: `(${category.title}) ${activeCountText} ${consts.a11yLabel.button}`,
-        count: category.activeCount,
-        id: category.id,
-        params: {
-          title: category.title,
-          query: QUERY_TYPES.GENERIC_ITEMS,
-          queryVariables: categoryQueryVariables,
-          rootRouteName: consts.ROOT_ROUTE_NAMES.PARTICIPATION_PROJECTS
-        },
-        routeName: ScreenName.Index,
-        title: category.title
-      };
-    });
+        return {
+          accessibilityLabel: `(${category.title}) ${activeCountText} ${consts.a11yLabel.button}`,
+          count: category.activeCount,
+          id: category.id,
+          params: {
+            title: category.title,
+            query: QUERY_TYPES.GENERIC_ITEMS,
+            queryVariables: categoryQueryVariables,
+            rootRouteName: consts.ROOT_ROUTE_NAMES.PARTICIPATION_PROJECTS
+          },
+          routeName: ScreenName.Index,
+          title: category.title
+        };
+      });
   }, [data, homeConfig]);
 
   const genericItems = useMemo(() => data?.[QUERY_TYPES.GENERIC_ITEMS] || [], [data]);

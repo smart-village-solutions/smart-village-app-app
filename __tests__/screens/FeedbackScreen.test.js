@@ -20,6 +20,7 @@ const mockCreateAppUserContent = jest.fn();
 const mockCollectDeviceInfo = jest.fn();
 const mockGoBack = jest.fn();
 let mockPlatform = 'ios';
+const mockUseStaticContent = jest.fn();
 const mockFormData = {
   name: 'Erika Beispiel',
   email: 'erika@example.org',
@@ -99,6 +100,7 @@ jest.mock('../../src/components', () => {
       </Pressable>
     ),
     DefaultKeyboardAvoidingView: ({ children }) => <View>{children}</View>,
+    HtmlView: ({ html }) => <Text testID="feedback-html-content">{html}</Text>,
     Input: () => null,
     RegularText: ({ children, ...props }) => <Text {...props}>{children}</Text>,
     SafeAreaViewFlex: ({ children }) => <View>{children}</View>,
@@ -168,7 +170,8 @@ const appInfo = {
 
 jest.mock('../../src/hooks', () => ({
   useAppInfo: () => appInfo,
-  useMatomoTrackScreenView: jest.fn()
+  useMatomoTrackScreenView: jest.fn(),
+  useStaticContent: (...args) => mockUseStaticContent(...args)
 }));
 
 jest.mock('../../src/queries', () => ({
@@ -216,6 +219,7 @@ describe('FeedbackScreen diagnostic payload', () => {
     jest.clearAllMocks();
     mockCreateAppUserContent.mockResolvedValue({});
     mockCollectDeviceInfo.mockResolvedValue(undefined);
+    mockUseStaticContent.mockReturnValue({ data: '<p>Feedback footer</p>' });
     mockFormData.consent = true;
     mockFormData.includeDiagnosticInformation = false;
     mockPlatform = 'ios';
@@ -232,6 +236,27 @@ describe('FeedbackScreen diagnostic payload', () => {
         children: 'Diagnoseinformationen mitsenden'
       })
     ).toHaveLength(0);
+  });
+
+  it('renders the default feedback HTML content at the bottom of the form', async () => {
+    const component = await renderAndSubmit(undefined);
+
+    expect(mockUseStaticContent).toHaveBeenCalledWith({
+      name: 'feedbackContent',
+      type: 'html'
+    });
+    expect(component.root.findByProps({ testID: 'feedback-html-content' }).props.children).toBe(
+      '<p>Feedback footer</p>'
+    );
+  });
+
+  it('loads feedback HTML from the name configured in global settings', async () => {
+    await renderAndSubmit({ htmlContentName: 'customFeedbackContent' });
+
+    expect(mockUseStaticContent).toHaveBeenCalledWith({
+      name: 'customFeedbackContent',
+      type: 'html'
+    });
   });
 
   it.each([

@@ -17,8 +17,10 @@ const testCases: TestCase[] = [
   { textScaleMultiplier: 1, orientation: 'landscape', expectedColumns: 5 },
   { textScaleMultiplier: 1.2, orientation: 'portrait', expectedColumns: 2 },
   { textScaleMultiplier: 1.2, orientation: 'landscape', expectedColumns: 4 },
-  { textScaleMultiplier: 1.3, orientation: 'portrait', expectedColumns: 1 },
-  { textScaleMultiplier: 1.3, orientation: 'landscape', expectedColumns: 2 }
+  { textScaleMultiplier: 1.3, orientation: 'portrait', expectedColumns: 2 },
+  { textScaleMultiplier: 1.3, orientation: 'landscape', expectedColumns: 4 },
+  { textScaleMultiplier: 5, orientation: 'portrait', expectedColumns: 2 },
+  { textScaleMultiplier: 5, orientation: 'landscape', expectedColumns: 4 }
 ];
 
 describe('serviceTileLayout', () => {

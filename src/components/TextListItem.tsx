@@ -178,6 +178,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
         color={statusColor}
         containerStyle={styles.statusWrapper}
         label={statusLabel}
+        small
       />
     ) : null;
 
@@ -220,8 +221,8 @@ export const TextListItem: NamedExoticComponent<Props> & {
                 {trimNewLines(overtitle)}
               </HeadlineText>
             )}
-            {statusIndicator}
             {titleText}
+            {statusIndicator}
             {showSubtitle && (
               <RegularText small style={styles.subtitle} numberOfLines={subtitleNumberOfLines}>
                 {subtitle}
@@ -235,8 +236,8 @@ export const TextListItem: NamedExoticComponent<Props> & {
                 {trimNewLines(overtitle)}
               </HeadlineText>
             )}
-            {statusIndicator}
             {titleText}
+            {statusIndicator}
             {showSubtitle && (
               <RegularText small style={styles.subtitle} numberOfLines={subtitleNumberOfLines}>
                 {subtitle}
@@ -293,7 +294,7 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors']) =>
       alignSelf: 'flex-start'
     },
     statusWrapper: {
-      marginBottom: normalize(6)
+      marginTop: normalize(4)
     },
     statustitleWrapper: {
       marginTop: normalize(7)

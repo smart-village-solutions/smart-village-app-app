@@ -9,9 +9,15 @@ type Props = {
   color?: string;
   containerStyle?: StyleProp<ViewStyle>;
   label: string;
+  small?: boolean;
 };
 
-export const ParticipationProjectStatusIndicator = ({ color, containerStyle, label }: Props) => (
+export const ParticipationProjectStatusIndicator = ({
+  color,
+  containerStyle,
+  label,
+  small
+}: Props) => (
   <View
     accessibilityLabel={`${texts.participationProject.status}: ${label}`}
     accessibilityRole="text"
@@ -25,7 +31,7 @@ export const ParticipationProjectStatusIndicator = ({ color, containerStyle, lab
         style={[styles.dot, { backgroundColor: color }]}
       />
     )}
-    <RegularText accessible={false} importantForAccessibility="no">
+    <RegularText accessible={false} importantForAccessibility="no" small={small}>
       {label}
     </RegularText>
   </View>

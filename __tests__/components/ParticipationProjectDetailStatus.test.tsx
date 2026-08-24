@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires, react/prop-types */
 import React from 'react';
 import { render } from '@testing-library/react-native';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 import { ParticipationProjectDetail } from '../../src/components/screens/ParticipationProjectDetail';
 
@@ -51,7 +51,10 @@ jest.mock('../../src/helpers', () => ({
     RECENTLY_ENDED: 'recently_ended',
     EMPTY: 'empty'
   },
-  buildParticipationProjectCalendarValues: jest.fn(() => ({})),
+  buildParticipationProjectCalendarValues: jest.fn(() => ({
+    endDatetime: '2026-08-24T11:00:00',
+    startDatetime: '2026-08-24T10:00:00'
+  })),
   getGenericItemMatomoName: jest.fn(() => 'ParticipationProject'),
   getParticipationProjectBody: jest.fn(),
   getParticipationProjectLocationText: jest.fn(),
@@ -116,6 +119,36 @@ jest.mock('../../src/components/screens/OperatingCompany', () => ({
 }));
 
 describe('ParticipationProjectDetail status', () => {
+  it('renders detail actions at the end of the overview section', () => {
+    const screen = render(
+      <ParticipationProjectDetail
+        data={
+          {
+            categories: [],
+            contacts: [{ firstName: 'Erika' }],
+            contentBlocks: [],
+            dates: [],
+            id: 'participation-project-actions',
+            mediaContents: [],
+            payload: {},
+            title: 'Beteiligung mit Aktionen',
+            webUrls: []
+          } as never
+        }
+        readAloudControls={<Text>Bookmark und Teilen</Text>}
+        route={{ params: { title: 'Beteiligung' } }}
+      />
+    );
+    const renderedTexts = screen.UNSAFE_getAllByType(Text).map((text) => text.props.children);
+
+    expect(renderedTexts.indexOf('Übersicht')).toBeLessThan(
+      renderedTexts.indexOf('Termin speichern')
+    );
+    expect(renderedTexts.indexOf('Termin speichern')).toBeLessThan(
+      renderedTexts.indexOf('Bookmark und Teilen')
+    );
+  });
+
   it('renders status color and text with one screen-reader label', () => {
     const screen = render(
       <ParticipationProjectDetail

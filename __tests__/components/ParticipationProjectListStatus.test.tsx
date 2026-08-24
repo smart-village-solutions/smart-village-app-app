@@ -73,22 +73,22 @@ const buildItem = (statusPosition: 'belowTeaser' | 'replaceTeaser'): ItemData =>
   statusColor: 'green',
   statusLabel: 'Aktiv',
   statusPosition,
-  subtitle: 'Teaser der Beteiligung',
   title: 'Beteiligung zum Stadtpark'
 });
 
-const expectStatusBetweenOvertitleAndTitle = (screen: ReturnType<typeof render>) => {
+const expectStatusBelowTitle = (screen: ReturnType<typeof render>) => {
   const renderedTexts = screen.UNSAFE_getAllByType(Text).map((text) => text.props.children);
   const overtitleIndex = renderedTexts.indexOf('19.08.2026 | Veranstaltung');
   const statusIndex = renderedTexts.indexOf('Aktiv');
   const titleIndex = renderedTexts.indexOf('Beteiligung zum Stadtpark');
 
-  expect(overtitleIndex).toBeLessThan(statusIndex);
-  expect(statusIndex).toBeLessThan(titleIndex);
+  expect(overtitleIndex).toBeLessThan(titleIndex);
+  expect(titleIndex).toBeLessThan(statusIndex);
+  expect(screen.getByText('Aktiv').props.small).toBe(true);
 };
 
 describe('Participation Project list status variants', () => {
-  it('replaces the teaser with the API status in the replacement variant', () => {
+  it('renders the API status without an untertitle in the replacement variant', () => {
     const screen = render(
       <TextListItem item={buildItem('replaceTeaser')} navigation={{ push: jest.fn() } as never} />
     );
@@ -96,17 +96,17 @@ describe('Participation Project list status variants', () => {
     expect(screen.queryByText('Teaser der Beteiligung')).toBeNull();
     expect(screen.getByText('Aktiv')).toBeTruthy();
     expect(screen.getByLabelText('Status: Aktiv')).toBeTruthy();
-    expectStatusBetweenOvertitleAndTitle(screen);
+    expectStatusBelowTitle(screen);
   });
 
-  it('keeps the teaser while rendering the API status between overtitle and title', () => {
+  it('renders the smaller API status below the title without an untertitle', () => {
     const screen = render(
       <TextListItem item={buildItem('belowTeaser')} navigation={{ push: jest.fn() } as never} />
     );
 
-    expect(screen.getByText('Teaser der Beteiligung')).toBeTruthy();
+    expect(screen.queryByText('Teaser der Beteiligung')).toBeNull();
     expect(screen.getByText('Aktiv')).toBeTruthy();
-    expectStatusBetweenOvertitleAndTitle(screen);
+    expectStatusBelowTitle(screen);
     const statusDotStyle = screen
       .UNSAFE_getAllByType(View)
       .map((view) => StyleSheet.flatten(view.props.style))

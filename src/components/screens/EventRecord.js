@@ -152,6 +152,7 @@ export const EventRecord = ({ data, readAloudControls, route }) => {
           webUrls={webUrlsSettings?.displayOnlySummary === 'true' ? [] : webUrls}
         />
       </Wrapper>
+      {readAloudControls}
 
       {readAloudControls}
 

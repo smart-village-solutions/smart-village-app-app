@@ -224,7 +224,7 @@ export const DetailScreen = ({ navigation, route }) => {
 
   if (!Component) return null;
 
-  const detailActions = <DetailActions route={route} />;
+  const detailActions = <DetailActions data={detailData} route={route} suffix={genericType} />;
 
   return (
     <SafeAreaViewFlex>

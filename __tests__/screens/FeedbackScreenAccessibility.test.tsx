@@ -54,6 +54,7 @@ jest.mock('../../src/components', () => {
     Checkbox: (props) => ReactLocal.createElement('mock-checkbox', props),
     DefaultKeyboardAvoidingView: ({ children }) =>
       ReactLocal.createElement('mock-keyboard-avoiding-view', {}, children),
+    HtmlView: (props) => ReactLocal.createElement('mock-html-view', props),
     Input: (props) => ReactLocal.createElement('mock-input', props),
     RegularText: ({ children, ...props }) =>
       ReactLocal.createElement('mock-regular-text', props, children),
@@ -109,7 +110,8 @@ jest.mock('../../src/config', () => ({
 
 jest.mock('../../src/hooks', () => ({
   useAppInfo: () => ({ version: '1.0.0' }),
-  useMatomoTrackScreenView: jest.fn()
+  useMatomoTrackScreenView: jest.fn(),
+  useStaticContent: () => ({ data: undefined })
 }));
 
 jest.mock('../../src/helpers/appUserContentHelper', () => ({

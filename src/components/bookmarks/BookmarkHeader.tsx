@@ -18,6 +18,7 @@ type Props = {
   label?: string;
   route: RouteProp<Record<string, BookmarkRouteParams | undefined>, string>;
   style?: StyleProp<ViewStyle>;
+  suffix?: number | string;
 };
 
 type BookmarkRouteParams = {
@@ -35,12 +36,18 @@ const BookmarkLabel = ({ label }: { label?: string }) =>
 const getIconColor = (label: string | undefined, colors: ReturnType<typeof useTheme>['colors']) =>
   label ? colors.primary : colors.darkText;
 
-export const BookmarkHeader = ({ buttonStyle, label, route, style }: Props) => {
+export const BookmarkHeader = ({
+  buttonStyle,
+  label,
+  route,
+  style,
+  suffix: suffixOverride
+}: Props) => {
   const { colors } = useTheme();
 
   const { toggleBookmark } = useContext(BookmarkContext);
 
-  const suffix = route.params?.suffix ?? '';
+  const suffix = suffixOverride ?? route.params?.suffix ?? '';
   const query = route.params?.query ?? '';
   const queryVariables = route.params?.queryVariables ?? {};
   const id = queryVariables.id ?? '';
