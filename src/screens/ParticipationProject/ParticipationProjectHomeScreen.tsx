@@ -15,7 +15,6 @@ import {
   WrapperVertical
 } from '../../components';
 import { consts, normalize, texts } from '../../config';
-import { removeHtml, trimNewLines } from '../../helpers/htmlViewHelper';
 import { mainImageOfMediaContents } from '../../helpers/imageHelper';
 import { matomoTrackingString } from '../../helpers/matomoHelper';
 import {

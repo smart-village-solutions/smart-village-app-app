@@ -21,10 +21,12 @@ export type FilterTypesProps = {
     placeholder?: string;
   };
   data: DropdownProps[] | DatesTypes[] | StatusProps[] | number[];
+  inlineDropdown?: boolean;
   isMultiselect?: boolean;
   label?: string;
   name: keyof FilterProps;
   placeholder?: string;
+  requireSelection?: boolean;
   searchable?: boolean;
   searchPlaceholder?: string;
   type?: string;

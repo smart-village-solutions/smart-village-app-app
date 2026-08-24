@@ -98,9 +98,7 @@ jest.mock('../../src/helpers', () => ({
   graphqlFetchPolicy: jest.fn(() => 'cache-first'),
   isOpen: jest.fn(() => ({ open: true })),
   isParticipationProjectMapEligible: jest.fn(
-    (item) =>
-      ['active', 'announced'].includes(item.payload?.status) &&
-      !!(item.locations?.[0]?.geoLocation || item.addresses?.[0]?.geoLocation)
+    (item) => !!(item.locations?.[0]?.geoLocation || item.addresses?.[0]?.geoLocation)
   ),
   isParticipationProjectStatus: jest.fn(
     (item, status) => (item.payload?.status?.trim().toLowerCase() || 'empty') === status
@@ -253,10 +251,12 @@ const { useQuery } = jest.requireMock('react-apollo') as {
 
 const renderScreen = ({
   genericItems,
-  genericType = GenericType.ParticipationProject
+  genericType = GenericType.ParticipationProject,
+  participationStatus
 }: {
   genericItems: Array<Record<string, unknown>>;
   genericType?: GenericType | string;
+  participationStatus?: string[];
 }) => {
   const navigation = {
     goBack: jest.fn(),
@@ -268,7 +268,8 @@ const renderScreen = ({
     params: {
       query: 'genericItems',
       queryVariables: {
-        genericType
+        genericType,
+        ...(participationStatus && { participationStatus })
       },
       rootRouteName: 'participation-projects',
       title: 'Beteiligungsprojekte'
@@ -345,6 +346,32 @@ describe('ParticipationProjectIndexMapButton', () => {
       title: 'Beteiligungsprojekte'
     });
   });
+
+  it.each(['announced', 'completed'])(
+    'shows the floating button when only %s geocoded Participation items are selected',
+    (status) => {
+      const { navigation, screen } = renderScreen({
+        genericItems: [
+          {
+            id: `${status}-project`,
+            locations: [{ geoLocation: { latitude: 52.1, longitude: 11.6 } }],
+            payload: { status },
+            title: 'Projekt'
+          }
+        ],
+        participationStatus: [status]
+      });
+
+      fireEvent.press(screen.getByText('Kartenansicht'));
+
+      expect(navigation.navigate).toHaveBeenCalledWith(
+        ScreenName.ParticipationProjectMap,
+        expect.objectContaining({
+          queryVariables: expect.objectContaining({ participationStatus: [status] })
+        })
+      );
+    }
+  );
 
   it('hides the button for non-Participation generic lists', () => {
     const { screen } = renderScreen({

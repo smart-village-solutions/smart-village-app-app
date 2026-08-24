@@ -66,7 +66,21 @@ jest.mock('../../src/helpers', () => ({
 }));
 
 jest.mock('../../src/components/Button', () => ({
-  Button: ({ title }) => title
+  Button: ({ disabled, onPress, title }) => {
+    const ReactLocal = require('react');
+    const { Text, TouchableOpacity } = require('react-native');
+
+    return (
+      <TouchableOpacity
+        accessibilityLabel={title}
+        accessibilityRole="button"
+        disabled={disabled}
+        onPress={onPress}
+      >
+        <Text>{title}</Text>
+      </TouchableOpacity>
+    );
+  }
 }));
 
 jest.mock('../../src/components/Text', () => ({
@@ -81,7 +95,35 @@ jest.mock('../../src/components/Wrapper', () => ({
 }));
 
 jest.mock('../../src/components/filter/FilterComponent', () => ({
-  FilterComponent: () => null
+  FilterComponent: ({ setFilters }) => {
+    const ReactLocal = require('react');
+    const { Text, TouchableOpacity, View } = require('react-native');
+    const [isDropdownOpen, setIsDropdownOpen] = ReactLocal.useState(false);
+
+    return (
+      <View>
+        <TouchableOpacity
+          accessibilityLabel="Status-Dropdown öffnen"
+          onPress={() => setIsDropdownOpen(true)}
+        >
+          <Text>Status</Text>
+        </TouchableOpacity>
+        {isDropdownOpen && (
+          <TouchableOpacity
+            accessibilityLabel="Abgeschlossen auswählen"
+            onPress={() =>
+              setFilters((filters) => ({
+                ...filters,
+                participationStatus: ['active', 'completed']
+              }))
+            }
+          >
+            <Text>Abgeschlossen</Text>
+          </TouchableOpacity>
+        )}
+      </View>
+    );
+  }
 }));
 
 import { Filter } from '../../src/components/filter/Filter';
@@ -99,6 +141,21 @@ const renderWithAct = (component: React.ReactElement) => {
 };
 
 describe('Filter accessibility', () => {
+  it('counts a configured initial filter as active', () => {
+    const tree = renderWithAct(
+      <Filter
+        countInitialFilter="participationStatus"
+        filterTypes={[{ name: 'participationStatus', type: 'DROPDOWN', data: [{}] } as never]}
+        initialQueryVariables={{ participationStatus: ['active'] }}
+        isOverlay
+        queryVariables={{ participationStatus: ['active'] }}
+        setQueryVariables={jest.fn()}
+      />
+    );
+
+    expect(JSON.stringify(tree.toJSON())).toContain('"1"');
+  });
+
   it('renders the overlay close control as an accessible button with the same dismiss behavior', () => {
     const tree = renderWithAct(
       <Filter
@@ -160,5 +217,45 @@ describe('Filter accessibility', () => {
     );
 
     expect(overlaySurface).toBeDefined();
+  });
+
+  it('applies participation statuses with one press while the dropdown is open', () => {
+    const setQueryVariables = jest.fn();
+    const tree = renderWithAct(
+      <Filter
+        countInitialFilter="participationStatus"
+        filterTypes={[{ name: 'participationStatus', type: 'DROPDOWN', data: [{}] } as never]}
+        initialQueryVariables={{ participationStatus: ['active'] }}
+        isOverlay
+        queryVariables={{ participationStatus: ['active'] }}
+        setQueryVariables={setQueryVariables}
+      />
+    );
+
+    const findTouchable = (accessibilityLabel: string) =>
+      tree.root
+        .findAllByType(TouchableOpacity)
+        .find((touchable) => touchable.props.accessibilityLabel === accessibilityLabel);
+
+    renderer.act(() => {
+      tree.root.findAllByType(TouchableOpacity)[0].props.onPress();
+    });
+    renderer.act(() => {
+      findTouchable('Status-Dropdown öffnen')?.props.onPress();
+    });
+    renderer.act(() => {
+      findTouchable('Abgeschlossen auswählen')?.props.onPress();
+    });
+
+    expect(findTouchable('Abgeschlossen auswählen')).toBeDefined();
+
+    renderer.act(() => {
+      findTouchable('Filtern')?.props.onPress();
+    });
+
+    expect(setQueryVariables).toHaveBeenCalledWith({
+      participationStatus: ['active', 'completed']
+    });
+    expect(findTouchable('Abgeschlossen auswählen')).toBeUndefined();
   });
 });

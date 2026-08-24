@@ -9,6 +9,7 @@ import { ThemeContext } from '../../src/ThemeContext';
 import { ScreenName } from '../../src/types';
 
 const DETAIL_ROUTE_NAME = 'Detail';
+const mockTextListItem = jest.fn();
 
 jest.mock('react-query', () => ({
   useQuery: jest.fn()
@@ -77,11 +78,20 @@ jest.mock('../../src/components', () => {
       return <View testID="maplibre" />;
     },
     RegularText: ({ children }) => <Text>{children}</Text>,
-    TextListItem: ({ item, navigation }) => (
-      <Text testID="preview-card" onPress={() => navigation.navigate(item.routeName, item.params)}>
-        {item.title}
-      </Text>
-    ),
+    TextListItem: (props) => {
+      mockTextListItem(props);
+
+      const { item, navigation } = props;
+
+      return (
+        <Text
+          testID="preview-card"
+          onPress={() => navigation.navigate(item.routeName, item.params)}
+        >
+          {item.title}
+        </Text>
+      );
+    },
     Wrapper: ({ children }) => <View>{children}</View>
   };
 });
@@ -129,6 +139,7 @@ const buildItem = ({
 describe('ParticipationProjectMapScreen', () => {
   beforeEach(() => {
     mockMapLibre.mockReset();
+    mockTextListItem.mockReset();
     useQuery.mockReset();
   });
 
@@ -213,6 +224,28 @@ describe('ParticipationProjectMapScreen', () => {
       mockMapLibre.mock.calls[0][0].onMarkerPress('active-1');
     });
 
+    expect(mockTextListItem).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        containerStyle: expect.objectContaining({ alignItems: 'stretch' }),
+        imageContainerStyle: expect.objectContaining({
+          alignSelf: 'stretch',
+          overflow: 'hidden',
+          width: 96
+        }),
+        imageStyle: expect.objectContaining({
+          height: '100%',
+          width: 96
+        }),
+        imageContentPosition: 'left center',
+        item: expect.objectContaining({
+          picture: { url: 'https://example.com/image.jpg' },
+          title: 'Projekt active-1'
+        }),
+        leftImage: true,
+        listsWithoutArrows: true,
+        noSubtitle: true
+      })
+    );
     expect(screen.getByText('Projekt active-1')).toBeTruthy();
     fireEvent.press(screen.getByTestId('preview-card'));
 

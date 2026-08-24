@@ -1,4 +1,5 @@
 import { StackNavigationProp } from 'expo-router/js-stack';
+import type { ImageContentPosition } from 'expo-image';
 import PropTypes from 'prop-types';
 import React, { memo, NamedExoticComponent, useMemo, Validator } from 'react';
 import { ImageStyle, StyleSheet, TextStyle, ViewStyle } from 'react-native';
@@ -50,6 +51,7 @@ type Props = {
   accessibilityLabel?: string;
   containerStyle?: ViewStyle;
   imageContainerStyle?: ViewStyle;
+  imageContentPosition?: ImageContentPosition;
   imageStyle?: ImageStyle;
   item: ItemData;
   leftImage?: boolean;
@@ -75,6 +77,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
     accessibilityLabel,
     containerStyle,
     imageContainerStyle,
+    imageContentPosition,
     imageStyle,
     item,
     leftImage = false,
@@ -208,6 +211,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
           (leftImage && !!picture?.url ? (
             <Image
               source={{ uri: picture.url }}
+              contentPosition={imageContentPosition}
               style={[styles.smallImage, imageStyle, withCard && styles.withBigCardStyle]}
               borderRadius={normalize(8)}
               containerStyle={[styles.smallImageContainer, imageContainerStyle]}
@@ -318,6 +322,7 @@ TextListItem.propTypes = {
   accessibilityLabel: PropTypes.string,
   containerStyle: PropTypes.object,
   imageContainerStyle: PropTypes.object,
+  imageContentPosition: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   imageStyle: PropTypes.object,
   item: PropTypes.object.isRequired,
   leftImage: PropTypes.bool,

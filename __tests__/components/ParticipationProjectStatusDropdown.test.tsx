@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { fireEvent, render, waitFor } from '@testing-library/react-native';
 import { Text } from 'react-native';
 
-import { DropdownFilter } from '../../src/components/filter/DropdownFilter';
+import { FilterComponent } from '../../src/components/filter/FilterComponent';
 import { FilterProps } from '../../src/types';
 
 jest.mock('../../src/helpers', () => ({
@@ -21,30 +21,42 @@ jest.mock('../../src/helpers', () => ({
   }
 }));
 
+jest.mock('../../src/components/filter/DateFilter', () => ({ DateFilter: () => null }));
+jest.mock('../../src/components/filter/SliderFilter', () => ({ SliderFilter: () => null }));
+jest.mock('../../src/components/filter/Sue', () => ({ StatusFilter: () => null }));
+
 jest.mock('../../src/components/DropdownSelect', () => {
   const React = require('react');
   const { Text, View } = require('react-native');
 
   return {
-    DropdownSelect: ({ data, setData }) => (
-      <View>
-        <Text testID="dropdown-state">
-          {data.map((item) => `${item.id}:${item.selected}`).join('|')}
-        </Text>
-        <Text
-          onPress={() =>
-            setData(
-              data.map((item) => ({
-                ...item,
-                selected: item.id === 3 ? true : item.id === 0 ? false : item.selected
-              }))
-            )
-          }
-        >
-          Select completed
-        </Text>
-      </View>
-    )
+    DropdownSelect: ({ data, setData }) => {
+      const [isOpen, setIsOpen] = React.useState(false);
+
+      return (
+        <View>
+          <Text testID="dropdown-open">{isOpen ? 'open' : 'closed'}</Text>
+          <Text testID="dropdown-state">
+            {data.map((item) => `${item.id}:${item.selected}`).join('|')}
+          </Text>
+          <Text onPress={() => setIsOpen(true)}>Open dropdown</Text>
+          {isOpen && (
+            <Text
+              onPress={() =>
+                setData(
+                  data.map((item) => ({
+                    ...item,
+                    selected: item.id === 3 ? true : item.id === 0 ? false : item.selected
+                  }))
+                )
+              }
+            >
+              Select completed
+            </Text>
+          )}
+        </View>
+      );
+    }
   };
 });
 
@@ -53,6 +65,17 @@ jest.mock('../../src/config', () => ({
     borderRgba: '#000000',
     darkText: '#000000'
   },
+  consts: {
+    FILTER_TYPES: {
+      CHECKBOX: 'checkbox',
+      DATE: 'date',
+      DROPDOWN: 'dropdown',
+      SUE: { STATUS: 'sue-status' },
+      SLIDER: 'slider',
+      TEXT: 'text'
+    }
+  },
+  device: { width: 390 },
   normalize: (value: number) => value
 }));
 
@@ -88,12 +111,17 @@ const StatusDropdownHarness = () => {
   return (
     <>
       <Text testID="selected-statuses">{JSON.stringify(filters.participationStatus)}</Text>
-      <DropdownFilter
-        data={statusOptions}
+      <FilterComponent
+        filterTypes={[
+          {
+            data: statusOptions,
+            isMultiselect: true,
+            name: 'participationStatus',
+            placeholder: 'Status auswählen',
+            type: 'dropdown'
+          } as never
+        ]}
         filters={filters}
-        multipleSelect
-        name="participationStatus"
-        placeholder="Status auswählen"
         setFilters={setFilters}
       />
     </>
@@ -106,10 +134,12 @@ describe('ParticipationProject status dropdown', () => {
 
     expect(screen.getByTestId('dropdown-state').props.children).toContain('0:false');
 
+    fireEvent.press(screen.getByText('Open dropdown'));
     fireEvent.press(screen.getByText('Select completed'));
 
     await waitFor(() =>
       expect(screen.getByTestId('selected-statuses').props.children).toBe('["active","completed"]')
     );
+    expect(screen.getByTestId('dropdown-open').props.children).toBe('open');
   });
 });

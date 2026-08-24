@@ -1,22 +1,33 @@
 /* eslint-disable @typescript-eslint/no-var-requires, react/prop-types */
 import React from 'react';
-import { render } from '@testing-library/react-native';
+import { fireEvent, render } from '@testing-library/react-native';
 
 import { DropdownSelect } from '../../src/components/DropdownSelect';
 
 jest.mock('react-native-modal-dropdown', () => {
   const React = require('react');
-  const { View } = require('react-native');
+  const { Text, View } = require('react-native');
 
-  return React.forwardRef(({ children, options, renderRow }, ref) => {
+  return React.forwardRef(({ children, onSelect, options, renderRow }, ref) => {
+    const [visible, setVisible] = React.useState(true);
     React.useImperativeHandle(ref, () => ({ select: jest.fn() }));
 
     return (
-      <View>
+      <View testID="modal-dropdown">
         {children}
-        {options.map((option, index) => (
-          <View key={option}>{renderRow(option, index, false)}</View>
-        ))}
+        {visible &&
+          options.map((option, index) => (
+            <View key={option}>
+              <Text
+                testID={`select-${index}`}
+                onPress={() => {
+                  if (onSelect(index, option) !== false) setVisible(false);
+                }}
+              >
+                {renderRow(option, index, false)}
+              </Text>
+            </View>
+          ))}
       </View>
     );
   });
@@ -97,7 +108,8 @@ jest.mock('../../src/config', () => {
           inactive: 'nicht ausgewählt'
         },
         dropDownMenu: {
-          closed: 'geschlossen'
+          closed: 'geschlossen',
+          open: 'geöffnet'
         }
       }
     }
@@ -124,5 +136,89 @@ describe('DropdownSelect multiselect checkboxes', () => {
     expect(screen.getByLabelText(/Ankündigung \(2\).*nicht ausgewählt/)).toBeTruthy();
     expect(screen.getAllByTestId('checkbox-checked')).toHaveLength(1);
     expect(screen.getAllByTestId('checkbox-unchecked')).toHaveLength(1);
+  });
+
+  it('keeps the dropdown open when selecting multiple options', () => {
+    const setData = jest.fn();
+
+    const screen = render(
+      <DropdownSelect
+        data={[
+          { id: 0, index: 0, selected: false, value: 'Status auswählen' },
+          { id: 1, index: 0, selected: true, value: 'Aktiv (4)' },
+          { id: 2, index: 1, selected: false, value: 'Ankündigung (2)' }
+        ]}
+        label="Status"
+        multipleSelect
+        placeholder="Status auswählen"
+        setData={setData}
+      />
+    );
+
+    fireEvent.press(screen.getByTestId('select-2'));
+
+    expect(screen.getByTestId('select-2')).toBeTruthy();
+    expect(setData).toHaveBeenCalledWith([
+      expect.objectContaining({ selected: false, value: 'Status auswählen' }),
+      expect.objectContaining({ selected: true, value: 'Aktiv (4)' }),
+      expect.objectContaining({ selected: true, value: 'Ankündigung (2)' })
+    ]);
+  });
+
+  it('keeps the last required option selected', () => {
+    const setData = jest.fn();
+    const screen = render(
+      <DropdownSelect
+        data={[
+          { id: 0, index: 0, selected: false, value: 'Status auswählen' },
+          { id: 1, index: 0, selected: true, value: 'Aktiv (4)' },
+          { id: 2, index: 1, selected: false, value: 'Ankündigung (2)' }
+        ]}
+        label="Status"
+        multipleSelect
+        placeholder="Status auswählen"
+        requireSelection
+        setData={setData}
+      />
+    );
+
+    fireEvent.press(screen.getByTestId('select-1'));
+
+    expect(screen.getByTestId('select-1')).toBeTruthy();
+    expect(setData).not.toHaveBeenCalled();
+  });
+
+  it('allows assistive technology to toggle an inline checkbox', () => {
+    const setData = jest.fn();
+    const screen = render(
+      <DropdownSelect
+        data={[
+          { id: 0, index: 0, selected: false, value: 'Status auswählen' },
+          { id: 1, index: 0, selected: true, value: 'Aktiv (4)' },
+          { id: 2, index: 1, selected: false, value: 'Ankündigung (2)' }
+        ]}
+        inlineDropdown
+        isOverlayFilter
+        label="Status"
+        multipleSelect
+        placeholder="Status auswählen"
+        setData={setData}
+      />
+    );
+
+    fireEvent.press(screen.getByLabelText(/Status.*geschlossen/));
+
+    const announcedCheckbox = screen.getByRole('checkbox', {
+      name: /Ankündigung \(2\).*nicht ausgewählt/
+    });
+    expect(announcedCheckbox.props.accessibilityState).toEqual({ checked: false });
+
+    fireEvent.press(announcedCheckbox);
+
+    expect(setData).toHaveBeenCalledWith([
+      expect.objectContaining({ selected: false, value: 'Status auswählen' }),
+      expect.objectContaining({ selected: true, value: 'Aktiv (4)' }),
+      expect.objectContaining({ selected: true, value: 'Ankündigung (2)' })
+    ]);
   });
 });

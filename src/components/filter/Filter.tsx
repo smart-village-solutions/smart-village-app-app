@@ -21,6 +21,7 @@ import { FilterComponent } from './FilterComponent';
 const { a11yLabel } = consts;
 
 type Props = {
+  countInitialFilter?: keyof FilterProps;
   filterTypes?: FilterTypesProps[];
   initialQueryVariables?: FilterProps;
   isOverlay?: boolean;
@@ -72,6 +73,7 @@ const areFiltersReset = (
 };
 
 export const Filter = ({
+  countInitialFilter,
   filterTypes,
   initialQueryVariables,
   isOverlay = false,
@@ -86,6 +88,7 @@ export const Filter = ({
   const [filters, setFilters] = useState<FilterProps>(updatedQueryVariables);
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [filterCount, setFilterCount] = useState(0);
+  const [filterResetKey, setFilterResetKey] = useState(0);
 
   useEffect(() => {
     if (!isOverlay) {
@@ -115,6 +118,7 @@ export const Filter = ({
       setIsCollapsed(!isCollapsed);
 
       setTimeout(() => {
+        setFilterResetKey((previous) => previous + 1);
         setFilters(updatedQueryVariables);
 
         setQueryVariables({
@@ -124,6 +128,7 @@ export const Filter = ({
       }, 500);
     } else {
       setIsCollapsed(!isCollapsed);
+      setFilterResetKey((previous) => previous + 1);
 
       const rest = _omit(initialQueryVariables || {}, ['dateRange']);
 
@@ -149,11 +154,10 @@ export const Filter = ({
 
   useEffect(() => {
     if (isOverlay) {
-      const activeFilters = _omit(filters, [
-        ...Object.keys(initialQueryVariables || {}),
-        'start_date',
-        'end_date'
-      ]);
+      const ignoredInitialFilters = Object.keys(initialQueryVariables || {}).filter(
+        (name) => name !== countInitialFilter
+      );
+      const activeFilters = _omit(filters, [...ignoredInitialFilters, 'start_date', 'end_date']);
 
       const filteredActiveFilters = Object.keys(activeFilters).reduce((acc, key) => {
         if (key !== 'saveable' && key !== 'search' && activeFilters[key] !== false) {
@@ -166,13 +170,14 @@ export const Filter = ({
       const changedInitialFilters =
         filterTypes?.filter(
           ({ name }) =>
+            name !== countInitialFilter &&
             Object.prototype.hasOwnProperty.call(initialQueryVariables || {}, name) &&
             !_isEqual(filters[name], initialQueryVariables?.[name])
         ).length || 0;
 
       setFilterCount(Object.keys(filteredActiveFilters).length + changedInitialFilters);
     }
-  }, [filters, filterTypes, initialQueryVariables, isCollapsed]);
+  }, [countInitialFilter, filters, filterTypes, initialQueryVariables, isCollapsed]);
 
   if (!filterTypes?.length) {
     return null;
@@ -246,6 +251,7 @@ export const Filter = ({
               <ScrollView style={styles.overlayScrollView}>
                 <Wrapper noPaddingTop noPaddingBottom>
                   <FilterComponent
+                    key={filterResetKey}
                     filters={filters}
                     filterTypes={filterTypes}
                     isOverlayFilter
@@ -303,6 +309,7 @@ export const Filter = ({
           <Collapsible collapsed={isCollapsed}>
             <WrapperVertical noPaddingTop>
               <FilterComponent
+                key={filterResetKey}
                 filters={filters}
                 filterTypes={filterTypes}
                 setFilters={setFilters}

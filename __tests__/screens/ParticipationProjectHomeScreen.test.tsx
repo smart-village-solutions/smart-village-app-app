@@ -128,7 +128,6 @@ jest.mock('../../src/helpers/participationProjectHelper', () => ({
 
 jest.mock('../../src/helpers/htmlViewHelper', () => ({
   removeHtml: jest.fn((value) => value),
-  shareMessage: jest.fn((item) => `Teilen: ${item.title}`),
   trimNewLines: jest.fn((value) => value)
 }));
 
@@ -138,6 +137,10 @@ jest.mock('../../src/helpers/imageHelper', () => ({
 
 jest.mock('../../src/helpers/matomoHelper', () => ({
   matomoTrackingString: jest.fn((parts) => parts.join(' / '))
+}));
+
+jest.mock('../../src/helpers/shareHelper', () => ({
+  shareMessage: jest.fn((item) => `Teilen: ${item.title}`)
 }));
 
 jest.mock('../../src/helpers/textHelper', () => ({
@@ -156,17 +159,11 @@ describe('ParticipationProjectHomeScreen', () => {
     useStaticContent.mockReset();
     useQuery.mockReset();
 
-    useStaticContent
-      .mockReturnValueOnce({
-        data: {},
-        loading: false,
-        refetch: jest.fn()
-      })
-      .mockReturnValueOnce({
-        data: '<p>Intro zum Beteiligungsportal</p>',
-        loading: false,
-        refetch: jest.fn()
-      });
+    useStaticContent.mockImplementation(({ type }) => ({
+      data: type === 'json' ? {} : '<p>Intro zum Beteiligungsportal</p>',
+      loading: false,
+      refetch: jest.fn()
+    }));
 
     useQuery.mockReturnValue({
       data: { genericItems: [] },
@@ -308,17 +305,11 @@ describe('ParticipationProjectHomeScreen', () => {
 
   it('forwards the teaser replacement design from static configuration', () => {
     useStaticContent.mockReset();
-    useStaticContent
-      .mockReturnValueOnce({
-        data: { statusPosition: 'replaceTeaser' },
-        loading: false,
-        refetch: jest.fn()
-      })
-      .mockReturnValueOnce({
-        data: undefined,
-        loading: false,
-        refetch: jest.fn()
-      });
+    useStaticContent.mockImplementation(({ type }) => ({
+      data: type === 'json' ? { statusPosition: 'replaceTeaser' } : undefined,
+      loading: false,
+      refetch: jest.fn()
+    }));
 
     const navigation = { navigate: jest.fn() };
     const screen = render(<ParticipationProjectHomeScreen navigation={navigation as never} />);

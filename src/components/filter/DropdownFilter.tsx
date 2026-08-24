@@ -11,11 +11,13 @@ type Props = {
   containerStyle?: StyleProp<ViewStyle>;
   data: DropdownProps[];
   filters: FilterProps;
+  inlineDropdown?: boolean;
   isOverlayFilter?: boolean;
   label?: string;
   multipleSelect?: boolean;
   name: keyof FilterProps;
   placeholder?: string;
+  requireSelection?: boolean;
   searchPlaceholder?: string;
   setFilters: React.Dispatch<FilterProps>;
   showSearch?: boolean;
@@ -25,11 +27,13 @@ export const DropdownFilter = ({
   containerStyle,
   data,
   filters,
+  inlineDropdown,
   isOverlayFilter = false,
   label,
   multipleSelect,
   name,
   placeholder,
+  requireSelection,
   searchPlaceholder,
   setFilters,
   showSearch
@@ -103,10 +107,12 @@ export const DropdownFilter = ({
         <DropdownSelect
           data={dropdownData}
           isOverlayFilter={isOverlayFilter}
+          inlineDropdown={inlineDropdown}
           label={label}
           labelWrapperStyle={styles.labelWrapper}
           multipleSelect={multipleSelect}
           placeholder={placeholder}
+          requireSelection={requireSelection}
           searchInputStyle={styles.searchInput}
           searchPlaceholder={searchPlaceholder}
           setData={setDropdownData}

@@ -173,10 +173,12 @@ const getParticipationProjectStatusFilter = (statusCounts, selectedStatuses) => 
         value: `${statusLabel} (${count})`
       };
     }),
+    inlineDropdown: true,
     isMultiselect: true,
     label: texts.participationProject.status,
     name: PARTICIPATION_PROJECT_STATUS_FILTER,
     placeholder: texts.participationProject.statusFilter,
+    requireSelection: true,
     type: consts.FILTER_TYPES.DROPDOWN
   };
 };
@@ -461,10 +463,8 @@ export const Overviews = ({ navigation, route }) => {
     !!data?.[QUERY_TYPES.GENERIC_ITEMS]?.some(
       (item) =>
         isParticipationProjectMapEligible(item) &&
-        selectedParticipationProjectStatuses.some(
-          (status) =>
-            PARTICIPATION_PROJECT_DEFAULT_STATUSES.includes(status) &&
-            isParticipationProjectStatus(item, status)
+        selectedParticipationProjectStatuses.some((status) =>
+          isParticipationProjectStatus(item, status)
         )
     );
 
@@ -649,6 +649,9 @@ export const Overviews = ({ navigation, route }) => {
     <SafeAreaViewFlex>
       {!hideModalFilter && (
         <Filter
+          countInitialFilter={
+            isParticipationProjectOverview ? PARTICIPATION_PROJECT_STATUS_FILTER : undefined
+          }
           filterTypes={filterTypes}
           initialQueryVariables={participationInitialQueryVariables}
           isOverlay

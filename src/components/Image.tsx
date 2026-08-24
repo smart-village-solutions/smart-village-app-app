@@ -1,5 +1,5 @@
 import { Image as ExpoImage } from 'expo-image';
-import type { ImageSource } from 'expo-image';
+import type { ImageContentPosition, ImageSource } from 'expo-image';
 import { Grayscale } from 'react-native-color-matrix-image-filters';
 import React, { useContext, useMemo, useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
@@ -40,6 +40,7 @@ type ImageProps = {
   imageRightsPosition?: 'inside-bottom-right' | 'outside-bottom';
   isImageFullWidth?: boolean;
   message?: string;
+  contentPosition?: ImageContentPosition;
   onContentHeightChange?: (height: number) => void;
   PlaceholderContent?: React.ReactNode;
   placeholderStyle?: object | object[];
@@ -66,6 +67,7 @@ export const Image = ({
   imageRightsPosition,
   isImageFullWidth,
   message,
+  contentPosition,
   onContentHeightChange,
   PlaceholderContent: placeholderContent,
   placeholderStyle: placeholderStyleProp,
@@ -161,6 +163,7 @@ export const Image = ({
       source={source}
       style={imageStyle}
       contentFit={resizeMode}
+      contentPosition={contentPosition}
       accessible={!!sourceMetadata?.captionText}
       accessibilityLabel={`${sourceMetadata?.captionText ? sourceMetadata.captionText : ''} ${
         device.platform === 'ios' ? consts.a11yLabel.image : ''

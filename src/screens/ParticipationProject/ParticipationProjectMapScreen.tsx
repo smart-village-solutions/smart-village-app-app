@@ -5,14 +5,7 @@ import { StyleSheet, View } from 'react-native';
 import { useQuery } from 'react-query';
 
 import { ReactQueryClient } from '../../ReactQueryClient';
-import {
-  HeaderLeft,
-  LoadingSpinner,
-  MapLibre,
-  RegularText,
-  TextListItem,
-  Wrapper
-} from '../../components';
+import { HeaderLeft, LoadingSpinner, MapLibre, RegularText, TextListItem } from '../../components';
 import { expandMapBounds, getMarkerBounds } from '../../components/map/getMarkerBounds';
 import { consts, normalize } from '../../config';
 import {
@@ -178,14 +171,22 @@ export const ParticipationProjectMapScreen = ({
       )}
 
       {!!selectedPreviewItem && (
-        <Wrapper small style={styles.listItemContainer}>
+        <View style={styles.listItemContainer}>
           <TextListItem
+            containerStyle={styles.textListItemContainer}
+            imageContentPosition="left center"
+            imageContainerStyle={styles.imageRadius}
+            imageStyle={styles.imageStyle}
             item={selectedPreviewItem}
+            leftImage={!!selectedPreviewItem.picture?.url}
+            listItemStyle={styles.listItem}
+            listsWithoutArrows
             navigation={navigation}
+            noSubtitle
             subtitleNumberOfLines={subtitleNumberOfLines}
             titleNumberOfLines={titleNumberOfLines}
           />
-        </Wrapper>
+        </View>
       )}
     </View>
   );
@@ -201,6 +202,22 @@ const createStyles = (colors: ThemeColorPalette) => ({
     flex: 1,
     justifyContent: 'center',
     paddingHorizontal: normalize(24)
+  },
+  imageRadius: {
+    alignSelf: 'stretch',
+    borderBottomLeftRadius: normalize(12),
+    borderTopLeftRadius: normalize(12),
+    overflow: 'hidden',
+    width: normalize(96)
+  },
+  imageStyle: {
+    borderBottomRightRadius: 0,
+    borderTopRightRadius: 0,
+    height: '100%',
+    width: normalize(96)
+  },
+  listItem: {
+    marginVertical: normalize(16)
   },
   listItemContainer: {
     backgroundColor: colors.surface,
@@ -227,5 +244,10 @@ const createStyles = (colors: ThemeColorPalette) => ({
   map: {
     height: '100%',
     width: '100%'
+  },
+  textListItemContainer: {
+    alignItems: 'stretch',
+    padding: 0,
+    paddingVertical: 0
   }
 });
