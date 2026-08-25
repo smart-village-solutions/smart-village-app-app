@@ -360,120 +360,131 @@ export const WasteCollectionSettingsScreen = () => {
   const loadStoredSettingsFromServer = useCallback(async () => {
     setLoadingStoredSettings(true);
 
-    const localReminderState = await readWasteReminderLocalState();
-    const localServerSyncPayload = localReminderState?.serverSyncPayload;
-    const localLocation = localServerSyncPayload?.locationData;
-    const localStreetName = localLocation ? getStreetString(localLocation) : undefined;
+    try {
+      const localReminderState = await readWasteReminderLocalState();
+      const localServerSyncPayload = localReminderState?.serverSyncPayload;
+      const localLocation = localServerSyncPayload?.locationData;
+      const localStreetName = localLocation ? getStreetString(localLocation) : undefined;
 
-    if (localServerSyncPayload && localStreetName && localStreetName === effectiveStreetName) {
-      const localDisruptions = localServerSyncPayload.disruptionRegistrations;
-      if (localDisruptions) {
-        const hydratedDisruptions = getDisruptionSettingsFromSyncPayload(localDisruptions);
-        setDisruptionNotificationSettings(hydratedDisruptions.notificationSettings);
-        setDisruptionStoreIds(hydratedDisruptions.storeIds);
-      }
-      if (usedTypes && localServerSyncPayload.activeReminderRegistrations?.length) {
-        dispatch({
-          type: WasteSettingsActions.setReminderSettingsByType,
-          payload: buildReminderSettingsFromRegistrations(
-            usedTypes,
-            localServerSyncPayload.activeReminderRegistrations
-          )
-        });
-      }
-
-      dispatch({
-        type: WasteSettingsActions.updateWasteSettings,
-        payload: {
-          notificationSettings: filterPushReminderNotificationSettings(
-            usedTypes,
-            localServerSyncPayload.notificationSettings
-          ),
-          serverSettings: buildStoredSettingsFromLocalPayload(localServerSyncPayload).map(
-            (registration) => ({
-              city: localLocation?.city ?? '',
-              id: Number(registration.storeId ?? 0),
-              notify_at: buildReminderTimeDate(registration.time).toISOString(),
-              notify_days_before: registration.leadDays,
-              notify_for_waste_type: registration.typeKey,
-              street: localStreetName,
-              zip: localLocation?.zip ?? ''
-            })
-          ),
-          selectedTypeKeys: waste.selectedTypeKeys
+      if (localServerSyncPayload && localStreetName && localStreetName === effectiveStreetName) {
+        const localDisruptions = localServerSyncPayload.disruptionRegistrations;
+        if (localDisruptions) {
+          const hydratedDisruptions = getDisruptionSettingsFromSyncPayload(localDisruptions);
+          setDisruptionNotificationSettings(hydratedDisruptions.notificationSettings);
+          setDisruptionStoreIds(hydratedDisruptions.storeIds);
         }
-      });
-      setLoadingStoredSettings(false);
-      return;
-    }
+        if (usedTypes && localServerSyncPayload.activeReminderRegistrations?.length) {
+          dispatch({
+            type: WasteSettingsActions.setReminderSettingsByType,
+            payload: buildReminderSettingsFromRegistrations(
+              usedTypes,
+              localServerSyncPayload.activeReminderRegistrations
+            )
+          });
+        }
 
-    const completeSettings = ((await getReminderSettings()) ?? []) as WasteReminderSettingJson[];
-    const disruptionSettings = completeSettings.filter((setting) =>
-      ['disruption_location', 'disruption_all_locations'].includes(setting.notify_for_waste_type)
-    );
-    const matchingLocalDisruption = findMatchingLocationDisruption(
-      disruptionSettings,
-      locationData
-    );
-    const globalDisruption = disruptionSettings.find(
-      (setting) => setting.notify_for_waste_type === 'disruption_all_locations'
-    );
-    setDisruptionNotificationSettings((current) => ({
-      disruption_all_locations: !!globalDisruption || current.disruption_all_locations,
-      disruption_location: !!matchingLocalDisruption || current.disruption_location
-    }));
-    setDisruptionStoreIds({
-      ...(globalDisruption ? { disruption_all_locations: globalDisruption.id } : {}),
-      ...(matchingLocalDisruption ? { disruption_location: matchingLocalDisruption.id } : {})
-    });
+        dispatch({
+          type: WasteSettingsActions.updateWasteSettings,
+          payload: {
+            notificationSettings: filterPushReminderNotificationSettings(
+              usedTypes,
+              localServerSyncPayload.notificationSettings
+            ),
+            serverSettings: buildStoredSettingsFromLocalPayload(localServerSyncPayload).map(
+              (registration) => ({
+                city: localLocation?.city ?? '',
+                id: Number(registration.storeId ?? 0),
+                notify_at: buildReminderTimeDate(registration.time).toISOString(),
+                notify_days_before: registration.leadDays,
+                notify_for_waste_type: registration.typeKey,
+                street: localStreetName,
+                zip: localLocation?.zip ?? ''
+              })
+            ),
+            selectedTypeKeys: waste.selectedTypeKeys
+          }
+        });
+        return;
+      }
 
-    const storedSettingsOnServer = completeSettings
-      .filter(
-        (setting) =>
-          !['disruption_location', 'disruption_all_locations'].includes(
-            setting.notify_for_waste_type
-          )
-      )
-      .map((setting: WasteReminderSettingJson) => ({
-        ...setting,
-        street: getStreetString(setting),
-        // Replace null values with empty strings for city and zip in storedSettings to prevent
-        // validation issues
-        city: setting.city ?? '',
-        zip: setting.zip ?? ''
-      }));
+      const fetchResult = await getReminderSettings();
 
-    if (!areValidReminderSettings(storedSettingsOnServer)) {
-      Alert.alert(texts.errors.errorTitle, texts.errors.noData);
-      await applyInitialStoredSettingsFallback();
-      setLoadingStoredSettings(false);
-      return;
-    }
+      if (fetchResult.status !== 'ok') {
+        if (fetchResult.status === 'invalid') {
+          Alert.alert(texts.errors.errorTitle, texts.errors.noData);
+        }
 
-    if (!selectedStreetId || waste.streetId !== selectedStreetId) {
-      await applyInitialStoredSettingsFallback();
-    } else {
-      const streetSettings = storedSettingsOnServer.filter(
-        (item) => item.street === effectiveStreetName
+        await applyInitialStoredSettingsFallback();
+        return;
+      }
+
+      const completeSettings = fetchResult.settings;
+      const disruptionSettings = completeSettings.filter((setting) =>
+        ['disruption_location', 'disruption_all_locations'].includes(setting.notify_for_waste_type)
       );
+      const matchingLocalDisruption = findMatchingLocationDisruption(
+        disruptionSettings,
+        locationData
+      );
+      const globalDisruption = disruptionSettings.find(
+        (setting) => setting.notify_for_waste_type === 'disruption_all_locations'
+      );
+      setDisruptionNotificationSettings((current) => ({
+        disruption_all_locations: !!globalDisruption || current.disruption_all_locations,
+        disruption_location: !!matchingLocalDisruption || current.disruption_location
+      }));
+      setDisruptionStoreIds({
+        ...(globalDisruption ? { disruption_all_locations: globalDisruption.id } : {}),
+        ...(matchingLocalDisruption ? { disruption_location: matchingLocalDisruption.id } : {})
+      });
 
-      if (usedTypes && reminderUiMode === 'flexible-per-type') {
-        dispatch({
-          type: WasteSettingsActions.setReminderSettingsByType,
-          payload: buildReminderSettingsFromServerSettings(usedTypes, streetSettings)
-        });
+      const storedSettingsOnServer = completeSettings
+        .filter(
+          (setting) =>
+            !['disruption_location', 'disruption_all_locations'].includes(
+              setting.notify_for_waste_type
+            )
+        )
+        .map((setting: WasteReminderSettingJson) => ({
+          ...setting,
+          street: getStreetString(setting),
+          // Replace null values with empty strings for city and zip in storedSettings to prevent
+          // validation issues
+          city: setting.city ?? '',
+          zip: setting.zip ?? ''
+        }));
+
+      if (!areValidReminderSettings(storedSettingsOnServer)) {
+        Alert.alert(texts.errors.errorTitle, texts.errors.noData);
+        await applyInitialStoredSettingsFallback();
+        return;
       }
 
-      dispatch({
-        type: WasteSettingsActions.updateWasteSettings,
-        payload: {
-          serverSettings: streetSettings,
-          selectedTypeKeys: waste.selectedTypeKeys
-        }
-      });
-    }
+      if (!selectedStreetId || waste.streetId !== selectedStreetId) {
+        await applyInitialStoredSettingsFallback();
+      } else {
+        const streetSettings = storedSettingsOnServer.filter(
+          (item) => item.street === effectiveStreetName
+        );
 
-    setLoadingStoredSettings(false);
+        if (usedTypes && reminderUiMode === 'flexible-per-type') {
+          dispatch({
+            type: WasteSettingsActions.setReminderSettingsByType,
+            payload: buildReminderSettingsFromServerSettings(usedTypes, streetSettings)
+          });
+        }
+
+        dispatch({
+          type: WasteSettingsActions.updateWasteSettings,
+          payload: {
+            serverSettings: streetSettings,
+            selectedTypeKeys: waste.selectedTypeKeys
+          }
+        });
+      }
+    } finally {
+      setLoadingStoredSettings(false);
+    }
   }, [
     getStreetString,
     isInitial,
