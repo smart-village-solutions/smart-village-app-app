@@ -23,7 +23,7 @@ import {
   WrapperVertical
 } from '../../components';
 import { consts, normalize, texts } from '../../config';
-import { parseListItemsFromQuery } from '../../helpers';
+import { parseListItemsFromQuery, shouldShowInternalSuePendingStatus } from '../../helpers';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { StatusProps, SueViewType } from '../../types';
 import { useThemeStyles } from '../../hooks/useThemeStyles';
@@ -83,11 +83,16 @@ export const SueListScreen = ({ navigation, route }: Props) => {
 
   const styles = useThemeStyles(createStyles);
   const { isConnected } = useContext(NetworkContext);
-  const { appDesignSystem = {} } = useContext(ConfigurationsContext);
+  const { appDesignSystem = {}, sueConfig = {} } = useContext(ConfigurationsContext);
   const { sueStatus = {}, sueListItem = {} } = appDesignSystem;
   const { statuses }: { statuses: StatusProps[] } = sueStatus;
   const { showViewSwitcherButton = false } = sueListItem;
   const query = route.params?.query ?? QUERY_TYPES.SUE.REQUESTS;
+  const showInternalPendingStatus = shouldShowInternalSuePendingStatus(
+    sueConfig.showInternalPendingStatus
+  );
+  const myRequestsOptions =
+    query === QUERY_TYPES.SUE.MY_REQUESTS ? { showInternalPendingStatus } : {};
 
   const initialQueryVariables = route.params?.queryVariables ?? {
     limit,
@@ -113,12 +118,14 @@ export const SueListScreen = ({ navigation, route }: Props) => {
         query,
         {
           ...queryVariablesWithoutSearch,
+          ...myRequestsOptions,
           sort_attribute: queryVariablesWithoutSearch.sortBy || SORT_BY.REQUESTED_DATE_TIME
         }
       ],
       ({ pageParam = 0 }) =>
         getQuery(query)({
           ...queryVariablesWithoutSearch,
+          ...myRequestsOptions,
           sort_attribute: queryVariablesWithoutSearch.sortBy || SORT_BY.REQUESTED_DATE_TIME,
           offset: pageParam
         }),

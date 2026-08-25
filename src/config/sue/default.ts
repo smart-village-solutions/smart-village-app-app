@@ -80,6 +80,7 @@ export const defaultSueAppConfig = {
   limitation: limitationDefaults,
   limitOfArea: limitOfAreaDefaults,
   requiredFields: requiredFieldsDefaults,
+  showInternalPendingStatus: true,
   sueProgress: sueProgressDefaults,
   sueReportScreen: sueReportScreenDefaults
 };

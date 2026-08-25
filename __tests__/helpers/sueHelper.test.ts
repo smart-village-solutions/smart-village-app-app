@@ -1,8 +1,13 @@
 import {
+  getInitialSueStatus,
   getSueApiConfig,
+  getVisibleSueStatus,
   hasSueApiConfiguration,
-  getSueLimitOfAreaCity
+  getSueLimitOfAreaCity,
+  inferSueStatusSource,
+  shouldShowInternalSuePendingStatus
 } from '../../src/helpers/sueHelper';
+import { SUE_STATUS_SOURCE } from '../../src/config';
 
 describe('getSueApiConfig', () => {
   it('returns the selected nested api config when whichApi points to an existing key', () => {
@@ -90,5 +95,44 @@ describe('getSueLimitOfAreaCity', () => {
         areaName: 'Kiel [kreisfreie Stadt]'
       })
     ).toBe('Kiel');
+  });
+});
+
+describe('SUE internal pending status', () => {
+  it.each([
+    [undefined, true],
+    [true, true],
+    [null, true],
+    ['false', true],
+    [false, false]
+  ])('resolves setting %p to %p', (setting, expected) => {
+    expect(shouldShowInternalSuePendingStatus(setting)).toBe(expected);
+  });
+
+  it('creates an internal pending status by default', () => {
+    expect(getInitialSueStatus()).toEqual({
+      status: 'Unbearbeitet',
+      statusSource: SUE_STATUS_SOURCE.INTERNAL
+    });
+    expect(getInitialSueStatus(false)).toEqual({});
+  });
+
+  it('infers legacy status sources without overriding explicit API provenance', () => {
+    expect(inferSueStatusSource({ status: 'Unbearbeitet' })).toBe(SUE_STATUS_SOURCE.INTERNAL);
+    expect(inferSueStatusSource({ status: 'In Bearbeitung' })).toBe(SUE_STATUS_SOURCE.API);
+    expect(
+      inferSueStatusSource({ status: 'Unbearbeitet', statusSource: SUE_STATUS_SOURCE.API })
+    ).toBe(SUE_STATUS_SOURCE.API);
+    expect(inferSueStatusSource({ status: 404 })).toBeUndefined();
+    expect(inferSueStatusSource({})).toBeUndefined();
+  });
+
+  it('hides only internal statuses when explicitly disabled', () => {
+    expect(getVisibleSueStatus({ status: 'Unbearbeitet' }, false)).toBeUndefined();
+    expect(
+      getVisibleSueStatus({ status: 'Unbearbeitet', statusSource: SUE_STATUS_SOURCE.API }, false)
+    ).toBe('Unbearbeitet');
+    expect(getVisibleSueStatus({ status: 'In Bearbeitung' }, false)).toBe('In Bearbeitung');
+    expect(getVisibleSueStatus({ status: 'Unbearbeitet' })).toBe('Unbearbeitet');
   });
 });

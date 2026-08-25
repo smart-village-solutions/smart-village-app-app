@@ -1,10 +1,14 @@
 import { useNavigation } from 'expo-router/react-navigation';
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 
+import { ConfigurationsContext } from '../ConfigurationsProvider';
 import { Icon, normalize } from '../config';
-import { resolveThemeOverrides } from '../helpers/appDesignSystemHelper';
+import {
+  navigateToRoute,
+  resolveThemeOverrides,
+  shouldShowInternalSuePendingStatus
+} from '../helpers';
 import { useTheme } from '../hooks/useTheme';
-import { navigateToRoute } from '../helpers';
 import { QUERY_TYPES } from '../queries';
 import { myRequests } from '../queries/SUE';
 
@@ -38,6 +42,7 @@ export type TImageButton = {
 };
 
 export const ImageButton = ({ button }: { button: TImageButton }) => {
+  const { sueConfig = {} } = useContext(ConfigurationsContext);
   const { mode } = useTheme();
   const themedButton = useMemo(() => resolveThemeOverrides(button, mode), [button, mode]);
   const { iconName, params, routeName, style = {}, targetTabIndex, title } = themedButton;
@@ -55,6 +60,9 @@ export const ImageButton = ({ button }: { button: TImageButton }) => {
 
   const SelectedIcon = Icon[iconName as keyof typeof Icon];
   const navigation = useNavigation();
+  const showInternalPendingStatus = shouldShowInternalSuePendingStatus(
+    sueConfig.showInternalPendingStatus
+  );
 
   // Hide buttons that require saved reports until the async check completes
   const [isVisible, setIsVisible] = useState(params?.query !== QUERY_TYPES.SUE.MY_REQUESTS);
@@ -62,10 +70,10 @@ export const ImageButton = ({ button }: { button: TImageButton }) => {
   useEffect(() => {
     if (params?.query !== QUERY_TYPES.SUE.MY_REQUESTS) return;
 
-    myRequests().then((reports) => {
+    myRequests({ showInternalPendingStatus }).then((reports) => {
       setIsVisible(!!reports?.length);
     });
-  }, [params?.query]);
+  }, [params?.query, showInternalPendingStatus]);
 
   if (!params || !routeName) {
     return null;

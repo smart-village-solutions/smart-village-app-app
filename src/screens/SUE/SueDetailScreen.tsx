@@ -28,14 +28,12 @@ import {
   Wrapper,
   WrapperHorizontal
 } from '../../components';
-import { device, normalize, texts } from '../../config';
-import { readFromStore } from '../../helpers';
+import { SUE_MY_REPORTS, device, normalize, texts } from '../../config';
+import { getVisibleSueStatus, readFromStore } from '../../helpers';
 import { useTheme } from '../../hooks/useTheme';
 import { useThemeStyles } from '../../hooks/useThemeStyles';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { ScreenName } from '../../types';
-
-import { SUE_MY_REPORTS } from './SueReportScreen';
 
 /* eslint-disable complexity */
 export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) => {
@@ -43,7 +41,7 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
 
   const styles = useThemeStyles(createStyles);
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
-  const { appDesignSystem = {} } = useContext(ConfigurationsContext);
+  const { appDesignSystem = {}, sueConfig = {} } = useContext(ConfigurationsContext);
   const { sueStatus = {} } = appDesignSystem;
   const { statuses } = sueStatus;
   const query = route.params?.query ?? QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID;
@@ -88,6 +86,8 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
     );
   }
 
+  const details =
+    query === QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID ? data : route.params?.details;
   const {
     address,
     description,
@@ -101,7 +101,13 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
     serviceRequestId,
     status,
     title
-  } = query === QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID ? data : route.params?.details;
+  } = details;
+  const visibleStatus =
+    query === QUERY_TYPES.SUE.MY_REQUEST_WITH_SERVICE_REQUEST_ID
+      ? getVisibleSueStatus(details, sueConfig.showInternalPendingStatus)
+      : typeof status === 'string'
+      ? status
+      : undefined;
 
   const refresh = async () => {
     setRefreshing(true);
@@ -118,9 +124,11 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
     })
   );
 
-  const matchedStatus = statuses?.find((item: { matchingStatuses: string[] }) =>
-    item.matchingStatuses.includes(status)
-  );
+  const matchedStatus = visibleStatus
+    ? statuses?.find((item: { matchingStatuses: string[] }) =>
+        item.matchingStatuses.includes(visibleStatus)
+      )
+    : undefined;
 
   return (
     <SafeAreaViewFlex>
@@ -148,7 +156,7 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
             </WrapperHorizontal>
           )}
 
-          {!!status && (
+          {!!matchedStatus && (
             <SueStatus iconName={matchedStatus.iconName} status={matchedStatus?.status} />
           )}
 
@@ -253,7 +261,9 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
                 isMyLocationButtonVisible={false}
                 locations={[
                   {
-                    iconName: `Sue${_upperFirst(matchedStatus.iconName)}`,
+                    iconName: matchedStatus?.iconName
+                      ? `Sue${_upperFirst(matchedStatus.iconName)}`
+                      : undefined,
                     id,
                     position: { latitude, longitude }
                   }
@@ -291,7 +301,7 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
 
           {!!requestedDatetime && <SueDatetime requestedDatetime={requestedDatetime} />}
 
-          {!!status && <SueStatuses status={status} />}
+          {!!visibleStatus && <SueStatuses status={visibleStatus} />}
 
           {!!serviceNotice && (
             <>

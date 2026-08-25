@@ -35,10 +35,11 @@ import {
   SueReportUser,
   Wrapper
 } from '../../components';
-import { SUE_REPORT_VALUES, consts, device, normalize, texts } from '../../config';
+import { SUE_MY_REPORTS, SUE_REPORT_VALUES, consts, device, normalize, texts } from '../../config';
 import {
   addToStore,
   formatSizeStandard,
+  getInitialSueStatus,
   getSueLimitOfAreaCity,
   readFromStore
 } from '../../helpers';
@@ -47,8 +48,6 @@ import { useTheme } from '../../hooks/useTheme';
 import { useThemeStyles } from '../../hooks/useThemeStyles';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { postRequests } from '../../queries/SUE';
-
-export const SUE_MY_REPORTS = 'sueMyReports';
 
 const { INPUT_KEYS, MB_TO_BYTES } = consts;
 
@@ -278,6 +277,7 @@ export const SueReportScreen = ({
     limitation = {},
     limitOfArea = {},
     requiredFields = {},
+    showInternalPendingStatus,
     sueProgress = []
   } = sueConfig;
 
@@ -698,8 +698,8 @@ export const SueReportScreen = ({
             requestedDatetime: new Date().toISOString(),
             serviceName: service?.serviceName,
             serviceRequestId,
-            status: 'Unbearbeitet',
-            ...formData
+            ...formData,
+            ...getInitialSueStatus(showInternalPendingStatus)
           });
           setIsDone(true);
           resetStoredValues();
@@ -713,6 +713,7 @@ export const SueReportScreen = ({
       service,
       mutateAsync,
       resetStoredValues,
+      showInternalPendingStatus,
       storeReportValues
     ]
   );

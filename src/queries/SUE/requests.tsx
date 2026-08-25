@@ -1,9 +1,14 @@
 import _camelCase from 'lodash/camelCase';
 import _mapKeys from 'lodash/mapKeys';
 
-import { SUE_STATUS } from '../../components';
-import { addToStore, fetchSueEndpoints, readFromStore } from '../../helpers';
-import { SUE_MY_REPORTS } from '../../screens';
+import { SUE_MY_REPORTS, SUE_STATUS, SUE_STATUS_SOURCE } from '../../config';
+import {
+  addToStore,
+  fetchSueEndpoints,
+  getVisibleSueStatus,
+  inferSueStatusSource,
+  readFromStore
+} from '../../helpers';
 
 import { requestsWithServiceRequestId } from './requestsWithServiceRequestId';
 
@@ -39,7 +44,11 @@ export const requests = async (queryVariables) => {
 };
 
 /* eslint-disable complexity */
-export const myRequests = async (): Promise<any[]> => {
+export const myRequests = async ({
+  showInternalPendingStatus
+}: {
+  showInternalPendingStatus?: unknown;
+} = {}): Promise<any[]> => {
   let myReports = [];
   const now = Date.now();
 
@@ -57,6 +66,11 @@ export const myRequests = async (): Promise<any[]> => {
   const updatedReports = await Promise.all(
     myReports.map(async (item: any) => {
       if (!item) return item;
+
+      const inferredStatusSource = inferSueStatusSource(item);
+      if (inferredStatusSource && !item.statusSource) {
+        item.statusSource = inferredStatusSource;
+      }
 
       // Parse media_url if it exists and is a string
       if (item.media_url && typeof item.media_url === 'string') {
@@ -79,10 +93,16 @@ export const myRequests = async (): Promise<any[]> => {
       if (shouldRefreshStatus) {
         try {
           const onlineReport = await requestsWithServiceRequestId(item.serviceRequestId);
+          const isSuccessfulLookup =
+            !!onlineReport &&
+            typeof onlineReport === 'object' &&
+            typeof onlineReport.status !== 'number';
 
-          // Update status if it changed
-          if (onlineReport?.status && onlineReport.status !== item.status) {
-            item.status = onlineReport.status;
+          if (isSuccessfulLookup) {
+            if (typeof onlineReport.status === 'string' && onlineReport.status.trim()) {
+              item.statusSource = SUE_STATUS_SOURCE.API;
+              item.status = onlineReport.status;
+            }
             item.lastStatusCheck = now;
           }
         } catch (e) {
@@ -90,7 +110,10 @@ export const myRequests = async (): Promise<any[]> => {
         }
       }
 
-      return _mapKeys(item, (value, key) => _camelCase(key));
+      const visibleStatus = getVisibleSueStatus(item, showInternalPendingStatus);
+      const presentationItem = { ...item, status: visibleStatus };
+
+      return _mapKeys(presentationItem, (value, key) => _camelCase(key));
     })
   );
 

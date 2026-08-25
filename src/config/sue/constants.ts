@@ -1,5 +1,11 @@
 export const SUE_MY_REPORTS = 'sueMyReports';
 export const SUE_REPORT_VALUES = 'sueReportValues';
+export const SUE_INTERNAL_PENDING_STATUS = 'Unbearbeitet';
+
+export enum SUE_STATUS_SOURCE {
+  API = 'api',
+  INTERNAL = 'internal'
+}
 
 export enum SUE_STATUS {
   CLOSED = 'TICKET_STATUS_CLOSED',
