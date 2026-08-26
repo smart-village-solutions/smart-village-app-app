@@ -11,7 +11,7 @@ describe('notificationNavigationHelper', () => {
     jest.clearAllMocks();
     mockNavigationRef.isReady.mockReturnValue(false);
 
-    jest.doMock('@react-navigation/native', () => ({
+    jest.doMock('expo-router/react-navigation', () => ({
       createNavigationContainerRef: jest.fn(() => mockNavigationRef)
     }));
     jest.doMock('../../src/config', () => ({

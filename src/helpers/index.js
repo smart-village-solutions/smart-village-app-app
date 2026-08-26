@@ -38,6 +38,7 @@ export * from './matomoHelper';
 export * from './momentHelper';
 export * from './navigationHelper';
 export * from './normalizeStyleValues';
+export * from './notificationHelper';
 export * from './notificationNavigationHelper';
 export * from './openingHoursHelper';
 export * from './participationProjectHelper';

@@ -21,8 +21,9 @@ jest.mock('expo-notifications', () => ({
     mockPushTokenListener = listener;
     return mockPushTokenSubscription;
   }),
-  getLastNotificationResponse: jest.fn(() => null),
-  setNotificationHandler: jest.fn()
+  clearLastNotificationResponse: jest.fn(),
+  setNotificationHandler: jest.fn(),
+  useLastNotificationResponse: jest.fn()
 }));
 
 jest.mock('../../src/helpers', () => ({
@@ -34,6 +35,21 @@ jest.mock('../../src/pushNotifications', () => ({
   getPushTokenFromStorage: jest.fn(),
   updatePushToken: jest.fn()
 }));
+
+const coldStartResponse = {
+  actionIdentifier: 'expo.modules.notifications.actions.DEFAULT',
+  notification: {
+    date: 1_700_000_000,
+    request: {
+      content: {
+        body: 'Test',
+        data: { id: 'news-10', query_type: 'NewsItem' },
+        title: 'Augsburg News'
+      },
+      identifier: undefined
+    }
+  }
+};
 
 const TestPushNotifications = ({ active, onInteraction }) => {
   usePushNotifications(undefined, onInteraction, undefined, active);
@@ -51,6 +67,7 @@ describe('usePushNotifications', () => {
     jest.clearAllMocks();
     mockNotificationResponseListener = undefined;
     mockPushTokenListener = undefined;
+    Notifications.useLastNotificationResponse.mockReturnValue(null);
   });
 
   it('keeps foreground notifications visible by default when no custom behavior is provided', async () => {
@@ -91,6 +108,81 @@ describe('usePushNotifications', () => {
 
     expect(onInteraction).toHaveBeenCalledWith(response);
     expect(Notifications.addPushTokenListener).not.toHaveBeenCalled();
+  });
+
+  it('handles and clears an Android cold-start response without an identifier', async () => {
+    const onInteraction = jest.fn(() => true);
+    Notifications.useLastNotificationResponse.mockReturnValue(coldStartResponse);
+
+    await act(async () => {
+      renderer.create(<TestPushNotifications active={false} onInteraction={onInteraction} />);
+    });
+
+    expect(onInteraction).toHaveBeenCalledWith(coldStartResponse);
+    expect(Notifications.clearLastNotificationResponse).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not handle the same fallback response twice', async () => {
+    const onInteraction = jest.fn(() => true);
+    let component;
+    Notifications.useLastNotificationResponse.mockReturnValue(coldStartResponse);
+
+    await act(async () => {
+      component = renderer.create(
+        <TestPushNotifications active={false} onInteraction={onInteraction} />
+      );
+    });
+
+    Notifications.useLastNotificationResponse.mockReturnValue({
+      ...coldStartResponse,
+      notification: { ...coldStartResponse.notification }
+    });
+
+    await act(async () => {
+      component.update(<TestPushNotifications active={false} onInteraction={onInteraction} />);
+    });
+
+    expect(onInteraction).toHaveBeenCalledTimes(1);
+    expect(Notifications.clearLastNotificationResponse).toHaveBeenCalledTimes(1);
+  });
+
+  it('keeps the response available when navigation throws', async () => {
+    const onInteraction = jest.fn(() => {
+      throw new Error('Navigation is not ready');
+    });
+    const consoleWarn = jest.spyOn(console, 'warn').mockImplementation(() => undefined);
+    Notifications.useLastNotificationResponse.mockReturnValue(coldStartResponse);
+
+    await act(async () => {
+      renderer.create(<TestPushNotifications active={false} onInteraction={onInteraction} />);
+    });
+
+    expect(Notifications.clearLastNotificationResponse).not.toHaveBeenCalled();
+    expect(consoleWarn).toHaveBeenCalled();
+
+    consoleWarn.mockRestore();
+  });
+
+  it('keeps the response retryable when clearing native state fails', async () => {
+    const onInteraction = jest.fn(() => true);
+    const consoleWarn = jest.spyOn(console, 'warn').mockImplementation(() => undefined);
+    Notifications.clearLastNotificationResponse.mockImplementationOnce(() => {
+      throw new Error('Native state could not be cleared');
+    });
+    Notifications.useLastNotificationResponse.mockReturnValue(coldStartResponse);
+
+    await act(async () => {
+      renderer.create(<TestPushNotifications active={false} onInteraction={onInteraction} />);
+    });
+
+    await act(async () => {
+      renderer.create(<TestPushNotifications active={false} onInteraction={onInteraction} />);
+    });
+
+    expect(onInteraction).toHaveBeenCalledTimes(2);
+    expect(Notifications.clearLastNotificationResponse).toHaveBeenCalledTimes(2);
+
+    consoleWarn.mockRestore();
   });
 
   it('refreshes the Expo token on native token rotation and removes the listener', async () => {

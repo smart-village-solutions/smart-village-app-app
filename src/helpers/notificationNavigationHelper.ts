@@ -10,11 +10,15 @@ type NotificationNavigationTarget = {
   params: Record<string, unknown>;
 };
 
+const hasValidNotificationId = (id: unknown): id is string | number =>
+  (typeof id === 'string' || typeof id === 'number') && String(id).trim().length > 0;
+
 export const getNotificationNavigationTarget = (
   data: Record<string, unknown> = {}
 ): NotificationNavigationTarget | undefined => {
-  const { id, query_type: queryType, title } = data;
-  const query = queryType ? getQueryType(queryType) : undefined;
+  const { id, title } = data;
+  const queryType = data.query_type ?? data.queryType;
+  const query = typeof queryType === 'string' ? getQueryType(queryType) : undefined;
   const name = routeNameFromQuery(query);
 
   if (query === QUERY_TYPES.WASTE_ADDRESSES && name === ScreenName.WasteCollection) {
@@ -26,7 +30,7 @@ export const getNotificationNavigationTarget = (
     };
   }
 
-  if (id && name && query) {
+  if (hasValidNotificationId(id) && name && query) {
     const queryVariables = queryVariablesFromQuery(query, data);
 
     return {

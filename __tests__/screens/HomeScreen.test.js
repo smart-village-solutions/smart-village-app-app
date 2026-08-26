@@ -75,6 +75,26 @@ describe('HomeScreen', () => {
     });
   });
 
+  it('supports the camelCase query type used by nested Android payloads', () => {
+    expect(
+      getNotificationNavigationTarget({
+        id: 'news-2',
+        queryType: 'NewsItem',
+        title: 'Cold-start title'
+      })
+    ).toEqual({
+      name: ScreenName.Detail,
+      params: {
+        details: null,
+        query: 'newsItem',
+        queryVariables: { id: 'news-2' },
+        rootRouteName: 'NewsItems',
+        shareContent: null,
+        title: 'Cold-start title'
+      }
+    });
+  });
+
   it('does not build regular detail push navigation without an id', () => {
     expect(getNotificationNavigationTarget({ query_type: 'NewsItem' })).toBeUndefined();
   });

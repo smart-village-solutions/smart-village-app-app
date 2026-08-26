@@ -1,7 +1,7 @@
 import * as Notifications from 'expo-notifications';
 import { useCallback, useContext } from 'react';
 
-import { getNotificationNavigationTarget } from './helpers';
+import { getNotificationNavigationTarget, getPushNotificationNavigationData } from './helpers';
 import { navigateToNotificationTarget } from './helpers/notificationNavigationHelper';
 import { usePushNotifications, useWasteReminderSync } from './hooks';
 import { SettingsContext } from './SettingsProvider';
@@ -12,7 +12,8 @@ export const WasteReminderRuntime = () => {
 
   const interactionHandler = useCallback(
     (response: Notifications.NotificationResponse) => {
-      const data = response?.notification?.request?.content?.data || {};
+      const directData = response?.notification?.request?.content?.data || {};
+      const data = getPushNotificationNavigationData(response)?.data ?? directData;
       const navigationTarget = getNotificationNavigationTarget(data);
 
       if (__DEV__) {
@@ -24,10 +25,11 @@ export const WasteReminderRuntime = () => {
       }
 
       if (!navigationTarget) {
-        return;
+        return false;
       }
 
       navigateToNotificationTarget({ navigationTarget, navigationType });
+      return true;
     },
     [navigationType]
   );
