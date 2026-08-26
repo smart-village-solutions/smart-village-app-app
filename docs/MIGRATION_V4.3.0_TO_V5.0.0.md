@@ -6,7 +6,7 @@ This guide explains how to migrate a tenant or release branch of Smart Village A
 `v4.3.0` codebase to `v5.0.0`. It covers the mobile application, Main-Server configuration, and
 external service contracts that must be considered together during the migration.
 
-In this guide, a *tenant branch* means a municipality- or deployment-specific branch that keeps
+In this guide, a _tenant branch_ means a municipality- or deployment-specific branch that keeps
 its own branding, application identifiers, navigation, and remote configuration on top of the
 shared Smart Village App codebase.
 
@@ -14,13 +14,13 @@ Reference points used while preparing this guide:
 
 - Mobile starting tag: `v4.3.0` / `c14bbad7e708a34f3c931e87d7d26f98e288f37b`
   (4 May 2026)
-- Reviewed `master` snapshot: `5916e8c546c3e5bc8cbfaa9ad8d35d0f72fca981`
-  (18 August 2026)
-- Reviewed range: 284 commits and changes in 666 application-relevant files
+- Reviewed `master` snapshot: `cdf3d38a53bd2c94bb871bb3ce64a8122566d4c0`
+  (26 August 2026)
+- Reviewed range: 417 commits and changes in 868 files
 - Main-Server comparison baseline: `5b4ba192705c3e1c8cb269bdaf301ea1fc5c43f0`
   (4 May 2026)
-- Reviewed remote Main-Server `saas` head: `04d9eb41f2691c257aa7f4cd131b29eb3c84f346`
-  (10 August 2026)
+- Reviewed remote Main-Server `saas` head: `d3c803683d6b041421df656644c610ede61878c5`
+  (26 August 2026)
 
 ### 1.1. The `v5.0.0` tag is the migration source of truth
 
@@ -50,34 +50,38 @@ The most important outcomes of the migration are:
 2. The BUS module has a breaking configuration and transport change. The old `settings.busBb`
    Apollo/GraphQL integration is replaced by `settings.bus` and a live REST/proxy API.
    `federalState` is now required on BUS requests.
-3. No new mandatory Main-Server database migration was identified for the GraphQL queries used by
-   the reviewed v5 mobile code. The required GenericItem and Category fields already existed in the
-   Main-Server baseline reviewed for v4.3.0.
+3. The GraphQL queries used by the reviewed v5 mobile code do not require a new Main-Server schema,
+   but local waste reminders do require Main-Server database and REST-contract changes. Deploy the
+   `local_coverage_until` and `reminder_slot_id` columns and the slot-identity index before enabling
+   flexible reminders.
 4. Main-Server content changes are still mandatory. At minimum, a versioned `globalSettings`
    StaticContent record compatible with `5.0.0` must be prepared. Existing 4.3.x records must be
    retained for older clients.
-5. Accessibility, dark mode, and Participation Projects are configuration-driven. They are not
-   enabled automatically and must be introduced deliberately through `globalSettings`,
-   `tabNavigation`, other static content, and the required data.
-6. The highest merge-conflict risk is in `app.json`, `eas.json`, their template files,
+5. Accessibility, dark mode, Participation Projects, interactive floor plans, cache lifetimes,
+   SUE internal-status presentation, feedback diagnostics, and flexible waste reminders are
+   configuration-driven. Introduce them deliberately through `globalSettings`, module
+   configuration, static content, and the required backend data.
+6. Push navigation now handles foreground, background, and Android cold-start responses at the app
+   root. Push producers must supply the supported `query_type`/`queryType` and `id` payload contract.
+7. The highest merge-conflict risk is in `app.json`, `eas.json`, their template files,
    `package.json`, `yarn.lock`, the legacy `src/config/colors.js`, and tenant-specific navigation or
    static content.
 
 ## 3. Platform and dependency changes
 
-| Area | v4.3.0 | Reviewed v5 target | Migration impact |
-| --- | --- | --- | --- |
-| Node.js | 20.19.4 | 22.13.0 | Align local development, CI, and EAS |
-| Yarn | 1.22.22 | 1.22.22 | Unchanged; generate the lockfile with Yarn 1 |
-| Expo | 54.0.34 | 57.0.14 | Clean prebuild and new development/production builds required |
-| React Native | 0.81.5 | 0.86.2 | Retest native behavior and the supported device matrix |
-| React | 19.1.0 | 19.2.3 | Keep React and the test renderer on compatible versions |
-| TypeScript | 5.9.2 | 6.0.3 | Recheck tenant-specific type errors |
-| Reanimated | 4.1.1 | 4.5.1 | Keep it paired with `react-native-worklets` 0.10.1 |
-| Navigation | Direct `@react-navigation/*` imports | `expo-router` entry points | Do not restore old imports or direct packages |
-| File system | Primarily legacy API | `File`, `Directory`, `Paths`, `expo/fetch` | Retest upload, AR download, and wallet sharing |
-| Carousel | `react-native-snap-carousel` | `react-native-reanimated-carousel` | Retest sizing, autoplay, reduced motion, and accessibility |
-| Chat | GiftedChat 2.8.1 plus patch | GiftedChat 3.4.0 | Message dates and matcher/action APIs changed |
+| Area         | v4.3.0                               | Reviewed v5 target                         | Migration impact                                                                                    |
+| ------------ | ------------------------------------ | ------------------------------------------ | --------------------------------------------------------------------------------------------------- |
+| Node.js      | 20.19.4                              | 22.13.0                                    | Align local development, CI, and EAS                                                                |
+| Yarn         | 1.22.22                              | 1.22.22                                    | Unchanged; generate the lockfile with Yarn 1                                                        |
+| Expo         | 54.0.34                              | 57.0.14                                    | Clean prebuild and new development/production builds required                                       |
+| React Native | 0.81.5                               | 0.86.2                                     | Retest native behavior and the supported device matrix                                              |
+| React        | 19.1.0                               | 19.2.3                                     | Keep React and the test renderer on compatible versions                                             |
+| TypeScript   | 5.9.2                                | 6.0.3                                      | Recheck tenant-specific type errors                                                                 |
+| Reanimated   | 4.1.1                                | 4.5.1                                      | Keep it paired with `react-native-worklets` 0.10.1                                                  |
+| Navigation   | Direct `@react-navigation/*` imports | Primarily `expo-router` entry points       | Do not restore removed navigation packages; review the temporary Floor Plan direct-import exception |
+| File system  | Primarily legacy API                 | `File`, `Directory`, `Paths`, `expo/fetch` | Retest upload, AR download, and wallet sharing                                                      |
+| Carousel     | `react-native-snap-carousel`         | `react-native-reanimated-carousel`         | Retest sizing, autoplay, reduced motion, and accessibility                                          |
+| Chat         | GiftedChat 2.8.1 plus patch          | GiftedChat 3.4.0                           | Message dates and matcher/action APIs changed                                                       |
 
 Official upgrade references:
 
@@ -94,9 +98,11 @@ Official upgrade references:
 - Expo SDK 56 raises the minimum iOS version to 16.4 and requires Xcode 26.4. The existing
   `LSMinimumSystemVersion: "12.0"` value in `app.json` does not guarantee the generated deployment
   target. Verify the generated Xcode project and the resulting App Store device coverage.
-- Application code should no longer import directly from `@react-navigation/*` after the SDK 56
-  migration. The reviewed v5 target uses the Expo Router entry points and removes those direct
-  dependencies.
+- Application code should use the Expo Router navigation entry points after the SDK 56 migration.
+  The reviewed Floor Plan implementation still imports navigation types from
+  `@react-navigation/native` even though the package is not declared directly. Align those imports
+  before release or explicitly declare and support the direct dependency; do not rely silently on a
+  transitive package.
 - The SDK 57 Hermes/Reanimated memory regression was fixed in `expo@57.0.9` and React Native
   0.86.2. The reviewed target uses `expo@57.0.14` and React Native 0.86.2. Do not resolve merge
   conflicts by downgrading to an earlier SDK 57 combination.
@@ -145,6 +151,9 @@ Record the following for every tenant/release branch:
 - tenant-specific colors from the old `src/config/colors.js`;
 - native config plugins and tenant-specific patch files;
 - Main-Server, BUS proxy, SUE, Volunteer, Consul, chatbot, and other external endpoints;
+- existing waste reminder registrations, selected collection address, and push-token ownership;
+- tenant cache policy and the `wasteTypes`, `floorPlan`, `feedbackContent`, and `tabNavigation`
+  StaticContent records;
 - a device running the published v4.3.0 build and, if possible, a representative test account.
 
 Never commit secret material while resolving migration conflicts. In particular, do not add
@@ -197,8 +206,9 @@ Adopt these structural changes from v5:
   native plugin registrations;
 - dark splash-screen configuration;
 - the notification config-plugin approach;
+- `UIDesignRequiresCompatibility` and the final iOS compatibility policy;
 - `runtimeVersion.policy: "appVersion"` and the corresponding update configuration;
-- required blocked permissions.
+- required blocked permissions, including removal of legacy Android read-media permissions.
 
 Do not blindly accept demo values for `buildNumber`, `versionCode`, `otaVersion`, the EAS project
 ID, or bundle/package identifiers.
@@ -245,6 +255,8 @@ See [Legacy app color migration](./theme-color-migration.md),
   should use the new names.
 - Participation Projects require the `ParticipationProjectHome` screen value and the
   `ParticipationProjects` root route name.
+- Interactive floor plans use the `FloorPlan` route. Its default JSON StaticContent name is
+  `floorPlan`; a navigation item may override it with `staticJsonName`.
 - The `Detail` screen now resolves bookmark and share actions internally by content type. Restoring
   old tenant-specific header options may render duplicate actions.
 - Configure tab colors and icon fill behavior through the dark-mode-aware `tabNavigation` static
@@ -316,12 +328,23 @@ Example skeleton for newly introduced settings:
       }
     },
     "bookmarkIcon": "heart",
+    "cache": {
+      "general": "endDay",
+      "apollo": "endDay",
+      "home": "endDay",
+      "sue": 14
+    },
     "defectReports": {
       "withoutLocation": false
     },
     "feedback": {
+      "htmlContentName": "feedbackContent",
+      "includePermissions": false,
+      "includePushInformation": false,
       "includeSystemInformation": false,
-      "includeScheduledNotifications": false
+      "includeWasteConfiguration": false,
+      "includeWasteDisruptionNotifications": false,
+      "includeWasteReminderScheduling": false
     },
     "locationService": {
       "tours": {
@@ -335,6 +358,9 @@ Example skeleton for newly introduced settings:
     "showDistanceDirection": {
       "poi": false,
       "tour": false
+    },
+    "sue": {
+      "showInternalPendingStatus": true
     },
     "webView": {
       "isIncognito": true,
@@ -453,28 +479,328 @@ existing automatic GenericItem push flow skips unknown types. If Participation P
 notifications are part of the v5 scope, extend the Main-Server type list, push configuration, and
 I18n support.
 
-### 5.5. Other remote-configuration changes
+`payload.type` is now also used as the preferred human-readable participation type in bookmark and
+share action labels. Keep it populated and localized; the first category and the route title are
+only fallbacks. The default status selection includes `active`, and the map shows projects that
+match any selected status and have valid coordinates.
 
-| Feature | New or important field | Backend impact |
-| --- | --- | --- |
-| News date format | `settings.news.listDateFormat`, `detailDateFormat` | No schema change; must match incoming timestamps |
-| Defect report without location | `settings.defectReports.withoutLocation` | When `true`, the mutation omits empty `addresses`; backend must accept it |
-| Defect category order | GraphQL `Category.position` | Field already exists; populate it in CMS/import data |
-| Feedback diagnostics | `settings.feedback.includeSystemInformation`, `includeScheduledNotifications` | Review opt-in, retention, and email processing |
-| WebView | `settings.webView.isIncognito`, `mobileUserAgent.ios/android` | No Main-Server schema change |
-| Bot-controlled WebView | Route parameter `hasBotControl` | Update static navigation/widget parameters |
-| POI/Tour direction | `settings.showDistanceDirection.poi/tour` | Requires coordinates; no schema change |
-| Tour stop initial zoom | `settings.locationService.tours.initialMapMinZoom` | Valid range 0–18; invalid values fall back to 14 |
-| Parking availability | POI `payload.freeStatusUrl` and external feature payload | Main-Server carries the URL/payload; verify the external endpoint |
-| Bookmark icon | `settings.bookmarkIcon` | No Main-Server schema change |
-| SUE version label | `app.json.expo.extra.sueVersion` | Build-time value, not server configuration |
+### 5.5. Configurable cache expiration
+
+Cache lifetime is controlled by `globalSettings.settings.cache`:
+
+```json
+{
+  "settings": {
+    "cache": {
+      "general": "endDay",
+      "apollo": 6,
+      "home": "endOfHour",
+      "sue": 14
+    }
+  }
+}
+```
+
+Numeric values are hours. String values may use Moment-style end-of-period aliases such as
+`endDay`, `endOfDay`, `endOf('day')`, `endWeek`, `endMonth`, or `endYear`. Supported units are
+`hour`, `day`, `week`, `isoWeek`, `month`, `quarter`, and `year`. A value of `0` expires the scope
+immediately and should normally be limited to testing.
+
+| Scope     | Affects                                                            | Fallback               |
+| --------- | ------------------------------------------------------------------ | ---------------------- |
+| `general` | Default React Query cache and all scopes without a valid override  | End of the current day |
+| `apollo`  | Persisted Apollo cache in AsyncStorage                             | `general`              |
+| `home`    | Home data sections, including the stable POI/Tour random selection | `general`              |
+| `sue`     | SUE request-list queries                                           | `general`              |
+
+Important upgrade behavior:
+
+- missing or invalid scoped values fall back to `general`, then to end of day;
+- an existing `apollo-cache-persist` entry without expiration metadata is retained and receives a
+  new `apollo-cache-persist:expires-at` value on first access;
+- an expired Apollo cache and its metadata are removed together;
+- React Query defaults are reapplied when live `globalSettings` change, and inactive queries are
+  removed when the configured general period expires;
+- the development build exposes a cache-reset action, but production migration must not depend on
+  that action being available to users.
+
+Test the first v5 launch with an existing v4.3.0 Apollo cache as well as an empty installation.
+See [Cache Configuration](./CACHE_CONFIGURATION.md) for the complete parser and fallback rules.
+
+### 5.6. Local and flexible waste reminders
+
+Waste pickup reminders are now scheduled locally with `expo-notifications`. The app supports the
+legacy one-time setting and a flexible per-waste-type mode with multiple reminder slots. It keeps a
+server registration as a fallback outside the locally scheduled coverage window.
+
+Flexible mode is configured in the JSON StaticContent record named `wasteTypes`:
+
+```json
+{
+  "paper": {
+    "color": "#3366cc",
+    "selected_color": "#224488",
+    "icon": "paper",
+    "label": "Papier",
+    "reminders": {
+      "channels": {
+        "calendar": true,
+        "email": false,
+        "push": true
+      },
+      "push": {
+        "slots": [
+          {
+            "id": "day-before",
+            "default_lead_days": 1,
+            "max_lead_days": 7
+          },
+          {
+            "id": "week-before",
+            "default_lead_days": 7,
+            "max_lead_days": 14
+          }
+        ]
+      }
+    }
+  },
+  "disruption_location": {
+    "color": "#cc6600",
+    "selected_color": "#884400",
+    "icon": "warning",
+    "label": "Störungen am eigenen Abholort",
+    "notification_kind": "disruption"
+  },
+  "disruption_all_locations": {
+    "color": "#cc0000",
+    "selected_color": "#880000",
+    "icon": "warning",
+    "label": "Störungen an allen Abholorten",
+    "notification_kind": "disruption"
+  }
+}
+```
+
+Configuration rules:
+
+- keep every slot `id` stable after release; it becomes part of the client/server registration
+  identity;
+- `default_lead_days` and `max_lead_days` are non-negative whole-day values; defaults are clamped to
+  the maximum;
+- if `reminders` is absent, the app retains the legacy one-day reminder UI for compatibility;
+- if `reminders` exists but `channels.push` is not `true`, that waste type has no push reminder
+  slot;
+- the presence of at least one explicit push slot enables the flexible per-type UI;
+- disruption entries are recognized only when `notification_kind` is `disruption`; the two current
+  registration keys are `disruption_location` and `disruption_all_locations`.
+
+The app schedules at most 50 pickup reminders in the native notification inventory. If known
+pickups extend beyond that inventory, it schedules coverage notifications that ask the user to
+reopen the app and refresh the plan. Reminders are reconstructed on startup, foregrounding,
+permission changes, token changes, and manual retry. Changing the selected street, disabling push,
+or rotating the push token must remove or migrate reminders owned by the old state.
+
+#### Mandatory Main-Server contract for waste reminders
+
+Deploy the Main-Server changes before publishing flexible reminder configuration:
+
+1. Add `waste_device_registrations.local_coverage_until` (`datetime`).
+2. Add `waste_device_registrations.reminder_slot_id` (`string`).
+3. Deduplicate non-null slot registrations and add the unique
+   `idx_waste_device_regs_slot_identity` index over notification device token, street, city, ZIP,
+   waste type, and reminder slot.
+4. Make `GET /notification/wastes.json` return `reminder_slot_id`, `local_coverage_until`, and the
+   existing reminder fields.
+5. Make `POST /notification/wastes.json` accept both new fields, identify flexible registrations by
+   slot, and migrate an unambiguous legacy registration instead of creating a duplicate.
+6. Make the server notification job suppress fallback delivery while the matching reminder is
+   covered by the device's `local_coverage_until` value.
+7. Support disruption registrations and municipality-scoped targeted delivery when disruption
+   notifications are enabled.
+
+During the staged rollout, the endpoint must continue accepting the device token from
+`X-Notification-Device-Token`, `notification_device.token`, and the legacy `token` query parameter
+so published v4.3.0 and v5 clients can coexist. Authentication still uses the bearer access token.
+
+The reviewed Main-Server `saas` branch contains the corresponding work in commits `d482201d`
+(local coverage), `52954249`/`ab295278` (slots and fallback synchronization), and
+`cfd68584`/`9497c4ae`/`75e55c94` (disruption delivery, tenant scoping, and token transport).
+Equivalent behavior is required if production is deployed from another branch.
+
+Local registration does not guarantee exact delivery time. The app does not request
+`SCHEDULE_EXACT_ALARM` or `USE_EXACT_ALARM`; Android may defer alarms because of OEM power policy.
+Use the device matrix and privacy-safe diagnostics in
+[Local waste reminder operations](./local-waste-reminder-operations.md).
+
+### 5.7. Interactive floor plans
+
+The new `FloorPlan` route renders one or more zoomable SVG floors with selectable pins and an
+accessible list alternative. The default JSON StaticContent name is `floorPlan`; navigation may
+select another record with `staticJsonName` and may override `initialFloorId` or `initialViewMode`.
+
+Example StaticContent payload:
+
+```json
+{
+  "id": "town-hall",
+  "title": "Rathaus",
+  "initialFloorId": "ground-floor",
+  "initialViewMode": "svg",
+  "floors": [
+    {
+      "id": "ground-floor",
+      "title": "Erdgeschoss",
+      "svgUrl": "https://cdn.example.org/floor-plans/town-hall-ground.svg",
+      "viewBox": { "x": 0, "y": 0, "width": 1200, "height": 800 },
+      "pins": [
+        {
+          "id": "citizen-service",
+          "title": "Bürgerservice",
+          "description": "Zimmer 0.12",
+          "accessibilityLabel": "Bürgerservice im Erdgeschoss",
+          "type": "service",
+          "x": 410,
+          "y": 260,
+          "linkedContentType": "poi",
+          "linkedContentId": "123"
+        }
+      ]
+    }
+  ]
+}
+```
+
+Validation and content rules:
+
+- every floor requires a unique `id` and a `viewBox` with positive `width` and `height`;
+- provide one of `svgUrl`, inline `svgXml`, or the legacy inline `svg` alias; remote SVG URLs must
+  be reachable without custom authentication headers and return a successful text response;
+- every usable pin requires a unique `id`, a `title`, numeric `x`/`y` coordinates inside the
+  floor's view box, and preferably a meaningful `accessibilityLabel`;
+- supported pin types are `info`, `room`, `service`, and `warning`;
+- supported linked-content types are `poi`, `event`, `news`, `page`, and `contact`; alternatively,
+  use a valid `routeName` with `params`;
+- `initialViewMode` is `svg` or `list`. A screen reader always starts with the list alternative,
+  and all actionable pins must remain reachable without zoom or pan gestures.
+
+This feature requires a new StaticContent record and navigation entry but no Main-Server schema
+change. Test every remote SVG URL, floor switch, pin coordinate, linked route, light/dark theme, text
+scaling, reduced motion, and screen-reader list flow.
+
+### 5.8. SUE report and status migration
+
+The SUE module now stores submitted reports under “My reports”, refreshes non-final status values,
+supports paginated locations and requests, performs client-side search across loaded pages, and
+preserves report drafts across camera/gallery flows.
+
+To hide the app-generated `Unbearbeitet` status until the Open311/SUE API returns an official
+status, set this in the existing SUE configuration inside `globalSettings`:
+
+```json
+{
+  "settings": {
+    "sue": {
+      "showInternalPendingStatus": false
+    }
+  }
+}
+```
+
+The default is `true` for backward compatibility. v5 records whether a stored status came from the
+app or the API. Existing local reports without that provenance are migrated by inference; an
+`Unbearbeitet` value is treated as internal and other non-empty values as API values.
+
+Verify the external SUE service contract:
+
+- `/locations` and `/requests` accept `limit` and `offset`; unbounded location loads use pages of
+  100 until a short page is returned;
+- `/requests/:serviceRequestId` returns a report object and an official string status when one is
+  available; non-final local reports are refreshed no more than once every five minutes;
+- `media_url` may be a JSON string but malformed values must not invalidate the whole result set;
+- report creation continues to accept multipart files named `media_file_1`, `media_file_2`, and so
+  on;
+- the configured attachment count, size, MIME types, required contact fields, and map/location
+  requirements match the deployed SUE API.
+
+The Android app now blocks legacy `READ_EXTERNAL_STORAGE`/read-media permissions and requests
+camera or save permissions only for the action that needs them. Test camera capture, optional save
+to gallery, existing-image selection, EXIF coordinates, draft restoration, reverse geocoding, and
+the no-permission path on supported Android versions.
+
+### 5.9. Push notification navigation contract
+
+Push interaction handling moved from the Home screen to the stable app root. It now queues
+navigation until the root navigator is ready, normalizes Expo and FCM response shapes, deduplicates
+responses without an Android notification identifier, and handles foreground, background, and
+cold-start taps.
+
+The canonical data payload is:
+
+```json
+{
+  "id": "123",
+  "query_type": "NewsItem",
+  "title": "Optional navigation title"
+}
+```
+
+`queryType` is accepted as an alias for `query_type`. Android/FCM producers may place a JSON object
+or serialized JSON in `content.data`, `body`, `data`, or `payload`; the normalized result must still
+contain a non-empty `id` and a recognized query type. Local waste notifications use
+`query_type: "WasteAddresses"` and navigate to the waste screen.
+
+Before rollout, test real provider payloads rather than only console notifications. Include Android
+terminated-app launches, taps while the app is backgrounded, repeated delivery of the same response,
+drawer and tab navigation roots, and every supported detail query type. Unsupported or incomplete
+payloads are intentionally ignored and logged as warnings.
+
+### 5.10. Feedback content and granular diagnostics
+
+The feedback form loads optional HTML StaticContent at the bottom. Its default name is
+`feedbackContent`; override it with `settings.feedback.htmlContentName`.
+
+Diagnostic collection is opt-in per submission and can be enabled granularly:
+
+| Field                                 | Data category made available after user consent                          |
+| ------------------------------------- | ------------------------------------------------------------------------ |
+| `includeSystemInformation`            | Device and operating-system properties                                   |
+| `includePermissions`                  | Current app permission states                                            |
+| `includePushInformation`              | In-app push setting, token presence/ownership, and Android channel state |
+| `includeWasteConfiguration`           | Sanitized waste reminder configuration and validation state              |
+| `includeWasteDisruptionNotifications` | Boolean own-location/all-location disruption switches                    |
+| `includeWasteReminderScheduling`      | Sanitized scheduling status, counts, dates, and native inventory         |
+
+`includeScheduledNotifications` and `includeWastePushDiagnostics` remain legacy umbrella flags and
+enable several categories together. Prefer the granular flags for new v5 content. No diagnostic
+payload is sent unless the user selects the diagnostic checkbox. Review the explanatory HTML,
+privacy notice, retention, payload-size handling, and Main-Server email templates before enabling
+any category.
+
+### 5.11. Other remote-configuration changes
+
+| Feature                        | New or important field                                            | Backend impact                                                                  |
+| ------------------------------ | ----------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| Cache expiration               | `settings.cache.general/apollo/home/sue`                          | No schema change; test legacy persisted-cache migration                         |
+| News date format               | `settings.news.listDateFormat`, `detailDateFormat`                | No schema change; must match incoming timestamps                                |
+| Defect report without location | `settings.defectReports.withoutLocation`                          | When `true`, the mutation omits empty `addresses`; backend must accept it       |
+| Defect category order          | GraphQL `Category.position`                                       | Field already exists; populate it in CMS/import data                            |
+| Feedback diagnostics           | `settings.feedback.htmlContentName` and granular `include*` flags | Add optional HTML StaticContent; review opt-in, retention, and email processing |
+| WebView                        | `settings.webView.isIncognito`, `mobileUserAgent.ios/android`     | No Main-Server schema change                                                    |
+| Bot-controlled WebView         | Route parameter `hasBotControl`                                   | Update static navigation/widget parameters                                      |
+| POI/Tour direction             | `settings.showDistanceDirection.poi/tour`                         | Requires coordinates; no schema change                                          |
+| Tour stop initial zoom         | `settings.locationService.tours.initialMapMinZoom`                | Valid range 0–18; invalid values fall back to 14                                |
+| Parking availability           | POI `payload.freeStatusUrl` and external feature payload          | Main-Server carries the URL/payload; verify the external endpoint               |
+| Bookmark icon                  | `settings.bookmarkIcon`                                           | No Main-Server schema change                                                    |
+| SUE version label              | `app.json.expo.extra.sueVersion`                                  | Build-time value, not server configuration                                      |
+| SUE pending status             | `settings.sue.showInternalPendingStatus`                          | No schema change; verify stored-report and API-status behavior                  |
+| Tab navigation refresh         | `tabNavigation` StaticContent                                     | v5 checks for updates once per minute while the app is active                   |
 
 Feedback diagnostics are not sent without user consent. Before enabling them, review privacy text,
 retention periods, recipient email templates, and access permissions for GDPR compliance.
 
 ## 6. Main-Server migration decision
 
-### 6.1. Backend schema changes that are not mandatory for the reviewed v5 client
+### 6.1. GraphQL schema changes that are not mandatory for the reviewed v5 client
 
 The following GraphQL fields already exist in the Main-Server baseline from 4 May 2026:
 
@@ -486,24 +812,35 @@ The following GraphQL fields already exist in the Main-Server baseline from 4 Ma
 - GenericItem filters for `genericType`, IDs, category, and search;
 - versioned StaticContent lookup through `publicJsonFile(name, version)`.
 
-Consequently, the reviewed v5 mobile queries do not by themselves require a new Main-Server column
-or GraphQL type. Verify that the deployed production Main-Server is at least compatible with this
-baseline by running contract smoke tests. Do not infer compatibility from a deployment name or date.
+Consequently, the reviewed v5 GraphQL queries do not by themselves require a new Main-Server column
+or GraphQL type. This finding does not cover the waste-reminder REST API: flexible local reminders
+have mandatory database and endpoint changes described below. Verify that the deployed production
+Main-Server is compatible with both contracts. Do not infer compatibility from a deployment name or
+date.
 
 ### 6.2. Mandatory Main-Server operational changes
 
 At minimum:
 
-1. Create a `5.0.0` JSON StaticContent record named `globalSettings`.
-2. Retain the versioned 4.3.x content records for existing clients.
-3. Prepare v5-compatible `tabNavigation`, carousel, introductory HTML, and other static content for
-   every enabled module.
-4. If Participation Projects are enabled, provide the GenericItem/import data and category
+1. Run the waste registration migrations
+   `20260608120000_add_local_coverage_until_to_waste_device_registrations.rb`,
+   `20260613130000_add_reminder_slot_id_to_waste_device_registrations.rb`, and
+   `20260613131000_add_unique_index_to_waste_device_registration_slots.rb` before enabling flexible
+   waste reminders.
+2. Deploy the matching waste REST contract, fallback-suppression job behavior, token transport, and
+   tenant-scoped disruption delivery described in section 5.6.
+3. Create a `5.0.0` JSON StaticContent record named `globalSettings`.
+4. Retain the versioned 4.3.x content records for existing clients.
+5. Prepare v5-compatible `tabNavigation`, carousel, introductory HTML, and other static content for
+   every enabled module. This includes `wasteTypes`, `floorPlan`, and `feedbackContent` when the
+   corresponding features are enabled.
+6. If Participation Projects are enabled, provide the GenericItem/import data and category
    relationships.
-5. Populate `position` values when category ordering is required.
-6. If feedback diagnostics are enabled, update recipient email templates and the privacy/retention
+7. Populate `position` values when category ordering is required.
+8. If feedback diagnostics are enabled, update recipient email templates and the privacy/retention
    policy.
-7. Record the exact production Main-Server deployment SHA in the release notes.
+9. Record the exact production Main-Server deployment SHA and completed database migrations in the
+   release notes.
 
 ### 6.3. Conditional or recommended Main-Server code changes
 
@@ -513,12 +850,16 @@ At minimum:
   values.
 - If automatic Participation Project push notifications are required, extend
   `GenericItem::GENERIC_TYPES`, push configuration, and I18n support.
-- Other Main-Server survey, waste, TMB, Redis, and importer changes from May to August are not
-  general prerequisites for the v5 mobile binary. Deploy them through their own migration plans
-  when the corresponding features are enabled.
+- The waste reminder work in commits `d482201d`, `52954249`, `ab295278`, `cfd68584`, `9497c4ae`, and
+  `75e55c94`, or equivalent code, becomes mandatory when local/flexible reminders or disruption
+  delivery are enabled. Do not deploy the `wasteTypes` reminder configuration ahead of this server
+  capability.
+- Other Main-Server survey, TMB, Redis, and importer changes from May to August are not general
+  prerequisites for the v5 mobile binary. Deploy them through their own migration plans when the
+  corresponding features are enabled.
 
 The reviewed Main-Server repository does not use semantic release tags. Identify the deployed
-server by its commit SHA. During the review, the local `saas` branch was 99 commits behind
+server by its commit SHA. During the review, the local `saas` branch was 110 commits behind
 `origin/saas`, demonstrating why a branch name alone is not evidence of production compatibility.
 
 ### 6.4. Suggested read-only contract smoke queries
@@ -540,12 +881,48 @@ query V5ParticipationProjects {
     teaser
     description
     updatedAt
-    categories { id name position }
-    addresses { city street zip geoLocation { latitude longitude } }
-    locations { name geoLocation { latitude longitude } }
-    dates { dateStart dateEnd timeStart timeEnd timeDescription weekday }
-    openingHours { dateFrom dateTo timeFrom timeTo open useYear description }
-    webUrls { url description }
+    categories {
+      id
+      name
+      position
+    }
+    addresses {
+      city
+      street
+      zip
+      geoLocation {
+        latitude
+        longitude
+      }
+    }
+    locations {
+      name
+      geoLocation {
+        latitude
+        longitude
+      }
+    }
+    dates {
+      dateStart
+      dateEnd
+      timeStart
+      timeEnd
+      timeDescription
+      weekday
+    }
+    openingHours {
+      dateFrom
+      dateTo
+      timeFrom
+      timeTo
+      open
+      useYear
+      description
+    }
+    webUrls {
+      url
+      description
+    }
     payload
   }
 }
@@ -562,19 +939,32 @@ query V5Search($query: String!) {
 
 These queries validate schema and data readiness without writing to production.
 
+Also perform these read-only REST/content checks in staging:
+
+- request `globalSettings`, `tabNavigation`, and every enabled `wasteTypes`, `floorPlan`, or
+  `feedbackContent` record with the exact name and version the client will use;
+- call `GET /notification/wastes.json` with a dedicated test device token and verify that each
+  flexible registration returns `reminder_slot_id` and `local_coverage_until`;
+- verify that legacy registrations without a slot still deserialize and that no duplicate slot
+  identities remain after the unique-index migration;
+- exercise POST/delete registration changes only with a staging test device and confirm that the
+  three supported token transports resolve to the same device during the coexistence period.
+
 ## 7. Build, versioning, tagging, and OTA
 
 ### 7.1. Known release blockers in the reviewed snapshot
 
-At the time of review:
+At the time of review on 26 August 2026:
 
 - `package.json.version` is still `4.3.0`;
 - `app.json.expo.version` is still `4.3.0`;
 - the `v5.0.0` tag and the v5 `CHANGELOG.md` section do not exist yet, as expected before the
   release is finalized;
-- `app.json.erb.tmpl` is not synchronized with `app.json` for the SDK 57 plugins and dark splash
-  configuration, and its SUE version is still `1.0.0`;
-- `eas.json.erb.tmpl` uses Node 20.19.4 while `eas.json` uses Node 22.13.0;
+- `app.json.erb.tmpl` is not synchronized with `app.json`: its SUE version is still `1.0.0`, its
+  splash plugin lacks the dark configuration, it still grants legacy Android read permissions,
+  and it registers the MapLibre plugin twice;
+- the Floor Plan implementation and `navigationHelper` directly import
+  `@react-navigation/native`, although the package is not declared as a direct dependency;
 - `.github/scripts/eas-update.js` does not provide the `eas update --environment ...` argument
   required after the SDK 55 update;
 - `APP_DESIGN_SYSTEM_DARK_MODE.md` links to a missing
@@ -603,7 +993,9 @@ Because `runtimeVersion.policy` is `appVersion`, `5.0.0` creates an OTA runtime 
 before using OTA for subsequent JavaScript-only fixes on the same `5.0.0` runtime and the correct
 production channel.
 
-EAS has `autoIncrement: false`, so build numbers must be incremented explicitly.
+EAS has `autoIncrement: false`, so build numbers must be incremented explicitly. Both `eas.json`
+and `eas.json.erb.tmpl` now select Node 22.13.0; keep that alignment when resolving tenant template
+conflicts.
 
 ### 7.3. Clean installation and native build
 
@@ -627,16 +1019,18 @@ recovered from a normal source diff.
 
 ### 7.4. Quality-gate status of the reviewed snapshot
 
-The local review on 18 August 2026 found three existing infrastructure issues:
+The local review on 26 August 2026 found existing quality/infrastructure failures:
 
-- `yarn lint` repeatedly emits parser warnings while `@typescript-eslint/parser` tries to parse
-  Flow syntax from React Native and does not complete in a reasonable time. Resolve the
-  ESLint/parser/import-resolver compatibility before release.
-- `yarn test --runInBand` completed 86 of 113 suites. The remaining 27 suites stopped before
-  executing because the intentionally untracked `src/config/secrets.js` file was unavailable. The
-  runnable suites passed 374 tests and 2 snapshots. Provide a secret-free Jest module mock or safe
-  test-time provisioning in CI; never commit a real secret file.
-- `npx expo-doctor@latest` could not start its project checks because evaluating Expo config reached
+- `yarn lint` reports 1,077 problems: 901 errors and 176 warnings. The output includes parser errors
+  where `@typescript-eslint/parser` encounters Flow syntax in React Native, as well as existing
+  application lint failures. Resolve the ESLint/parser/import-resolver compatibility and all
+  project errors before release.
+- `yarn test` passes 109 of 151 suites and 555 tests. It fails 42 suites and 3 tests, with 2 skipped
+  tests. Most suite failures are caused by the intentionally untracked `src/config/secrets.js` file
+  being unavailable; the remaining failures include the undeclared `@react-navigation/native`
+  import and stale mocks/expectations. Provide a secret-free Jest module mock or safe test-time
+  provisioning in CI; never commit a real secret file.
+- `npx expo-doctor@latest` cannot start its project checks because evaluating Expo config reaches
   the same missing `src/config/secrets.js` dependency. Ensure CI can evaluate Expo config through
   safe test-time provisioning.
 
@@ -665,32 +1059,46 @@ For the accessibility changes, also run:
 - direct in-place upgrade from the published v4.3.0 binary to the v5 binary;
 - signed-in and signed-out users;
 - existing bookmarks, wallet entries, accessibility preferences, and personalized tiles;
+- an existing `apollo-cache-persist` value without expiration metadata and an already expired cache;
+- existing locally stored SUE reports without `statusSource`, including an `Unbearbeitet` report;
+- existing waste push registrations, reminder settings, selected address, and scheduled native
+  notifications followed by a push-token or permission change;
 - first launch while online, offline, and while Main-Server is unavailable;
 - cached legacy `globalSettings` followed by the new 5.0.0 content;
+- concurrent use by a v4.3.0 client and a v5 client against the same Main-Server deployment;
 - cold start in light, dark, and system theme modes;
 - no OTA, downloading OTA, OTA ready, and reload flows.
 
 ### 8.3. Module smoke tests
 
-| Area | Acceptance criteria |
-| --- | --- |
-| BUS | Area search, initial area, life situations, A–Z, text search, pagination, detail, and sharing work; every request contains the correct state header |
-| Main GraphQL | News, events, POIs, tours, categories, and generic item queries complete without schema errors |
-| Participation | Home, category, featured/all sections, status filters, map/list, detail, bookmark, share, search, and add-to-calendar work |
-| Theme | App shell, tabs/drawer, modals, forms, maps, calendar, WebView loading, SUE, and static carousels are checked in both themes |
-| Accessibility | Text scaling, bold text, grayscale, high contrast, reduced motion/transparency, switch labels, and read aloud are tested on real devices |
-| Upload | Volunteer calendar/post/email, Consul attachments, wallet card sharing, and AR download/delete work |
-| Chat/carousel | GiftedChat messages, quick replies, attachments, links, carousel autoplay/pause, and single-image height work |
-| Feedback | Diagnostic checkbox defaults to off; no device information is sent without opt-in; expected email/payload is produced after opt-in |
-| SUE/Defect | Missing/partial/complete SUE configuration, reports with and without location, and category position ordering work |
-| WebView | Incognito precedence, platform user agent, bot control, external browser, and modal browser behavior work |
-| Maps | POI/Tour direction card, TourStop zoom/bounds, parking status, and invalid coordinates are handled |
-| Push | Android cold start, iOS foreground/background, deep links, and notification categories work |
+| Area          | Acceptance criteria                                                                                                                                                                                                                                                      |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| BUS           | Area search, initial area, life situations, A–Z, text search, pagination, detail, and sharing work; every request contains the correct state header                                                                                                                      |
+| Main GraphQL  | News, events, POIs, tours, categories, and generic item queries complete without schema errors                                                                                                                                                                           |
+| Participation | Home, category, featured/all sections, status filters, map/list, detail, bookmark, share, search, and add-to-calendar work                                                                                                                                               |
+| Cache         | General, Apollo, Home, and SUE expiration values apply; invalid values fall back safely; legacy Apollo data receives metadata; expiration removes the expected scope only                                                                                                |
+| Waste         | Legacy and flexible UI modes work; per-type slots, 50-item limit, coverage reminders, permission/token/address resync, disruption registration, local tap navigation, and server fallback suppression are verified                                                       |
+| Floor Plan    | Remote and inline SVG floors render; floor/view switches, pins, linked content, invalid config, theme, scaling, gestures, and the screen-reader list alternative work                                                                                                    |
+| Theme         | App shell, tabs/drawer, modals, forms, maps, calendar, WebView loading, SUE, and static carousels are checked in both themes                                                                                                                                             |
+| Accessibility | Text scaling, bold text, grayscale, high contrast, reduced motion/transparency, switch labels, and read aloud are tested on real devices                                                                                                                                 |
+| Upload        | Volunteer calendar/post/email, Consul attachments, wallet card sharing, and AR download/delete work                                                                                                                                                                      |
+| Chat/carousel | GiftedChat messages, quick replies, attachments, links, carousel autoplay/pause, and single-image height work                                                                                                                                                            |
+| Feedback      | Configured HTML renders; diagnostic checkbox defaults to off; each granular/legacy flag exposes only the intended category; nothing is sent without opt-in; expected email/payload is produced after opt-in                                                              |
+| SUE/Defect    | Missing/partial/complete SUE configuration, paginated locations/requests, stored-report status refresh and provenance, hidden/shown internal pending status, camera/gallery draft and EXIF flows, reports with and without location, and category position ordering work |
+| WebView       | Incognito precedence, platform user agent, bot control, external browser, and modal browser behavior work                                                                                                                                                                |
+| Maps          | POI/Tour direction card, TourStop zoom/bounds, parking status, and invalid coordinates are handled                                                                                                                                                                       |
+| Push          | Canonical and normalized payloads navigate once in foreground/background/cold start; queueing before navigator readiness, query type aliases, missing fields, local waste taps, deep links, and notification categories work                                             |
 
 ### 8.4. Pre-production monitoring
 
 - verify the Sentry release/environment values and source-map upload;
 - monitor GraphQL schema errors and `publicJsonFile` not-found errors;
+- monitor invalid cache-setting warnings and unexpected Apollo/home/SUE cache churn;
+- monitor Floor Plan StaticContent validation and remote SVG download/render failures;
+- monitor waste reminder scheduling, ownership migration, maintenance sync, native-inventory limits,
+  registration conflicts, and server fallback deliveries inside local coverage windows;
+- monitor SUE pagination/status-refresh errors and stored-report migration failures;
+- monitor push payload normalization, ignored payloads, and duplicate navigation warnings;
 - monitor BUS proxy 4xx, 5xx, timeout rates, and state distribution;
 - monitor Main-Server feedback/AppUserContent email errors;
 - monitor memory, startup, carousel, and chat crashes, with particular attention to
@@ -710,8 +1118,15 @@ For the accessibility changes, also run:
    only the configuration key can leave inaccessible or broken routes.
 6. To disable Participation Projects, remove their navigation/static content. The GenericItem data
    does not have to be deleted immediately.
-7. Follow the Main-Server repository's backup and rollback procedure for server-side migrations.
-   A mobile rollback does not authorize a backend schema downgrade.
+7. To disable Floor Plan, remove its navigation entry and StaticContent reference. No stored user
+   data or server schema needs to be deleted.
+8. To disable flexible waste reminders, restore a `wasteTypes` payload without explicit push slots,
+   resynchronize/clear the app-owned native reminders, and keep the compatible server columns and
+   index in place during the client rollback window.
+9. Removing cache overrides returns invalid or missing scopes to the end-of-day fallback. Do not
+   delete persisted data manually unless the rollback procedure explicitly requires it.
+10. Follow the Main-Server repository's backup and rollback procedure for server-side migrations.
+    A mobile rollback does not authorize a backend schema downgrade.
 
 Do not move the published `v5.0.0` tag during rollback. A corrected source release must use a new
 semantic version and a new immutable tag.
@@ -728,9 +1143,16 @@ semantic version and a new immutable tag.
 - [ ] The theme migration dry run was reviewed and the light/dark palettes were approved.
 - [ ] The `5.0.0` `globalSettings` StaticContent is ready in staging and production.
 - [ ] Existing versioned `globalSettings` records are retained.
+- [ ] Cache expiration scopes are configured and legacy Apollo persistence was upgrade-tested.
 - [ ] If BUS is enabled, `settings.bus`, the proxy contract, and `federalState` are ready.
 - [ ] If Participation Projects are enabled, data/importer, static content, and navigation are ready.
+- [ ] If Floor Plan is enabled, its StaticContent, SVG assets, accessible list, pins, and linked routes are verified.
+- [ ] Waste registration migrations and REST/token/fallback contracts are deployed before flexible reminders or disruptions are enabled.
+- [ ] Waste reminder slots use stable IDs, and legacy/flexible modes, local coverage, native inventory, token rotation, and selected-address migration are verified.
+- [ ] SUE pagination, stored-status refresh/provenance, internal pending-status configuration, and media permission/draft flows are verified.
+- [ ] Push producers emit a supported query type and ID, and foreground/background/cold-start navigation is verified.
 - [ ] Privacy and email processing are approved before feedback diagnostics are enabled.
+- [ ] Feedback HTML and every enabled granular diagnostic category are verified with and without user consent.
 - [ ] Template files match the real application and EAS configuration.
 - [ ] `package.json`, `app.json`, `buildNumber`, and `versionCode` contain final values.
 - [ ] Expo Doctor, lint, tests, accessibility checks, and both platform development builds pass.
