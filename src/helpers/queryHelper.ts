@@ -1,7 +1,7 @@
 import _camelCase from 'lodash/camelCase';
 
 import { consts, texts } from '../config';
-import { QUERY_TYPES } from '../queries';
+import { QUERY_TYPES } from '../queries/types';
 import { ScreenName } from '../types';
 
 const { ROOT_ROUTE_NAMES } = consts;
@@ -35,7 +35,7 @@ export const routeNameFromQuery = (query: string) => {
   }
 };
 
-export const queryVariablesFromQuery = (query: string, data: any) => {
+export const queryVariablesFromQuery = (query: string, data: Record<string, unknown>) => {
   const { id, ...rest } = data;
 
   switch (query) {
@@ -54,7 +54,7 @@ export const queryVariablesFromQuery = (query: string, data: any) => {
 };
 
 // eslint-disable-next-line complexity
-export const getTitleForQuery = (query: string, volunteer?: any) => {
+export const getTitleForQuery = (query: string, volunteer?: { title?: string }) => {
   switch (query) {
     case QUERY_TYPES.NEWS_ITEMS:
       return texts.homeCategoriesNews.categoryTitle;

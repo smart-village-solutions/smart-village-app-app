@@ -10,7 +10,7 @@ import { ReadAloudAvailabilityProvider } from '../ReadAloudAvailabilityProvider'
 
 import { DrawerNavigator } from './DrawerNavigator';
 import { MainTabNavigator } from './MainTabNavigator';
-import { navigationRef } from './navigationRef';
+import { flushPendingNavigationActions, navigationRef } from './navigationRef';
 
 // Default bottom tab bar heights from React Navigation bottom-tabs.
 const TAB_BAR_HEIGHT = Platform.OS === 'ios' ? 49 : 56;
@@ -50,7 +50,12 @@ export const Navigator = ({ navigationType }: { navigationType: NavigationType }
   const tabBottomOffset = navigationType === 'tab' ? TAB_BAR_HEIGHT + safeAreaBottom : 0;
 
   return (
-    <NavigationContainer ref={navigationRef} theme={navigationTheme} linking={linkingConfig}>
+    <NavigationContainer
+      ref={navigationRef}
+      onReady={flushPendingNavigationActions}
+      theme={navigationTheme}
+      linking={linkingConfig}
+    >
       <ReadAloudAvailabilityProvider>
         <View style={rootStyle}>
           {navigationType === NavigationType.DRAWER ? <DrawerNavigator /> : <MainTabNavigator />}

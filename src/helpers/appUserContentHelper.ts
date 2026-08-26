@@ -1,13 +1,26 @@
 import * as Device from 'expo-device';
-import * as Notifications from 'expo-notifications';
+
+import { collectWastePushDiagnostics } from './wastePushDiagnosticsHelper';
 
 type FeedbackInformationSettings = {
+  includePermissions?: boolean;
+  includePushInformation?: boolean;
   includeSystemInformation?: boolean;
   includeScheduledNotifications?: boolean;
+  includeWasteConfiguration?: boolean;
+  includeWasteDisruptionNotifications?: boolean;
+  includeWastePushDiagnostics?: boolean;
+  includeWasteReminderScheduling?: boolean;
 };
 
 type CollectDeviceInfoArgs = {
   settings?: FeedbackInformationSettings;
+  wasteSettings?: {
+    disruptionNotificationSettings?: {
+      disruption_all_locations?: unknown;
+      disruption_location?: unknown;
+    };
+  };
 };
 
 type DeviceDetails = {
@@ -30,19 +43,26 @@ type OperatingSystemDetails = {
   platformApiLevel: number | null;
 };
 
-type ScheduledNotificationDetails = Pick<
-  Notifications.NotificationRequest,
-  'identifier' | 'content' | 'trigger'
->;
-
 type DeviceInfo = {
   device?: DeviceDetails;
   operatingSystem?: OperatingSystemDetails;
-  scheduledNotifications?: ScheduledNotificationDetails[];
-  collectionStatus?: Partial<Record<'systemInformation' | 'scheduledNotifications', 'failed'>>;
+  permissions?: Awaited<ReturnType<typeof collectWastePushDiagnostics>>['permissions'];
+  wastePushDiagnostics?: Record<string, unknown>;
+  collectionStatus?: Partial<
+    Record<'permissions' | 'systemInformation' | 'wastePushDiagnostics', 'failed'>
+  >;
 };
 
 type SystemInformation = Pick<DeviceInfo, 'device' | 'operatingSystem'>;
+
+type DiagnosticSelection = {
+  includePermissions: boolean;
+  includePushInformation: boolean;
+  includeSystemInformation: boolean;
+  includeWasteConfiguration: boolean;
+  includeWasteDisruptionNotifications: boolean;
+  includeWasteReminderScheduling: boolean;
+};
 
 const collectSystemInformation = (): SystemInformation => ({
   device: {
@@ -65,41 +85,140 @@ const collectSystemInformation = (): SystemInformation => ({
   }
 });
 
-const collectScheduledNotifications = async (): Promise<ScheduledNotificationDetails[]> => {
-  const notifications = await Notifications.getAllScheduledNotificationsAsync();
+const resolveDiagnosticSelection = (
+  settings: FeedbackInformationSettings | undefined
+): DiagnosticSelection => {
+  const includeLegacyDiagnostics =
+    settings?.includeWastePushDiagnostics === true ||
+    settings?.includeScheduledNotifications === true;
 
-  return notifications.map(({ identifier, content, trigger }) => ({
-    identifier,
-    content,
-    trigger
-  }));
+  return {
+    includePermissions: settings?.includePermissions === true || includeLegacyDiagnostics,
+    includePushInformation: settings?.includePushInformation === true || includeLegacyDiagnostics,
+    includeSystemInformation: settings?.includeSystemInformation === true,
+    includeWasteConfiguration:
+      settings?.includeWasteConfiguration === true || includeLegacyDiagnostics,
+    includeWasteDisruptionNotifications: settings?.includeWasteDisruptionNotifications === true,
+    includeWasteReminderScheduling:
+      settings?.includeWasteReminderScheduling === true || includeLegacyDiagnostics
+  };
+};
+
+const assignWasteDisruptionNotificationDiagnostics = (
+  deviceInfo: DeviceInfo,
+  wasteSettings: CollectDeviceInfoArgs['wasteSettings']
+) => {
+  const settings = wasteSettings?.disruptionNotificationSettings;
+
+  deviceInfo.wastePushDiagnostics = {
+    ...deviceInfo.wastePushDiagnostics,
+    disruptionNotifications: {
+      allLocationsEnabled: settings?.disruption_all_locations === true,
+      ownLocationEnabled: settings?.disruption_location === true
+    }
+  };
+};
+
+const selectWasteCollectionStatus = (
+  collectionStatus: Record<string, 'failed'>,
+  selection: DiagnosticSelection
+) =>
+  Object.fromEntries(
+    Object.entries(collectionStatus).filter(([key]) => {
+      if (['androidPushChannel', 'inAppPushSetting', 'tokenOwner'].includes(key)) {
+        return selection.includePushInformation;
+      }
+      if (key === 'scheduledStore') return selection.includeWasteReminderScheduling;
+      if (key === 'wasteState') {
+        return selection.includeWasteConfiguration || selection.includeWasteReminderScheduling;
+      }
+      return false;
+    })
+  );
+
+const assignWasteDiagnostics = (
+  deviceInfo: DeviceInfo,
+  diagnostics: Awaited<ReturnType<typeof collectWastePushDiagnostics>>,
+  selection: DiagnosticSelection
+) => {
+  const { collectedAt, collectionStatus, permissions, push, scheduling, wasteConfiguration } =
+    diagnostics;
+  const { permissions: permissionStatus, ...wasteCollectionStatus } = collectionStatus;
+
+  if (selection.includePermissions) {
+    deviceInfo.permissions = permissions;
+    if (permissionStatus === 'failed') {
+      deviceInfo.collectionStatus = {
+        ...deviceInfo.collectionStatus,
+        permissions: 'failed'
+      };
+    }
+  }
+
+  if (
+    !selection.includePushInformation &&
+    !selection.includeWasteConfiguration &&
+    !selection.includeWasteReminderScheduling
+  ) {
+    return;
+  }
+
+  const wastePush = { ...(push as Record<string, unknown>) };
+  delete wastePush.systemPermission;
+  const selectedCollectionStatus = selectWasteCollectionStatus(wasteCollectionStatus, selection);
+
+  deviceInfo.wastePushDiagnostics = {
+    ...deviceInfo.wastePushDiagnostics,
+    collectedAt,
+    ...(Object.keys(selectedCollectionStatus).length
+      ? { collectionStatus: selectedCollectionStatus }
+      : {}),
+    ...(selection.includePushInformation ? { push: wastePush } : {}),
+    ...(selection.includeWasteConfiguration ? { wasteConfiguration } : {}),
+    ...(selection.includeWasteReminderScheduling ? { scheduling } : {})
+  };
 };
 
 export const collectDeviceInfo = async (
   args: CollectDeviceInfoArgs
 ): Promise<DeviceInfo | undefined> => {
-  const includeSystemInformation = args.settings?.includeSystemInformation === true;
-  const includeScheduledNotifications = args.settings?.includeScheduledNotifications === true;
+  const selection = resolveDiagnosticSelection(args.settings);
+  const { includeSystemInformation } = selection;
+  const includeWastePushDiagnostics =
+    selection.includePermissions ||
+    selection.includePushInformation ||
+    selection.includeWasteConfiguration ||
+    selection.includeWasteReminderScheduling;
+  const hasDiagnosticInformation =
+    includeSystemInformation ||
+    includeWastePushDiagnostics ||
+    selection.includeWasteDisruptionNotifications;
 
-  if (!includeSystemInformation && !includeScheduledNotifications) {
+  if (!hasDiagnosticInformation) {
     return undefined;
   }
 
-  const collectors: Promise<SystemInformation | ScheduledNotificationDetails[]>[] = [];
-  const collectorNames: ('systemInformation' | 'scheduledNotifications')[] = [];
+  const collectors: Promise<
+    SystemInformation | Awaited<ReturnType<typeof collectWastePushDiagnostics>>
+  >[] = [];
+  const collectorNames: ('systemInformation' | 'wastePushDiagnostics')[] = [];
 
   if (includeSystemInformation) {
     collectorNames.push('systemInformation');
     collectors.push(Promise.resolve().then(() => collectSystemInformation()));
   }
 
-  if (includeScheduledNotifications) {
-    collectorNames.push('scheduledNotifications');
-    collectors.push(Promise.resolve().then(() => collectScheduledNotifications()));
+  if (includeWastePushDiagnostics) {
+    collectorNames.push('wastePushDiagnostics');
+    collectors.push(Promise.resolve().then(() => collectWastePushDiagnostics()));
   }
 
   const results = await Promise.allSettled(collectors);
   const deviceInfo: DeviceInfo = {};
+
+  if (selection.includeWasteDisruptionNotifications) {
+    assignWasteDisruptionNotificationDiagnostics(deviceInfo, args.wasteSettings);
+  }
 
   results.forEach((result, index) => {
     const collectorName = collectorNames[index];
@@ -115,7 +234,11 @@ export const collectDeviceInfo = async (
     if (collectorName === 'systemInformation') {
       Object.assign(deviceInfo, result.value as SystemInformation);
     } else {
-      deviceInfo.scheduledNotifications = result.value as ScheduledNotificationDetails[];
+      assignWasteDiagnostics(
+        deviceInfo,
+        result.value as Awaited<ReturnType<typeof collectWastePushDiagnostics>>,
+        selection
+      );
     }
   });
 

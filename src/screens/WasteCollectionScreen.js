@@ -44,6 +44,8 @@ import {
   useKeyboardHeight,
   useRenderSuggestions,
   useTriggerExport,
+  useWasteStreetEditRequest,
+  useWasteStreetRehydration,
   useWasteMarkedDates,
   useWasteStreet,
   useWasteTypes,
@@ -72,6 +74,43 @@ export const getLocationData = (streetData) => {
   };
 };
 
+const renderWasteHeaderRight = ({
+  goToReminder,
+  navigation,
+  navigationType,
+  streetData,
+  usedTypes,
+  styles
+}) => {
+  if (!streetData || !usedTypes) {
+    return navigationType === 'drawer' ? (
+      <WrapperRow itemsCenter style={styles.headerRight}>
+        <AccessibilityHeader style={styles.icon} />
+        <DrawerHeader navigation={navigation} style={[styles.icon, styles.noPaddingLeft]} />
+      </WrapperRow>
+    ) : null;
+  }
+
+  return (
+    <WrapperRow itemsCenter>
+      <HeaderLeft
+        onPress={goToReminder}
+        backImage={({ tintColor }) => (
+          <Icon.EditSetting
+            color={tintColor}
+            size={normalize(20)}
+            style={styles.icon}
+            strokeWidth={HEADER_RIGHT_ICON_STROKE_WIDTH}
+          />
+        )}
+      />
+      {navigationType === 'drawer' && (
+        <DrawerHeader navigation={navigation} style={[styles.icon, styles.noPaddingLeft]} />
+      )}
+    </WrapperRow>
+  );
+};
+
 /**
  * WasteCollectionScreen component handles the waste collection screen functionality.
  * It manages the state and logic for displaying waste collection information, including
@@ -79,7 +118,7 @@ export const getLocationData = (streetData) => {
  * reminder screen and handles user interactions for selecting city and street inputs.
  */
 /* eslint-disable complexity */
-export const WasteCollectionScreen = ({ navigation }) => {
+export const WasteCollectionScreen = ({ navigation, route }) => {
   const { colors: colors } = useTheme();
 
   const styles = useThemeStyles(createStyles);
@@ -93,7 +132,13 @@ export const WasteCollectionScreen = ({ navigation }) => {
     texts: wasteAddressesTexts = {},
     twoStep: hasWasteAddressesTwoStep = false
   } = wasteAddresses;
+  const wasteTexts = { ...texts.wasteCalendar, ...wasteAddressesTexts };
+  const [isRehydrating, setIsRehydrating] = useState(false);
   const [selectedStreetId, setSelectedStreetId] = useState(waste.streetId);
+  const [showCalendar, setShowCalendar] = useState(false);
+  const [isDayOverlayVisible, setIsDayOverlayVisible] = useState(false);
+  const [selectedDay, setSelectedDay] = useState('');
+  const [selectedTypes, setSelectedTypes] = useState();
   const [isReset, setIsReset] = useState(false);
   const renderSuggestions = useRenderSuggestions((item) => {
     if (item?.id) {
@@ -103,17 +148,11 @@ export const WasteCollectionScreen = ({ navigation }) => {
     }
   });
   const { setInputValue, setInputValueCity, setInputValueCitySelected } = renderSuggestions;
-  const wasteTexts = { ...texts.wasteCalendar, ...wasteAddressesTexts };
-  const [isRehydrating, setIsRehydrating] = useState(false);
-  const [showCalendar, setShowCalendar] = useState(false);
-  const [isDayOverlayVisible, setIsDayOverlayVisible] = useState(false);
-  const [selectedDay, setSelectedDay] = useState('');
   const { data: typesData, loading: typesLoading } = useWasteTypes();
   const { data: streetData, loading: streetLoading } = useWasteStreet({ selectedStreetId });
   const locationData = getLocationData(streetData);
   const usedTypes = useWasteUsedTypes({ streetData, typesData });
   const { triggerExport } = useTriggerExport({ streetData, wasteTexts });
-  const [selectedTypes, setSelectedTypes] = useState();
   const markedDates = useWasteMarkedDates({
     streetData,
     selectedTypes: selectedTypes || typesData
@@ -168,9 +207,10 @@ export const WasteCollectionScreen = ({ navigation }) => {
 
     setSelectedTypes(
       Object.fromEntries(
-        (waste.selectedTypeKeys ? waste.selectedTypeKeys : Object.keys(usedTypes)).map(
-          (typeKey) => [typeKey, usedTypes[typeKey]]
-        )
+        (waste.selectedTypeKeys ?? Object.keys(usedTypes)).map((typeKey) => [
+          typeKey,
+          usedTypes[typeKey]
+        ])
       )
     );
   }, [usedTypes, waste.selectedTypeKeys]);
@@ -178,13 +218,17 @@ export const WasteCollectionScreen = ({ navigation }) => {
   // Ensures that when the screen comes into focus, the state is properly reset and rehydrated.
   // If a street id already exists in the waste settings, it is used to set the `selectedStreetId`
   // state. The `isRehydrating` flag prevents unnecessary UI updates during this process.
-  useFocusEffect(
-    useCallback(() => {
-      setIsRehydrating(true);
-      !!waste.streetId && setSelectedStreetId(waste.streetId);
-      setIsRehydrating(false);
-    }, [waste.streetId])
-  );
+  const rehydrateSelectedStreet = useCallback(() => {
+    setIsRehydrating(true);
+    if (waste.streetId) setSelectedStreetId(waste.streetId);
+    setIsRehydrating(false);
+  }, [waste.streetId]);
+
+  useWasteStreetRehydration({
+    editStreet: route?.params?.editStreet,
+    isReset,
+    onRehydrate: rehydrateSelectedStreet
+  });
 
   const goToReminder = useCallback(
     () =>
@@ -197,31 +241,14 @@ export const WasteCollectionScreen = ({ navigation }) => {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () =>
-        !!streetData && !!usedTypes ? (
-          <WrapperRow itemsCenter style={styles.headerRight}>
-            <HeaderLeft
-              onPress={goToReminder}
-              backImage={({ tintColor }) => (
-                <Icon.EditSetting
-                  color={tintColor}
-                  size={normalize(20)}
-                  style={styles.icon}
-                  strokeWidth={HEADER_RIGHT_ICON_STROKE_WIDTH}
-                />
-              )}
-            />
-            <AccessibilityHeader style={styles.icon} />
-
-            {navigationType === 'drawer' && (
-              <DrawerHeader navigation={navigation} style={[styles.icon, styles.noPaddingLeft]} />
-            )}
-          </WrapperRow>
-        ) : navigationType === 'drawer' ? (
-          <WrapperRow itemsCenter style={styles.headerRight}>
-            <AccessibilityHeader style={styles.icon} />
-            <DrawerHeader navigation={navigation} style={[styles.icon, styles.noPaddingLeft]} />
-          </WrapperRow>
-        ) : null
+        renderWasteHeaderRight({
+          goToReminder,
+          navigation,
+          navigationType,
+          streetData,
+          usedTypes,
+          styles
+        })
     });
 
     if (isReset) {
@@ -265,6 +292,12 @@ export const WasteCollectionScreen = ({ navigation }) => {
     setInputValueCitySelected(false);
     setIsReset(true);
   }, [setInputValue, setInputValueCity, setInputValueCitySelected]);
+
+  useWasteStreetEditRequest({
+    editStreet: route?.params?.editStreet,
+    onReset: resetSelectedStreetId,
+    onRequestHandled: () => navigation.setParams({ editStreet: undefined })
+  });
 
   const wasteHeader = useCallback(() => {
     return <WasteHeader locationData={locationData} onPress={resetSelectedStreetId} />;

@@ -222,7 +222,7 @@ export const MultiImageSelector = ({
         {values?.map(
           (item, index) =>
             !!infoAndErrorText[index]?.errorText && (
-              <RegularText smallest error>
+              <RegularText key={`image-error-${item.uri ?? index}`} smallest error>
                 {infoAndErrorText[index].errorText}
               </RegularText>
             )

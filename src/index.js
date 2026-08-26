@@ -37,9 +37,16 @@ import { ReactQueryProvider } from './ReactQueryProvider';
 import { initialContext, SettingsProvider } from './SettingsProvider';
 import { AppThemeProvider } from './ThemeProvider';
 import { UnreadMessagesProvider } from './UnreadMessagesProvider';
+import { WasteReminderRuntime } from './WasteReminderRuntime';
 import { OtaUpdateManager } from './components';
 
 const { LIST_TYPES } = consts;
+
+const applyImageAspectRatio = (imageAspectRatio) => {
+  if (imageAspectRatio) {
+    consts.IMAGE_ASPECT_RATIO = parsedImageAspectRatio(imageAspectRatio);
+  }
+};
 
 const MainAppWithApolloProvider = () => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
@@ -179,6 +186,7 @@ const MainAppWithApolloProvider = () => {
 
     setInitialLocationSettings(locationSettings);
     setInitialListTypesSettings(listTypesSettings);
+    applyImageAspectRatio(globalSettings.imageAspectRatio);
     setInitialGlobalSettings(globalSettings);
     setInitialConversationSettings((await storageHelper.conversationSettings()) || {});
 
@@ -205,10 +213,6 @@ const MainAppWithApolloProvider = () => {
 
   if (loading || !client) return null;
 
-  if (initialGlobalSettings.imageAspectRatio) {
-    consts.IMAGE_ASPECT_RATIO = parsedImageAspectRatio(initialGlobalSettings.imageAspectRatio);
-  }
-
   return (
     <ApolloProvider client={client}>
       <SettingsProvider
@@ -226,6 +230,7 @@ const MainAppWithApolloProvider = () => {
                 <ProfileProvider>
                   <UnreadMessagesProvider>
                     <OtaUpdateManager />
+                    <WasteReminderRuntime />
                     <Navigator navigationType={initialGlobalSettings.navigation} />
                   </UnreadMessagesProvider>
                 </ProfileProvider>

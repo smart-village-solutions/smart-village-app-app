@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import * as Device from 'expo-device';
-import * as Notifications from 'expo-notifications';
 
 import { collectDeviceInfo } from '../../src/helpers/appUserContentHelper';
+import { collectWastePushDiagnostics } from '../../src/helpers/wastePushDiagnosticsHelper';
 
 const deviceValues = {
   deviceName: 'Test Phone',
@@ -35,30 +35,48 @@ jest.mock('expo-device', () => {
   return mockedDevice;
 });
 
-jest.mock('expo-notifications', () => ({
-  getAllScheduledNotificationsAsync: jest.fn()
+jest.mock('../../src/helpers/wastePushDiagnosticsHelper', () => ({
+  collectWastePushDiagnostics: jest.fn()
 }));
 
 const deviceKeys = Object.keys(deviceValues) as (keyof typeof deviceValues)[];
 const originalDescriptors = new Map(
   deviceKeys.map((key) => [key, Object.getOwnPropertyDescriptor(Device, key)])
 );
-const getAllScheduledNotificationsAsync =
-  Notifications.getAllScheduledNotificationsAsync as jest.Mock;
-
-const scheduledNotifications = [
-  {
-    identifier: 'first',
-    content: { title: 'First', data: { example: true } },
-    trigger: { type: 'date', timestamp: 123 },
-    futureExpoField: 'must not be sent'
+const wastePushDiagnostics = {
+  collectionStatus: {},
+  permissions: {
+    camera: {
+      canAskAgain: true,
+      expires: 'never',
+      granted: false,
+      status: 'undetermined'
+    },
+    notifications: {
+      canAskAgain: true,
+      expires: 'never',
+      granted: true,
+      status: 'granted'
+    }
   },
-  {
-    identifier: 'second',
-    content: { title: 'Second' },
-    trigger: null
+  push: {
+    inAppEnabled: true,
+    systemPermission: {
+      canAskAgain: true,
+      granted: true,
+      status: 'granted'
+    }
+  },
+  scheduling: {
+    currentNativeInventory: { scheduledWasteNotificationCount: 2 }
   }
-];
+};
+const expectedWastePushDiagnostics = {
+  push: { inAppEnabled: true },
+  scheduling: wastePushDiagnostics.scheduling
+};
+const expectedPermissions = wastePushDiagnostics.permissions;
+const collectWastePushDiagnosticsMock = collectWastePushDiagnostics as jest.Mock;
 
 const expectNoDeviceGetterRead = () => {
   deviceKeys.forEach((key) => {
@@ -70,7 +88,7 @@ const expectNoDeviceGetterRead = () => {
 describe('collectDeviceInfo', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    getAllScheduledNotificationsAsync.mockResolvedValue(scheduledNotifications);
+    collectWastePushDiagnosticsMock.mockResolvedValue(wastePushDiagnostics);
   });
 
   afterEach(() => {
@@ -89,7 +107,7 @@ describe('collectDeviceInfo', () => {
   ])('does not collect data for inactive settings %#', async (settings) => {
     expect(await collectDeviceInfo({ settings })).toBeUndefined();
     expectNoDeviceGetterRead();
-    expect(getAllScheduledNotificationsAsync).not.toHaveBeenCalled();
+    expect(collectWastePushDiagnosticsMock).not.toHaveBeenCalled();
   });
 
   it('collects exactly the configured system information', async () => {
@@ -128,30 +146,19 @@ describe('collectDeviceInfo', () => {
       expect(result?.device).not.toHaveProperty(key);
       expect(result?.operatingSystem).not.toHaveProperty(key);
     });
-    expect(getAllScheduledNotificationsAsync).not.toHaveBeenCalled();
+    expect(collectWastePushDiagnosticsMock).not.toHaveBeenCalled();
   });
 
-  it('collects and explicitly maps scheduled notifications only', async () => {
+  it('maps the legacy scheduled-notification setting to minimized diagnostics', async () => {
     const result = await collectDeviceInfo({
       settings: { includeScheduledNotifications: true }
     });
 
     expect(result).toEqual({
-      scheduledNotifications: scheduledNotifications.map(({ identifier, content, trigger }) => ({
-        identifier,
-        content,
-        trigger
-      }))
+      permissions: expectedPermissions,
+      wastePushDiagnostics: expectedWastePushDiagnostics
     });
     expectNoDeviceGetterRead();
-  });
-
-  it('keeps an empty scheduled notification list', async () => {
-    getAllScheduledNotificationsAsync.mockResolvedValue([]);
-
-    await expect(
-      collectDeviceInfo({ settings: { includeScheduledNotifications: true } })
-    ).resolves.toEqual({ scheduledNotifications: [] });
   });
 
   it('collects both independently enabled blocks', async () => {
@@ -163,13 +170,147 @@ describe('collectDeviceInfo', () => {
       expect.objectContaining({
         device: expect.any(Object),
         operatingSystem: expect.any(Object),
-        scheduledNotifications: expect.any(Array)
+        permissions: expectedPermissions,
+        wastePushDiagnostics: expectedWastePushDiagnostics
       })
     );
   });
 
+  it.each([
+    [{ includePermissions: true }, { permissions: expectedPermissions }],
+    [
+      { includePushInformation: true },
+      {
+        wastePushDiagnostics: {
+          collectedAt: undefined,
+          push: { inAppEnabled: true }
+        }
+      }
+    ],
+    [
+      { includeWasteConfiguration: true },
+      {
+        wastePushDiagnostics: {
+          collectedAt: undefined,
+          wasteConfiguration: undefined
+        }
+      }
+    ],
+    [
+      { includeWasteReminderScheduling: true },
+      {
+        wastePushDiagnostics: {
+          collectedAt: undefined,
+          scheduling: wastePushDiagnostics.scheduling
+        }
+      }
+    ]
+  ])('only returns the granularly enabled diagnostic category %#', async (settings, expected) => {
+    expect(await collectDeviceInfo({ settings })).toEqual(expected);
+  });
+
+  it('collects only the two persisted waste disruption notification switches', async () => {
+    const result = await collectDeviceInfo({
+      settings: { includeWasteDisruptionNotifications: true },
+      wasteSettings: {
+        disruptionNotificationSettings: {
+          disruption_all_locations: false,
+          disruption_location: true
+        }
+      }
+    });
+
+    expect(result).toEqual({
+      wastePushDiagnostics: {
+        disruptionNotifications: {
+          allLocationsEnabled: false,
+          ownLocationEnabled: true
+        }
+      }
+    });
+    expectNoDeviceGetterRead();
+    expect(collectWastePushDiagnosticsMock).not.toHaveBeenCalled();
+  });
+
+  it('matches the UI defaults when disruption notification settings are missing', async () => {
+    expect(
+      await collectDeviceInfo({
+        settings: { includeWasteDisruptionNotifications: true }
+      })
+    ).toEqual({
+      wastePushDiagnostics: {
+        disruptionNotifications: {
+          allLocationsEnabled: false,
+          ownLocationEnabled: false
+        }
+      }
+    });
+  });
+
+  it('does not expose disruption notification switches through another waste category', async () => {
+    const result = await collectDeviceInfo({
+      settings: { includeWasteConfiguration: true },
+      wasteSettings: {
+        disruptionNotificationSettings: {
+          disruption_all_locations: true,
+          disruption_location: true
+        }
+      }
+    });
+
+    expect(result?.wastePushDiagnostics).not.toHaveProperty('disruptionNotifications');
+  });
+
+  it('does not expose a disabled permission failure', async () => {
+    collectWastePushDiagnosticsMock.mockResolvedValue({
+      ...wastePushDiagnostics,
+      collectionStatus: { permissions: 'failed' }
+    });
+
+    expect(await collectDeviceInfo({ settings: { includeWasteReminderScheduling: true } })).toEqual(
+      {
+        wastePushDiagnostics: {
+          collectedAt: undefined,
+          scheduling: wastePushDiagnostics.scheduling
+        }
+      }
+    );
+  });
+
+  it('keeps a non-empty collection status for the enabled category', async () => {
+    collectWastePushDiagnosticsMock.mockResolvedValue({
+      ...wastePushDiagnostics,
+      collectionStatus: { scheduledStore: 'failed' }
+    });
+
+    const result = await collectDeviceInfo({
+      settings: { includeWasteReminderScheduling: true }
+    });
+
+    expect(result?.wastePushDiagnostics).toMatchObject({
+      collectionStatus: { scheduledStore: 'failed' }
+    });
+  });
+
+  it('moves permission collection failures out of waste push diagnostics', async () => {
+    collectWastePushDiagnosticsMock.mockResolvedValue({
+      ...wastePushDiagnostics,
+      collectionStatus: { permissions: 'failed' }
+    });
+
+    const result = await collectDeviceInfo({
+      settings: { includeScheduledNotifications: true }
+    });
+
+    expect(result).toEqual({
+      collectionStatus: { permissions: 'failed' },
+      permissions: expectedPermissions,
+      wastePushDiagnostics: expectedWastePushDiagnostics
+    });
+  });
+
   it('keeps system data when scheduled notification collection fails', async () => {
-    getAllScheduledNotificationsAsync.mockRejectedValue(new Error('private native error'));
+    collectWastePushDiagnosticsMock.mockRejectedValue(new Error('private native error'));
 
     const result = await collectDeviceInfo({
       settings: { includeSystemInformation: true, includeScheduledNotifications: true }
@@ -178,7 +319,7 @@ describe('collectDeviceInfo', () => {
     expect(result).toEqual({
       device: expect.any(Object),
       operatingSystem: expect.any(Object),
-      collectionStatus: { scheduledNotifications: 'failed' }
+      collectionStatus: { wastePushDiagnostics: 'failed' }
     });
     expect(JSON.stringify(result)).not.toContain('private native error');
   });
@@ -197,11 +338,8 @@ describe('collectDeviceInfo', () => {
     });
 
     expect(result).toEqual({
-      scheduledNotifications: scheduledNotifications.map(({ identifier, content, trigger }) => ({
-        identifier,
-        content,
-        trigger
-      })),
+      permissions: expectedPermissions,
+      wastePushDiagnostics: expectedWastePushDiagnostics,
       collectionStatus: { systemInformation: 'failed' }
     });
     expect(JSON.stringify(result)).not.toContain('private getter error');
@@ -215,7 +353,7 @@ describe('collectDeviceInfo', () => {
         throw new Error('private getter error');
       })
     });
-    getAllScheduledNotificationsAsync.mockRejectedValue(new Error('private native error'));
+    collectWastePushDiagnosticsMock.mockRejectedValue(new Error('private native error'));
 
     const result = await collectDeviceInfo({
       settings: { includeSystemInformation: true, includeScheduledNotifications: true }
@@ -224,7 +362,7 @@ describe('collectDeviceInfo', () => {
     expect(result).toEqual({
       collectionStatus: {
         systemInformation: 'failed',
-        scheduledNotifications: 'failed'
+        wastePushDiagnostics: 'failed'
       }
     });
     expect(JSON.stringify(result)).not.toMatch(/private|Error|stack/);

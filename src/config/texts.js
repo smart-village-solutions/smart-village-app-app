@@ -591,10 +591,20 @@ export const texts = {
       ok: 'OK'
     },
     checkboxTitle: 'Ich bin mit dem Speichern meiner Daten einverstanden.',
-    diagnosticInformationHint:
-      'Es werden zusätzlich Geräte- und Betriebssysteminformationen übermittelt.',
-    scheduledNotificationsInformationHint:
-      'Es werden zusätzlich Informationen über lokal gespeicherte Push-Benachrichtigungen übermittelt.',
+    diagnosticInformationHints: {
+      permissions: 'Die Diagnose zeigt den aktuellen Status der App-Berechtigungen.',
+      pushInformation:
+        'Für die Push-Diagnose werden die App-Einstellung und der Status des Push-Tokens berücksichtigt.',
+      pushInformationAndroid:
+        'Für die Push-Diagnose werden die App-Einstellung, der Status des Push-Tokens und der konfigurierte Push-Kanal berücksichtigt.',
+      systemInformation: 'Die Diagnose enthält Angaben zum Gerät und Betriebssystem.',
+      wasteConfiguration:
+        'Zu den Abfall-Erinnerungen werden der Zustand des Push-Schalters sowie die gewählte Adresse, Abfallarten und Erinnerungszeiten aufgeführt.',
+      wasteDisruptionNotifications:
+        'Bei den Störungshinweisen wird ausgewiesen, ob sie für den eigenen oder für alle Abholorte aktiviert sind.',
+      wasteReminderScheduling:
+        'Die lokale Planung wird anhand von Status, Anzahl und Terminen der vorgesehenen Abfall-Erinnerungen dokumentiert.'
+    },
     inputsLabel: {
       address: 'Veranstaltungsort',
       checkbox: 'Ich bin mit dem Speichern meiner Daten einverstanden.',
@@ -1452,6 +1462,11 @@ export const texts = {
     }
   },
   settingsScreen: {
+    resetPersistentCaches: 'Persistente Caches zurücksetzen',
+    resetPersistentCachesAbort: 'Abbrechen',
+    resetPersistentCachesConfirm: 'Zurücksetzen',
+    resetPersistentCachesContent: 'Sollen die persistenten Caches zurückgesetzt werden?',
+    resetPersistentCachesError: 'Persistente Caches konnten nicht zurückgesetzt werden.',
     intro: ''
   },
   settingsTitles: {
@@ -2028,6 +2043,8 @@ export const texts = {
     }
   },
   wasteCalendar: {
+    disruptionNotificationsHeading: 'Störungshinweise',
+    selectWasteLocationForDisruptionsHint: 'Bitte wählen Sie zuerst einen Abholort aus.',
     calendarIntro:
       'Klicken Sie auf die Farbpunkte um die genauen Informationen zu den Abfallterminen ablesen zu können.',
     chooseCategory: 'Kategorien auswählen',
@@ -2043,13 +2060,34 @@ export const texts = {
     hintCityAndStreet: 'Bitte geben Sie Ihre Ortschaft und anschließend Ihre Straße an.',
     hintStreet: 'Bitte geben Sie Ihre Straße an.',
     location: 'Ortschaft',
+    localReminderCoverageNotificationBody:
+      'Bitte öffne die App, um Abfalltermine und Erinnerungen zu synchronisieren.',
+    localReminderCoverageNotificationTitle: 'Abfallkalender aktualisieren',
+    localReminderNotificationTitle: 'Abfallkalender',
     myLocation: 'Meine Straße',
     notifications: 'Benachrichtigungen',
+    notificationsDisabledHint:
+      'Die Push-Benachrichtigungen sind in den App-Einstellungen deaktiviert. Daher werden auch keine Push-Benachrichtigungen für die Abfallarten gesendet.',
     notificationsOn: 'Benachrichtigungen an',
+    notificationSettingsLink: 'Zu den App-Einstellungen',
+    wasteReminderFailedAction: 'Erneut versuchen',
+    wasteReminderFailedBody:
+      'Deine Einstellungen bleiben gespeichert. Wir versuchen es beim nächsten App-Start erneut.',
+    wasteReminderFailedTitle: 'Abfall-Erinnerungen konnten nicht geplant werden',
+    wasteReminderPermissionAction: 'Systemeinstellungen öffnen',
+    wasteReminderPermissionBody:
+      'Bitte erlaube Benachrichtigungen in den Systemeinstellungen, damit deine Abfall-Erinnerungen geplant werden können.',
+    wasteReminderPermissionTitle: 'Abfall-Erinnerungen sind nicht erlaubt',
     onDayBeforeCollection: 'Am Vortag',
     onDayOfCollection: 'Am Tag der Abholung',
     oneDayBefore: '1 Tag vorher',
-    reminder: 'Erinnerungen',
+    xDaysBefore: 'Tage vorher',
+    reminder: 'Erinnerung',
+    reminders: 'Erinnerungen',
+    scheduledWasteReminderCount: (count) =>
+      count === 1
+        ? 'Aktuell ist 1 Erinnerung lokal auf diesem Gerät vorausgeplant.'
+        : `Aktuell sind ${count} Erinnerungen lokal auf diesem Gerät vorausgeplant.`,
     reminderTime: 'Zu welcher Uhrzeit möchten Sie benachrichtigt werden?',
     sameDay: 'selber Tag',
     save: 'Änderungen speichern',

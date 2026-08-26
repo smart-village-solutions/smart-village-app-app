@@ -14,7 +14,7 @@ import {
   SafeAreaViewFlex,
   Wrapper
 } from '../components';
-import { Icon, consts, normalize, texts } from '../config';
+import { Icon, consts, device, normalize, texts } from '../config';
 import { collectDeviceInfo } from '../helpers/appUserContentHelper';
 import { useAppInfo, useMatomoTrackScreenView } from '../hooks';
 import { QUERY_TYPES, createQuery } from '../queries';
@@ -24,6 +24,57 @@ import { useTheme } from '../hooks/useTheme';
 
 const { MATOMO_TRACKING, EMAIL_REGEX } = consts;
 
+const diagnosticSettingKeys = [
+  'includePermissions',
+  'includePushInformation',
+  'includeSystemInformation',
+  'includeScheduledNotifications',
+  'includeWasteConfiguration',
+  'includeWasteDisruptionNotifications',
+  'includeWastePushDiagnostics',
+  'includeWasteReminderScheduling'
+];
+
+const hasEnabledDiagnosticSetting = (settings) =>
+  diagnosticSettingKeys.some((key) => settings[key] === true);
+
+const wasteDisruptionNotificationHint = (settings) =>
+  settings.includeWasteDisruptionNotifications === true
+    ? texts.feedbackScreen.diagnosticInformationHints.wasteDisruptionNotifications
+    : null;
+
+const pushInformationHint = () =>
+  device.platform === 'android'
+    ? texts.feedbackScreen.diagnosticInformationHints.pushInformationAndroid
+    : texts.feedbackScreen.diagnosticInformationHints.pushInformation;
+
+const diagnosticInformationHints = (settings) => {
+  const legacyWasteDiagnostics =
+    settings.includeScheduledNotifications === true ||
+    settings.includeWastePushDiagnostics === true;
+
+  return [
+    settings.includeSystemInformation === true
+      ? texts.feedbackScreen.diagnosticInformationHints.systemInformation
+      : null,
+    settings.includePermissions === true || legacyWasteDiagnostics
+      ? texts.feedbackScreen.diagnosticInformationHints.permissions
+      : null,
+    settings.includePushInformation === true || legacyWasteDiagnostics
+      ? pushInformationHint()
+      : null,
+    settings.includeWasteConfiguration === true || legacyWasteDiagnostics
+      ? texts.feedbackScreen.diagnosticInformationHints.wasteConfiguration
+      : null,
+    wasteDisruptionNotificationHint(settings),
+    settings.includeWasteReminderScheduling === true || legacyWasteDiagnostics
+      ? texts.feedbackScreen.diagnosticInformationHints.wasteReminderScheduling
+      : null
+  ]
+    .filter(Boolean)
+    .join(' ');
+};
+
 export const FeedbackScreen = ({ route }) => {
   const { colors } = useTheme();
 
@@ -32,9 +83,7 @@ export const FeedbackScreen = ({ route }) => {
   const [loading, setLoading] = useState(false);
   const { globalSettings } = useContext(SettingsContext);
   const feedbackSettings = globalSettings?.settings?.feedback || {};
-  const hasDiagnosticInformation =
-    feedbackSettings.includeSystemInformation === true ||
-    feedbackSettings.includeScheduledNotifications === true;
+  const hasDiagnosticInformation = hasEnabledDiagnosticSetting(feedbackSettings);
   const {
     link,
     linkDescription,
@@ -59,19 +108,8 @@ export const FeedbackScreen = ({ route }) => {
     }
   });
   const includeDiagnosticInformation = watch('includeDiagnosticInformation');
-  const diagnosticInformationHint = [
-    feedbackSettings.includeSystemInformation === true
-      ? texts.feedbackScreen.diagnosticInformationHint
-      : null,
-    feedbackSettings.includeScheduledNotifications === true
-      ? texts.feedbackScreen.scheduledNotificationsInformationHint
-      : null
-  ]
-    .filter(Boolean)
-    .join(' ');
-  const consentTitle = `${title.replace(/\s*\*$/, '')}${
-    includeDiagnosticInformation ? ` ${diagnosticInformationHint}` : ''
-  } *`;
+  const diagnosticInformationHint = diagnosticInformationHints(feedbackSettings);
+  const consentTitle = `${title.trimEnd().replace(/\*$/, '').trimEnd()} *`;
 
   const appInfo = useAppInfo();
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.FEEDBACK);
@@ -105,7 +143,10 @@ export const FeedbackScreen = ({ route }) => {
 
       if (includeDiagnosticInformation === true) {
         try {
-          deviceInfo = await collectDeviceInfo({ settings: feedbackSettings });
+          deviceInfo = await collectDeviceInfo({
+            settings: feedbackSettings,
+            wasteSettings: globalSettings?.waste
+          });
         } catch (error) {
           console.error(error);
         }
@@ -205,20 +246,30 @@ export const FeedbackScreen = ({ route }) => {
 
           <Wrapper noPaddingTop>
             {hasDiagnosticInformation && (
-              <Controller
-                name="includeDiagnosticInformation"
-                render={({ field: { onChange, value } }) => (
-                  <Checkbox
-                    checked={value}
-                    checkedIcon={<Icon.SquareCheckFilled />}
-                    onPress={() => onChange(!value)}
-                    testID="diagnostic-information-checkbox"
-                    title={texts.feedbackScreen.inputsLabel.includeDiagnosticInformation}
-                    uncheckedIcon={<Icon.Square color={colors.placeholder} />}
-                  />
-                )}
-                control={control}
-              />
+              <>
+                <Controller
+                  name="includeDiagnosticInformation"
+                  render={({ field: { onChange, value } }) => (
+                    <Checkbox
+                      checked={value}
+                      checkedIcon={<Icon.SquareCheckFilled />}
+                      onPress={() => onChange(!value)}
+                      testID="diagnostic-information-checkbox"
+                      title={texts.feedbackScreen.inputsLabel.includeDiagnosticInformation}
+                      uncheckedIcon={<Icon.Square color={colors.placeholder} />}
+                    />
+                  )}
+                  control={control}
+                />
+                <RegularText
+                  smallest
+                  placeholder
+                  style={styles.diagnosticInformationHint}
+                  testID="diagnostic-information-hint"
+                >
+                  {diagnosticInformationHint}
+                </RegularText>
+              </>
             )}
 
             <Controller
@@ -261,6 +312,9 @@ export const FeedbackScreen = ({ route }) => {
 };
 
 const createStyles = () => ({
+  diagnosticInformationHint: {
+    marginBottom: normalize(12)
+  },
   textArea: {
     height: normalize(100),
     padding: normalize(10)

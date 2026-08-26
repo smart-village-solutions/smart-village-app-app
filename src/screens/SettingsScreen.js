@@ -1,7 +1,7 @@
 import { isARSupportedOnDevice } from '@reactvision/react-viro';
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, SectionList } from 'react-native';
+import { ActivityIndicator, Alert, SectionList, TouchableOpacity } from 'react-native';
 
 import {
   AugmentedReality,
@@ -41,6 +41,7 @@ import {
   setInAppPermission,
   showSystemPermissionMissingDialog
 } from '../pushNotifications';
+import { clearPersistentCaches } from '../ReactQueryProvider';
 import { SettingsContext } from '../SettingsProvider';
 import { ScreenName } from '../types';
 import { useThemeStyles } from '../hooks/useThemeStyles';
@@ -213,7 +214,50 @@ export const onDeactivatePushNotifications = (revert) => {
     });
 };
 
-/* eslint-disable complexity */
+export const confirmResetPersistentCaches = () => {
+  Alert.alert(
+    texts.settingsScreen.resetPersistentCaches,
+    texts.settingsScreen.resetPersistentCachesContent,
+    [
+      {
+        text: texts.settingsScreen.resetPersistentCachesAbort,
+        style: 'cancel'
+      },
+      {
+        text: texts.settingsScreen.resetPersistentCachesConfirm,
+        onPress: resetPersistentCaches
+      }
+    ],
+    { cancelable: true }
+  );
+};
+
+export const resetPersistentCaches = async () => {
+  try {
+    await clearPersistentCaches();
+  } catch (error) {
+    console.warn('An error occurred while resetting persistent caches:', error);
+    Alert.alert(texts.errors.errorTitle, texts.settingsScreen.resetPersistentCachesError);
+  }
+};
+
+const SettingsDevelopmentFooter = () => {
+  if (!__DEV__) return null;
+
+  return (
+    <Wrapper>
+      <TouchableOpacity
+        onPress={confirmResetPersistentCaches}
+        accessibilityLabel={texts.settingsScreen.resetPersistentCaches}
+      >
+        <RegularText small underline center>
+          {texts.settingsScreen.resetPersistentCaches}
+        </RegularText>
+      </TouchableOpacity>
+    </Wrapper>
+  );
+};
+
 export const SettingsScreen = ({ navigation, route }) => {
   const { colors: colors } = useTheme();
 
@@ -484,6 +528,7 @@ export const SettingsScreen = ({ navigation, route }) => {
               </Wrapper>
             )
           }
+          ListFooterComponent={SettingsDevelopmentFooter}
           style={styles.container}
         />
       );
