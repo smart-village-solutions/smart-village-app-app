@@ -1,4 +1,4 @@
-import { useMemo, useRef } from 'react';
+import { useMemo } from 'react';
 import { useQueries } from 'react-query';
 
 import { parseGenericItemEvents } from '../helpers/genericItemEventHelper';
@@ -16,12 +16,12 @@ type Options = {
 const EMPTY_DATA: GenericItemEventListItem[] = [];
 
 export const useGenericItemEvents = ({ dateRange, enabled = true, sources = [] }: Options) => {
-  const clientRef = useRef<Awaited<ReturnType<typeof ReactQueryClient>>>();
   const validSources = useMemo(
     () =>
-      (Array.isArray(sources) ? sources : []).filter(
-        (source) => source && `${source.genericType || ''}`.trim()
-      ),
+      (Array.isArray(sources) ? sources : []).flatMap((source) => {
+        const genericType = `${source?.genericType || ''}`.trim();
+        return source && genericType ? [{ ...source, genericType }] : [];
+      }),
     [sources]
   );
   const genericTypes = useMemo(
@@ -33,8 +33,8 @@ export const useGenericItemEvents = ({ dateRange, enabled = true, sources = [] }
     genericTypes.map((genericType) => ({
       queryKey: [QUERY_TYPES.GENERIC_ITEMS, { genericType }],
       queryFn: async () => {
-        if (!clientRef.current) clientRef.current = await ReactQueryClient();
-        return clientRef.current.request(getQuery(QUERY_TYPES.GENERIC_ITEMS), {
+        const client = await ReactQueryClient();
+        return client.request(getQuery(QUERY_TYPES.GENERIC_ITEMS), {
           genericType,
           limit: undefined
         });

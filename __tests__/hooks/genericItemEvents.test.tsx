@@ -74,6 +74,26 @@ describe('useGenericItemEvents', () => {
     });
   });
 
+  it('normalizes generic type whitespace before querying and parsing', async () => {
+    mockUseQueries.mockReturnValue([{ data: { genericItems: [{}] } }]);
+    render(<Probe sources={[{ genericType: ' Project ' }]} />);
+
+    const query = mockUseQueries.mock.calls[0][0][0];
+    mockRequest.mockResolvedValue({ genericItems: [] });
+    await query.queryFn();
+
+    expect(query.queryKey).toEqual(['genericItems', { genericType: 'Project' }]);
+    expect(mockRequest).toHaveBeenCalledWith('query', {
+      genericType: 'Project',
+      limit: undefined
+    });
+    expect(mockParse).toHaveBeenCalledWith(
+      [{}],
+      expect.objectContaining({ genericType: 'Project' }),
+      undefined
+    );
+  });
+
   it('disables raw queries when the integration is disabled', () => {
     render(<Probe enabled={false} />);
     expect(mockUseQueries.mock.calls[0][0][0].enabled).toBe(false);
