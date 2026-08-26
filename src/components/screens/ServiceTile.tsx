@@ -6,6 +6,7 @@ import { EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { consts, Icon, IconSet, IconUrl, normalize } from '../../config';
 import { normalizeStyleValues } from '../../helpers';
+import { IconLibrary } from '../../IconProvider';
 import { OrientationContext } from '../../OrientationProvider';
 import { Image } from '../Image';
 import { Badge } from '../profile';
@@ -18,6 +19,7 @@ export type TServiceTile = {
   accessibilityLabel: string;
   icon: string;
   iconName?: ComponentProps<typeof IconSet>['name'];
+  iconSet?: IconLibrary;
   image: string;
   isVisible?: boolean;
   numberOfTiles?: {
@@ -175,6 +177,7 @@ export const ServiceTile = ({
             <Icon.NamedIcon
               color={serviceIconColor}
               fillColor={normalizedIconStyle.fillColor}
+              iconSet={item.iconSet}
               name={item.iconName}
               size={serviceIconSize}
               strokeColor={normalizedIconStyle.strokeColor}

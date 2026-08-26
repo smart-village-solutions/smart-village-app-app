@@ -27,6 +27,7 @@ import {
   storageHelper,
   voucherAuthToken
 } from './helpers';
+import { IconProvider } from './IconProvider';
 import { Navigator } from './navigation/Navigator';
 import { NetworkContext, NetworkProvider } from './NetworkProvider';
 import { OnboardingManager } from './OnboardingManager';
@@ -53,7 +54,7 @@ const MainAppWithSettings = () => {
   const { globalSettings } = useContext(SettingsContext);
 
   return (
-    <>
+    <IconProvider>
       <ReactQueryCacheSettings globalSettings={globalSettings} />
       <AccessibilityProvider>
         <AppThemeProvider>
@@ -70,7 +71,7 @@ const MainAppWithSettings = () => {
           </ConfigurationsProvider>
         </AppThemeProvider>
       </AccessibilityProvider>
-    </>
+    </IconProvider>
   );
 };
 

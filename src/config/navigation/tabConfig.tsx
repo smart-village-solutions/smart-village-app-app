@@ -4,8 +4,9 @@ import { ViewStyle } from 'react-native';
 
 import { OrientationAwareIcon } from '../../components';
 import { resolveTabIconColors } from '../../helpers/tabNavigationHelper';
+import { IconLibrary } from '../../IconProvider';
 import { ScreenName, TabConfig, TabNavigatorConfig, ThemeColorPalette } from '../../types';
-import { colors, lightColors } from '../colors';
+import { lightColors } from '../colors';
 import { Icon, IconProps } from '../icons';
 import { normalize } from '../normalize';
 import { texts } from '../texts';
@@ -164,6 +165,7 @@ export const createDynamicTabConfig = (
   screen: ScreenName,
   activeIconName?: keyof typeof Icon,
   iconLandscapeStyle?: ViewStyle,
+  iconSet?: IconLibrary,
   iconStyle?: ViewStyle,
   initialParams?: Record<string, any>,
   strokeColor?: string,
@@ -192,6 +194,7 @@ export const createDynamicTabConfig = (
           {...iconColors}
           Icon={SelectedIcon}
           iconName={selectedIconName}
+          iconSet={iconSet}
           landscapeStyle={iconLandscapeStyle}
           size={normalize(iconSize)}
           strokeWidth={strokeWidth}
