@@ -10,7 +10,7 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
 
 | License | Packages count |
 |---------|---------------:|
-| [MIT](https://spdx.org/licenses/MIT.html) | 959 |
+| [MIT](https://spdx.org/licenses/MIT.html) | 962 |
 | [ISC](https://spdx.org/licenses/ISC.html) | 63 |
 | [BSD-3-Clause](https://spdx.org/licenses/BSD-3-Clause.html) | 22 |
 | [Apache-2.0](https://spdx.org/licenses/Apache-2.0.html) | 21 |
@@ -5207,6 +5207,16 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "version": "57.0.12",
     "description": "An Expo universal module to download assets and pass them into other APIs"
   },
+  "expo-auth-session@57.0.9": {
+    "licenses": "MIT",
+    "repository": "https://github.com/expo/expo",
+    "publisher": "650 Industries, Inc.",
+    "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2015-present 650 Industries, Inc. (aka Expo)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
+    "copyright": "Copyright (c) 2015-present 650 Industries, Inc. (aka Expo)",
+    "name": "expo-auth-session",
+    "version": "57.0.9",
+    "description": "Expo module for browser-based authentication"
+  },
   "expo-blur@57.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",
@@ -5275,6 +5285,16 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "copyright": "Copyright (c) 2015-present 650 Industries, Inc. (aka Expo)",
     "name": "expo-crypto",
     "version": "57.0.1",
+    "description": "Provides cryptography primitives for Android, iOS and web."
+  },
+  "expo-crypto@57.0.2": {
+    "licenses": "MIT",
+    "repository": "https://github.com/expo/expo",
+    "publisher": "650 Industries, Inc.",
+    "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2015-present 650 Industries, Inc. (aka Expo)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
+    "copyright": "Copyright (c) 2015-present 650 Industries, Inc. (aka Expo)",
+    "name": "expo-crypto",
+    "version": "57.0.2",
     "description": "Provides cryptography primitives for Android, iOS and web."
   },
   "expo-dev-client@57.0.13": {
@@ -5456,6 +5476,16 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "copyright": "Copyright (c) 2015-present 650 Industries, Inc. (aka Expo)",
     "name": "expo-linking",
     "version": "57.0.6",
+    "description": "Create and open deep links universally"
+  },
+  "expo-linking@57.0.7": {
+    "licenses": "MIT",
+    "repository": "https://github.com/expo/expo",
+    "publisher": "650 Industries, Inc.",
+    "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2015-present 650 Industries, Inc. (aka Expo)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
+    "copyright": "Copyright (c) 2015-present 650 Industries, Inc. (aka Expo)",
+    "name": "expo-linking",
+    "version": "57.0.7",
     "description": "Create and open deep links universally"
   },
   "expo-localization@57.0.1": {

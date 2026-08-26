@@ -258,6 +258,16 @@
     - publisher: 650 Industries, Inc.
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-asset
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-asset/LICENSE
+- **[expo-auth-session@57.0.9](https://github.com/expo/expo)**
+    - name: expo-auth-session
+    - version: 57.0.9
+    - description: Expo module for browser-based authentication
+    - copyright: Copyright (c) 2015-present 650 Industries, Inc. (aka Expo)
+    - licenses: MIT
+    - repository: https://github.com/expo/expo
+    - publisher: 650 Industries, Inc.
+    - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-auth-session
+    - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/expo-auth-session/LICENSE
 - **[expo-blur@57.0.2](https://github.com/expo/expo)**
     - name: expo-blur
     - version: 57.0.2
