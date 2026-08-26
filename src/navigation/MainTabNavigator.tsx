@@ -3,6 +3,7 @@ import { createBottomTabNavigator } from 'expo-router/js-tabs';
 import React, { useContext, useMemo } from 'react';
 
 import { LoadingSpinner } from '../components';
+import { consts } from '../config';
 import {
   createDefaultTabNavigatorConfig,
   createDynamicTabConfig
@@ -15,11 +16,14 @@ import { CustomTab, TabConfig, TabNavigationStaticContent } from '../types';
 import { getStackNavigator } from './AppStackNavigator';
 import { renderThemeAwareBottomTabBar } from './ThemeAwareBottomTabBar';
 
+const { REFRESH_INTERVALS } = consts;
+
 export const useTabRoutes = () => {
   const { colors, mode } = useTheme();
   const defaultTabRoutes = useMemo(() => createDefaultTabNavigatorConfig(colors), [colors]);
   const { data: tabRoutesData, loading } = useStaticContent<TabNavigationStaticContent>({
     name: 'tabNavigation',
+    refreshInterval: REFRESH_INTERVALS.ONCE_PER_MINUTE,
     type: 'json'
   });
 
