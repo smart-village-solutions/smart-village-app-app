@@ -2,11 +2,15 @@ import { useCallback, useMemo } from 'react';
 import { Gesture } from 'react-native-gesture-handler';
 import { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
+// Reanimated shared values are intentionally mutable inside UI-thread worklets.
+/* eslint-disable react-hooks/immutability */
+
 const MIN_SCALE = 1;
 const MAX_SCALE = 6;
 const RESET_ANIMATION_DURATION = 220;
 
-export const useZoomableSvgTransform = () => {
+export const useZoomableSvgTransform = (reduceMotion = false) => {
+  const resetAnimationDuration = reduceMotion ? 0 : RESET_ANIMATION_DURATION;
   const scale = useSharedValue(1);
   const savedScale = useSharedValue(1);
   const translateX = useSharedValue(0);
@@ -45,13 +49,21 @@ export const useZoomableSvgTransform = () => {
           savedScale.value = scale.value;
 
           if (scale.value <= MIN_SCALE) {
-            translateX.value = withTiming(0, { duration: RESET_ANIMATION_DURATION });
-            translateY.value = withTiming(0, { duration: RESET_ANIMATION_DURATION });
+            translateX.value = withTiming(0, { duration: resetAnimationDuration });
+            translateY.value = withTiming(0, { duration: resetAnimationDuration });
             savedTranslateX.value = 0;
             savedTranslateY.value = 0;
           }
         }),
-    [savedScale, savedTranslateX, savedTranslateY, scale, translateX, translateY]
+    [
+      resetAnimationDuration,
+      savedScale,
+      savedTranslateX,
+      savedTranslateY,
+      scale,
+      translateX,
+      translateY
+    ]
   );
 
   const composedGesture = useMemo(
@@ -68,13 +80,21 @@ export const useZoomableSvgTransform = () => {
   }));
 
   const reset = useCallback(() => {
-    scale.value = withTiming(1, { duration: RESET_ANIMATION_DURATION });
+    scale.value = withTiming(1, { duration: resetAnimationDuration });
     savedScale.value = 1;
-    translateX.value = withTiming(0, { duration: RESET_ANIMATION_DURATION });
-    translateY.value = withTiming(0, { duration: RESET_ANIMATION_DURATION });
+    translateX.value = withTiming(0, { duration: resetAnimationDuration });
+    translateY.value = withTiming(0, { duration: resetAnimationDuration });
     savedTranslateX.value = 0;
     savedTranslateY.value = 0;
-  }, [savedScale, savedTranslateX, savedTranslateY, scale, translateX, translateY]);
+  }, [
+    resetAnimationDuration,
+    savedScale,
+    savedTranslateX,
+    savedTranslateY,
+    scale,
+    translateX,
+    translateY
+  ]);
 
   return {
     animatedStyle,
@@ -82,3 +102,5 @@ export const useZoomableSvgTransform = () => {
     reset
   };
 };
+
+/* eslint-enable react-hooks/immutability */

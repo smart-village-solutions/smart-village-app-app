@@ -1,9 +1,10 @@
 import { NavigationProp, RouteProp } from '@react-navigation/native';
 import React, { useCallback, useContext, useLayoutEffect, useMemo, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { AccessibilityInfo, StyleSheet, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { Button, EmptyMessage, HeaderLeft, LoadingSpinner } from '../../components';
+import { AccessibilityContext } from '../../AccessibilityProvider';
 import {
   FloorPlanConfig,
   FloorPlanInitialViewMode,
@@ -15,9 +16,12 @@ import {
   getValidFloorPlanPins,
   parseFloorPlanConfig
 } from '../../components/floorPlan';
-import { colors, Icon, normalize, texts } from '../../config';
+import { consts, Icon, normalize, texts } from '../../config';
 import { useStaticContent } from '../../hooks';
+import { useTheme } from '../../hooks/useTheme';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
 import { SettingsContext } from '../../SettingsProvider';
+import { ThemeColorPalette } from '../../types/Theme';
 
 const DEFAULT_STATIC_JSON_NAME = 'floorPlan';
 const FloorPlanButton = Button as unknown as React.ComponentType<Record<string, unknown>>;
@@ -33,13 +37,19 @@ type Props = {
 };
 
 const renderCloseBackImage = ({ tintColor }: { tintColor?: string }) => (
-  <Icon.Close color={tintColor} size={normalize(22)} style={{ paddingHorizontal: normalize(14) }} />
+  <Icon.Close color={tintColor} size={normalize(22)} style={staticStyles.closeIcon} />
 );
 
 const createHeaderLeft =
   (onPress: () => void, isCloseButton = false) =>
   () =>
-    <HeaderLeft onPress={onPress} backImage={isCloseButton ? renderCloseBackImage : undefined} />;
+    (
+      <HeaderLeft
+        onPress={onPress}
+        backImage={isCloseButton ? renderCloseBackImage : undefined}
+        text={isCloseButton ? consts.a11yLabel.closeIcon : undefined}
+      />
+    );
 
 const getAllFloorPlanPins = (config?: FloorPlanConfig) =>
   config
@@ -55,13 +65,21 @@ const getAllFloorPlanPins = (config?: FloorPlanConfig) =>
 
 const getFloorPlanViewMode = (
   viewModeOverride?: FloorPlanViewMode,
-  initialViewMode?: FloorPlanInitialViewMode
+  initialViewMode?: FloorPlanInitialViewMode,
+  preferListView = false
 ) =>
   viewModeOverride ??
-  (initialViewMode === FloorPlanViewMode.List ? FloorPlanViewMode.List : FloorPlanViewMode.Svg);
+  (preferListView || initialViewMode === FloorPlanViewMode.List
+    ? FloorPlanViewMode.List
+    : FloorPlanViewMode.Svg);
 
-const getInitialFloorPlanViewMode = (initialViewMode?: FloorPlanInitialViewMode) =>
-  initialViewMode === FloorPlanViewMode.List ? FloorPlanViewMode.List : FloorPlanViewMode.Svg;
+const getInitialFloorPlanViewMode = (
+  initialViewMode?: FloorPlanInitialViewMode,
+  preferListView = false
+) =>
+  preferListView || initialViewMode === FloorPlanViewMode.List
+    ? FloorPlanViewMode.List
+    : FloorPlanViewMode.Svg;
 
 const getSelectedFloor = (config?: FloorPlanConfig, selectedFloorId?: string) => {
   if (!config?.floors.length) return undefined;
@@ -81,8 +99,11 @@ const parseStaticFloorPlanConfig = (json: unknown) => {
 
 /* eslint-disable complexity */
 export const FloorPlanScreen = ({ navigation, route }: Props) => {
+  const { isScreenReaderEnabled } = useContext(AccessibilityContext);
   const { globalSettings } = useContext(SettingsContext);
   const { navigation: navigationType } = globalSettings;
+  const { colors } = useTheme();
+  const styles = useThemeStyles(createStyles);
   const staticJsonName = route.params?.staticJsonName || DEFAULT_STATIC_JSON_NAME;
   const {
     data: remoteConfig,
@@ -100,12 +121,16 @@ export const FloorPlanScreen = ({ navigation, route }: Props) => {
   const [selectedFloorId, setSelectedFloorId] = useState<string>();
   const [viewModeOverride, setViewModeOverride] = useState<FloorPlanViewMode>();
   const initialViewMode = route.params?.initialViewMode || config?.initialViewMode;
-  const viewMode = getFloorPlanViewMode(viewModeOverride, initialViewMode);
-  const initialResolvedViewMode = getInitialFloorPlanViewMode(initialViewMode);
+  const viewMode = getFloorPlanViewMode(viewModeOverride, initialViewMode, isScreenReaderEnabled);
+  const initialResolvedViewMode = getInitialFloorPlanViewMode(
+    initialViewMode,
+    isScreenReaderEnabled
+  );
   const initialFloorId = route.params?.initialFloorId || config?.initialFloorId;
   const activeFloor = getSelectedFloor(config, selectedFloorId || initialFloorId);
   const isInitialListView = initialResolvedViewMode === FloorPlanViewMode.List;
   const showFloatingMapButton = isInitialListView && viewMode === FloorPlanViewMode.List;
+  const showFloatingListButton = !isInitialListView && viewMode === FloorPlanViewMode.Svg;
 
   const listPins = useMemo(() => getAllFloorPlanPins(config), [config]);
 
@@ -120,33 +145,53 @@ export const FloorPlanScreen = ({ navigation, route }: Props) => {
   const showSvgView = useCallback(() => {
     setSelectedPin(undefined);
     setViewModeOverride(FloorPlanViewMode.Svg);
+    AccessibilityInfo.announceForAccessibility(texts.floorPlan.svgViewAccessibilityLabel);
   }, []);
 
-  const closeSvgView = useCallback(() => {
+  const showListView = useCallback(() => {
+    setSelectedPin(undefined);
+    setViewModeOverride(FloorPlanViewMode.List);
+    AccessibilityInfo.announceForAccessibility(texts.floorPlan.listViewAccessibilityLabel);
+  }, []);
+
+  const closeAlternateView = useCallback(() => {
     setSelectedPin(undefined);
     setViewModeOverride(undefined);
-  }, []);
+    AccessibilityInfo.announceForAccessibility(
+      isInitialListView
+        ? texts.floorPlan.listViewAccessibilityLabel
+        : texts.floorPlan.svgViewAccessibilityLabel
+    );
+  }, [isInitialListView]);
 
   const goBack = useCallback(() => {
     navigation.goBack();
   }, [navigation]);
 
-  const handleFloorSelect = useCallback((floorId: string) => {
-    setSelectedPin(undefined);
-    setSelectedFloorId(floorId);
-  }, []);
+  const handleFloorSelect = useCallback(
+    (floorId: string) => {
+      setSelectedPin(undefined);
+      setSelectedFloorId(floorId);
+
+      const selectedFloor = config?.floors.find((floor) => floor.id === floorId);
+      AccessibilityInfo.announceForAccessibility(
+        texts.floorPlan.floorChanged(selectedFloor?.title || floorId)
+      );
+    },
+    [config?.floors]
+  );
 
   useLayoutEffect(() => {
-    if (isInitialListView && viewMode === FloorPlanViewMode.Svg) {
+    if (viewMode !== initialResolvedViewMode) {
       navigation.setOptions({
-        headerLeft: createHeaderLeft(closeSvgView, true)
+        headerLeft: createHeaderLeft(closeAlternateView, true)
       });
     } else {
       navigation.setOptions({
         headerLeft: createHeaderLeft(goBack)
       });
     }
-  }, [closeSvgView, goBack, isInitialListView, navigation, viewMode]);
+  }, [closeAlternateView, goBack, initialResolvedViewMode, navigation, viewMode]);
 
   if (loading) {
     return <LoadingSpinner loading />;
@@ -186,13 +231,30 @@ export const FloorPlanScreen = ({ navigation, route }: Props) => {
             ]}
           >
             <FloorPlanButton
-              icon={<Icon.Map color={colors.surface} />}
+              accessibilityHint={texts.floorPlan.svgViewAccessibilityHint}
+              accessibilityLabel={texts.floorPlan.svgViewAccessibilityLabel}
+              icon={<Icon.Map color={colors.onPrimary} />}
               iconPosition="left"
               notFullWidth
               onPress={showSvgView}
               small={false}
               smallest={false}
               title={texts.floorPlan.svgView}
+            />
+          </View>
+        )}
+        {showFloatingListButton && (
+          <View style={styles.listButtonContainer}>
+            <FloorPlanButton
+              accessibilityHint={texts.floorPlan.listViewAccessibilityHint}
+              accessibilityLabel={texts.floorPlan.listViewAccessibilityLabel}
+              icon={<Icon.List color={colors.onPrimary} />}
+              iconPosition="left"
+              notFullWidth
+              onPress={showListView}
+              small={false}
+              smallest={false}
+              title={texts.floorPlan.listView}
             />
           </View>
         )}
@@ -205,7 +267,7 @@ export const FloorPlanScreen = ({ navigation, route }: Props) => {
 };
 /* eslint-enable complexity */
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColorPalette) => ({
   container: {
     backgroundColor: colors.surface,
     flex: 1
@@ -217,6 +279,11 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     position: 'absolute'
   },
+  listButtonContainer: {
+    left: normalize(16),
+    position: 'absolute',
+    top: normalize(16)
+  },
   mapContainer: {
     flex: 1
   },
@@ -225,5 +292,11 @@ const styles = StyleSheet.create({
   },
   tabButtonPosition: {
     bottom: 0
+  }
+});
+
+const staticStyles = StyleSheet.create({
+  closeIcon: {
+    paddingHorizontal: normalize(14)
   }
 });

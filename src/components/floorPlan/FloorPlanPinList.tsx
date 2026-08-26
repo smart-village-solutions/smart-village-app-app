@@ -6,7 +6,9 @@ import { FlatList } from 'react-native-gesture-handler';
 
 import { TextListItem } from '../TextListItem';
 import { RegularText } from '../Text';
-import { colors, normalize, texts } from '../../config';
+import { normalize, texts } from '../../config';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { ThemeColorPalette } from '../../types/Theme';
 
 import { FloorPlanPin } from './types';
 import { canNavigateToLinkedContent, navigateToLinkedContent } from './utils';
@@ -20,6 +22,8 @@ type Props = {
 
 export const FloorPlanPinList = memo(
   ({ isFullHeight = false, navigation, pins, selectedPinId }: Props) => {
+    const styles = useThemeStyles(createStyles);
+
     const renderItem: ListRenderItem<FloorPlanPin> = useCallback(
       (info) => {
         const item = info.item;
@@ -33,6 +37,7 @@ export const FloorPlanPinList = memo(
           <TextListItem
             containerStyle={StyleSheet.flatten([styles.item, isSelected && styles.selectedItem])}
             item={{
+              accessibilityLabel: item.accessibilityLabel,
               id: itemId,
               isHeadlineTitle: false,
               onPress: canNavigate
@@ -50,7 +55,7 @@ export const FloorPlanPinList = memo(
           />
         );
       },
-      [navigation, selectedPinId]
+      [navigation, selectedPinId, styles]
     );
 
     if (!pins.length) {
@@ -67,6 +72,7 @@ export const FloorPlanPinList = memo(
       <View style={[styles.container, isFullHeight && styles.fullHeightContainer]}>
         <FlatList
           accessibilityLabel={texts.floorPlan.listAccessibilityLabel}
+          accessibilityRole="list"
           contentContainerStyle={[styles.listContent, isFullHeight && styles.fullHeightListContent]}
           data={pins}
           keyExtractor={(item) => item.listId || item.id}
@@ -80,7 +86,7 @@ export const FloorPlanPinList = memo(
 
 FloorPlanPinList.displayName = 'FloorPlanPinList';
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColorPalette) => ({
   container: {},
   emptyContainer: {
     padding: normalize(16)

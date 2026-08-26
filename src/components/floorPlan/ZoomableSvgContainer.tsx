@@ -1,10 +1,11 @@
 import React, { ReactNode, memo } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated from 'react-native-reanimated';
 import Svg from 'react-native-svg';
 
-import { colors } from '../../config';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { ThemeColorPalette } from '../../types/Theme';
 
 import { FloorPlanViewBox } from './types';
 
@@ -16,6 +17,7 @@ type Props = {
 };
 
 export const ZoomableSvgContainer = memo(({ animatedStyle, children, gesture, viewBox }: Props) => {
+  const styles = useThemeStyles(createStyles);
   const aspectRatio = viewBox.width / viewBox.height;
   const viewBoxValue = `${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`;
 
@@ -41,7 +43,7 @@ export const ZoomableSvgContainer = memo(({ animatedStyle, children, gesture, vi
 
 ZoomableSvgContainer.displayName = 'ZoomableSvgContainer';
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColorPalette) => ({
   aspectContainer: {
     maxHeight: '100%',
     width: '100%'

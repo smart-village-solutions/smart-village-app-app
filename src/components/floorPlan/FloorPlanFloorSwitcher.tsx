@@ -2,7 +2,9 @@ import React, { memo, useCallback } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { BoldText, RegularText } from '../Text';
-import { colors, consts, normalize } from '../../config';
+import { consts, normalize, texts } from '../../config';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { ThemeColorPalette } from '../../types/Theme';
 
 import { FloorPlanFloorConfig } from './types';
 
@@ -13,6 +15,8 @@ type Props = {
 };
 
 export const FloorPlanFloorSwitcher = memo(({ floors, onFloorSelect, selectedFloorId }: Props) => {
+  const styles = useThemeStyles(createStyles);
+
   const renderFloorButton = useCallback(
     (floor: FloorPlanFloorConfig) => {
       const isSelected = floor.id === selectedFloorId;
@@ -22,6 +26,7 @@ export const FloorPlanFloorSwitcher = memo(({ floors, onFloorSelect, selectedFlo
         <TouchableOpacity
           key={floor.id}
           accessibilityLabel={`(${title}) ${consts.a11yLabel.button}`}
+          accessibilityHint={texts.floorPlan.floorAccessibilityHint}
           accessibilityRole="button"
           accessibilityState={{ selected: isSelected }}
           activeOpacity={0.75}
@@ -29,18 +34,18 @@ export const FloorPlanFloorSwitcher = memo(({ floors, onFloorSelect, selectedFlo
           style={[styles.floorButton, isSelected && styles.selectedFloorButton]}
         >
           {isSelected ? (
-            <BoldText smallest lightest numberOfLines={1} style={styles.floorText}>
+            <BoldText smallest lightest numberOfLines={2} style={styles.floorText}>
               {title}
             </BoldText>
           ) : (
-            <RegularText smallest numberOfLines={1} style={styles.floorText}>
+            <RegularText smallest numberOfLines={2} style={styles.floorText}>
               {title}
             </RegularText>
           )}
         </TouchableOpacity>
       );
     },
-    [onFloorSelect, selectedFloorId]
+    [onFloorSelect, selectedFloorId, styles]
   );
 
   if (floors.length < 2) return null;
@@ -54,7 +59,7 @@ export const FloorPlanFloorSwitcher = memo(({ floors, onFloorSelect, selectedFlo
 
 FloorPlanFloorSwitcher.displayName = 'FloorPlanFloorSwitcher';
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColorPalette) => ({
   container: {
     backgroundColor: colors.surface,
     borderColor: colors.borderRgba,
@@ -80,9 +85,10 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.borderRgba,
     borderBottomWidth: StyleSheet.hairlineWidth,
     flexDirection: 'row',
-    height: normalize(40),
     justifyContent: 'center',
-    paddingHorizontal: normalize(10)
+    minHeight: normalize(48),
+    paddingHorizontal: normalize(10),
+    paddingVertical: normalize(6)
   },
   floorText: {
     maxWidth: normalize(74),

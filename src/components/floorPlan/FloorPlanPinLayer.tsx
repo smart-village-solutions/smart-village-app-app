@@ -1,7 +1,9 @@
 import React, { memo, useMemo } from 'react';
 import { Circle, G, Text as SvgText } from 'react-native-svg';
 
-import { colors } from '../../config';
+import { consts, texts } from '../../config';
+import { useTheme } from '../../hooks/useTheme';
+import { ThemeColorPalette } from '../../types/Theme';
 
 import { FloorPlanPin, FloorPlanPinType } from './types';
 
@@ -11,15 +13,18 @@ type Props = {
   onPinPress: (pin: FloorPlanPin) => void;
 };
 
-const pinFillByType: Record<FloorPlanPinType, string> = {
-  info: colors.blue,
-  room: colors.primary,
-  service: colors.secondary,
-  warning: colors.error
-};
+const getPinFill = (colors: ThemeColorPalette, type?: string) => {
+  const pinFillByType: Record<FloorPlanPinType, string> = {
+    info: colors.blue,
+    room: colors.primary,
+    service: colors.secondary,
+    warning: colors.error
+  };
 
-const getPinFill = (type?: string) =>
-  type && type in pinFillByType ? pinFillByType[type as FloorPlanPinType] : pinFillByType.info;
+  return type && type in pinFillByType
+    ? pinFillByType[type as FloorPlanPinType]
+    : pinFillByType.info;
+};
 
 const Pin = memo(
   ({
@@ -31,13 +36,19 @@ const Pin = memo(
     onPress: (pin: FloorPlanPin) => void;
     pin: FloorPlanPin;
   }) => {
-    const fill = getPinFill(pin.type);
+    const { colors } = useTheme();
+    const fill = getPinFill(colors, pin.type);
     const radius = isSelected ? 32 : 24;
+    const accessibilityLabel = `${pin.accessibilityLabel || pin.title}${
+      isSelected ? `, ${texts.floorPlan.selected}` : ''
+    } ${consts.a11yLabel.button}`;
 
     return (
       <G
-        accessibilityLabel={pin.title}
+        accessible
+        accessibilityLabel={accessibilityLabel}
         accessibilityRole="button"
+        accessibilityState={{ selected: isSelected }}
         onPress={() => onPress(pin)}
         testID={`floor-plan-pin-${pin.id}`}
       >

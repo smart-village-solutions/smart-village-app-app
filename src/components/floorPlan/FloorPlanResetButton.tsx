@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { Button } from '../Button';
-import { texts } from '../../config';
+import { normalize, texts } from '../../config';
 
 type Props = {
   onPress: () => void;
@@ -11,8 +11,10 @@ type Props = {
 export const FloorPlanResetButton = memo(({ onPress }: Props) => (
   <View style={styles.container} pointerEvents="box-none">
     <Button
+      accessibilityHint={texts.floorPlan.resetAccessibilityHint}
+      accessibilityLabel={texts.floorPlan.resetAccessibilityLabel}
       small={false}
-      smallest
+      smallest={false}
       invert
       notFullWidth
       onPress={onPress}
@@ -26,7 +28,7 @@ FloorPlanResetButton.displayName = 'FloorPlanResetButton';
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    right: 16,
-    top: 16
+    right: normalize(16),
+    top: normalize(16)
   }
 });

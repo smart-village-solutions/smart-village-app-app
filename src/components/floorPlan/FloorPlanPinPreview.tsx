@@ -6,7 +6,10 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { TextListItem } from '../TextListItem';
 import { OrientationContext } from '../../OrientationProvider';
 import { SettingsContext } from '../../SettingsProvider';
-import { colors, device, Icon, normalize, texts } from '../../config';
+import { device, Icon, normalize, texts } from '../../config';
+import { useTheme } from '../../hooks/useTheme';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { ThemeColorPalette } from '../../types/Theme';
 
 import { FloorPlanPin } from './types';
 import { canNavigateToLinkedContent, navigateToLinkedContent } from './utils';
@@ -21,6 +24,8 @@ export const FloorPlanPinPreview = memo(({ navigation, pin }: Props) => {
   const safeAreaInsets = useSafeAreaInsets();
   const { globalSettings } = useContext(SettingsContext);
   const { navigation: navigationType } = globalSettings;
+  const { colors } = useTheme();
+  const styles = useThemeStyles(createStyles);
 
   const handlePress = useCallback(() => {
     if (!pin) return;
@@ -39,6 +44,7 @@ export const FloorPlanPinPreview = memo(({ navigation, pin }: Props) => {
 
   return (
     <View
+      accessibilityLiveRegion="polite"
       style={[
         styles.container,
         stylesWithProps({
@@ -50,6 +56,7 @@ export const FloorPlanPinPreview = memo(({ navigation, pin }: Props) => {
       ]}
     >
       <TextListItem
+        accessibilityLabel={pin.accessibilityLabel}
         containerStyle={styles.textListItemContainer}
         item={{
           id: pin.id,
@@ -75,7 +82,7 @@ export const FloorPlanPinPreview = memo(({ navigation, pin }: Props) => {
 
 FloorPlanPinPreview.displayName = 'FloorPlanPinPreview';
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColorPalette) => ({
   container: {
     backgroundColor: colors.surface,
     borderRadius: normalize(8),

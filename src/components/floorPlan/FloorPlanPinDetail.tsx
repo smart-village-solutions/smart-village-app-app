@@ -1,12 +1,14 @@
 import { NavigationProp } from '@react-navigation/native';
 import React, { memo, useCallback } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 
 import { Button } from '../Button';
 import { Modal } from '../Modal';
 import { BoldText, HeadlineText, RegularText } from '../Text';
 import { WrapperVertical } from '../Wrapper';
-import { colors, normalize, texts } from '../../config';
+import { normalize, texts } from '../../config';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { ThemeColorPalette } from '../../types/Theme';
 
 import { FloorPlanPin } from './types';
 import { canNavigateToLinkedContent, navigateToLinkedContent } from './utils';
@@ -18,6 +20,8 @@ type Props = {
 };
 
 export const FloorPlanPinDetail = memo(({ navigation, onClose, pin }: Props) => {
+  const styles = useThemeStyles(createStyles);
+
   const handleOpenLinkedContent = useCallback(() => {
     if (!pin) return;
 
@@ -72,7 +76,7 @@ export const FloorPlanPinDetail = memo(({ navigation, onClose, pin }: Props) => 
 
 FloorPlanPinDetail.displayName = 'FloorPlanPinDetail';
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColorPalette) => ({
   description: {
     marginBottom: normalize(16)
   },

@@ -1,8 +1,11 @@
-import React, { memo, useCallback, useMemo, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import React, { memo, useCallback, useContext, useMemo, useState } from 'react';
+import { View } from 'react-native';
 
 import { RegularText } from '../Text';
-import { colors, normalize, texts } from '../../config';
+import { AccessibilityContext } from '../../AccessibilityProvider';
+import { normalize, texts } from '../../config';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { ThemeColorPalette } from '../../types/Theme';
 
 import { FloorPlanPinLayer } from './FloorPlanPinLayer';
 import { FloorPlanFloorSwitcher } from './FloorPlanFloorSwitcher';
@@ -23,7 +26,9 @@ type Props = {
 
 export const FloorPlanView = memo(
   ({ config, floors, onFloorSelect, onPinPress, selectedPinId }: Props) => {
-    const { animatedStyle, gesture, reset } = useZoomableSvgTransform();
+    const { isReduceMotionEnabled } = useContext(AccessibilityContext);
+    const styles = useThemeStyles(createStyles);
+    const { animatedStyle, gesture, reset } = useZoomableSvgTransform(isReduceMotionEnabled);
     const [svgError, setSvgError] = useState<string>();
     const validPins = useMemo(
       () => getValidFloorPlanPins(config.pins, config.viewBox),
@@ -65,7 +70,12 @@ export const FloorPlanView = memo(
           onFloorSelect={onFloorSelect}
         />
         {!!svgError && (
-          <View style={styles.error}>
+          <View
+            accessibilityLabel={svgError}
+            accessibilityLiveRegion="polite"
+            accessibilityRole="alert"
+            style={styles.error}
+          >
             <RegularText smallest error style={styles.errorText}>
               {svgError}
             </RegularText>
@@ -78,7 +88,7 @@ export const FloorPlanView = memo(
 
 FloorPlanView.displayName = 'FloorPlanView';
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColorPalette) => ({
   container: {
     flex: 1,
     minHeight: normalize(260)

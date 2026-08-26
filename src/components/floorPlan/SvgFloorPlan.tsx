@@ -1,7 +1,8 @@
 import React, { memo, useEffect, useState } from 'react';
 import { G, Rect, SvgXml } from 'react-native-svg';
 
-import { colors, texts } from '../../config';
+import { texts } from '../../config';
+import { useTheme } from '../../hooks/useTheme';
 
 import { FloorPlanFloorConfig } from './types';
 
@@ -11,6 +12,7 @@ type Props = {
 };
 
 export const SvgFloorPlan = memo(({ config, onError }: Props) => {
+  const { colors } = useTheme();
   const [remoteSvg, setRemoteSvg] = useState<string>();
   const [isRemoteError, setIsRemoteError] = useState(false);
   const { svgAsset: SvgAsset, svgUrl, svgXml, viewBox } = config;
