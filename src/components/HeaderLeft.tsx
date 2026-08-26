@@ -1,11 +1,13 @@
 import { HeaderBackButtonProps } from 'expo-router/react-navigation';
 import React from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { consts, Icon, normalize } from '../config';
 import { useTheme } from '../hooks/useTheme';
 
 import { HeadlineText } from './Text';
+import { HeaderIconButton } from './HeaderIconButton';
+import { HEADER_RIGHT_ICON_SIZE } from './headerIconConfig';
 
 // TODO: can this be exchanged with https://reactnavigation.org/docs/elements/#headerbackbutton?
 export const HeaderLeft = ({
@@ -34,11 +36,10 @@ export const HeaderLeft = ({
   }
 
   return (
-    <TouchableOpacity
+    <HeaderIconButton
       onPress={onPress}
       accessibilityLabel={text ? text : consts.a11yLabel.backIcon}
       accessibilityHint={consts.a11yLabel.backIconHint}
-      accessibilityRole="button"
     >
       {backImage ? (
         backImage({ tintColor: colors.darkText })
@@ -47,9 +48,9 @@ export const HeaderLeft = ({
           {text}
         </HeadlineText>
       ) : (
-        <Icon.ArrowLeft color={colors.darkText} style={styles.icon} />
+        <Icon.ArrowLeft color={colors.darkText} size={HEADER_RIGHT_ICON_SIZE} style={styles.icon} />
       )}
-    </TouchableOpacity>
+    </HeaderIconButton>
   );
 };
 

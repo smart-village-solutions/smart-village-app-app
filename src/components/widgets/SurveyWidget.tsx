@@ -2,7 +2,7 @@ import { useNavigation } from 'expo-router/react-navigation';
 import React, { useCallback, useContext } from 'react';
 import { useQuery } from 'react-apollo';
 
-import { consts, Icon, normalize, texts } from '../../config';
+import { consts, Icon, texts } from '../../config';
 import { graphqlFetchPolicy } from '../../helpers';
 import { useHomeRefresh, useRefreshTime } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
@@ -28,7 +28,7 @@ export const SurveyWidget = ({ text, additionalProps, widgetStyle }: WidgetProps
         additionalProps,
         title: text ?? texts.widgets.surveys
       }),
-    [navigation, text]
+    [additionalProps, navigation, text]
   );
 
   useHomeRefresh(refetch);
@@ -38,7 +38,7 @@ export const SurveyWidget = ({ text, additionalProps, widgetStyle }: WidgetProps
   return (
     <DefaultWidget
       count={loading ? undefined : count}
-      Icon={(props) => <Icon.Surveys {...props} size={normalize(22)} />}
+      Icon={Icon.Surveys}
       image={additionalProps?.image}
       onPress={onPress}
       text={text ?? texts.widgets.surveys}

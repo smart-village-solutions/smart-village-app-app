@@ -11,11 +11,15 @@ import { getQuery, QUERY_TYPES } from '../../queries';
 import { WidgetProps } from '../../types';
 import { Image } from '../Image';
 import { BoldText, RegularText } from '../Text';
-import { WrapperRow, WrapperVertical } from '../Wrapper';
+import { WrapperRow } from '../Wrapper';
+
+import { omitResponsiveDimensions, WidgetLayoutContext } from './WidgetLayoutContext';
 
 const { POLL_INTERVALS } = consts;
 
 export const WeatherWidget = ({ text, widgetStyle }: WidgetProps) => {
+  const { mode } = useContext(WidgetLayoutContext);
+  const isList = mode === 'list';
   const navigation = useNavigation();
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
@@ -39,19 +43,21 @@ export const WeatherWidget = ({ text, widgetStyle }: WidgetProps) => {
 
   const normalizedFontStyle = normalizeStyleValues(fontStyle);
   const normalizedIconStyle = normalizeStyleValues(iconStyle);
-  const normalizedWidgetStyle = normalizeStyleValues(customWidgetStyle);
+  const normalizedWidgetStyle = omitResponsiveDimensions(normalizeStyleValues(customWidgetStyle));
 
   useHomeRefresh(refetch);
 
   return (
     <TouchableOpacity
-      accessibilityLabel={`${text ?? texts.widgets.weather} (Aktuell ${roundedTemperature} °C) (Gehe zur Wetterübersicht) ${consts.a11yLabel.button}`}
+      accessibilityLabel={`${
+        text ?? texts.widgets.weather
+      } (Aktuell ${roundedTemperature} °C) (Gehe zur Wetterübersicht) ${consts.a11yLabel.button}`}
       accessibilityRole="button"
       onPress={onPress}
-      style={[styles.widget, normalizedWidgetStyle]}
+      style={[normalizedWidgetStyle, styles.widget]}
     >
-      <WrapperVertical>
-        <WrapperRow center>
+      <View style={[styles.container, isList && styles.listContainer]}>
+        <WrapperRow center style={[styles.visualRow, isList && styles.listVisualRow]}>
           <View style={[styles.iconContainer, normalizedIconStyle]}>
             <Image
               source={{
@@ -62,21 +68,32 @@ export const WeatherWidget = ({ text, widgetStyle }: WidgetProps) => {
               resizeMode="contain"
             />
           </View>
-          <View>
-            <BoldText primary big>
-              {roundedTemperature}°C
-            </BoldText>
-            <RegularText primary small style={normalizedFontStyle}>
-              {text ?? texts.widgets.weather}
-            </RegularText>
-          </View>
+          <BoldText primary big>
+            {roundedTemperature}°C
+          </BoldText>
         </WrapperRow>
-      </WrapperVertical>
+        <View style={[styles.labelContainer, isList && styles.listLabelContainer]}>
+          <RegularText
+            primary
+            small
+            style={[styles.label, isList && styles.listLabel, normalizedFontStyle]}
+          >
+            {text ?? texts.widgets.weather}
+          </RegularText>
+        </View>
+      </View>
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 4,
+    paddingVertical: 16,
+    width: '100%'
+  },
   icon: {
     aspectRatio: 1,
     width: normalize(44)
@@ -85,7 +102,41 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
+  label: {
+    flexShrink: 1,
+    textAlign: 'center'
+  },
+  labelContainer: {
+    alignItems: 'center',
+    marginTop: 4,
+    width: '100%'
+  },
+  listContainer: {
+    flexDirection: 'row',
+    minHeight: 64,
+    paddingHorizontal: 12
+  },
+  listLabel: {
+    textAlign: 'left'
+  },
+  listLabelContainer: {
+    alignItems: 'flex-start',
+    flex: 1,
+    marginTop: 0,
+    width: 'auto'
+  },
+  listVisualRow: {
+    marginRight: 12,
+    minWidth: 72
+  },
+  visualRow: {
+    alignItems: 'center',
+    minHeight: 44
+  },
   widget: {
-    alignItems: 'center'
+    alignItems: 'stretch',
+    justifyContent: 'center',
+    minHeight: 48,
+    width: '100%'
   }
 });

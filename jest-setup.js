@@ -3,7 +3,7 @@ import 'react-native-gesture-handler/jestSetup';
 import mockAsyncStorage from '@react-native-async-storage/async-storage/jest/async-storage-mock';
 import mockReact from 'react';
 import { Image as MockReactNativeImage } from 'react-native';
-import { setUpTests } from 'react-native-reanimated/src/jestUtils';
+import { setUpTests } from 'react-native-reanimated';
 
 jest.mock('@react-native-async-storage/async-storage', () => mockAsyncStorage);
 jest.mock('@react-native-community/netinfo', () =>
@@ -119,7 +119,5 @@ jest.mock('react-native-keyboard-controller', () => {
   };
 });
 jest.mock('react-native-webview', () => ({ default: () => jest.fn() }));
-
-const { setUpTests } = require('react-native-reanimated');
 
 setUpTests();

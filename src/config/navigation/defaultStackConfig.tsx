@@ -339,7 +339,11 @@ export const defaultStackConfig = ({
       },
       routeName: ScreenName.Home,
       screenComponent: HomeScreen,
-      screenOptions: getScreenOptions({ withDrawer: isDrawer, withFavorites: true })
+      screenOptions: getScreenOptions({
+        withDrawer: isDrawer,
+        withFavorites: true,
+        withSearch: true
+      })
     },
     {
       initialParams,

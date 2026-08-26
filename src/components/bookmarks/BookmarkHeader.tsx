@@ -1,6 +1,6 @@
 import { RouteProp } from 'expo-router/react-navigation';
 import React, { useCallback, useContext } from 'react';
-import { StyleProp, TouchableOpacity, ViewStyle } from 'react-native';
+import { StyleProp, ViewStyle } from 'react-native';
 
 import { BookmarkContext } from '../../BookmarkProvider';
 import { consts } from '../../config';
@@ -8,6 +8,8 @@ import { useBookmarkedStatus } from '../../hooks';
 import { useTheme } from '../../hooks/useTheme';
 import { togglePushDeviceAssignment } from '../../pushNotifications';
 import { RegularText } from '../Text';
+import { HeaderIconButton } from '../HeaderIconButton';
+import { HEADER_RIGHT_ICON_SIZE } from '../headerIconConfig';
 
 import { ConfiguredBookmarkIcon } from './BookmarkIcon';
 
@@ -62,16 +64,20 @@ export const BookmarkHeader = ({ buttonStyle, label, route, style }: Props) => {
   const iconColor = getIconColor(label, colors);
 
   return (
-    <TouchableOpacity
-      accessibilityRole="button"
+    <HeaderIconButton
       accessibilityLabel={label || a11yLabel.bookmarkList}
       accessibilityHint={a11yLabel.bookmarkListHint}
       accessibilityState={{ selected: isBookmarked }}
       onPress={onPress}
       style={buttonStyle}
     >
-      <ConfiguredBookmarkIcon color={iconColor} selected={isBookmarked} style={style} />
+      <ConfiguredBookmarkIcon
+        color={iconColor}
+        selected={isBookmarked}
+        size={HEADER_RIGHT_ICON_SIZE}
+        style={style}
+      />
       <BookmarkLabel label={label} />
-    </TouchableOpacity>
+    </HeaderIconButton>
   );
 };

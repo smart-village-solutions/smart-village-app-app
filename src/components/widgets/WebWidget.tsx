@@ -1,7 +1,7 @@
 import { useNavigation } from 'expo-router/react-navigation';
 import React, { useCallback } from 'react';
 
-import { Icon, normalize } from '../../config';
+import { Icon } from '../../config';
 import { ScreenName, WidgetProps } from '../../types';
 
 import { DefaultWidget } from './DefaultWidget';
@@ -39,7 +39,7 @@ export const WebWidget = ({ text = '', additionalProps, widgetStyle }: WidgetPro
 
   return (
     <DefaultWidget
-      Icon={(props) => <Icon.Url {...props} size={normalize(26)} />}
+      Icon={Icon.Url}
       accessibilityLabel={buildWebWidgetAccessibilityLabel(
         text || additionalProps?.staticContentTitle || 'Website',
         additionalProps?.webUrl

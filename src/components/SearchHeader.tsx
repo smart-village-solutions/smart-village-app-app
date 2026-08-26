@@ -1,6 +1,6 @@
 import { StackNavigationProp } from 'expo-router/js-stack';
 import React, { useContext } from 'react';
-import { StyleProp, TouchableOpacity, ViewStyle } from 'react-native';
+import { StyleProp, ViewStyle } from 'react-native';
 
 import { consts, Icon, normalize } from '../config';
 import { SettingsContext } from '../SettingsProvider';
@@ -8,12 +8,13 @@ import { ScreenName } from '../types';
 import { useThemeStyles } from '../hooks/useThemeStyles';
 import { useTheme } from '../hooks/useTheme';
 
-import { HEADER_RIGHT_ICON_STROKE_WIDTH } from './headerIconConfig';
+import { HEADER_RIGHT_ICON_SIZE, HEADER_RIGHT_ICON_STROKE_WIDTH } from './headerIconConfig';
+import { HeaderIconButton } from './HeaderIconButton';
 
 const { a11yLabel } = consts;
 
 type Props = {
-  navigation: StackNavigationProp<any>;
+  navigation: StackNavigationProp<Record<string, object | undefined>>;
   style: StyleProp<ViewStyle>;
 };
 
@@ -28,7 +29,7 @@ export const SearchHeader = ({ navigation, style }: Props) => {
   if (!search) return null;
 
   return (
-    <TouchableOpacity
+    <HeaderIconButton
       onPress={() =>
         navigation.navigate({
           name: ScreenName.Search
@@ -36,14 +37,14 @@ export const SearchHeader = ({ navigation, style }: Props) => {
       }
       accessibilityLabel={a11yLabel.searchIcon}
       accessibilityHint={a11yLabel.searchHint}
-      accessibilityRole="button"
     >
       <Icon.Search
-        color={colors.darkerPrimary}
+        color={colors.darkText}
+        size={HEADER_RIGHT_ICON_SIZE}
         style={[style, styles.icon]}
         strokeWidth={HEADER_RIGHT_ICON_STROKE_WIDTH}
       />
-    </TouchableOpacity>
+    </HeaderIconButton>
   );
 };
 

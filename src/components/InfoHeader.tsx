@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import { RouteProp } from 'expo-router/react-navigation';
+import React, { useMemo, useState } from 'react';
 import { ScrollView, TouchableOpacity, View, ViewStyle } from 'react-native';
 import { Overlay } from 'react-native-elements';
 
@@ -8,6 +9,8 @@ import { useTheme } from '../hooks/useTheme';
 import { Icon, IconUrl, consts, normalize } from './../config';
 import { useStaticContent } from './../hooks';
 import { HeadlineText, RegularText } from './Text';
+import { HeaderIconButton } from './HeaderIconButton';
+import { HEADER_RIGHT_ICON_SIZE } from './headerIconConfig';
 import { Wrapper, WrapperHorizontal } from './Wrapper';
 
 export const LOGIN_MODAL = 'loginModal';
@@ -21,8 +24,15 @@ interface DataItem {
   title: string;
 }
 
+type InfoModalEntry = Record<string, DataItem>;
+
+type InfoRouteParams = {
+  screenTitle?: string;
+  title?: string;
+};
+
 type Props = {
-  route: any;
+  route: RouteProp<Record<string, InfoRouteParams | undefined>, string>;
   style: ViewStyle;
 };
 
@@ -34,25 +44,16 @@ export const InfoHeader = ({ route, style }: Props) => {
   const [isVisible, setIsVisible] = useState(false);
   const title = route.params?.title || route.params?.screenTitle || '';
 
-  const [modalData, setModalData] = useState<DataItem | null>(null);
-
-  const { data: contentData, loading: contentLoading } = useStaticContent<DataItem[]>({
+  const { data: contentData, loading: contentLoading } = useStaticContent<InfoModalEntry[]>({
     refreshTimeKey: 'publicJsonFile-infoModal',
     name: 'infoModal',
     type: 'json'
   });
 
-  useEffect(() => {
-    if (contentData?.length) {
-      for (let i = 0; i < contentData.length; i++) {
-        const item: DataItem = contentData[i];
-
-        if (item[title]) {
-          setModalData(item[title]);
-        }
-      }
-    }
-  }, [contentData]);
+  const modalData = useMemo(
+    () => contentData?.find((item) => item[title])?.[title] ?? null,
+    [contentData, title]
+  );
 
   if (contentLoading || !modalData) {
     return null;
@@ -65,14 +66,18 @@ export const InfoHeader = ({ route, style }: Props) => {
 
   return (
     <>
-      <TouchableOpacity
+      <HeaderIconButton
         onPress={() => setIsVisible(!isVisible)}
         accessibilityLabel={a11yLabel.informationIcon}
         accessibilityHint={a11yLabel.informationHint}
-        accessibilityRole="button"
       >
-        <IconUrl iconName={iconName} color={colors.darkText} style={style} />
-      </TouchableOpacity>
+        <IconUrl
+          iconName={iconName}
+          color={colors.darkText}
+          size={HEADER_RIGHT_ICON_SIZE}
+          style={style}
+        />
+      </HeaderIconButton>
 
       <Overlay
         animationType="fade"

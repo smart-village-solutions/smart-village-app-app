@@ -1,10 +1,11 @@
 import React from 'react';
-import { StyleProp, TouchableOpacity, ViewStyle } from 'react-native';
+import { StyleProp, ViewStyle } from 'react-native';
 
-import { consts, Icon, normalize } from '../config';
+import { consts, Icon } from '../config';
 import { useTheme } from '../hooks/useTheme';
 
-import { HEADER_RIGHT_ICON_STROKE_WIDTH } from './headerIconConfig';
+import { HEADER_RIGHT_ICON_SIZE, HEADER_RIGHT_ICON_STROKE_WIDTH } from './headerIconConfig';
+import { HeaderIconButton } from './HeaderIconButton';
 
 const { a11yLabel } = consts;
 
@@ -17,7 +18,7 @@ export const EditHeader = ({ onPress, style }: Props) => {
   const { colors } = useTheme();
 
   return (
-    <TouchableOpacity
+    <HeaderIconButton
       onPress={onPress}
       accessibilityLabel={a11yLabel.editIcon}
       accessibilityHint={a11yLabel.editHint}
@@ -25,10 +26,10 @@ export const EditHeader = ({ onPress, style }: Props) => {
       <Icon.EditSetting
         color={colors.darkText}
         style={style}
-        size={normalize(22)}
+        size={HEADER_RIGHT_ICON_SIZE}
         hasNoHitSlop
         strokeWidth={HEADER_RIGHT_ICON_STROKE_WIDTH}
       />
-    </TouchableOpacity>
+    </HeaderIconButton>
   );
 };

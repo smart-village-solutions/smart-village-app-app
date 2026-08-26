@@ -1,11 +1,12 @@
 import React from 'react';
-import { ShareContent, StyleProp, TouchableOpacity, ViewStyle } from 'react-native';
+import { ShareContent, StyleProp, ViewStyle } from 'react-native';
 
 import { consts, Icon } from '../config';
 import { openShare } from '../helpers';
 import { useTheme } from '../hooks/useTheme';
 
-import { HEADER_RIGHT_ICON_STROKE_WIDTH } from './headerIconConfig';
+import { HEADER_RIGHT_ICON_SIZE, HEADER_RIGHT_ICON_STROKE_WIDTH } from './headerIconConfig';
+import { HeaderIconButton } from './HeaderIconButton';
 import { RegularText } from './Text';
 
 const { a11yLabel } = consts;
@@ -26,21 +27,21 @@ export const ShareHeader = ({ buttonStyle, label, shareContent, style }: Props) 
 
   return (
     !!shareContent && (
-      <TouchableOpacity
+      <HeaderIconButton
         onPress={() => openShare(shareContent)}
         accessibilityLabel={label || a11yLabel.shareIcon}
         accessibilityHint={a11yLabel.shareHint}
-        accessibilityRole="button"
         style={buttonStyle}
       >
         <Icon.Share
           color={label ? colors.primary : colors.darkText}
+          size={HEADER_RIGHT_ICON_SIZE}
           style={style}
           hasNoHitSlop
           strokeWidth={HEADER_RIGHT_ICON_STROKE_WIDTH}
         />
         {!!label && <RegularText primary>{label}</RegularText>}
-      </TouchableOpacity>
+      </HeaderIconButton>
     )
   );
 };

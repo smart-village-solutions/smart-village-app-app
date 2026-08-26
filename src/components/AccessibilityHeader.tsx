@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { StyleProp, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native';
+import { StyleProp, StyleSheet, ViewStyle } from 'react-native';
 
 import { SettingsContext } from '../SettingsProvider';
 import { consts, Icon, normalize } from '../config';
@@ -7,7 +7,8 @@ import { getAccessibilityHeaderEntryEnabled } from '../helpers';
 import { useTheme } from '../hooks/useTheme';
 
 import { AccessibilitySettingsModal } from './AccessibilitySettingsModal';
-import { HEADER_RIGHT_ICON_STROKE_WIDTH } from './headerIconConfig';
+import { HeaderIconButton } from './HeaderIconButton';
+import { HEADER_RIGHT_ICON_SIZE, HEADER_RIGHT_ICON_STROKE_WIDTH } from './headerIconConfig';
 
 type Props = {
   style: StyleProp<ViewStyle>;
@@ -24,19 +25,19 @@ export const AccessibilityHeader = ({ style }: Props) => {
 
   return (
     <>
-      <TouchableOpacity
+      <HeaderIconButton
         onPress={() => setIsVisible(true)}
         accessibilityLabel={consts.a11yLabel.accessibilityIcon}
         accessibilityHint={consts.a11yLabel.accessibilityIconHint}
-        accessibilityRole="button"
       >
         <Icon.NamedIcon
           name="accessible"
           color={colors.darkText}
+          size={HEADER_RIGHT_ICON_SIZE}
           style={[style, styles.icon]}
           strokeWidth={HEADER_RIGHT_ICON_STROKE_WIDTH}
         />
-      </TouchableOpacity>
+      </HeaderIconButton>
 
       <AccessibilitySettingsModal isVisible={isVisible} onClose={() => setIsVisible(false)} />
     </>

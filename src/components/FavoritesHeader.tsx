@@ -1,11 +1,13 @@
 import { DrawerNavigationProp } from 'expo-router/drawer';
 import React from 'react';
-import { StyleProp, TouchableOpacity, ViewStyle } from 'react-native';
+import { StyleProp, ViewStyle } from 'react-native';
 
 import { consts, texts } from '../config';
 import { useTheme } from '../hooks/useTheme';
 
 import { ConfiguredBookmarkIcon } from './bookmarks/BookmarkIcon';
+import { HeaderIconButton } from './HeaderIconButton';
+import { HEADER_RIGHT_ICON_SIZE } from './headerIconConfig';
 
 const a11yText = consts.a11yLabel;
 
@@ -18,13 +20,17 @@ export const FavoritesHeader = ({ navigation, style }: Props) => {
   const { colors } = useTheme();
 
   return (
-    <TouchableOpacity
+    <HeaderIconButton
       onPress={() => navigation.navigate('Bookmarks', { title: texts.bookmarks.bookmarks })}
       accessibilityLabel={a11yText.bookmarksIcon}
       accessibilityHint={a11yText.bookmarksHint}
-      accessibilityRole="button"
     >
-      <ConfiguredBookmarkIcon color={colors.darkText} selected style={style} />
-    </TouchableOpacity>
+      <ConfiguredBookmarkIcon
+        color={colors.darkText}
+        selected
+        size={HEADER_RIGHT_ICON_SIZE}
+        style={style}
+      />
+    </HeaderIconButton>
   );
 };

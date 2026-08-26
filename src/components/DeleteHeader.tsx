@@ -1,10 +1,11 @@
 import React from 'react';
-import { StyleProp, TouchableOpacity, ViewStyle } from 'react-native';
+import { StyleProp, ViewStyle } from 'react-native';
 
 import { consts, Icon } from '../config';
 import { useTheme } from '../hooks/useTheme';
 
-import { HEADER_RIGHT_ICON_STROKE_WIDTH } from './headerIconConfig';
+import { HEADER_RIGHT_ICON_SIZE, HEADER_RIGHT_ICON_STROKE_WIDTH } from './headerIconConfig';
+import { HeaderIconButton } from './HeaderIconButton';
 
 const { a11yLabel } = consts;
 
@@ -17,18 +18,18 @@ export const DeleteHeader = ({ onPress, style }: Props) => {
   const { colors } = useTheme();
 
   return (
-    <TouchableOpacity
+    <HeaderIconButton
       onPress={onPress}
       accessibilityLabel={a11yLabel.deleteIcon}
       accessibilityHint={a11yLabel.deleteHint}
-      accessibilityRole="button"
     >
       <Icon.NamedIcon
         name="trash"
         color={colors.darkText}
+        size={HEADER_RIGHT_ICON_SIZE}
         style={style}
         strokeWidth={HEADER_RIGHT_ICON_STROKE_WIDTH}
       />
-    </TouchableOpacity>
+    </HeaderIconButton>
   );
 };

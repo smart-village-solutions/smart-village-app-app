@@ -1,7 +1,7 @@
 import { useNavigation } from 'expo-router/react-navigation';
 import React, { useCallback } from 'react';
 
-import { Icon, normalize, texts } from '../../config';
+import { Icon, texts } from '../../config';
 import { useHomeRefresh } from '../../hooks';
 import { useWaterTemperature } from '../../hooks/waterTemperature';
 import { QUERY_TYPES } from '../../queries';
@@ -19,14 +19,14 @@ export const WaterTemperatureWidget = ({ text, additionalProps, widgetStyle }: W
       query: QUERY_TYPES.WATER_TEMPERATURE,
       queryVariables: { name: additionalProps?.staticContentName }
     });
-  }, [navigation, text]);
+  }, [additionalProps?.staticContentName, additionalProps?.staticContentTitle, navigation]);
 
   useHomeRefresh(refresh);
 
   return (
     <DefaultWidget
       count={(temperature ?? '—') + '°C'}
-      Icon={() => <Icon.NamedIcon name={additionalProps?.iconName} size={normalize(22)} />}
+      Icon={(props) => <Icon.NamedIcon {...props} name={additionalProps?.iconName} />}
       image={additionalProps?.image}
       onPress={onPress}
       text={text ?? texts.widgets.water}

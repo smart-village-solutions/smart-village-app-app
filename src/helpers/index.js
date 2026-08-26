@@ -50,6 +50,7 @@ export * from './queryHelper';
 export * from './refreshIntervalHelper';
 export * from './searchHelper';
 export * from './serviceTileLayout';
+export * from './responsiveGridLayout';
 export * from './shareHelper';
 export * from './storageHelper';
 export * from './sueHelper';

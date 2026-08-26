@@ -17,7 +17,7 @@ export const CustomWidget = ({ text, additionalProps, widgetStyle }: WidgetProps
 
   return (
     <DefaultWidget
-      Icon={() => <Icon.NamedIcon name={additionalProps?.iconName || 'settings'} />}
+      Icon={(props) => <Icon.NamedIcon {...props} name={additionalProps?.iconName || 'settings'} />}
       accessibilityLabel={accessibilityLabel}
       image={additionalProps?.image}
       onPress={() => navigation.navigate(additionalProps.routeName, additionalProps.params)}

@@ -2,7 +2,7 @@ import { useNavigation } from 'expo-router/react-navigation';
 import React, { useCallback, useContext } from 'react';
 import { useQuery } from 'react-apollo';
 
-import { consts, Icon, normalize, texts } from '../../config';
+import { consts, Icon, texts } from '../../config';
 import { graphqlFetchPolicy } from '../../helpers';
 import { useRefreshTime } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
@@ -13,7 +13,7 @@ import { DefaultWidget } from './DefaultWidget';
 
 const { REFRESH_INTERVALS } = consts;
 
-export const VoucherWidget = ({ text, additionalProps, widgetStyle }: WidgetProps) => {
+export const VoucherWidget = ({ text, widgetStyle }: WidgetProps) => {
   const navigation = useNavigation();
   const refreshTime = useRefreshTime('voucher-widget', REFRESH_INTERVALS.ONCE_A_DAY);
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
@@ -30,14 +30,14 @@ export const VoucherWidget = ({ text, additionalProps, widgetStyle }: WidgetProp
       query: QUERY_TYPES.VOUCHERS,
       title: texts.screenTitles.voucher.index
     });
-  }, [navigation, text]);
+  }, [navigation]);
 
   const count = data?.genericItems?.length || 0;
 
   return (
     <DefaultWidget
       count={loading ? undefined : count}
-      Icon={(props) => <Icon.Voucher {...props} size={normalize(22)} />}
+      Icon={Icon.Voucher}
       onPress={onPress}
       text={text ?? texts.widgets.vouchers}
       widgetStyle={widgetStyle}
