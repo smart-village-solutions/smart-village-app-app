@@ -2,7 +2,6 @@
 import { RouteProp } from 'expo-router/react-navigation';
 import { StackNavigationProp } from 'expo-router/js-stack';
 import _filter from 'lodash/filter';
-import moment from 'moment';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, RefreshControl, StyleSheet, View } from 'react-native';
 import { Divider } from 'react-native-elements';
@@ -10,6 +9,7 @@ import { useInfiniteQuery, useQuery } from 'react-query';
 
 import { ConfigurationsContext } from '../../ConfigurationsProvider';
 import { NetworkContext } from '../../NetworkProvider';
+import { SettingsContext } from '../../SettingsProvider';
 import {
   EmptyMessage,
   Filter,
@@ -24,6 +24,7 @@ import {
 } from '../../components';
 import { consts, normalize, texts } from '../../config';
 import { parseListItemsFromQuery, shouldShowInternalSuePendingStatus } from '../../helpers';
+import { CACHE_SCOPES, millisecondsUntilCacheExpires } from '../../helpers/cacheHelper';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { StatusProps, SueViewType } from '../../types';
 import { useThemeStyles } from '../../hooks/useThemeStyles';
@@ -83,6 +84,7 @@ export const SueListScreen = ({ navigation, route }: Props) => {
 
   const styles = useThemeStyles(createStyles);
   const { isConnected } = useContext(NetworkContext);
+  const { globalSettings } = useContext(SettingsContext);
   const { appDesignSystem = {}, sueConfig = {} } = useContext(ConfigurationsContext);
   const { sueStatus = {}, sueListItem = {} } = appDesignSystem;
   const { statuses }: { statuses: StatusProps[] } = sueStatus;
@@ -137,7 +139,7 @@ export const SueListScreen = ({ navigation, route }: Props) => {
 
           return allPages.length * limit;
         },
-        cacheTime: moment().endOf('day').diff(moment(), 'milliseconds')
+        cacheTime: millisecondsUntilCacheExpires(globalSettings, CACHE_SCOPES.SUE)
       }
     );
 

@@ -13,6 +13,7 @@ export * from './appDesignSystemHelper';
 export * from './bookmarkHelper';
 export * from './calendarHelper';
 export * from './cameraHelper';
+export * from './cacheHelper';
 export * from './citySelectionHelper';
 export * from './colorHelper';
 export * from './dateTimeHelper';

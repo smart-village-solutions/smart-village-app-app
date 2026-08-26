@@ -19,6 +19,7 @@ import { BookmarkProvider } from './BookmarkProvider';
 import { consts, namespace, secrets } from './config';
 import { ConfigurationsProvider } from './ConfigurationsProvider';
 import {
+  createEndOfDayExpiringStorage,
   geoLocationToLocationObject,
   graphqlFetchPolicy,
   parsedImageAspectRatio,
@@ -33,8 +34,8 @@ import { OrientationProvider } from './OrientationProvider';
 import { PermanentFilterProvider } from './PermanentFilterProvider';
 import { ProfileProvider } from './ProfileProvider';
 import { getQuery, QUERY_TYPES } from './queries';
-import { ReactQueryProvider } from './ReactQueryProvider';
-import { initialContext, SettingsProvider } from './SettingsProvider';
+import { ReactQueryCacheSettings, ReactQueryProvider } from './ReactQueryProvider';
+import { initialContext, SettingsContext, SettingsProvider } from './SettingsProvider';
 import { AppThemeProvider } from './ThemeProvider';
 import { UnreadMessagesProvider } from './UnreadMessagesProvider';
 import { WasteReminderRuntime } from './WasteReminderRuntime';
@@ -46,6 +47,31 @@ const applyImageAspectRatio = (imageAspectRatio) => {
   if (imageAspectRatio) {
     consts.IMAGE_ASPECT_RATIO = parsedImageAspectRatio(imageAspectRatio);
   }
+};
+
+const MainAppWithSettings = () => {
+  const { globalSettings } = useContext(SettingsContext);
+
+  return (
+    <>
+      <ReactQueryCacheSettings globalSettings={globalSettings} />
+      <AccessibilityProvider>
+        <AppThemeProvider>
+          <ConfigurationsProvider>
+            <OnboardingManager>
+              <ProfileProvider>
+                <UnreadMessagesProvider>
+                  <OtaUpdateManager />
+                  <WasteReminderRuntime />
+                  <Navigator navigationType={globalSettings.navigation} />
+                </UnreadMessagesProvider>
+              </ProfileProvider>
+            </OnboardingManager>
+          </ConfigurationsProvider>
+        </AppThemeProvider>
+      </AccessibilityProvider>
+    </>
+  );
 };
 
 const MainAppWithApolloProvider = () => {
@@ -83,7 +109,9 @@ const MainAppWithApolloProvider = () => {
     // const link = ApolloLink.from([authLink, restLink, errorLink, retryLink, httpLink]);
     const link = ApolloLink.from([authLink, httpLink]);
     const cache = new InMemoryCache();
-    const storage = AsyncStorage;
+    const storage = createEndOfDayExpiringStorage(AsyncStorage, {
+      getGlobalSettings: storageHelper.globalSettings
+    });
 
     try {
       // await before instantiating ApolloClient,
@@ -223,21 +251,7 @@ const MainAppWithApolloProvider = () => {
           initialConversationSettings
         }}
       >
-        <AccessibilityProvider>
-          <AppThemeProvider>
-            <ConfigurationsProvider>
-              <OnboardingManager>
-                <ProfileProvider>
-                  <UnreadMessagesProvider>
-                    <OtaUpdateManager />
-                    <WasteReminderRuntime />
-                    <Navigator navigationType={initialGlobalSettings.navigation} />
-                  </UnreadMessagesProvider>
-                </ProfileProvider>
-              </OnboardingManager>
-            </ConfigurationsProvider>
-          </AppThemeProvider>
-        </AccessibilityProvider>
+        <MainAppWithSettings />
       </SettingsProvider>
     </ApolloProvider>
   );

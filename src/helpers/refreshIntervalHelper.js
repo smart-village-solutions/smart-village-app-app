@@ -3,6 +3,7 @@ import moment from 'moment';
 
 import { consts } from '../config/consts';
 
+import { endOfDayUnix } from './cacheHelper';
 import { addToStore, readFromStore } from './storageHelper';
 
 /**
@@ -19,8 +20,7 @@ import { addToStore, readFromStore } from './storageHelper';
  */
 export const refreshTimeFor = async (refreshTimeKey, refreshInterval) => {
   if (refreshInterval === consts.REFRESH_INTERVALS.NEVER) {
-    // always return tomorrow, so that we never refresh
-    return moment().add(1, 'days').unix();
+    return Number.MAX_SAFE_INTEGER;
   }
 
   const refreshIntervals = await readFromStore('refresh-intervals');
@@ -32,7 +32,7 @@ export const refreshTimeFor = async (refreshTimeKey, refreshInterval) => {
 
   switch (refreshInterval) {
     case consts.REFRESH_INTERVALS.ONCE_A_DAY: {
-      const endOfDay = moment().endOf('day').unix();
+      const endOfDay = endOfDayUnix();
 
       if (endOfDay > refreshTime) {
         // store or update refresh time in AsyncStorage
