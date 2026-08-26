@@ -76,6 +76,7 @@
     "expo": "~57.0.14",
     "expo-application": "~57.0.2",
     "expo-asset": "~57.0.12",
+    "expo-auth-session": "~57.0.7",
     "expo-blur": "~57.0.2",
     "expo-build-properties": "~57.0.12",
     "expo-calendar": "~57.0.2",

@@ -34,6 +34,14 @@ jest.mock('../../src/components/InfoHeader', () => ({
   InfoHeader: () => null
 }));
 
+jest.mock('../../src/components/LoginHeader', () => ({
+  LoginHeader: () => {
+    const ReactLocal = require('react');
+
+    return ReactLocal.createElement('mock-login-header');
+  }
+}));
+
 jest.mock('../../src/components/SearchHeader', () => ({
   SearchHeader: () => {
     const ReactLocal = require('react');
@@ -114,6 +122,7 @@ describe('HeaderRight', () => {
         }
         withAccessibility
         withDrawer
+        withProfile
         withSearch
         withShare
       />
@@ -127,6 +136,7 @@ describe('HeaderRight', () => {
     );
 
     expect(renderedOrder.map((node) => node.type)).toEqual([
+      'mock-login-header',
       'mock-search-header',
       'mock-share-icon',
       'mock-named-icon',
