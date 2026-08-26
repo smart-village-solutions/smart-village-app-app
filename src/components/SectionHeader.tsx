@@ -1,18 +1,17 @@
 import React, { useContext } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleProp, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native';
 
 import { consts, device, Icon, normalize } from '../config';
 import { useTheme } from '../hooks/useTheme';
 import { SettingsContext } from '../SettingsProvider';
 
 import { Title, TitleContainer, TitleShadow } from './Title';
-import { Touchable } from './Touchable';
 import { WrapperRow } from './Wrapper';
 
 type Props = {
   big?: boolean;
   center?: boolean;
-  containerStyle?: any;
+  containerStyle?: StyleProp<ViewStyle>;
   small?: boolean;
   onPress?: () => void;
   title: string;
@@ -40,9 +39,9 @@ export const SectionHeader = ({
       <Title
         accessibilityLabel={onPress ? pressableAccessibilityLabel : headingAccessibilityLabel}
         accessibilityRole={onPress ? undefined : 'header'}
+        $interactive={!!onPress}
         big={big}
         center={center}
-        onPress={onPress}
         small={small}
         uppercase={uppercase}
       >
@@ -58,9 +57,14 @@ export const SectionHeader = ({
     <>
       <TitleContainer flat={flat} style={containerStyle}>
         {onPress ? (
-          <Touchable accessibilityLabel={pressableAccessibilityLabel} onPress={onPress}>
+          <TouchableOpacity
+            accessibilityLabel={pressableAccessibilityLabel}
+            accessibilityRole="button"
+            activeOpacity={0.6}
+            onPress={onPress}
+          >
             {innerComponent}
-          </Touchable>
+          </TouchableOpacity>
         ) : (
           innerComponent
         )}

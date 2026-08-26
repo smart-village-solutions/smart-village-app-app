@@ -18,6 +18,7 @@ import {
 } from '../../helpers';
 import { updateResourceFiltersStateHelper } from '../../helpers/updateResourceFiltersStateHelper';
 import {
+  useGenericItemEvents,
   useLastKnownPosition,
   useLocationSettings,
   useOpenWebScreen,
@@ -25,6 +26,8 @@ import {
   useSystemPermission,
   useVolunteerData
 } from '../../hooks';
+import { useTheme } from '../../hooks/useTheme';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
 import { NetworkContext } from '../../NetworkProvider';
 import { PermanentFilterContext } from '../../PermanentFilterProvider';
 import { getQuery, QUERY_TYPES } from '../../queries';
@@ -41,8 +44,6 @@ import { LoadingContainer } from '../LoadingContainer';
 import { SafeAreaViewFlex } from '../SafeAreaViewFlex';
 import { RegularText } from '../Text';
 import { WrapperVertical } from '../Wrapper';
-import { useThemeStyles } from '../../hooks/useThemeStyles';
-import { useTheme } from '../../hooks/useTheme';
 
 const { EVENT_SUGGESTION_BUTTON } = consts;
 
@@ -60,7 +61,7 @@ const today = moment().format('YYYY-MM-DD');
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
 export const EventRecords = ({ navigation, route }) => {
-  const { colors: colors } = useTheme();
+  const { colors } = useTheme();
 
   const styles = useThemeStyles(createStyles);
   const { isConnected } = useContext(NetworkContext);
@@ -71,6 +72,7 @@ export const EventRecords = ({ navigation, route }) => {
   const { eventLocations: showEventLocationsFilter = false } = filter;
   const { events: showVolunteerEvents = false } = hdvt;
   const { calendarToggle = false } = settings;
+  const genericItemEventSources = settings.eventCalendar?.genericItemEventSources || [];
   const { eventListIntro } = sections;
   const query = route.params?.query ?? '';
   const initialQueryVariables = route.params?.queryVariables || {};
@@ -139,14 +141,28 @@ export const EventRecords = ({ navigation, route }) => {
     isSectioned: true
   });
 
+  const {
+    data: genericItemEvents,
+    isLoading: isLoadingGenericItemEvents,
+    refetch: refetchGenericItemEvents
+  } = useGenericItemEvents({
+    dateRange: queryVariables.dateRange,
+    enabled: genericItemEventSources.length > 0,
+    sources: genericItemEventSources
+  });
+
   // apply additional data if volunteer events should be presented and no filter selection is made,
   // because filtered data for category or location has nothing to do with volunteer data
-  const additionalData =
-    showVolunteerEvents &&
-    !hasFilterSelection(false, queryVariables) &&
-    !(showEventLocationsFilter && hasFilterSelection(true, queryVariables))
-      ? dataVolunteerEvents
-      : undefined;
+  const hasNativeFilterSelection =
+    hasFilterSelection(false, queryVariables) ||
+    (showEventLocationsFilter && hasFilterSelection(true, queryVariables));
+  const additionalData = useMemo(
+    () =>
+      hasNativeFilterSelection
+        ? []
+        : [...(showVolunteerEvents ? dataVolunteerEvents || [] : []), ...genericItemEvents],
+    [dataVolunteerEvents, genericItemEvents, hasNativeFilterSelection, showVolunteerEvents]
+  );
 
   const listItems = useMemo(() => {
     let parsedListItems =
@@ -207,15 +223,18 @@ export const EventRecords = ({ navigation, route }) => {
       showCalendar && DeviceEventEmitter.emit(REFRESH_CALENDAR);
       await refetch();
       showVolunteerEvents && refetchVolunteerEvents();
+      genericItemEventSources.length && refetchGenericItemEvents();
     }
     setRefreshing(false);
   }, [
     isConnected,
     refetch,
     refetchVolunteerEvents,
+    refetchGenericItemEvents,
     setRefreshing,
     showCalendar,
-    showVolunteerEvents
+    showVolunteerEvents,
+    genericItemEventSources.length
   ]);
 
   const filterTypes = useMemo(() => {
@@ -255,20 +274,25 @@ export const EventRecords = ({ navigation, route }) => {
     return {};
   }, [fetchNextPage, showCalendar, hasNextPage, query]);
 
+  const eventListIntroUrl = eventListIntro?.url;
+  const eventListIntroFormIntroText = eventListIntro?.formIntroText;
   const eventSuggestionOnPress = useCallback(() => {
-    if (eventListIntro.url) {
-      openLink(eventListIntro.url, openWebScreen);
+    if (eventListIntroUrl) {
+      openLink(eventListIntroUrl, openWebScreen);
     } else {
       navigation.navigate(ScreenName.EventSuggestion, {
-        formIntroText: eventListIntro.formIntroText
+        formIntroText: eventListIntroFormIntroText
       });
     }
-  }, [eventListIntro?.url, eventListIntro?.formIntroText, navigation, openWebScreen]);
+  }, [eventListIntroFormIntroText, eventListIntroUrl, navigation, openWebScreen]);
 
   if (!query) return null;
 
   if (
-    (!listItems && isLoading && !isRefetching && !isFetchingNextPage) ||
+    (!listItems?.length &&
+      (isLoading || isLoadingGenericItemEvents) &&
+      !isRefetching &&
+      !isFetchingNextPage) ||
     eventRecordsAddressesLoading ||
     eventRecordsCategoriesLoading
   ) {
@@ -294,7 +318,7 @@ export const EventRecords = ({ navigation, route }) => {
       )}
       <ListComponent
         ListHeaderComponent={
-          <View style={{ paddingHorizontal: showCalendar ? normalize(8) : 0 }}>
+          <View style={showCalendar ? styles.headerCalendar : styles.header}>
             {!!eventListIntro && (
               <>
                 {!!eventListIntro.introText && (
@@ -317,7 +341,7 @@ export const EventRecords = ({ navigation, route }) => {
           </View>
         }
         ListEmptyComponent={
-          isLoading ? (
+          isLoading || isLoadingGenericItemEvents ? (
             <LoadingContainer>
               <ActivityIndicator color={colors.refreshControl} />
             </LoadingContainer>
@@ -363,6 +387,13 @@ export const EventRecords = ({ navigation, route }) => {
 /* eslint-enable complexity */
 
 const createStyles = () => ({
+  header: {
+    paddingHorizontal: 0
+  },
+
+  headerCalendar: {
+    paddingHorizontal: normalize(8)
+  },
   noPaddingHorizontal: {
     paddingHorizontal: 0
   }

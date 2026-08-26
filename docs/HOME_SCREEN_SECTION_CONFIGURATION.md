@@ -105,6 +105,7 @@ The following example shows a full `homeScreenConfig` that controls the complete
       "limit": 3
     },
     "show": true,
+    "skipLastDivider": true,
     "title": "Veranstaltungen",
     "buttonTitle": "Alle Veranstaltungen anzeigen"
   },
@@ -137,6 +138,9 @@ For data-driven sections (`query`-based entries), the following fields are **opt
 | `eventRecords`             | `title`                         | `sections.headlineEvents`                                |
 | `eventRecords`             | `buttonTitle`                   | `sections.buttonEvents`                                  |
 | `eventRecords`             | `limitEvents`                   | `sections.limitEvents` (default: `15`)                   |
+
+All query-based sections support `skipLastDivider: true`. It removes the divider below the last
+visible item after all sources have been merged and the configured limit has been applied.
 
 ### Backward Compatibility
 

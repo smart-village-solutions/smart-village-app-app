@@ -65,6 +65,7 @@ const renderItem = ({ item }) => {
     queryVariables,
     showData,
     showVolunteerEvents,
+    skipLastDivider,
     title,
     type,
     widgetConfigs,
@@ -196,6 +197,7 @@ const renderItem = ({ item }) => {
             query,
             queryVariables: { ...queryVariables, categoryId },
             showVolunteerEvents,
+            skipLastDivider,
             title,
             titleDetail
           }}
@@ -215,6 +217,7 @@ const renderItem = ({ item }) => {
         query,
         queryVariables,
         showVolunteerEvents,
+        skipLastDivider,
         title
       }}
     />
@@ -373,7 +376,8 @@ export const HomeScreen = ({ navigation, route }) => {
                   excludeMowasRegionalKeys,
                   ...section.queryVariables
                 },
-                showData: section.show !== false
+                showData: section.show !== false,
+                skipLastDivider: section.skipLastDivider === true
               };
             case QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS:
               return {
@@ -391,6 +395,7 @@ export const HomeScreen = ({ navigation, route }) => {
                   ...section.queryVariables
                 },
                 showData: section.show !== false,
+                skipLastDivider: section.skipLastDivider === true,
                 title: section.title || headlinePointsOfInterestAndTours
               };
             case QUERY_TYPES.EVENT_RECORDS:
@@ -408,6 +413,7 @@ export const HomeScreen = ({ navigation, route }) => {
                 },
                 showData: section.show !== false,
                 showVolunteerEvents,
+                skipLastDivider: section.skipLastDivider === true,
                 title: section.title || headlineEvents
               };
             default:

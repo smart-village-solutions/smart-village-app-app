@@ -16,6 +16,7 @@ export * from './ConstructionSite';
 export * from './Contact';
 export * from './Date';
 export * from './GenericItem';
+export * from './GenericItemEvent';
 export * from './GenericType';
 export * from './LocationSettings';
 export * from './Map';

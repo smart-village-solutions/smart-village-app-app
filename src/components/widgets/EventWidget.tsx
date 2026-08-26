@@ -4,11 +4,11 @@ import React, { useCallback, useContext, useState } from 'react';
 import { useQuery } from 'react-query';
 
 import { consts, Icon, texts } from '../../config';
-import { useHomeRefresh, useVolunteerData } from '../../hooks';
+import { useGenericItemEvents, useHomeRefresh, useVolunteerData } from '../../hooks';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { ReactQueryClient } from '../../ReactQueryClient';
 import { SettingsContext } from '../../SettingsProvider';
-import { ScreenName, WidgetProps } from '../../types';
+import { GenericItemEventSource, ScreenName, WidgetProps } from '../../types';
 
 import { DefaultWidget } from './DefaultWidget';
 
@@ -19,8 +19,14 @@ const today = moment().format('YYYY-MM-DD');
 export const EventWidget = ({ text, additionalProps, widgetStyle }: WidgetProps) => {
   const navigation = useNavigation();
   const { globalSettings } = useContext(SettingsContext);
-  const { hdvt = {} } = globalSettings;
+  const { hdvt = {}, settings = {} } = globalSettings;
   const { events: showVolunteerEvents = false } = hdvt as { events?: boolean };
+  const genericItemEventSources =
+    (
+      settings as {
+        eventCalendar?: { genericItemEventSources?: GenericItemEventSource[] };
+      }
+    ).eventCalendar?.genericItemEventSources || [];
   const [queryVariables] = useState<{ dateRange?: string[]; order?: string }>(
     additionalProps?.noFilterByDailyEvents
       ? { order: 'listDate_ASC' }
@@ -47,6 +53,15 @@ export const EventWidget = ({ text, additionalProps, widgetStyle }: WidgetProps)
     isCalendar: true,
     isSectioned: true
   });
+  const {
+    data: genericItemEvents,
+    isLoading: isLoadingGenericItemEvents,
+    refetch: refetchGenericItemEvents
+  } = useGenericItemEvents({
+    dateRange: queryVariables.dateRange,
+    enabled: genericItemEventSources.length > 0,
+    sources: genericItemEventSources
+  });
 
   const onPress = useCallback(() => {
     navigation.navigate(ScreenName.Index, {
@@ -59,18 +74,28 @@ export const EventWidget = ({ text, additionalProps, widgetStyle }: WidgetProps)
       rootRouteName: ROOT_ROUTE_NAMES.EVENT_RECORDS,
       filterByDailyEvents: additionalProps?.noFilterByDailyEvents ? false : true
     });
-  }, [navigation, text, queryVariables]);
+  }, [
+    additionalProps?.limit,
+    additionalProps?.noFilterByDailyEvents,
+    navigation,
+    text,
+    queryVariables
+  ]);
 
   useHomeRefresh(() => {
     refetch();
     showVolunteerEvents && refetchVolunteerEvents();
+    genericItemEventSources.length && refetchGenericItemEvents();
   });
 
-  const count = (data?.eventRecords?.length || 0) + (dataVolunteerEvents?.length || 0);
+  const count =
+    (data?.eventRecords?.length || 0) +
+    (dataVolunteerEvents?.length || 0) +
+    genericItemEvents.length;
 
   return (
     <DefaultWidget
-      count={additionalProps?.noCount || loading ? undefined : count}
+      count={additionalProps?.noCount || loading || isLoadingGenericItemEvents ? undefined : count}
       Icon={Icon.Calendar}
       image={additionalProps?.image}
       onPress={onPress}

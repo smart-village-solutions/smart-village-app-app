@@ -66,6 +66,10 @@ For detailed documentation see [the auth docs](./AUTH.md).
 
 For detailed documentation see [the ar docs](./AR.md).
 
+## Generic Item events
+
+For configuring Generic Items as additional calendar events, see [the Generic Item event docs](./GENERIC_ITEM_EVENTS.md).
+
 ## Participation Projects
 
 For module setup and static content examples see [the Participation Project docs](./PARTICIPATION_PROJECT.md).

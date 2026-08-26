@@ -12,7 +12,7 @@ export const Title = styled(Text)`
   line-height: ${normalize(26)};
 
   ${(props) =>
-    props.onPress &&
+    (props.onPress || props.$interactive) &&
     css`
       color: ${(props) => props.theme?.primary || lightColors.primary};
     `};

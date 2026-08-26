@@ -33,15 +33,6 @@ jest.mock('../../src/components/Title', () => {
   };
 });
 
-jest.mock('../../src/components/Touchable', () => {
-  const ReactLocal = require('react');
-
-  return {
-    Touchable: ({ children, ...props }) =>
-      ReactLocal.createElement('mock-touchable', props, children)
-  };
-});
-
 jest.mock('../../src/components/Wrapper', () => {
   const ReactLocal = require('react');
 
@@ -73,10 +64,13 @@ describe('SectionHeader accessibility', () => {
       tree = renderer.create(<SectionHeader onPress={jest.fn()} title="Nachrichten" />);
     });
 
-    const touchable = tree!.root.findByType('mock-touchable');
+    const touchable = tree!.root.find((node) => node.props.activeOpacity === 0.6);
     const title = tree!.root.findByType('mock-title');
 
     expect(touchable.props.accessibilityLabel).toBe('(Nachrichten) (Überschrift) (Taste)');
+    expect(touchable.props.accessibilityRole).toBe('button');
     expect(title.props.accessibilityRole).toBeUndefined();
+    expect(title.props.onPress).toBeUndefined();
+    expect(title.props.$interactive).toBe(true);
   });
 });
