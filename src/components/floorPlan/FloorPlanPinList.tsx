@@ -1,4 +1,4 @@
-import { NavigationProp } from '@react-navigation/native';
+import type { NavigationProp } from 'expo-router/react-navigation';
 import React, { memo, useCallback } from 'react';
 import type { ListRenderItem } from 'react-native';
 import { StyleSheet, View } from 'react-native';

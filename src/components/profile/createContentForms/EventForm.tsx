@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from 'expo-router/react-navigation';
 import moment from 'moment';
 import React, { MutableRefObject, useCallback, useRef, useState } from 'react';
 import { useMutation, useQuery } from 'react-apollo';
@@ -10,10 +10,10 @@ import {
   useForm,
   useWatch
 } from 'react-hook-form';
-import { Alert, DeviceEventEmitter, LayoutChangeEvent, ScrollView, StyleSheet } from 'react-native';
+import { Alert, DeviceEventEmitter, LayoutChangeEvent, ScrollView } from 'react-native';
 import { Divider } from 'react-native-elements';
 
-import { colors, consts, device, Icon, normalize, texts } from '../../../config';
+import { consts, device, Icon, normalize, texts } from '../../../config';
 import { AUTH_MODE_USER, getApolloAuthContext } from '../../../graphqlAuth';
 import {
   buildAddressData,
@@ -27,6 +27,8 @@ import {
   WebUrlFormValue
 } from '../../../helpers';
 import { DETAIL_REFRESH_EVENT } from '../../../hooks';
+import { useTheme } from '../../../hooks/useTheme';
+import { useThemeStyles } from '../../../hooks/useThemeStyles';
 import { GET_CATEGORIES } from '../../../queries/categories';
 import { CREATE_EVENT_RECORDS } from '../../../queries/eventRecords';
 import { Button } from '../../Button';
@@ -183,6 +185,8 @@ const buildPriceInformationsValue = (priceInformations: any[] = []): PriceInform
 
 /* eslint-disable complexity */
 export const EventForm = ({ initialData, mode = 'create', scrollViewRef }: EventFormProps) => {
+  const { colors } = useTheme();
+  const styles = useThemeStyles(createStyles);
   const navigation = useNavigation();
   const isEdit = mode === 'edit' && !!initialData?.id;
   const initialDates = initialData?.date || initialData?.dates?.[0] || {};
@@ -858,7 +862,10 @@ export const EventForm = ({ initialData, mode = 'create', scrollViewRef }: Event
           title={isEdit ? texts.profile.forms.save : texts.profile.forms.send}
           disabled={loading || isLoading}
         />
-        <Touchable onPress={() => navigation.goBack()}>
+        <Touchable
+          accessibilityLabel={`${texts.profile.forms.abort} ${consts.a11yLabel.button}`}
+          onPress={() => navigation.goBack()}
+        >
           <RegularText primary center>
             {texts.profile.forms.abort}
           </RegularText>
@@ -869,7 +876,7 @@ export const EventForm = ({ initialData, mode = 'create', scrollViewRef }: Event
 };
 /* eslint-enable complexity */
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ReturnType<typeof useTheme>['colors']) => ({
   checkboxContainerStyle: {
     backgroundColor: colors.surface,
     borderWidth: 0,

@@ -1,4 +1,4 @@
-import { NavigationProp, ParamListBase } from '@react-navigation/native';
+import type { NavigationProp, ParamListBase } from 'expo-router/react-navigation';
 
 import { RouteTarget } from '../types';
 

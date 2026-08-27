@@ -2,8 +2,9 @@ import React from 'react';
 import { Control, FieldErrors, FieldValues } from 'react-hook-form';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import { colors, Icon, normalize, texts } from '../../../../config';
+import { Icon, normalize, texts } from '../../../../config';
 import { WebUrlFormValue } from '../../../../helpers';
+import { useTheme } from '../../../../hooks/useTheme';
 import { RegularText } from '../../../Text';
 import { Wrapper, WrapperVertical } from '../../../Wrapper';
 import { Input } from '../../../form';
@@ -21,6 +22,8 @@ export const createDefaultWebUrl = (): WebUrlFormValue => ({
 });
 
 export const WebUrls = ({ control, errors, fields, remove }: WebUrlsProps) => {
+  const { colors } = useTheme();
+
   return (
     <>
       {fields.map((linkField, index) => (
@@ -29,6 +32,7 @@ export const WebUrls = ({ control, errors, fields, remove }: WebUrlsProps) => {
             <RegularText small>{texts.profile.forms.linkGroup.title}</RegularText>
             <TouchableOpacity
               accessibilityLabel={texts.profile.forms.linkGroup.deleteButtonAccessibility}
+              accessibilityRole="button"
               onPress={() => remove(index)}
               style={styles.deleteButton}
             >
@@ -63,7 +67,10 @@ export const WebUrls = ({ control, errors, fields, remove }: WebUrlsProps) => {
 
 const styles = StyleSheet.create({
   deleteButton: {
-    padding: normalize(8)
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: normalize(44),
+    minWidth: normalize(44)
   },
   linkGroupHeader: {
     alignItems: 'center',

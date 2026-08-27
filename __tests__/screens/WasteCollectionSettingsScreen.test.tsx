@@ -47,7 +47,7 @@ const mockNavigation = {
   popTo: jest.fn()
 };
 
-jest.mock('@react-navigation/native', () => ({
+jest.mock('expo-router/react-navigation', () => ({
   useFocusEffect: (callback) => callback(),
   useNavigation: () => mockNavigation,
   useRoute: () => ({ params: { currentSelectedStreetId: 1 } })

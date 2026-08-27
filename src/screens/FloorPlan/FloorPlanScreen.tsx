@@ -1,4 +1,4 @@
-import { NavigationProp, RouteProp } from '@react-navigation/native';
+import type { NavigationProp, RouteProp } from 'expo-router/react-navigation';
 import React, { useCallback, useContext, useLayoutEffect, useMemo, useState } from 'react';
 import { AccessibilityInfo, StyleSheet, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';

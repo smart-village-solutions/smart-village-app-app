@@ -137,6 +137,15 @@ export const Input = forwardRef(
     if (richText) {
       return (
         <RichTextInput
+          accessibilityLabel={getInputAccessibilityLabel({
+            accessibilityLabel,
+            fieldValue: field.value,
+            label,
+            name,
+            placeholder: furtherProps.placeholder,
+            required: rules?.required
+          })}
+          accessibilityState={inputAccessibilityState}
           {...{
             boldLabel,
             containerStyle,

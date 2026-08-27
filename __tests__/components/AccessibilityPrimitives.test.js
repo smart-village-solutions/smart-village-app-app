@@ -7,9 +7,26 @@ jest.mock('react-native-elements', () => {
 
   const Button = (props) => ReactLocal.createElement('mock-rne-button', props, props.children);
   const CheckBox = (props) => ReactLocal.createElement('mock-rne-checkbox', props, props.children);
+  const Input = (props) => ReactLocal.createElement('mock-rne-input', props, props.children);
 
-  return { Button, CheckBox };
+  return { Button, CheckBox, Input };
 });
+
+jest.mock('react-native-enriched', () => {
+  const ReactLocal = require('react');
+
+  return {
+    EnrichedTextInput: ReactLocal.forwardRef((props, _ref) =>
+      ReactLocal.createElement('mock-enriched-text-input', props)
+    )
+  };
+});
+
+jest.mock('react-hook-form', () => ({
+  useController: () => ({
+    field: { value: '', onChange: jest.fn(), onBlur: jest.fn() }
+  })
+}));
 
 jest.mock('../../src/config', () => {
   const ReactLocal = require('react');
@@ -36,6 +53,16 @@ jest.mock('../../src/config', () => {
       a11yLabel: {
         button: '(Taste)',
         checkbox: '(Checkbox)',
+        formatting: {
+          blockquote: 'Zitat',
+          bold: 'Fett',
+          italic: 'Kursiv',
+          lineThrough: 'Durchgestrichen',
+          orderedList: 'Nummerierte Liste',
+          underline: 'Unterstrichen',
+          unorderedList: 'Aufzählungsliste'
+        },
+        required: '(Pflichtfeld)',
         textInput: '(Texteingabe)'
       },
       DIMENSIONS: {
@@ -90,6 +117,7 @@ jest.mock('../../src/AccessibilityProvider', () => {
 
 import { Button } from '../../src/components/Button';
 import { Checkbox } from '../../src/components/Checkbox';
+import { Input } from '../../src/components/form/Input';
 import { Radiobutton } from '../../src/components/Radiobutton';
 import { Switch as AppSwitch } from '../../src/components/Switch';
 import { Touchable } from '../../src/components/Touchable';
@@ -157,6 +185,46 @@ describe('Accessibility primitives', () => {
 
     expect(node.props.accessibilityState).toEqual({ checked: true, disabled: true });
     expect(node.props.accessibilityRole).toBe('radio');
+  });
+
+  it('Rich text input exposes field, error and formatting controls to assistive technology', () => {
+    const tree = renderWithAct(
+      <Input
+        control={{}}
+        errorMessage="Beschreibung muss ausgefüllt werden"
+        label="Beschreibung"
+        name="description"
+        richText
+        rules={{ required: true }}
+      />
+    );
+    const input = tree.root.findByType('mock-enriched-text-input');
+
+    expect(input.props.accessibilityLabel).toBe('Beschreibung (Pflichtfeld) (Texteingabe)');
+    expect(input.props.accessibilityState).toEqual({ disabled: false, invalid: true });
+
+    renderer.act(() => {
+      input.props.onFocus();
+    });
+
+    const toolbarButtons = tree.root.findAllByType(TouchableOpacity);
+    expect(toolbarButtons).toHaveLength(7);
+    expect(toolbarButtons.map((button) => button.props.accessibilityLabel)).toEqual([
+      'Fett (Taste)',
+      'Kursiv (Taste)',
+      'Unterstrichen (Taste)',
+      'Durchgestrichen (Taste)',
+      'Aufzählungsliste (Taste)',
+      'Nummerierte Liste (Taste)',
+      'Zitat (Taste)'
+    ]);
+    toolbarButtons.forEach((button) => {
+      expect(button.props.accessibilityRole).toBe('button');
+      expect(button.props.accessibilityState).toEqual({ selected: false });
+    });
+
+    const error = tree.root.findByProps({ accessibilityRole: 'alert' });
+    expect(error.props.accessibilityLiveRegion).toBe('polite');
   });
 
   it('Switch exposes switch semantics', () => {

@@ -3,9 +3,10 @@ import React from 'react';
 import { Control, Controller, FieldErrors, FieldValues } from 'react-hook-form';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import { colors, Icon, normalize, texts } from '../../../../config';
+import { Icon, normalize, texts } from '../../../../config';
 import { OpeningHourFormValue } from '../../../../helpers';
-import { Checkbox } from '../../../Checkbox';
+import { useTheme } from '../../../../hooks/useTheme';
+import { Radiobutton } from '../../../Radiobutton';
 import { RegularText } from '../../../Text';
 import { Wrapper, WrapperVertical } from '../../../Wrapper';
 import { DateTimeInput, DropdownInput, Input } from '../../../form';
@@ -39,6 +40,8 @@ export const createDefaultOpeningHour = (): OpeningHourFormValue => ({
 });
 
 export const OpeningHours = ({ control, errors, fields, remove }: OpeningHoursProps) => {
+  const { colors } = useTheme();
+
   return (
     <>
       {fields.map((openingHourField, index) => (
@@ -47,6 +50,7 @@ export const OpeningHours = ({ control, errors, fields, remove }: OpeningHoursPr
             <RegularText small>{texts.profile.forms.openingHourGroup.title}</RegularText>
             <TouchableOpacity
               accessibilityLabel={texts.profile.forms.openingHourGroup.deleteButtonAccessibility}
+              accessibilityRole="button"
               onPress={() => remove(index)}
               style={styles.deleteButton}
             >
@@ -62,23 +66,15 @@ export const OpeningHours = ({ control, errors, fields, remove }: OpeningHoursPr
 
                 return (
                   <View>
-                    <Checkbox
-                      checked={!!isOpen}
-                      checkedIcon={<Icon.CircleCheckFilled />}
-                      containerStyle={styles.checkboxContainerStyle}
-                      navigate={() => undefined}
+                    <Radiobutton
                       onPress={() => onChange(true)}
+                      selected={!!isOpen}
                       title={texts.profile.forms.openingHourGroup.open}
-                      uncheckedIcon={<Icon.Circle color={colors.placeholder} />}
                     />
-                    <Checkbox
-                      checked={!isOpen}
-                      checkedIcon={<Icon.CircleCheckFilled />}
-                      containerStyle={styles.checkboxContainerStyle}
-                      navigate={() => undefined}
+                    <Radiobutton
                       onPress={() => onChange(false)}
+                      selected={!isOpen}
                       title={texts.profile.forms.openingHourGroup.closed}
-                      uncheckedIcon={<Icon.Circle color={colors.placeholder} />}
                     />
                   </View>
                 );
@@ -216,14 +212,11 @@ export const OpeningHours = ({ control, errors, fields, remove }: OpeningHoursPr
 };
 
 const styles = StyleSheet.create({
-  checkboxContainerStyle: {
-    backgroundColor: colors.surface,
-    borderWidth: 0,
-    marginLeft: 0,
-    marginRight: 0
-  },
   deleteButton: {
-    padding: normalize(8)
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: normalize(44),
+    minWidth: normalize(44)
   },
   openingHourGroupHeader: {
     alignItems: 'center',

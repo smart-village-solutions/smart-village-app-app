@@ -1,16 +1,18 @@
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from 'expo-router/react-navigation';
 import moment from 'moment';
 import React, { MutableRefObject, useCallback, useContext, useRef, useState } from 'react';
 import { useMutation, useQuery } from 'react-apollo';
 import { Controller, FieldErrors, SubmitErrorHandler, useForm } from 'react-hook-form';
-import { Alert, DeviceEventEmitter, LayoutChangeEvent, ScrollView, StyleSheet } from 'react-native';
+import { Alert, DeviceEventEmitter, LayoutChangeEvent, ScrollView } from 'react-native';
 import { Divider } from 'react-native-elements';
 
 import { ProfileContext } from '../../../ProfileProvider';
-import { colors, consts, Icon, normalize, texts } from '../../../config';
+import { consts, Icon, normalize, texts } from '../../../config';
 import { AUTH_MODE_USER, getApolloAuthContext } from '../../../graphqlAuth';
 import { parseDateInputValue, uploadImages } from '../../../helpers';
 import { DETAIL_REFRESH_EVENT } from '../../../hooks';
+import { useTheme } from '../../../hooks/useTheme';
+import { useThemeStyles } from '../../../hooks/useThemeStyles';
 import { GET_CATEGORIES } from '../../../queries/categories';
 import { CREATE_NEWS_ITEM } from '../../../queries/newsItems';
 import { Button } from '../../Button';
@@ -104,6 +106,8 @@ export const NewsForm = ({
   mode = 'create',
   scrollViewRef
 }: NewsFormProps) => {
+  const { colors } = useTheme();
+  const styles = useThemeStyles(createStyles);
   const { currentUserData } = useContext(ProfileContext);
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(false);
@@ -489,7 +493,10 @@ export const NewsForm = ({
           disabled={loading || isLoading}
         />
 
-        <Touchable onPress={() => navigation.goBack()}>
+        <Touchable
+          accessibilityLabel={`${texts.profile.forms.abort} ${consts.a11yLabel.button}`}
+          onPress={() => navigation.goBack()}
+        >
           <RegularText primary center>
             {texts.profile.forms.abort}
           </RegularText>
@@ -500,7 +507,7 @@ export const NewsForm = ({
 };
 /* eslint-enable complexity */
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ReturnType<typeof useTheme>['colors']) => ({
   checkboxContainerStyle: {
     backgroundColor: colors.surface,
     borderWidth: 0,

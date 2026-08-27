@@ -2,8 +2,9 @@ import React from 'react';
 import { Control, FieldErrors, FieldValues } from 'react-hook-form';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import { colors, Icon, normalize, texts } from '../../../../config';
+import { Icon, normalize, texts } from '../../../../config';
 import { PriceInformationFormValue } from '../../../../helpers';
+import { useTheme } from '../../../../hooks/useTheme';
 import { RegularText } from '../../../Text';
 import { Wrapper, WrapperVertical } from '../../../Wrapper';
 import { Input } from '../../../form';
@@ -21,6 +22,8 @@ export const createDefaultPriceInformation = (): PriceInformationFormValue => ({
 });
 
 export const PriceInformations = ({ control, errors, fields, remove }: PriceInformationsProps) => {
+  const { colors } = useTheme();
+
   return (
     <>
       {fields.map((linkField, index) => (
@@ -29,6 +32,7 @@ export const PriceInformations = ({ control, errors, fields, remove }: PriceInfo
             <RegularText small>{texts.profile.forms.priceInformation.title}</RegularText>
             <TouchableOpacity
               accessibilityLabel={texts.profile.forms.priceInformation.deleteButtonAccessibility}
+              accessibilityRole="button"
               onPress={() => remove(index)}
               style={styles.deleteButton}
             >
@@ -63,7 +67,10 @@ export const PriceInformations = ({ control, errors, fields, remove }: PriceInfo
 
 const styles = StyleSheet.create({
   deleteButton: {
-    padding: normalize(8)
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: normalize(44),
+    minWidth: normalize(44)
   },
   linkGroupHeader: {
     alignItems: 'center',

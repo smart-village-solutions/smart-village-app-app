@@ -59,7 +59,7 @@ export const WeatherWidget = ({ text, widgetStyle }: WidgetProps) => {
         label={text ?? texts.widgets.weather}
         labelStyle={normalizedFontStyle}
         visual={
-          <WrapperRow center>
+          <WrapperRow center itemsCenter>
             <View style={[styles.iconContainer, normalizedIconStyle]}>
               <Image
                 source={{

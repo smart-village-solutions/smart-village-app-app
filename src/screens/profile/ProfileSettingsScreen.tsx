@@ -1,4 +1,4 @@
-import { StackScreenProps } from '@react-navigation/stack';
+import type { StackScreenProps } from 'expo-router/js-stack';
 import React from 'react';
 
 import { TextListItem, WrapperHorizontal } from '../../components';

@@ -1,22 +1,23 @@
-import { useFocusEffect } from '@react-navigation/native';
-import { StackScreenProps } from '@react-navigation/stack';
+import type { StackScreenProps } from 'expo-router/js-stack';
+import { useFocusEffect } from 'expo-router/react-navigation';
 import React, { useCallback, useContext, useMemo, useState } from 'react';
-import { ActivityIndicator, RefreshControl, ScrollView } from 'react-native';
+import { RefreshControl, ScrollView } from 'react-native';
 import { useQuery } from 'react-apollo';
 
 import {
   EmptyMessage,
   ListComponent,
-  LoadingContainer,
+  LoadingSpinner,
   SafeAreaViewFlex,
   SectionHeader,
   WrapperVertical
 } from '../../components';
-import { colors, consts, texts } from '../../config';
+import { consts, texts } from '../../config';
 import { AUTH_MODE_USER, getApolloAuthContext } from '../../graphqlAuth';
 import { graphqlFetchPolicy } from '../../helpers';
 import { buildProfileContentSections } from '../../helpers/profileContentHelper';
 import { hasEditorialRoles } from '../../helpers/profileEditorialContentHelper';
+import { useTheme } from '../../hooks/useTheme';
 import { NetworkContext } from '../../NetworkProvider';
 import { useProfileContext } from '../../ProfileProvider';
 import { getQuery, QUERY_TYPES } from '../../queries';
@@ -76,6 +77,7 @@ const getSectionNavigationParams = (
 export const ProfileContentScreen = ({
   navigation
 }: StackScreenProps<Record<string, object | undefined>>) => {
+  const { colors } = useTheme();
   const { currentUserData, refresh } = useProfileContext();
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const [refreshing, setRefreshing] = useState(false);
@@ -174,11 +176,7 @@ export const ProfileContentScreen = ({
   const isLoading = loadingNews || loadingPointsOfInterest || loadingEventRecords;
 
   if (isLoading && !sections.length) {
-    return (
-      <LoadingContainer>
-        <ActivityIndicator color={colors.refreshControl} />
-      </LoadingContainer>
-    );
+    return <LoadingSpinner loading />;
   }
 
   if (!dataProviderId) {

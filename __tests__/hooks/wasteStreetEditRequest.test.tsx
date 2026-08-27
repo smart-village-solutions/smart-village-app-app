@@ -3,7 +3,7 @@ import renderer, { act } from 'react-test-renderer';
 
 import { useWasteStreetEditRequest } from '../../src/hooks/wasteStreetEditRequest';
 
-jest.mock('@react-navigation/native', () => {
+jest.mock('expo-router/react-navigation', () => {
   const React = require('react');
 
   return {

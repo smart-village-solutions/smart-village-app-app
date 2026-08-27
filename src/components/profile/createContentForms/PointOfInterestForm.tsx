@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from 'expo-router/react-navigation';
 import React, { MutableRefObject, useCallback, useRef, useState } from 'react';
 import { useMutation, useQuery } from 'react-apollo';
 import {
@@ -8,10 +8,10 @@ import {
   useFieldArray,
   useForm
 } from 'react-hook-form';
-import { Alert, DeviceEventEmitter, LayoutChangeEvent, ScrollView, StyleSheet } from 'react-native';
+import { Alert, DeviceEventEmitter, LayoutChangeEvent, ScrollView } from 'react-native';
 import { Divider } from 'react-native-elements';
 
-import { colors, consts, device, normalize, texts } from '../../../config';
+import { consts, device, normalize, texts } from '../../../config';
 import { AUTH_MODE_USER, getApolloAuthContext } from '../../../graphqlAuth';
 import {
   buildAddressData,
@@ -26,6 +26,8 @@ import {
   WebUrlFormValue
 } from '../../../helpers';
 import { DETAIL_REFRESH_EVENT } from '../../../hooks';
+import { useTheme } from '../../../hooks/useTheme';
+import { useThemeStyles } from '../../../hooks/useThemeStyles';
 import { GET_CATEGORIES } from '../../../queries/categories';
 import { CREATE_POINT_OF_INTEREST } from '../../../queries/pointsOfInterest';
 import { Button } from '../../Button';
@@ -158,6 +160,7 @@ export const PointOfInterestForm = ({
   mode = 'create',
   scrollViewRef
 }: PointOfInterestFormProps) => {
+  const styles = useThemeStyles(createStyles);
   const navigation = useNavigation();
   const isEdit = mode === 'edit' && !!initialData?.id;
   const [isLoading, setIsLoading] = useState(false);
@@ -674,7 +677,10 @@ export const PointOfInterestForm = ({
           title={isEdit ? texts.profile.forms.save : texts.profile.forms.send}
           disabled={loading || isLoading}
         />
-        <Touchable onPress={() => navigation.goBack()}>
+        <Touchable
+          accessibilityLabel={`${texts.profile.forms.abort} ${consts.a11yLabel.button}`}
+          onPress={() => navigation.goBack()}
+        >
           <RegularText primary center>
             {texts.profile.forms.abort}
           </RegularText>
@@ -685,7 +691,7 @@ export const PointOfInterestForm = ({
 };
 /* eslint-enable complexity */
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ReturnType<typeof useTheme>['colors']) => ({
   divider: {
     backgroundColor: colors.placeholder
   },

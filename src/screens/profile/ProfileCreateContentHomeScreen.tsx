@@ -1,5 +1,5 @@
-import { useFocusEffect } from '@react-navigation/native';
-import { StackScreenProps } from '@react-navigation/stack';
+import type { StackScreenProps } from 'expo-router/js-stack';
+import { useFocusEffect } from 'expo-router/react-navigation';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { RefreshControl, ScrollView } from 'react-native';
 
@@ -10,9 +10,10 @@ import {
   Service,
   WrapperVertical
 } from '../../components';
-import { colors, normalize, texts } from '../../config';
+import { normalize, texts } from '../../config';
 import { profileAuthToken } from '../../helpers';
 import { hasEditorialRoles } from '../../helpers/profileEditorialContentHelper';
+import { useTheme } from '../../hooks/useTheme';
 import { useStaticContent } from '../../hooks/staticContent';
 import { NetworkContext } from '../../NetworkProvider';
 import { useProfileContext } from '../../ProfileProvider';
@@ -20,6 +21,7 @@ import { useProfileContext } from '../../ProfileProvider';
 import { ProfileHomeScreen } from './ProfileHomeScreen';
 
 export const ProfileCreateContentHomeScreen = ({ navigation, route }: StackScreenProps<any>) => {
+  const { colors } = useTheme();
   const { currentUserData, refresh, isLoggedIn } = useProfileContext();
   const { isConnected } = useContext(NetworkContext);
 

@@ -1,5 +1,5 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
-import type { StyleProp, ViewStyle } from 'react-native';
+import type { AccessibilityState, StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import type {
   EnrichedTextInputInstance,
@@ -8,7 +8,9 @@ import type {
 } from 'react-native-enriched';
 import { EnrichedTextInput } from 'react-native-enriched';
 
-import { colors, Icon, normalize } from '../../config';
+import { consts, Icon, normalize } from '../../config';
+import { useTheme } from '../../hooks/useTheme';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
 import { Label } from '../Label';
 
 const looksLikeHtml = (value: string) => /<\/?[a-z][\s\S]*>/i.test(value);
@@ -51,6 +53,16 @@ type ToolbarAction =
   | 'list-numbers'
   | 'blockquote';
 
+const TOOLBAR_ACTION_LABELS: Record<ToolbarAction, string> = {
+  blockquote: consts.a11yLabel?.formatting?.blockquote ?? 'Block quote',
+  bold: consts.a11yLabel?.formatting?.bold ?? 'Bold',
+  italic: consts.a11yLabel?.formatting?.italic ?? 'Italic',
+  list: consts.a11yLabel?.formatting?.unorderedList ?? 'Unordered list',
+  'list-numbers': consts.a11yLabel?.formatting?.orderedList ?? 'Ordered list',
+  strikethrough: consts.a11yLabel?.formatting?.lineThrough ?? 'Strikethrough',
+  underline: consts.a11yLabel?.formatting?.underline ?? 'Underline'
+};
+
 export const RichTextInput = forwardRef(
   (
     {
@@ -78,9 +90,13 @@ export const RichTextInput = forwardRef(
       inputContainerStyle?: StyleProp<ViewStyle>;
       isReduceTransparencyEnabled?: boolean;
       label?: string;
+      accessibilityLabel?: string;
+      accessibilityState?: AccessibilityState;
     } & Pick<EnrichedTextInputProps, 'onChangeSelection' | 'placeholder'>,
     ref: React.Ref<EnrichedTextInputInstance>
   ) => {
+    const { colors } = useTheme();
+    const styles = useThemeStyles(createStyles);
     // Separate ref for EnrichedTextInput (used when richText={true})
     const richTextRef = useRef<EnrichedTextInputInstance>(null);
     const [isActive, setIsActive] = useState(false);
@@ -193,6 +209,11 @@ export const RichTextInput = forwardRef(
             {groupIndex > 0 && <View style={styles.toolbarSeparator} />}
             {group.map((btn, btnIndex) => (
               <TouchableOpacity
+                accessibilityLabel={`${TOOLBAR_ACTION_LABELS[btn.action]} ${
+                  consts.a11yLabel.button
+                }`}
+                accessibilityRole="button"
+                accessibilityState={{ selected: !!btn.isActive }}
                 key={btnIndex}
                 onPress={() => handleToolbarAction(btn.action)}
                 style={[styles.toolbarButton, btn.isActive && styles.toolbarButtonActive]}
@@ -251,13 +272,21 @@ export const RichTextInput = forwardRef(
             {...furtherProps}
           />
         </View>
-        {!!errorMessage && <Text style={styles.inputError}>{errorMessage}</Text>}
+        {!!errorMessage && (
+          <Text
+            accessibilityLiveRegion="polite"
+            accessibilityRole="alert"
+            style={styles.inputError}
+          >
+            {errorMessage}
+          </Text>
+        )}
       </View>
     );
   }
 );
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ReturnType<typeof useTheme>['colors']) => ({
   inputAccessibilityBorderContrast: {
     borderColor: colors.darkText
   },
@@ -297,6 +326,7 @@ const styles = StyleSheet.create({
     borderTopColor: colors.gray40,
     borderTopWidth: StyleSheet.hairlineWidth,
     flexDirection: 'row',
+    flexWrap: 'wrap',
     paddingHorizontal: normalize(4),
     paddingVertical: normalize(4)
   },
@@ -311,8 +341,8 @@ const styles = StyleSheet.create({
     borderRadius: normalize(4),
     justifyContent: 'center',
     marginHorizontal: normalize(2),
-    paddingHorizontal: normalize(8),
-    paddingVertical: normalize(6)
+    minHeight: normalize(44),
+    minWidth: normalize(44)
   },
   toolbarButtonActive: {
     backgroundColor: colors.primary

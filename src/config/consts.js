@@ -43,10 +43,13 @@ export const consts = {
     fax: '(Fax)',
     firstName: 'Vorname',
     formatting: {
+      blockquote: 'Zitat',
       bold: 'Fett',
       color: 'Farbig',
       italic: 'Kursiv',
       lineThrough: 'Durchgestrichen',
+      orderedList: 'Nummerierte Liste',
+      unorderedList: 'Aufzählungsliste',
       underline: 'Unterstrichen'
     },
     groupHint: 'Eine neue Gruppe oder einen neuen Verein erstellen',

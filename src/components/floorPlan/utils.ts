@@ -1,4 +1,4 @@
-import { NavigationProp } from '@react-navigation/native';
+import type { NavigationProp } from 'expo-router/react-navigation';
 
 import { QUERY_TYPES } from '../../queries';
 import { ScreenName } from '../../types';

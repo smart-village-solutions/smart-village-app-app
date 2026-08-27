@@ -1,4 +1,4 @@
-import { NavigationProp } from '@react-navigation/native';
+import type { NavigationProp } from 'expo-router/react-navigation';
 import React, { memo, useCallback, useContext } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';

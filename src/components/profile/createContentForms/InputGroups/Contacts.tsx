@@ -2,7 +2,8 @@ import React from 'react';
 import { Control, FieldErrors, FieldValues } from 'react-hook-form';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import { colors, Icon, normalize, texts } from '../../../../config';
+import { Icon, normalize, texts } from '../../../../config';
+import { useTheme } from '../../../../hooks/useTheme';
 import { RegularText } from '../../../Text';
 import { Wrapper, WrapperVertical } from '../../../Wrapper';
 import { Input } from '../../../form';
@@ -37,6 +38,8 @@ export const createDefaultContact = (): ContactFormValue => ({
 });
 
 export const Contacts = ({ control, errors, fields, remove }: ContactsProps) => {
+  const { colors } = useTheme();
+
   return (
     <>
       {fields.map((linkField, index) => (
@@ -45,6 +48,7 @@ export const Contacts = ({ control, errors, fields, remove }: ContactsProps) => 
             <RegularText small>{texts.profile.forms.contacts.title}</RegularText>
             <TouchableOpacity
               accessibilityLabel={texts.profile.forms.contacts.deleteButtonAccessibility}
+              accessibilityRole="button"
               onPress={() => remove(index)}
               style={styles.deleteButton}
             >
@@ -138,7 +142,10 @@ export const Contacts = ({ control, errors, fields, remove }: ContactsProps) => 
 
 const styles = StyleSheet.create({
   deleteButton: {
-    padding: normalize(8)
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: normalize(44),
+    minWidth: normalize(44)
   },
   linkGroupHeader: {
     alignItems: 'center',

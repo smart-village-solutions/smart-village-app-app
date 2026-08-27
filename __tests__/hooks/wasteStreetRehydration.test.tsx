@@ -5,7 +5,7 @@ import { useWasteStreetRehydration } from '../../src/hooks/wasteStreetRehydratio
 
 let mockFocusCallback: (() => void) | undefined;
 
-jest.mock('@react-navigation/native', () => ({
+jest.mock('expo-router/react-navigation', () => ({
   useFocusEffect: (callback: () => void) => {
     if (!mockFocusCallback) mockFocusCallback = callback;
   }
