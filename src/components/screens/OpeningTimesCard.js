@@ -88,17 +88,139 @@ const formatInlineDateTime = ({ dateFrom, datePrefix, dateTo, timeFrom, timeTo, 
   return [startDateTime, endDateTime].filter(Boolean).join(' bis ');
 };
 
+const isGroupableRecurringOpeningHour = ({ dateFrom, dateTo, open, timeFrom, timeTo, weekday }) =>
+  weekday !== null &&
+  weekday !== undefined &&
+  weekday !== '' &&
+  (!!timeFrom || !!timeTo) &&
+  !dateFrom &&
+  !dateTo &&
+  open !== false;
+
+const hasSameDescription = (openingHour, group) =>
+  (openingHour.description || null) === (group.openingHours[0].description || null);
+
+export const groupRecurringWeekdayOpeningHours = (openingHours) =>
+  openingHours.reduce((groups, openingHour) => {
+    const previousGroup = groups[groups.length - 1];
+    const canJoinPreviousGroup =
+      isGroupableRecurringOpeningHour(openingHour) &&
+      previousGroup?.groupable &&
+      previousGroup.weekday === openingHour.weekday &&
+      hasSameDescription(openingHour, previousGroup);
+
+    if (canJoinPreviousGroup) {
+      previousGroup.openingHours.push(openingHour);
+    } else {
+      groups.push({
+        groupable: isGroupableRecurringOpeningHour(openingHour),
+        openingHours: [openingHour],
+        weekday: openingHour.weekday
+      });
+    }
+
+    return groups;
+  }, []);
+
+const createIndividualOpeningHourGroups = (openingHours) =>
+  openingHours.map((openingHour) => ({
+    openingHours: [openingHour],
+    weekday: openingHour.weekday
+  }));
+
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
+const OpeningHourDetails = ({ inlineDateTime, leftAligned, openingHour, styles }) => {
+  const {
+    dateFrom,
+    datePrefix,
+    dateTo,
+    description,
+    open,
+    timeFrom,
+    timeTo,
+    useYear = false
+  } = openingHour;
+  const returnFormatDate = useYear ? 'DD.MM.YYYY' : 'DD.MM.';
+  const hasDateOrTime = !!timeFrom || !!timeTo || !!dateFrom || !!dateTo;
+  const showInlineDateTime = inlineDateTime && open !== false;
+
+  return (
+    <>
+      {hasDateOrTime && showInlineDateTime && (
+        <RegularText>
+          {formatInlineDateTime({
+            dateFrom,
+            datePrefix,
+            dateTo,
+            timeFrom,
+            timeTo,
+            useYear
+          })}
+        </RegularText>
+      )}
+
+      {(hasDateOrTime || open === false) && !showInlineDateTime && (
+        <WrapperRow accessible>
+          {open !== false && (!!timeFrom || !!timeTo) && (
+            <TimeBox>
+              {!!timeFrom && <RegularText>{timeFrom}</RegularText>}
+              {!!timeFrom && !!timeTo && timeFrom !== timeTo && (
+                <>
+                  <RegularText> -</RegularText>
+                  <RegularText> {timeTo}</RegularText>
+                </>
+              )}
+            </TimeBox>
+          )}
+          {open === false && (
+            <TimeBox>
+              <RegularText>{texts.accessibilityLabels.dropDownMenu.closed}</RegularText>
+            </TimeBox>
+          )}
+          {(!!dateFrom || !!dateTo) && (
+            <DateBox leftAligned={leftAligned}>
+              {!!dateFrom && (
+                <RegularText>
+                  {!!datePrefix && <RegularText small>{datePrefix} </RegularText>}
+                  {momentFormat(dateFrom, returnFormatDate)}
+                </RegularText>
+              )}
+
+              {!!dateTo && dateTo !== dateFrom && (
+                <RegularText>
+                  <RegularText small>bis </RegularText>
+                  {momentFormat(dateTo, returnFormatDate)}
+                </RegularText>
+              )}
+            </DateBox>
+          )}
+        </WrapperRow>
+      )}
+
+      {!!description && (
+        <WrapperRow style={styles.margin}>
+          <HtmlView html={description} />
+        </WrapperRow>
+      )}
+    </>
+  );
+};
+
 export const OpeningTimesCard = ({
   appointmentsShowMoreButton = texts.eventRecord.appointmentsShowMoreButton,
   inlineDateTime = false,
   leftAligned = false,
   MAX_INITIAL_NUM_TO_RENDER = 15,
-  openingHours
+  openingHours,
+  groupRecurringWeekdays = false
 }) => {
   const styles = useThemeStyles(createStyles);
   const [moreData, setMoreData] = useState(1);
+  const visibleOpeningHours = openingHours.slice(0, moreData * MAX_INITIAL_NUM_TO_RENDER);
+  const openingHourGroups = groupRecurringWeekdays
+    ? groupRecurringWeekdayOpeningHours(visibleOpeningHours)
+    : createIndividualOpeningHourGroups(visibleOpeningHours);
 
   const loadMoreItems = () => {
     setMoreData((prev) => prev + 1);
@@ -106,98 +228,37 @@ export const OpeningTimesCard = ({
 
   return (
     <WrapperHorizontal>
-      {openingHours
-        .slice(0, moreData * MAX_INITIAL_NUM_TO_RENDER)
-        .map((item, index, slicedArray) => {
-          const {
-            weekday,
-            timeFrom,
-            timeTo,
-            dateFrom,
-            datePrefix,
-            dateTo,
-            description,
-            open,
-            useYear = false
-          } = item;
-          const returnFormatDate = useYear ? 'DD.MM.YYYY' : 'DD.MM.';
-          const readableWeekday = getReadableWeekday(weekday);
-          const hasDateOrTime = !!timeFrom || !!timeTo || !!dateFrom || !!dateTo;
-          const showInlineDateTime = inlineDateTime && open !== false;
+      {openingHourGroups.map((group, index, groups) => {
+        const readableWeekday = getReadableWeekday(group.weekday);
 
-          return (
-            <WrapperVertical
-              key={index}
-              style={[
-                index === 0 && styles.noMarginTop,
-                index === 0 && styles.noPaddingTop,
-                index !== slicedArray.length - 1 && styles.divider,
-                index === slicedArray.length - 1 && styles.noPaddingBottom
-              ]}
-            >
-              {!!readableWeekday && (
-                <BoldText style={styles.marginBottom}>{readableWeekday}</BoldText>
-              )}
+        return (
+          <WrapperVertical
+            key={group.openingHours[0].id ?? index}
+            style={[
+              index === 0 && styles.noMarginTop,
+              index === 0 && styles.noPaddingTop,
+              index !== groups.length - 1 && styles.divider,
+              index === groups.length - 1 && styles.noPaddingBottom
+            ]}
+          >
+            {!!readableWeekday && (
+              <BoldText accessibilityRole="header" style={styles.marginBottom}>
+                {readableWeekday}
+              </BoldText>
+            )}
 
-              {hasDateOrTime && showInlineDateTime && (
-                <RegularText>
-                  {formatInlineDateTime({
-                    dateFrom,
-                    datePrefix,
-                    dateTo,
-                    timeFrom,
-                    timeTo,
-                    useYear
-                  })}
-                </RegularText>
-              )}
-
-              {hasDateOrTime && !showInlineDateTime && (
-                <WrapperRow>
-                  {open !== false && (!!timeFrom || !!timeTo) && (
-                    <TimeBox>
-                      {!!timeFrom && <RegularText>{timeFrom}</RegularText>}
-                      {!!timeFrom && !!timeTo && timeFrom !== timeTo && (
-                        <>
-                          <RegularText> -</RegularText>
-                          <RegularText> {timeTo}</RegularText>
-                        </>
-                      )}
-                    </TimeBox>
-                  )}
-                  {open === false && (
-                    <TimeBox>
-                      <RegularText>geschlossen</RegularText>
-                    </TimeBox>
-                  )}
-                  {(!!dateFrom || !!dateTo) && (
-                    <DateBox leftAligned={leftAligned}>
-                      {!!dateFrom && (
-                        <RegularText>
-                          {!!datePrefix && <RegularText small>{datePrefix} </RegularText>}
-                          {momentFormat(dateFrom, returnFormatDate)}
-                        </RegularText>
-                      )}
-
-                      {!!dateTo && dateTo !== dateFrom && (
-                        <RegularText>
-                          <RegularText small>bis </RegularText>
-                          {momentFormat(dateTo, returnFormatDate)}
-                        </RegularText>
-                      )}
-                    </DateBox>
-                  )}
-                </WrapperRow>
-              )}
-
-              {!!description && (
-                <WrapperRow style={styles.margin}>
-                  <HtmlView html={description} />
-                </WrapperRow>
-              )}
-            </WrapperVertical>
-          );
-        })}
+            {group.openingHours.map((openingHour, openingHourIndex) => (
+              <OpeningHourDetails
+                inlineDateTime={inlineDateTime}
+                key={openingHour.id ?? openingHourIndex}
+                leftAligned={leftAligned}
+                openingHour={openingHour}
+                styles={styles}
+              />
+            ))}
+          </WrapperVertical>
+        );
+      })}
 
       {moreData * MAX_INITIAL_NUM_TO_RENDER < openingHours.length && (
         <WrapperVertical style={styles.noPaddingBottom}>
@@ -246,6 +307,7 @@ const createStyles = (colors) => ({
 
 OpeningTimesCard.propTypes = {
   appointmentsShowMoreButton: PropTypes.string,
+  groupRecurringWeekdays: PropTypes.bool,
   inlineDateTime: PropTypes.bool,
   leftAligned: PropTypes.bool,
   MAX_INITIAL_NUM_TO_RENDER: PropTypes.number,
@@ -262,4 +324,11 @@ OpeningTimesCard.propTypes = {
       weekday: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
     })
   )
+};
+
+OpeningHourDetails.propTypes = {
+  inlineDateTime: PropTypes.bool,
+  leftAligned: PropTypes.bool,
+  openingHour: PropTypes.object,
+  styles: PropTypes.object
 };

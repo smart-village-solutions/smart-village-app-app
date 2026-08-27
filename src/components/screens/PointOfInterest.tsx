@@ -37,6 +37,7 @@ import { OpeningTimesCard } from './OpeningTimesCard';
 import { OperatingCompany } from './OperatingCompany';
 import { PriceCard } from './PriceCard';
 import { TravelTimes } from './TravelTimes';
+import { isOpeningTimesGroupingEnabled } from './openingTimesSettings';
 
 const { MAP, MATOMO_TRACKING } = consts;
 export const INITIAL_VOUCHER_COUNT = 3;
@@ -67,6 +68,7 @@ export const PointOfInterest = ({
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { showOpeningTimes = true, showDistanceDirection = {} } = settings;
+  const groupOpeningTimesByWeekday = isOpeningTimesGroupingEnabled(settings);
   const [loadedVoucherDataCount, setLoadedVoucherDataCount] = useState(INITIAL_VOUCHER_COUNT);
   const [availableVehiclesData, setAvailableVehiclesData] = useState<VehicleStatusFeature[]>([]);
   const [availableVehiclesLoading, setAvailableVehiclesLoading] = useState(true);
@@ -321,7 +323,10 @@ export const PointOfInterest = ({
       {!!openingHours?.length && (
         <WrapperVertical>
           <SectionHeader title={texts.pointOfInterest.openingTime} />
-          <OpeningTimesCard openingHours={openingHours} />
+          <OpeningTimesCard
+            groupRecurringWeekdays={groupOpeningTimesByWeekday}
+            openingHours={openingHours}
+          />
         </WrapperVertical>
       )}
 
