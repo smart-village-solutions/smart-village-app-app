@@ -14,9 +14,9 @@ Reference points used while preparing this guide:
 
 - Mobile starting tag: `v4.3.0` / `c14bbad7e708a34f3c931e87d7d26f98e288f37b`
   (4 May 2026)
-- Reviewed `master` snapshot: `e7a9acfeea5c2dbf39bba80221e02b7cf3c40caa`
-  (26 August 2026)
-- Reviewed range: 427 commits and changes in 896 files
+- Reviewed `master` snapshot: `47508475dfe22661e24c0f76f155c0c52b8481c7`
+  (27 August 2026)
+- Reviewed range: 501 commits and changes in 934 files
 - Main-Server comparison baseline: `5b4ba192705c3e1c8cb269bdaf301ea1fc5c43f0`
   (4 May 2026)
 - Reviewed remote Main-Server `saas` head: `d3c803683d6b041421df656644c610ede61878c5`
@@ -50,28 +50,32 @@ The most important outcomes of the migration are:
 2. The BUS module has a breaking configuration and transport change. The old `settings.busBb`
    Apollo/GraphQL integration is replaced by `settings.bus` and a live REST/proxy API.
    `federalState` is now required on BUS requests.
-3. The GraphQL queries used by the reviewed v5 mobile code do not require a new Main-Server schema,
-   but local waste reminders do require Main-Server database and REST-contract changes. Deploy the
-   `local_coverage_until` and `reminder_slot_id` columns and the slot-identity index before enabling
-   flexible reminders.
-4. Main-Server content changes are still mandatory. At minimum, a versioned `globalSettings`
+3. Authenticated profile users can create, edit, list, and remove their own news, events, and POIs;
+   the profile noticeboard flow also uses the new user-auth scope. Enabling this requires more than
+   adding tiles: deploy the `/member` user/data-provider contract, provision the correct roles,
+   provide three profile StaticContent records, and verify the member and user GraphQL tokens.
+4. The GraphQL mutations needed for profile content already exist in the reviewed Main-Server
+   baseline and do not require a new schema migration. Local waste reminders do require Main-Server
+   database and REST-contract changes. Deploy the `local_coverage_until` and `reminder_slot_id`
+   columns and the slot-identity index before enabling flexible reminders.
+5. Main-Server content changes are still mandatory. At minimum, a versioned `globalSettings`
    StaticContent record compatible with `5.0.0` must be prepared. Existing 4.3.x records must be
    retained for older clients.
-5. Accessibility, dark mode, Participation Projects, interactive floor plans, cache lifetimes,
+6. Accessibility, dark mode, Participation Projects, interactive floor plans, cache lifetimes,
    SUE internal-status presentation, feedback diagnostics, and flexible waste reminders are
    configuration-driven. Introduce them deliberately through `globalSettings`, module
    configuration, static content, and the required backend data.
-6. Generic Item records can now become calendar events, and icon libraries can be selected globally
+7. Generic Item records can now become calendar events, and icon libraries can be selected globally
    or per configured tab/service tile. Both features depend on validated tenant configuration;
    Generic Item events additionally depend on complete, bounded datasets with usable dates.
-7. Profile header login now uses `expo-auth-session`, SecureStore-backed token restoration, and a
+8. Profile header login now uses `expo-auth-session`, SecureStore-backed token restoration, and a
    configurable OAuth endpoint set. Register the app redirect URI, use a public-client/PKCE setup,
    and test legacy, expired, invalid, and temporarily unrefreshable sessions.
-8. Push navigation now handles foreground, background, and Android cold-start responses at the app
+9. Push navigation now handles foreground, background, and Android cold-start responses at the app
    root. Push producers must supply the supported `query_type`/`queryType` and `id` payload contract.
-9. The highest merge-conflict risk is in `app.json`, `eas.json`, their template files,
-   `package.json`, `yarn.lock`, the legacy `src/config/colors.js`, and tenant-specific navigation or
-   static content.
+10. The highest merge-conflict risk is in `app.json`, `eas.json`, their template files,
+    `package.json`, `yarn.lock`, the legacy `src/config/colors.js`, and tenant-specific navigation or
+    static content.
 
 ## 3. Platform and dependency changes
 
@@ -89,6 +93,7 @@ The most important outcomes of the migration are:
 | Carousel      | `react-native-snap-carousel`             | `react-native-reanimated-carousel`         | Retest sizing, autoplay, reduced motion, and accessibility                                          |
 | Chat          | GiftedChat 2.8.1 plus patch              | GiftedChat 3.4.0                           | Message dates and matcher/action APIs changed                                                       |
 | Profile OAuth | No direct `expo-auth-session` dependency | `expo-auth-session` 57.0.7                 | Register the scheme redirect, verify the fixed OAuth endpoints, and upgrade-test stored sessions    |
+| Rich text     | No `react-native-enriched` dependency    | `react-native-enriched` 0.4.0              | Rebuild native apps and test the content editor, keyboard, links, lists, and persisted HTML         |
 
 Official upgrade references:
 
@@ -106,10 +111,11 @@ Official upgrade references:
   `LSMinimumSystemVersion: "12.0"` value in `app.json` does not guarantee the generated deployment
   target. Verify the generated Xcode project and the resulting App Store device coverage.
 - Application code should use the Expo Router navigation entry points after the SDK 56 migration.
-  The reviewed Floor Plan implementation still imports navigation types from
-  `@react-navigation/native` even though the package is not declared directly. Align those imports
-  before release or explicitly declare and support the direct dependency; do not rely silently on a
-  transitive package.
+  The reviewed Floor Plan/navigation helper and several new profile content screens/forms still
+  import from `@react-navigation/native` or `@react-navigation/stack`, even though those packages
+  are not declared directly. Align them with `expo-router/react-navigation` and
+  `expo-router/js-stack` before release; do not rely silently on transitive packages or restore the
+  removed direct dependencies.
 - The SDK 57 Hermes/Reanimated memory regression was fixed in `expo@57.0.9` and React Native
   0.86.2. The reviewed target uses `expo@57.0.14` and React Native 0.86.2. Do not resolve merge
   conflicts by downgrading to an earlier SDK 57 combination.
@@ -120,6 +126,10 @@ Official upgrade references:
 - `expo-auth-session` is now a direct dependency for profile header login. The configured OAuth
   client must accept `<app-scheme>://redirect`; do not treat a value shipped as `clientSecret` in
   `globalSettings` as confidential mobile-app secret material.
+- `react-native-enriched` powers the news/event/POI rich-text editor. Keep version 0.4.0 in the v5
+  dependency set, create clean native builds, and test it on both platforms with the production New
+  Architecture configuration. A JavaScript-only OTA cannot introduce this dependency to a v4.3.0
+  binary.
 
 ## 4. Release tag and branch migration workflow
 
@@ -168,6 +178,11 @@ Record the following for every tenant/release branch:
 - the global icon-family priority and any per-tab or per-service-tile `iconSet` overrides;
 - profile OAuth client registration, redirect URI, scopes, endpoint base URL, and staged test
   accounts;
+- `profileService`, `profileCreateContentServiceTop`, and
+  `profileCreateContentServiceBottom` StaticContent, plus each tenant's editorial and noticeboard
+  role assignments;
+- representative profile users with a linked data provider and owned news/event/POI records for
+  create, edit, hide/delete, and cross-provider authorization tests;
 - a device running the published v4.3.0 build and, if possible, a representative test account.
 
 Never commit secret material while resolving migration conflicts. In particular, do not add
@@ -238,7 +253,8 @@ downgrade or restore:
 - an incompatible `react-native-gesture-handler` version;
 - `expo-constants` or other packages covered by `resolutions` pins;
 - GiftedChat 2.8.1 or its removed local patch;
-- `react-native-snap-carousel` in place of `react-native-reanimated-carousel`.
+- `react-native-snap-carousel` in place of `react-native-reanimated-carousel`;
+- `react-native-enriched` 0.4.0 when profile content creation is enabled.
 
 Do not merge `yarn.lock` line by line. Resolve the final `package.json`, regenerate or install the
 lockfile with Yarn 1, and verify it with the same Node and Yarn versions used by CI.
@@ -280,6 +296,10 @@ See [Legacy app color migration](./theme-color-migration.md),
 - `getScreenOptions` can expose profile login/logout through `withProfile`, but the reviewed default
   stack does not currently enable it. Enabling the header action therefore requires an explicit
   navigation-code decision in addition to `settings.profile`.
+- The default stack now registers `ProfileContent`, `ProfileCreateContentForm`,
+  `ProfileCreateContentHome`, and `ProfileSettings`. Preserve these routes when resolving tenant
+  stack conflicts. Their visibility and authorization must come from profile state, roles, and
+  Main-Server ownership checks, not by removing the routes for unauthorized users.
 
 ## 5. Application behavior and remote configuration
 
@@ -481,6 +501,19 @@ New accessibility features remain disabled unless explicitly enabled in
 - If critical color pairs do not meet a 4.5:1 contrast ratio, the application falls back to its
   built-in colors.
 - User preferences persist in AsyncStorage, so an in-place upgrade test is required.
+
+Grayscale no longer means only desaturating a few built-in colors. When enabled, v5 derives a
+luminance-preserving grayscale palette for light and dark themes, recursively transforms color
+values in remote `appDesignSystem` configuration, filters images on iOS and Android, and adds a
+descendant filter on Android as a safeguard. Validate tenant logos, remote images, gradients,
+overlays, configured component colors, and contrast in both themes; testing the settings modal
+alone is not sufficient.
+
+The home widget grid is now responsive to safe-area width, system font scale, and the app's text
+scale. At the standard effective text scale (`<= 1.1`) it can use up to five columns with a minimum
+64-point item width; at larger scales it reduces and balances columns and may switch widgets to
+their list presentation. Do not carry forward tenant assumptions that widgets always render three
+per row. Test every supported device width, orientation, widget count, and text-scale level.
 
 Tab bar colors do not come from the `globalSettings` palette. They are resolved from
 `themeColors.light` and `themeColors.dark` in the `tabNavigation` static content.
@@ -833,6 +866,7 @@ any category.
 | Generic Item events            | `settings.eventCalendar.genericItemEventSources`                  | Existing Generic Item query; validate complete dated datasets and result limits |
 | Icon-family priority           | `settings.iconFamilies`; per-item `iconSet`                       | No schema change; exact supported identifiers and icon names are required       |
 | Profile OAuth                  | `settings.profile`; navigation `withProfile`                      | Register redirect/client; `/member` must accept the OAuth bearer token          |
+| Profile content creation       | Three `profile*Service*` JSON records; profile routes and roles   | Requires member/user tokens, linked provider, roles, and ownership enforcement  |
 
 Feedback diagnostics are not sent without user consent. Before enabling them, review privacy text,
 retention periods, recipient email templates, and access permissions for GDPR compliance.
@@ -955,16 +989,185 @@ uses a refresh token after expiry. Structured OAuth `invalid_grant`/`invalid_tok
 expired, or malformed-token failures clear the stored session; transient refresh errors keep the
 current login state so a temporary identity-provider outage does not force logout.
 
-The Main-Server `/member` endpoint is not called without a stored bearer token. A successful member
-response no longer has to include `keycloak_refresh_token`; however, a response without `member`
-clears both the auth token and cached profile data. Verify that `/member` accepts the identity
-provider access token and returns the expected member envelope. Upgrade-test valid legacy sessions,
-expired tokens with and without refresh tokens, malformed SecureStore data, revoked sessions,
-offline startup, temporary refresh failures, logout, and a deleted/missing member.
+The Main-Server `/member` endpoint is not called without a stored bearer token. In the reviewed
+snapshot, both a missing `member` and a missing `member.keycloak_refresh_token` clear the member and
+user tokens plus cached profile data. Verify that `/member` accepts the identity-provider access
+token and returns `member`, `member.keycloak_refresh_token`, the linked `user`, `roles`, and
+`data_provider_id`. Upgrade-test valid legacy sessions, expired tokens with and without refresh
+tokens, malformed SecureStore data, revoked sessions, offline startup, temporary refresh failures,
+logout, and a deleted/missing member.
 
 `withProfile` support exists in shared screen options, but the reviewed default stack does not
 enable it. A tenant that wants the header login/logout action must deliberately enable it in its
 navigation configuration; adding `settings.profile` alone does not display the action.
+
+### 5.15. Authenticated profile content creation and owner editing
+
+v5 adds profile-based creation and owner management for NewsItem, EventRecord, PointOfInterest, and
+profile-scoped Noticeboard entries. The feature is enabled only when all four layers below are
+ready:
+
+1. the profile login returns a member linked to a Main-Server user and data provider;
+2. Main-Server returns that user, its `authentication_token`, `data_provider_id`, and current roles
+   from `/member`;
+3. the mobile client stores both the member and user GraphQL tokens; and
+4. the profile routes are exposed by valid StaticContent tiles.
+
+#### Authentication and authorization contract
+
+GraphQL calls now select an explicit authentication mode:
+
+| Mode      | `X-Authorization`                                | `X-User-Authorization`           | Intended use                                   |
+| --------- | ------------------------------------------------ | -------------------------------- | ---------------------------------------------- |
+| `public`  | Empty                                            | Empty                            | Existing anonymous read operations             |
+| `member`  | Member token, with the existing voucher fallback | Empty                            | Member-scoped operations                       |
+| `user`    | Member token, with the existing voucher fallback | Linked user authentication token | Editorial/owner reads, writes, and noticeboard |
+| `voucher` | Voucher token                                    | Empty                            | Existing voucher operations                    |
+
+The existing application OAuth bearer token continues to be sent separately as `Authorization`.
+Main-Server resolves the member and user headers inside the current municipality and uses the user
+as the GraphQL `current_user`. The user token is not interchangeable with the identity-provider
+access token. Never put either profile token into `globalSettings` or StaticContent.
+
+The reviewed legacy profile-login flow stores `member.authentication_token` and
+`user.authentication_token`. The reviewed header OAuth flow currently stores the identity-provider
+access token as the member token, then only caches the `/member` response; it does not replace that
+value with `member.authentication_token` or persist `user.authentication_token` to
+`PROFILE_USER_AUTH_TOKEN`. Therefore a Keycloak-only login can appear successful while `user` mode
+GraphQL calls are unauthorized. This is a v5 release blocker: complete that token handoff, await the
+storage writes, and add an end-to-end Keycloak login plus create-content test before enabling these
+tiles.
+
+#### Required profile StaticContent
+
+Create and version these JSON records for every enabled tenant:
+
+- `profileService`: the signed-in profile home tiles; include `ProfileCreateContentHome` and
+  `ProfileContent` for editorial users;
+- `profileCreateContentServiceTop`: signed-in noticeboard creation tiles; and
+- `profileCreateContentServiceBottom`: editorial creation tiles, filtered by role in the app.
+
+The following is a minimal structural example. Keep tenant titles, icon names, layout styles, and
+any noticeboard-specific category/date/media parameters from the existing configuration. Merge the
+new entries into existing profile arrays instead of replacing unrelated tiles.
+
+`profileService`:
+
+```json
+[
+  {
+    "title": "Inhalt erstellen",
+    "accessibilityLabel": "Inhalt erstellen",
+    "routeName": "ProfileCreateContentHome",
+    "iconName": "pencil-plus"
+  },
+  {
+    "title": "Meine Inhalte",
+    "accessibilityLabel": "Meine Inhalte",
+    "routeName": "ProfileContent",
+    "iconName": "list"
+  }
+]
+```
+
+`profileCreateContentServiceTop`:
+
+```json
+[
+  {
+    "title": "Anzeige",
+    "accessibilityLabel": "Anzeige erstellen",
+    "routeName": "NoticeboardForm",
+    "iconName": "plus",
+    "params": {
+      "query": "noticeboard",
+      "genericType": "Noticeboard",
+      "isLoginRequired": true,
+      "isNewEntryForm": true,
+      "queryVariables": {
+        "genericType": "Noticeboard",
+        "currentMember": true
+      }
+    }
+  }
+]
+```
+
+`profileCreateContentServiceBottom`:
+
+```json
+[
+  {
+    "title": "Nachricht",
+    "accessibilityLabel": "Nachricht erstellen",
+    "routeName": "ProfileCreateContentForm",
+    "iconName": "pen",
+    "params": { "query": "newsItem" }
+  },
+  {
+    "title": "Veranstaltung",
+    "accessibilityLabel": "Veranstaltung erstellen",
+    "routeName": "ProfileCreateContentForm",
+    "iconName": "calendar",
+    "params": { "query": "eventRecord" }
+  },
+  {
+    "title": "Ort",
+    "accessibilityLabel": "Ort erstellen",
+    "routeName": "ProfileCreateContentForm",
+    "iconName": "location",
+    "params": { "query": "pointOfInterest" }
+  }
+]
+```
+
+Service tiles automatically attach their source StaticContent and route names. The noticeboard
+scope helper uses those values to select `user` mode for profile-originated Noticeboard content;
+ordinary Noticeboard navigation remains public. An explicit `authMode` in query variables takes
+precedence, followed by an explicit `currentMember` value.
+
+#### Roles, ownership, and content lifecycle
+
+The client maps creation tiles as follows:
+
+| Content type | Tile `params.query` | Mobile tile role            | Mutation                |
+| ------------ | ------------------- | --------------------------- | ----------------------- |
+| News         | `newsItem`          | `role_news_item`            | `createNewsItem`        |
+| Event        | `eventRecord`       | `role_event_record`         | `createEventRecord`     |
+| POI          | `pointOfInterest`   | `role_point_of_interest`    | `createPointOfInterest` |
+| Noticeboard  | `noticeboard`       | No type-specific app filter | `createGenericItem`     |
+
+The mobile role filter is a presentation control, not an authorization boundary. News, event, and
+POI tiles are hidden when their role is false, and `ProfileContent`/
+`ProfileCreateContentHome` are hidden when the user has no editorial role. Noticeboard tiles inside
+the create-content screen are kept independently of those three editorial roles. However, the
+`ProfileCreateContentHome` entry itself is also hidden from a noticeboard-only user. If that user
+must create entries, add a direct `NoticeboardForm` tile with the same protected parameters to
+`profileService`, or extend the role helper to recognize `role_noticeboard` before rollout.
+
+The reviewed Main-Server mutation layer verifies a current user/data provider, rejects certain
+general user roles, and scopes updates to the provider, but it does not use these type-specific
+data-provider flags to authorize create mutations. If the tenant expects the flags to be a security
+boundary, add and test server-side checks for every mutation before enabling the feature; hiding a
+tile is not sufficient. When Keycloak manages roles, provision realm roles named
+`mainserver_role_news_item`, `mainserver_role_event_record`,
+`mainserver_role_point_of_interest`, and, when required by backend policy,
+`mainserver_role_noticeboard`. Enable `member_keycloak_manages_roles` only after verifying that
+role synchronization will not unintentionally clear existing data-provider roles.
+
+`ProfileContent` requests up to 100 news, event, and POI records for the linked
+`data_provider_id`, hides invisible records, and exposes edit/delete actions only when the detail
+record's `dataProvider.id` matches the current user's provider. Delete is implemented as
+`changeVisibility(..., visible: false)`, not a hard delete. Edit reuses the create mutation with an
+ID and must preserve fields that the form does not change. Main-Server must enforce municipality,
+general user-role, and data-provider ownership rules for every read and mutation. Add
+content-type-role enforcement when it is part of the tenant's authorization policy; never rely on
+the client-side comparison alone.
+
+Before rollout, use a staging user for each role combination to create, reopen, edit, hide, and
+reload every enabled type. Also verify image upload before mutation, rich-text round trips,
+categories, dates/opening hours, contacts, URLs, prices, push-notification options, validation
+scrolling, offline/error recovery, and denial of cross-provider IDs.
 
 ## 6. Main-Server migration decision
 
@@ -978,7 +1181,11 @@ The following GraphQL fields already exist in the Main-Server baseline from 4 Ma
 - date fields including `dateStart`, `dateEnd`, `timeStart`, `timeEnd`, `timeDescription`, and
   `weekday`;
 - GenericItem filters for `genericType`, IDs, category, and search;
-- versioned StaticContent lookup through `publicJsonFile(name, version)`.
+- versioned StaticContent lookup through `publicJsonFile(name, version)`;
+- `createNewsItem`, `createEventRecord`, `createPointOfInterest`, `createGenericItem`, and
+  `changeVisibility` mutations;
+- member and user resolution through `X-Authorization` and `X-User-Authorization`; and
+- general user-role gating and data-provider owner scoping for resource writes.
 
 Consequently, the reviewed v5 GraphQL queries do not by themselves require a new Main-Server column
 or GraphQL type. This finding does not cover the waste-reminder REST API: flexible local reminders
@@ -990,6 +1197,13 @@ Generic Item event sources reuse the existing `genericItems(genericType: ...)` q
 do not add a schema migration. They do add a data-volume and completeness requirement: every
 configured type must return all occurrences needed by the client, with usable `dates` and filter
 payloads, without an undocumented default limit.
+
+Profile content creation likewise does not add a database migration by itself, but it requires a
+deployed Main-Server revision that returns the linked user/token/roles/provider from `/member` and
+enforces general current-user and ownership checks on the existing mutations. Type-specific
+data-provider flags are only mobile visibility controls in the reviewed baseline; add server-side
+enforcement when the tenant's policy requires them. Treat that operational contract as mandatory
+whenever the profile creation tiles are enabled.
 
 ### 6.2. Mandatory Main-Server operational changes
 
@@ -1007,15 +1221,24 @@ At minimum:
 5. Prepare v5-compatible `tabNavigation`, carousel, introductory HTML, and other static content for
    every enabled module. This includes `wasteTypes`, `floorPlan`, and `feedbackContent` when the
    corresponding features are enabled.
-6. Configure and validate `iconFamilies`, per-item `iconSet`, `eventCalendar`, and `profile` only
+6. When profile content creation is enabled, create `profileService`,
+   `profileCreateContentServiceTop`, and `profileCreateContentServiceBottom`, and retain any
+   existing profile/conversation/settings tiles required by the tenant.
+7. Configure and validate `iconFamilies`, per-item `iconSet`, `eventCalendar`, and `profile` only
    after their dependent static content, identity-provider client, and Generic Item datasets are
    ready.
-7. If Participation Projects or Generic Item event sources are enabled, provide the GenericItem
-   import data, category relationships, dates, payload types/statuses, and bounded query results.
-8. Populate `position` values when category ordering is required.
-9. If feedback diagnostics are enabled, update recipient email templates and the privacy/retention
-   policy.
-10. Record the exact production Main-Server deployment SHA and completed database migrations in the
+8. Link every editorial member to a user and data provider; provision the news/event/POI and
+   optional noticeboard roles; then verify `/member` returns `member.authentication_token`,
+   `member.keycloak_refresh_token`, `user.authentication_token`, `roles`, and `data_provider_id`.
+9. Verify `X-Authorization` and `X-User-Authorization` resolve within the correct municipality and
+   that mutation authorization rejects a missing/forbidden user and cross-provider resources. If
+   content-type roles are an authorization boundary, deploy their server-side checks as well.
+10. If Participation Projects or Generic Item event sources are enabled, provide the GenericItem
+    import data, category relationships, dates, payload types/statuses, and bounded query results.
+11. Populate `position` values when category ordering is required.
+12. If feedback diagnostics are enabled, update recipient email templates and the privacy/retention
+    policy.
+13. Record the exact production Main-Server deployment SHA and completed database migrations in the
     release notes.
 
 ### 6.3. Conditional or recommended Main-Server code changes
@@ -1026,6 +1249,9 @@ At minimum:
   values.
 - If automatic Participation Project push notifications are required, extend
   `GenericItem::GENERIC_TYPES`, push configuration, and I18n support.
+- Keycloak-managed data-provider role synchronization uses the `mainserver_` prefix and replaces
+  all managed role flags with the roles present in the access token. Use it only when the realm and
+  municipality are provisioned as one system; otherwise manage data-provider roles explicitly.
 - The waste reminder work in commits `d482201d`, `52954249`, `ab295278`, `cfd68584`, `9497c4ae`, and
   `75e55c94`, or equivalent code, becomes mandatory when local/flexible reminders or disruption
   delivery are enabled. Do not deploy the `wasteTypes` reminder configuration ahead of this server
@@ -1123,6 +1349,9 @@ Also perform these read-only REST/content checks in staging:
 
 - request `globalSettings`, `tabNavigation`, and every enabled `wasteTypes`, `floorPlan`, or
   `feedbackContent` record with the exact name and version the client will use;
+- request `profileService`, `profileCreateContentServiceTop`, and
+  `profileCreateContentServiceBottom`; validate every route, query value, icon, and required form
+  parameter;
 - verify that `globalSettings` contains the intended `iconFamilies`, `eventCalendar`, and `profile`
   values, and that every tab/service-tile `iconSet` resolves to a visible icon;
 - verify the profile OAuth `/auth`, `/token`, and `/logout` flows, the configured `/revoke` metadata,
@@ -1135,11 +1364,19 @@ Also perform these read-only REST/content checks in staging:
 - exercise POST/delete registration changes only with a staging test device and confirm that the
   three supported token transports resolve to the same device during the coexistence period.
 
+Profile writes cannot be proven with read-only checks. In staging, sign in through every supported
+profile login path and inspect header presence without logging token values. Confirm that
+`/member` returns fresh member/user credentials, create one record for each granted type, read it
+back through `ProfileContent`, edit it, and hide it through `changeVisibility`. Repeat with a
+forbidden general user and with another provider's record ID; both negative cases must be rejected
+by Main-Server rather than merely hidden by the mobile UI. If content-type roles are part of the
+tenant policy, also verify that direct API calls with a missing type role are rejected.
+
 ## 7. Build, versioning, tagging, and OTA
 
 ### 7.1. Known release blockers in the reviewed snapshot
 
-At the time of review on 26 August 2026:
+At the time of review on 27 August 2026:
 
 - `package.json.version` is still `4.3.0`;
 - `app.json.expo.version` is still `4.3.0`;
@@ -1148,8 +1385,10 @@ At the time of review on 26 August 2026:
 - `app.json.erb.tmpl` is not synchronized with `app.json`: its SUE version is still `1.0.0`, its
   splash plugin lacks the dark configuration, it still grants legacy Android read permissions,
   and it registers the MapLibre plugin twice;
-- the Floor Plan implementation and `navigationHelper` directly import
-  `@react-navigation/native`, although the package is not declared as a direct dependency;
+- the Floor Plan/navigation helper and the profile content home, content overview, settings, form,
+  NewsForm, EventForm, and PointOfInterestForm implementations directly import
+  `@react-navigation/native` or `@react-navigation/stack`, although neither package is declared as
+  a direct dependency;
 - `.github/scripts/eas-update.js` does not provide the `eas update --environment ...` argument
   required after the SDK 55 update;
 - `APP_DESIGN_SYSTEM_DARK_MODE.md` links to a missing
@@ -1158,7 +1397,13 @@ At the time of review on 26 August 2026:
   reads `settings.iconFamilies`;
 - profile header OAuth support is implemented but no reviewed default stack screen enables
   `withProfile`; confirm the intended product entry point and public-client/PKCE policy before
-  release.
+  release;
+- the header OAuth flow does not persist the member/user authentication tokens returned by
+  `/member`, so Keycloak-only users can be logged in without the headers required by profile content
+  mutations. Complete and end-to-end test the token handoff described in section 5.15;
+- the reviewed Main-Server does not enforce the content-type data-provider flags used to hide
+  profile creation tiles. Add backend checks before release when those flags are intended as an
+  authorization boundary.
 
 Resolve these items before running the final template automation, creating the `v5.0.0` tag, or
 starting a production release.
@@ -1209,17 +1454,17 @@ recovered from a normal source diff.
 
 ### 7.4. Quality-gate status of the reviewed snapshot
 
-The local review on 26 August 2026 found existing quality/infrastructure failures:
+The local review on 27 August 2026 found existing quality/infrastructure failures:
 
-- `yarn lint` reports 1,043 problems: 870 errors and 173 warnings. The output includes parser errors
-  where `@typescript-eslint/parser` encounters Flow syntax in React Native, as well as existing
-  application lint failures. Resolve the ESLint/parser/import-resolver compatibility and all
-  project errors before release.
-- `yarn test` passes 114 of 156 suites and 585 of 590 tests. It fails 42 suites and 3 tests, with 2 skipped
-  tests. Most suite failures are caused by the intentionally untracked `src/config/secrets.js` file
-  being unavailable; the remaining failures include obsolete `@react-navigation/native` mocks and
-  stale waste/settings mocks. Provide a secret-free Jest module mock or safe test-time provisioning
-  in CI; never commit a real secret file.
+- `yarn lint` does not reach a result. It repeatedly reports parser errors where the outdated
+  `@typescript-eslint/parser` encounters Flow syntax in React Native, and the review run was stopped
+  after 30 seconds of repeated errors. Align the ESLint/parser/import-resolver toolchain with
+  TypeScript 6 and React Native 0.86, then resolve remaining project errors before release.
+- `yarn test --runInBand` passes 121 of 164 suites and 623 of 628 tests. It fails 43 suites and 3
+  tests, with 2 skipped tests. Most suite failures are caused by the intentionally untracked
+  `src/config/secrets.js` file being unavailable; the remaining failures include obsolete
+  `@react-navigation/native` mocks and stale waste/settings mocks. Provide a secret-free Jest module
+  mock or safe test-time provisioning in CI; never commit a real secret file.
 - `npx expo-doctor@latest` cannot start its project checks because evaluating Expo config reaches
   the same missing `src/config/secrets.js` dependency. Ensure CI can evaluate Expo config through
   safe test-time provisioning.
@@ -1250,6 +1495,10 @@ For the accessibility changes, also run:
 - signed-in and signed-out users;
 - valid, expired, revoked, malformed, offline, and transiently unrefreshable profile OAuth
   sessions, including member records removed on the server;
+- profile users with no linked user/provider, each individual editorial role, all editorial roles,
+  no editorial roles, and a changed/revoked Keycloak role set;
+- an upgrade with only the legacy member token present, followed by `/member` synchronization and
+  creation of the missing user-token state;
 - existing bookmarks, wallet entries, accessibility preferences, and personalized tiles;
 - an existing `apollo-cache-persist` value without expiration metadata and an already expired cache;
 - existing locally stored SUE reports without `statusSource`, including an `Unbearbeitet` report;
@@ -1263,26 +1512,27 @@ For the accessibility changes, also run:
 
 ### 8.3. Module smoke tests
 
-| Area           | Acceptance criteria                                                                                                                                                                                                                                                      |
-| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| BUS            | Area search, initial area, life situations, A–Z, text search, pagination, detail, and sharing work; every request contains the correct state header                                                                                                                      |
-| Main GraphQL   | News, events, POIs, tours, categories, and generic item queries complete without schema errors                                                                                                                                                                           |
-| Participation  | Home, category, featured/all sections, status filters, map/list, detail, bookmark, share, search, and add-to-calendar work                                                                                                                                               |
-| Generic events | Every configured Generic Item type/filter/date maps consistently into list, calendar, home, and widget; native filters suppress external data; refresh, loading, deduplication, and large/truncated datasets are verified                                                |
-| Icons          | Global family order, per-tab/tile overrides, unified mappings, custom SVG priority, missing-name fallback, fill/stroke, theme, and accessibility states render correctly                                                                                                 |
-| Profile OAuth  | Redirect, authorization-code exchange, PKCE, restore, refresh, transient outage, invalid/revoked token, logout, missing-member cleanup, and offline-to-online recovery work without exposing confidential secrets                                                        |
-| Cache          | General, Apollo, Home, and SUE expiration values apply; invalid values fall back safely; legacy Apollo data receives metadata; expiration removes the expected scope only                                                                                                |
-| Waste          | Legacy and flexible UI modes work; per-type slots, 50-item limit, coverage reminders, permission/token/address resync, disruption registration, local tap navigation, and server fallback suppression are verified                                                       |
-| Floor Plan     | Remote and inline SVG floors render; floor/view switches, pins, linked content, invalid config, theme, scaling, gestures, and the screen-reader list alternative work                                                                                                    |
-| Theme          | App shell, tabs/drawer, modals, forms, maps, calendar, WebView loading, SUE, and static carousels are checked in both themes                                                                                                                                             |
-| Accessibility  | Text scaling, bold text, grayscale, high contrast, reduced motion/transparency, switch labels, and read aloud are tested on real devices                                                                                                                                 |
-| Upload         | Volunteer calendar/post/email, Consul attachments, wallet card sharing, and AR download/delete work                                                                                                                                                                      |
-| Chat/carousel  | GiftedChat messages, quick replies, attachments, links, carousel autoplay/pause, and single-image height work                                                                                                                                                            |
-| Feedback       | Configured HTML renders; diagnostic checkbox defaults to off; each granular/legacy flag exposes only the intended category; nothing is sent without opt-in; expected email/payload is produced after opt-in                                                              |
-| SUE/Defect     | Missing/partial/complete SUE configuration, paginated locations/requests, stored-report status refresh and provenance, hidden/shown internal pending status, camera/gallery draft and EXIF flows, reports with and without location, and category position ordering work |
-| WebView        | Incognito precedence, platform user agent, bot control, external browser, and modal browser behavior work                                                                                                                                                                |
-| Maps           | POI/Tour direction card, TourStop zoom/bounds, parking status, and invalid coordinates are handled                                                                                                                                                                       |
-| Push           | Canonical and normalized payloads navigate once in foreground/background/cold start; queueing before navigator readiness, query type aliases, missing fields, local waste taps, deep links, and notification categories work                                             |
+| Area            | Acceptance criteria                                                                                                                                                                                                                                                      |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| BUS             | Area search, initial area, life situations, A–Z, text search, pagination, detail, and sharing work; every request contains the correct state header                                                                                                                      |
+| Main GraphQL    | News, events, POIs, tours, categories, and generic item queries complete without schema errors                                                                                                                                                                           |
+| Participation   | Home, category, featured/all sections, status filters, map/list, detail, bookmark, share, search, and add-to-calendar work                                                                                                                                               |
+| Generic events  | Every configured Generic Item type/filter/date maps consistently into list, calendar, home, and widget; native filters suppress external data; refresh, loading, deduplication, and large/truncated datasets are verified                                                |
+| Icons           | Global family order, per-tab/tile overrides, unified mappings, custom SVG priority, missing-name fallback, fill/stroke, theme, and accessibility states render correctly                                                                                                 |
+| Profile OAuth   | Redirect, authorization-code exchange, PKCE, restore, refresh, transient outage, invalid/revoked token, logout, missing-member cleanup, and offline-to-online recovery work without exposing confidential secrets                                                        |
+| Profile content | Member/user token handoff, role-filtered tiles, owner lists, create/edit/hide for news/events/POIs/noticeboard, image and rich-text round trips, cross-provider denial, and Keycloak role refresh work                                                                   |
+| Cache           | General, Apollo, Home, and SUE expiration values apply; invalid values fall back safely; legacy Apollo data receives metadata; expiration removes the expected scope only                                                                                                |
+| Waste           | Legacy and flexible UI modes work; per-type slots, 50-item limit, coverage reminders, permission/token/address resync, disruption registration, local tap navigation, and server fallback suppression are verified                                                       |
+| Floor Plan      | Remote and inline SVG floors render; floor/view switches, pins, linked content, invalid config, theme, scaling, gestures, and the screen-reader list alternative work                                                                                                    |
+| Theme           | App shell, tabs/drawer, modals, forms, maps, calendar, WebView loading, SUE, and static carousels are checked in both themes                                                                                                                                             |
+| Accessibility   | Text scaling, bold text, luminance-preserving grayscale for remote colors/images, responsive 1–5-column widget layout, high contrast, reduced motion/transparency, switch labels, and read aloud are tested on real devices                                              |
+| Upload          | Volunteer calendar/post/email, Consul attachments, wallet card sharing, and AR download/delete work                                                                                                                                                                      |
+| Chat/carousel   | GiftedChat messages, quick replies, attachments, links, carousel autoplay/pause, and single-image height work                                                                                                                                                            |
+| Feedback        | Configured HTML renders; diagnostic checkbox defaults to off; each granular/legacy flag exposes only the intended category; nothing is sent without opt-in; expected email/payload is produced after opt-in                                                              |
+| SUE/Defect      | Missing/partial/complete SUE configuration, paginated locations/requests, stored-report status refresh and provenance, hidden/shown internal pending status, camera/gallery draft and EXIF flows, reports with and without location, and category position ordering work |
+| WebView         | Incognito precedence, platform user agent, bot control, external browser, and modal browser behavior work                                                                                                                                                                |
+| Maps            | POI/Tour direction card, TourStop zoom/bounds, parking status, and invalid coordinates are handled                                                                                                                                                                       |
+| Push            | Canonical and normalized payloads navigate once in foreground/background/cold start; queueing before navigator readiness, query type aliases, missing fields, local waste taps, deep links, and notification categories work                                             |
 
 ### 8.4. Pre-production monitoring
 
@@ -1300,6 +1550,9 @@ For the accessibility changes, also run:
   and client-side processing time;
 - monitor profile OAuth exchange/refresh failures separately from invalid-session cleanup and
   `/member` synchronization failures;
+- monitor missing/invalid profile member and user headers, role synchronization changes,
+  unauthorized content mutations, upload failures, and cross-provider access attempts without
+  logging token values;
 - monitor unresolved icon names and question-mark fallbacks after static-content updates;
 - monitor memory, startup, carousel, and chat crashes, with particular attention to
   Reanimated/Worklets;
@@ -1324,14 +1577,18 @@ For the accessibility changes, also run:
    overrides so the app returns to the built-in Tabler/Ionicons order.
 9. To disable profile header OAuth, remove the `withProfile` header entry point and profile
    configuration together, then verify logout/session cleanup for already signed-in test users.
-10. To disable Floor Plan, remove its navigation entry and StaticContent reference. No stored user
+10. To disable profile content creation, remove `ProfileCreateContentHome` and `ProfileContent`
+    from `profileService` and remove both `profileCreateContentService*` records or replace them with
+    safe empty arrays. Do not delete or reassign created content; retain server authorization and
+    token compatibility while already-installed v5 clients and cached content are still active.
+11. To disable Floor Plan, remove its navigation entry and StaticContent reference. No stored user
     data or server schema needs to be deleted.
-11. To disable flexible waste reminders, restore a `wasteTypes` payload without explicit push slots,
+12. To disable flexible waste reminders, restore a `wasteTypes` payload without explicit push slots,
     resynchronize/clear the app-owned native reminders, and keep the compatible server columns and
     index in place during the client rollback window.
-12. Removing cache overrides returns invalid or missing scopes to the end-of-day fallback. Do not
+13. Removing cache overrides returns invalid or missing scopes to the end-of-day fallback. Do not
     delete persisted data manually unless the rollback procedure explicitly requires it.
-13. Follow the Main-Server repository's backup and rollback procedure for server-side migrations.
+14. Follow the Main-Server repository's backup and rollback procedure for server-side migrations.
     A mobile rollback does not authorize a backend schema downgrade.
 
 Do not move the published `v5.0.0` tag during rollback. A corrected source release must use a new
@@ -1355,10 +1612,15 @@ semantic version and a new immutable tag.
 - [ ] Every Generic Item event source has complete dates/filter payloads, bounded results, and matching list/calendar/home/widget behavior.
 - [ ] `iconFamilies`, tab/service-tile `iconSet` values, and every configured icon name are validated against the implementation.
 - [ ] Profile OAuth uses an approved public client and PKCE, the redirect/endpoints are registered, and stored-session/member-sync upgrade cases pass.
+- [ ] `/member` returns the linked user, data provider, roles, refresh token, and member/user authentication tokens required by the selected login paths.
+- [ ] `profileService`, `profileCreateContentServiceTop`, and `profileCreateContentServiceBottom` contain valid routes, query values, form parameters, and icons.
+- [ ] Profile content roles are provisioned, both GraphQL auth headers are persisted, and allowed/denied/cross-provider create, edit, list, and hide cases pass.
+- [ ] News, event, and POI rich-text/media forms pass clean iOS and Android native-build tests.
 - [ ] If Floor Plan is enabled, its StaticContent, SVG assets, accessible list, pins, and linked routes are verified.
 - [ ] Waste registration migrations and REST/token/fallback contracts are deployed before flexible reminders or disruptions are enabled.
 - [ ] Waste reminder slots use stable IDs, and legacy/flexible modes, local coverage, native inventory, token rotation, and selected-address migration are verified.
 - [ ] SUE pagination, stored-status refresh/provenance, internal pending-status configuration, and media permission/draft flows are verified.
+- [ ] Grayscale tenant colors/images and responsive widgets are verified across both themes, device widths, orientations, and text scales.
 - [ ] Push producers emit a supported query type and ID, and foreground/background/cold-start navigation is verified.
 - [ ] Privacy and email processing are approved before feedback diagnostics are enabled.
 - [ ] Feedback HTML and every enabled granular diagnostic category are verified with and without user consent.
