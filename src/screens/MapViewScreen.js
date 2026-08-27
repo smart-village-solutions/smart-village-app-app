@@ -45,6 +45,7 @@ export const MapViewScreen = ({ navigation, route }) => {
       <MapLibre
         {...{
           geometryTourData,
+          initialZoomLevel: mapSettings?.zoomLevel?.initialZoom,
           locations,
           mapCenterPosition: mapSettings?.mapCenterPosition,
           mapStyle: styles.map,

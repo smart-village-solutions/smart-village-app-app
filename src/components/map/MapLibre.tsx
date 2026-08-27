@@ -210,6 +210,7 @@ type Props = {
   initialBounds?: LngLatBounds;
   isMultipleMarkersMap?: boolean;
   isMyLocationButtonVisible?: boolean;
+  initialZoomLevel?: number;
   locations: MapMarker[];
   mapCenterPosition?: LocationObjectCoords;
   mapStyle?: StyleProp<ViewStyle>;
@@ -254,6 +255,7 @@ export const MapLibre = ({
   },
   isMultipleMarkersMap = true,
   isMyLocationButtonVisible = true,
+  initialZoomLevel,
   locations,
   mapCenterPosition,
   mapStyle,
@@ -292,9 +294,8 @@ export const MapLibre = ({
     zoomLevel = {}
   } = useMapFeatureConfig(locations);
   const resolvedMarkerImages = useMemo(() => buildMarkerImages(markerImages), [markerImages]);
-  const initialZoomLevel = isMultipleMarkersMap
-    ? zoomLevel.multipleMarkers
-    : zoomLevel.singleMarker;
+  const resolvedInitialZoomLevel =
+    initialZoomLevel ?? (isMultipleMarkersMap ? zoomLevel.multipleMarkers : zoomLevel.singleMarker);
   const mapCenterZoomLevel = initialZoomLevel;
 
   // Build a MapLibre `case` expression for label halo color:
@@ -673,7 +674,7 @@ export const MapLibre = ({
       const zoomForCluster = await shapeSourceRef.current?.getClusterExpansionZoom(
         feature.properties.cluster_id
       );
-      const safeCurrentZoom = currentZoomLevel ?? initialZoomLevel ?? 0;
+      const safeCurrentZoom = currentZoomLevel ?? resolvedInitialZoomLevel ?? 0;
       const baseZoom = zoomForCluster ?? safeCurrentZoom;
       const newZoomLevel = Math.min(Math.max(baseZoom, safeCurrentZoom + 1), MAX_ZOOM_LEVEL);
 
@@ -830,7 +831,7 @@ export const MapLibre = ({
             bounds: initialBounds,
             latitude: initialRegion.latitude ?? 51.1657,
             longitude: initialRegion.longitude ?? 10.4515,
-            zoom: initialZoomLevel ?? 0
+            zoom: resolvedInitialZoomLevel ?? 0
           })}
           trackUserLocation={followsUserLocation ? 'default' : undefined}
           minZoom={minZoom}
