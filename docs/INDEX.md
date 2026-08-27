@@ -77,3 +77,7 @@ For module setup and static content examples see [the Participation Project docs
 ## Accessibility
 
 For detailed documentation see [the accessibility settings docs](./accessibility-settings.md).
+
+## Version module history
+
+For an English overview of modules and major capabilities introduced or developed in every release, see [the version module history](./VERSION_MODULE_HISTORY.md).
