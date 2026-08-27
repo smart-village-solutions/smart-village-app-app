@@ -365,7 +365,9 @@ export const Icon = {
   LocationActive: (props: IconProps) => (
     <SvgIcon xml={locationActive} {...props} strokeWidth={props.strokeWidth ?? 1} />
   ),
+  Login: (props: IconProps) => <NamedIcon name="login-2" {...props} />,
   Logo: (props: IconProps) => <SvgIcon xml={logo} {...props} />,
+  Logout: (props: IconProps) => <NamedIcon name="logout-2" {...props} />,
   Lunch: (props: IconProps) => <SvgIcon xml={lunch} {...props} />,
   Lupe: (props: IconProps) => <SvgIcon xml={lupe} {...props} />,
   Mail: (props: IconProps) => <NamedIcon name="mail" {...props} />,

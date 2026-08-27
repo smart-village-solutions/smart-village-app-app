@@ -10,27 +10,25 @@ export const PROFILE_USER_AUTH_TOKEN = 'PROFILE_USER_AUTH_TOKEN';
 const PROFILE_CURRENT_USER = 'PROFILE_CURRENT_USER';
 const PROFILE_UPDATED = 'PROFILE_UPDATED';
 
-export const storeTokens = (authToken?: string, userAuthToken?: string) => {
-  if (authToken) {
-    storeProfileAuthToken(authToken);
-  } else {
-    storeProfileAuthToken();
+export const storeTokens = async (authToken?: string, userAuthToken?: string) => {
+  const tokenOperations = [
+    storeProfileAuthToken(authToken),
+    storeProfileUserAuthToken(userAuthToken)
+  ];
+
+  if (!userAuthToken) {
+    tokenOperations.push(storeProfileUserData());
   }
 
-  if (userAuthToken) {
-    storeProfileUserAuthToken(userAuthToken);
-  } else {
-    storeProfileUserAuthToken();
-    storeProfileUserData();
-  }
+  await Promise.all(tokenOperations);
 };
 
 export const storeProfileAuthToken = (authToken?: string) => {
   if (authToken) {
-    SecureStore.setItemAsync(PROFILE_AUTH_TOKEN, authToken);
-  } else {
-    SecureStore.deleteItemAsync(PROFILE_AUTH_TOKEN);
+    return SecureStore.setItemAsync(PROFILE_AUTH_TOKEN, authToken);
   }
+
+  return SecureStore.deleteItemAsync(PROFILE_AUTH_TOKEN);
 };
 
 export const profileAuthToken = async () => {
@@ -43,7 +41,7 @@ export const profileAuthToken = async () => {
     authToken = await SecureStore.getItemAsync(PROFILE_AUTH_TOKEN);
   } catch {
     // Token deleted here so that it can be recreated
-    SecureStore.deleteItemAsync(PROFILE_AUTH_TOKEN);
+    await SecureStore.deleteItemAsync(PROFILE_AUTH_TOKEN);
   }
 
   return authToken;
@@ -51,10 +49,10 @@ export const profileAuthToken = async () => {
 
 const storeProfileUserAuthToken = (userAuthToken?: string) => {
   if (userAuthToken) {
-    SecureStore.setItemAsync(PROFILE_USER_AUTH_TOKEN, userAuthToken);
-  } else {
-    SecureStore.deleteItemAsync(PROFILE_USER_AUTH_TOKEN);
+    return SecureStore.setItemAsync(PROFILE_USER_AUTH_TOKEN, userAuthToken);
   }
+
+  return SecureStore.deleteItemAsync(PROFILE_USER_AUTH_TOKEN);
 };
 
 export const profileUserAuthToken = async () => {
@@ -67,7 +65,7 @@ export const profileUserAuthToken = async () => {
     userAuthToken = await SecureStore.getItemAsync(PROFILE_USER_AUTH_TOKEN);
   } catch {
     // Token deleted here so that it can be recreated
-    SecureStore.deleteItemAsync(PROFILE_USER_AUTH_TOKEN);
+    await SecureStore.deleteItemAsync(PROFILE_USER_AUTH_TOKEN);
   }
 
   return userAuthToken;
@@ -75,10 +73,10 @@ export const profileUserAuthToken = async () => {
 
 export const storeProfileUserData = (userData?: ProfileMember) => {
   if (userData) {
-    addToStore(PROFILE_CURRENT_USER, userData);
-  } else {
-    AsyncStorage.removeItem(PROFILE_CURRENT_USER);
+    return addToStore(PROFILE_CURRENT_USER, userData);
   }
+
+  return AsyncStorage.removeItem(PROFILE_CURRENT_USER);
 };
 
 export const profileUserData = async (): Promise<{

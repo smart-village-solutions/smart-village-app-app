@@ -13,8 +13,6 @@ import { HeaderIconButton } from './HeaderIconButton';
 import { HEADER_RIGHT_ICON_SIZE } from './headerIconConfig';
 import { Wrapper, WrapperHorizontal } from './Wrapper';
 
-export const LOGIN_MODAL = 'loginModal';
-
 const { a11yLabel } = consts;
 
 interface DataItem {

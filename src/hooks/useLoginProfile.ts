@@ -65,7 +65,7 @@ export const useLoginProfile = (
 
   const clearStoredToken = useCallback(async () => {
     await SecureStore.deleteItemAsync(PROFILE_ACCESS_TOKEN);
-    storeTokens();
+    await storeTokens();
     setIsLoggedIn(false);
     await onLogout?.();
   }, [onLogout]);
@@ -151,18 +151,18 @@ export const useLoginProfile = (
         );
 
         if (!tokenResult.accessToken) {
-          storeProfileAuthToken();
+          await storeProfileAuthToken();
           await SecureStore.deleteItemAsync(PROFILE_ACCESS_TOKEN);
           setIsLoggedIn(false);
           throw new Error('Token exchange failed: missing access token');
         }
 
-        storeProfileAuthToken(tokenResult.accessToken);
+        await storeProfileAuthToken(tokenResult.accessToken);
         setIsLoggedIn(true);
         await SecureStore.setItemAsync(PROFILE_ACCESS_TOKEN, JSON.stringify(tokenResult));
         await onLoginSuccess?.();
       } catch (error) {
-        storeProfileAuthToken();
+        await storeProfileAuthToken();
         await SecureStore.deleteItemAsync(PROFILE_ACCESS_TOKEN);
         setIsLoggedIn(false);
         console.error('Error exchanging code:', error);
@@ -201,7 +201,9 @@ export const useLoginProfile = (
         );
 
         await SecureStore.setItemAsync(PROFILE_ACCESS_TOKEN, JSON.stringify(newToken));
-        newToken.accessToken && storeProfileAuthToken(newToken.accessToken);
+        if (newToken.accessToken) {
+          await storeProfileAuthToken(newToken.accessToken);
+        }
 
         return newToken;
       } catch (error) {
@@ -283,7 +285,9 @@ export const useLoginProfile = (
         return handleExpiredToken(parsedToken);
       }
 
-      parsedToken.accessToken && storeProfileAuthToken(parsedToken.accessToken);
+      if (parsedToken.accessToken) {
+        await storeProfileAuthToken(parsedToken.accessToken);
+      }
       setIsLoggedIn(true);
       return parsedToken;
     } catch (error) {
