@@ -149,6 +149,30 @@ describe('AccessibilityProvider', () => {
     expect(currentAccessibility.themeMode).toBe('system');
   });
 
+  it('publishes grayscale theme colors for both app and system grayscale settings', async () => {
+    await renderProvider({
+      settings: {
+        accessibility: {
+          enabledFeatures: { isGrayscaleEnabled: true, theming: true }
+        }
+      }
+    });
+
+    await renderer.act(async () => {
+      currentAccessibility.setPreference('isGrayscaleEnabled', true);
+    });
+
+    expect(currentAccessibility.themeColors.primary).toMatch(/^rgb\((\d+), \1, \1\)$/);
+
+    await renderer.act(async () => {
+      currentAccessibility.setPreference('isGrayscaleEnabled', false);
+      mockSetSystemAccessibility((previous) => ({ ...previous, isGrayscaleEnabled: true }));
+    });
+
+    expect(currentAccessibility.isGrayscaleEnabled).toBe(true);
+    expect(currentAccessibility.themeColors.primary).toMatch(/^rgb\((\d+), \1, \1\)$/);
+  });
+
   it('follows the iOS On/Off Labels setting until the user creates an app override', async () => {
     mockSystemOnOffSwitchLabelsEnabled = true;
 

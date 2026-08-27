@@ -2,11 +2,38 @@ import { darkColors, lightColors } from '../../src/config/colors';
 import {
   getContrastRatio,
   isValidThemeColor,
+  resolveGrayscaleConfiguration,
+  resolveGrayscaleThemePalette,
   resolveThemePalette,
   resolveThemePalettes
 } from '../../src/helpers/themeHelper';
 
 describe('themeHelper', () => {
+  it('creates a grayscale palette while preserving alpha and contrast', () => {
+    const palette = resolveGrayscaleThemePalette(lightColors);
+
+    expect(palette.primary).toMatch(/^rgb\((\d+), \1, \1\)$/);
+    expect(palette.darkerPrimaryRgba).toMatch(/^rgba\((\d+), \1, \1, 0\.6\)$/);
+    expect(palette.transparent).toBe('transparent');
+    expect(getContrastRatio(palette.text, palette.background)).toBeCloseTo(
+      getContrastRatio(lightColors.text, lightColors.background)!
+    );
+  });
+
+  it('converts remote design colors without changing non-color values', () => {
+    expect(
+      resolveGrayscaleConfiguration({
+        fontStyle: { color: '#C44D36', fontSize: 14 },
+        iconName: 'home',
+        values: ['#FFFFFF', 'not-a-color']
+      })
+    ).toEqual({
+      fontStyle: { color: expect.stringMatching(/^rgb\((\d+), \1, \1\)$/), fontSize: 14 },
+      iconName: 'home',
+      values: ['rgb(255, 255, 255)', 'not-a-color']
+    });
+  });
+
   it('accepts supported JSON color formats and rejects invalid values', () => {
     expect(isValidThemeColor('#123')).toBe(true);
     expect(isValidThemeColor('#123456')).toBe(true);

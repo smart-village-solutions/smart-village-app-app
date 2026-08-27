@@ -10,13 +10,19 @@ import React, {
 import { useQuery as useQueryWithApollo } from 'react-apollo';
 import { useQuery } from 'react-query';
 
+import { AccessibilityContext } from './AccessibilityProvider';
 import { SettingsContext } from './SettingsProvider';
 import {
   defaultAppDesignSystemConfig,
   defaultResourceFiltersConfig
 } from './config/appDesignSystem';
 import { defaultSueAppConfig } from './config/sue';
-import { hasSueApiConfiguration, resolveAppDesignSystem, storageHelper } from './helpers';
+import {
+  hasSueApiConfiguration,
+  resolveAppDesignSystem,
+  resolveGrayscaleConfiguration,
+  storageHelper
+} from './helpers';
 import { useHomeRefresh, useStaticContent } from './hooks';
 import { useTheme } from './hooks/useTheme';
 import { QUERY_TYPES, getQuery } from './queries';
@@ -60,16 +66,20 @@ const defaultConfiguration = {
 export const ConfigurationsContext = createContext(defaultConfiguration);
 
 export const ConfigurationsProvider = ({ children }: { children?: ReactNode }) => {
+  const { isGrayscaleEnabled } = useContext(AccessibilityContext);
   const { globalSettings } = useContext(SettingsContext);
   const { settings, appDesignSystem = EMPTY_CONFIGURATION } = globalSettings;
   const { mode } = useTheme();
   const { sue = EMPTY_CONFIGURATION } = settings || EMPTY_CONFIGURATION;
   const hasSueSettings = !!Object.keys(sue).length;
   const hasCompleteSueApiConfiguration = hasSueApiConfiguration(sue);
-  const themedAppDesignSystem = useMemo(
-    () => resolveAppDesignSystem(appDesignSystem, mode),
-    [appDesignSystem, mode]
-  );
+  const themedAppDesignSystem = useMemo(() => {
+    const resolvedAppDesignSystem = resolveAppDesignSystem(appDesignSystem, mode);
+
+    return isGrayscaleEnabled
+      ? resolveGrayscaleConfiguration(resolvedAppDesignSystem)
+      : resolvedAppDesignSystem;
+  }, [appDesignSystem, isGrayscaleEnabled, mode]);
 
   const [configurations, setConfigurations] = useState(defaultConfiguration);
   const [isLoading, setIsLoading] = useState(true);
@@ -110,15 +120,7 @@ export const ConfigurationsProvider = ({ children }: { children?: ReactNode }) =
       resourceFilters,
       sueConfig: { ...sue, ...sueConfigData, sueProgress }
     });
-  }, [
-    appDesignSystem,
-    hasSueSettings,
-    resourceFiltersData,
-    sue,
-    sueConfigData,
-    sueProgress,
-    themedAppDesignSystem
-  ]);
+  }, [hasSueSettings, resourceFiltersData, sue, sueConfigData, sueProgress, themedAppDesignSystem]);
 
   const reloadCallback = useCallback(async () => {
     setIsLoading(true);

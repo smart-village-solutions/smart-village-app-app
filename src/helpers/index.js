@@ -67,3 +67,4 @@ export * from './updateResourceFiltersStateHelper';
 export * from './volunteerHelper';
 export * from './voucherHelper';
 export * from './wasteReminderSaveHelper';
+export * from './widgetLayout';

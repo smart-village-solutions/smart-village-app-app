@@ -10,7 +10,7 @@ import {
 } from './helpers/accessibilitySettingsHelper';
 import { accessibilityListeners } from './helpers/accessibilityListeners';
 import { storageHelper } from './helpers/storageHelper';
-import { resolveThemePalettes } from './helpers/themeHelper';
+import { resolveGrayscaleThemePalette, resolveThemePalettes } from './helpers/themeHelper';
 import { SettingsContext } from './SettingsProvider';
 import {
   AccessibilityContextValue,
@@ -252,7 +252,16 @@ export const AccessibilityProvider = ({ children }: { children?: React.ReactNode
     () => resolveThemePalettes(globalSettings),
     [globalSettings]
   );
-  const themeColors = features.theming ? configuredThemePalettes[resolvedThemeMode] : lightColors;
+  const baseThemeColors = features.theming
+    ? configuredThemePalettes[resolvedThemeMode]
+    : lightColors;
+  const isGrayscaleEnabled =
+    systemAccessibility.isGrayscaleEnabled ||
+    (features.isGrayscaleEnabled && preferences.isGrayscaleEnabled);
+  const themeColors = useMemo(
+    () => (isGrayscaleEnabled ? resolveGrayscaleThemePalette(baseThemeColors) : baseThemeColors),
+    [baseThemeColors, isGrayscaleEnabled]
+  );
   const textScaleMultiplier = features.textScaling
     ? getTextScaleMultiplier(preferences.textScaleLevel)
     : 1;
@@ -260,9 +269,6 @@ export const AccessibilityProvider = ({ children }: { children?: React.ReactNode
   const accessibility = useMemo<AccessibilityContextValue>(() => {
     const isBoldTextEnabled =
       systemAccessibility.isBoldTextEnabled || (features.boldText && preferences.boldTextEnabled);
-    const isGrayscaleEnabled =
-      systemAccessibility.isGrayscaleEnabled ||
-      (features.isGrayscaleEnabled && preferences.isGrayscaleEnabled);
     const isReduceMotionEnabled =
       systemAccessibility.isReduceMotionEnabled ||
       (features.reduceMotion && preferences.reduceMotionEnabled);
@@ -303,6 +309,7 @@ export const AccessibilityProvider = ({ children }: { children?: React.ReactNode
     defaults,
     features,
     hasHydratedSettings,
+    isGrayscaleEnabled,
     preferences,
     resetPreferences,
     setPreference,

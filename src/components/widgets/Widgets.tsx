@@ -3,7 +3,7 @@ import { StyleSheet, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AccessibilityContext } from '../../AccessibilityProvider';
-import { resolveEffectiveTextScale, resolveResponsiveGridLayout } from '../../helpers';
+import { resolveEffectiveTextScale, resolveWidgetLayout } from '../../helpers';
 import { ScreenName, WidgetProps } from '../../types';
 
 import { ConstructionSiteNewsWidget } from './ConstructionSiteNewsWidget';
@@ -19,9 +19,8 @@ import { WebWidget } from './WebWidget';
 import { WidgetLayoutContext } from './WidgetLayoutContext';
 
 const WIDGET_CONTAINER_PADDING = 16;
-const WIDGET_GAP = 8;
-const WIDGET_MAX_COLUMNS = 4;
-const WIDGET_MIN_WIDTH = 80;
+const WIDGET_COLUMN_PADDING = 4;
+const WIDGET_ROW_GAP = 8;
 
 type WidgetConfig =
   | ({
@@ -91,15 +90,16 @@ export const Widgets = ({ widgetConfigs, widgetStyle }: Props) => {
   const effectiveTextScale = resolveEffectiveTextScale(fontScale, textScaleMultiplier);
   const layout = useMemo(
     () =>
-      resolveResponsiveGridLayout({
+      resolveWidgetLayout({
         availableWidth,
-        gap: WIDGET_GAP,
         itemCount: widgetComponents.length,
-        maxColumns: WIDGET_MAX_COLUMNS,
-        minItemWidth: WIDGET_MIN_WIDTH,
         textScale: effectiveTextScale
       }),
     [availableWidth, effectiveTextScale, widgetComponents.length]
+  );
+  const itemStyle = useMemo(
+    () => ({ width: `${100 / layout.columns}%` as `${number}%` }),
+    [layout.columns]
   );
   const layoutContext = useMemo(
     () => ({ mode: layout.columns === 1 ? ('list' as const) : ('grid' as const) }),
@@ -120,7 +120,7 @@ export const Widgets = ({ widgetConfigs, widgetStyle }: Props) => {
         ]}
       >
         {widgetComponents.map((entry) => (
-          <View key={entry.key} style={{ width: layout.itemWidth }}>
+          <View key={entry.key} style={[itemStyle, layout.columns > 1 && styles.gridItem]}>
             {entry.component}
           </View>
         ))}
@@ -134,7 +134,11 @@ const styles = StyleSheet.create({
     alignItems: 'stretch',
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: WIDGET_GAP,
+    rowGap: WIDGET_ROW_GAP,
     width: '100%'
+  },
+  gridItem: {
+    boxSizing: 'border-box',
+    paddingHorizontal: WIDGET_COLUMN_PADDING
   }
 });

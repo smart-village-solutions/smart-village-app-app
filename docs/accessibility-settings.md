@@ -444,7 +444,9 @@ Behavior:
 - **High Contrast**
   - Replaces low-contrast text colors in app text rendering with stronger contrast where applicable.
 - **Grayscale**
-  - Applies app-wide grayscale rendering when enabled.
+  - Applies a luminance-preserving grayscale palette to light and dark themes.
+  - Converts remote app design-system colors and filters app images on iOS and Android.
+  - Uses React Native's descendant grayscale filter as an additional Android safeguard.
 - **Reduce Motion**
   - Exposes reduced-motion state in accessibility context.
   - Stack navigation transitions are disabled in reduced-motion mode.

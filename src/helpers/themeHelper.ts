@@ -81,6 +81,40 @@ const getRelativeLuminance = ({ red, green, blue }: RgbColor) =>
   0.7152 * linearizeColorChannel(green) +
   0.0722 * linearizeColorChannel(blue);
 
+const encodeColorChannel = (channel: number) =>
+  channel <= 0.0031308 ? channel * 12.92 : 1.055 * channel ** (1 / 2.4) - 0.055;
+
+export const toGrayscaleColor = (value: unknown): unknown => {
+  if (value === 'transparent' || typeof value !== 'string') return value;
+
+  const color = parseColor(value);
+  if (!color) return value;
+
+  const channel = Math.round(encodeColorChannel(getRelativeLuminance(color)) * 255);
+
+  return color.alpha === 1
+    ? `rgb(${channel}, ${channel}, ${channel})`
+    : `rgba(${channel}, ${channel}, ${channel}, ${Number(color.alpha.toFixed(3))})`;
+};
+
+export const resolveGrayscaleConfiguration = <T>(value: T): T => {
+  if (typeof value === 'string') return toGrayscaleColor(value) as T;
+
+  if (Array.isArray(value)) {
+    return value.map((item) => resolveGrayscaleConfiguration(item)) as T;
+  }
+
+  if (!value || typeof value !== 'object') return value;
+
+  return Object.entries(value).reduce((result, [key, nestedValue]) => {
+    result[key] = resolveGrayscaleConfiguration(nestedValue);
+    return result;
+  }, {} as Record<string, unknown>) as T;
+};
+
+export const resolveGrayscaleThemePalette = (palette: ThemeColorPalette): ThemeColorPalette =>
+  Object.freeze(resolveGrayscaleConfiguration(palette));
+
 export const getContrastRatio = (foreground: string, background: string) => {
   const foregroundColor = parseColor(foreground);
   const backgroundColor = parseColor(background);

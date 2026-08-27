@@ -1,6 +1,7 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
 
+import { AccessibilityContext } from '../src/AccessibilityProvider';
 import { ConfigurationsProvider } from '../src/ConfigurationsProvider';
 import { SettingsContext, initialContext } from '../src/SettingsProvider';
 
@@ -22,6 +23,8 @@ jest.mock('../src/helpers', () => ({
   hasSueApiConfiguration: jest.requireActual('../src/helpers/sueHelper').hasSueApiConfiguration,
   resolveAppDesignSystem: jest.requireActual('../src/helpers/appDesignSystemHelper')
     .resolveAppDesignSystem,
+  resolveGrayscaleConfiguration: jest.requireActual('../src/helpers/themeHelper')
+    .resolveGrayscaleConfiguration,
   storageHelper: {
     setConfigurations: (...args) => mockSetConfigurations(...args)
   }
@@ -42,7 +45,10 @@ jest.mock('../src/queries', () => ({
   getQuery: jest.fn(() => jest.fn())
 }));
 
-const renderProvider = (sueSettings = {}) => {
+const renderProvider = (
+  sueSettings = {},
+  { appDesignSystem = {}, isGrayscaleEnabled = false } = {}
+) => {
   let testRenderer;
 
   renderer.act(() => {
@@ -52,15 +58,18 @@ const renderProvider = (sueSettings = {}) => {
           ...initialContext,
           globalSettings: {
             ...initialContext.globalSettings,
+            appDesignSystem,
             settings: {
               sue: sueSettings
             }
           }
         }}
       >
-        <ConfigurationsProvider>
-          <></>
-        </ConfigurationsProvider>
+        <AccessibilityContext.Provider value={{ isGrayscaleEnabled } as never}>
+          <ConfigurationsProvider>
+            <></>
+          </ConfigurationsProvider>
+        </AccessibilityContext.Provider>
       </SettingsContext.Provider>
     );
   });
@@ -79,6 +88,32 @@ describe('ConfigurationsProvider', () => {
     });
 
     mockUseHomeRefresh.mockImplementation(() => undefined);
+    mockReactQueryUseQuery.mockReturnValue({ data: undefined, refetch: jest.fn() });
+    mockUseStaticContent.mockReturnValue({ data: undefined, refetch: jest.fn() });
+  });
+
+  it('converts configured design-system colors while grayscale mode is enabled', () => {
+    renderProvider(
+      {},
+      {
+        appDesignSystem: {
+          widgets: {
+            fontStyle: { color: '#C44D36' }
+          }
+        },
+        isGrayscaleEnabled: true
+      }
+    );
+
+    expect(mockSetConfigurations).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        appDesignSystem: expect.objectContaining({
+          widgets: expect.objectContaining({
+            fontStyle: { color: expect.stringMatching(/^rgb\((\d+), \1, \1\)$/) }
+          })
+        })
+      })
+    );
   });
 
   it('refetches SUE configuration on home refresh when base apiConfig is complete and whichApi is invalid', async () => {
