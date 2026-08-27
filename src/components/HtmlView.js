@@ -6,6 +6,7 @@ import TableRenderer, {
 } from '@native-html/table-plugin';
 import { removeElement, textContent } from 'domutils';
 import PropTypes from 'prop-types';
+import { Grayscale } from 'react-native-color-matrix-image-filters';
 import React, { memo, useContext, useMemo } from 'react';
 import HTML, {
   defaultHTMLElementModels,
@@ -97,11 +98,12 @@ const getThemedHtmlStyles = (colors) => ({
 });
 
 const HtmlImageRenderer = (props) => {
+  const { isGrayscaleEnabled } = useContext(AccessibilityContext);
   const imgProps = useIMGElementProps(props);
   const altText = imgProps.alt?.trim?.();
   const accessibilityLabel = altText || consts.a11yLabel.image;
 
-  return (
+  const imageElement = (
     <IMGElement
       {...imgProps}
       containerProps={{
@@ -112,6 +114,8 @@ const HtmlImageRenderer = (props) => {
       }}
     />
   );
+
+  return isGrayscaleEnabled ? <Grayscale>{imageElement}</Grayscale> : imageElement;
 };
 
 const hasMeaningfulNonTextNode = (node) => {

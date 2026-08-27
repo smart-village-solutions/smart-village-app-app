@@ -25,7 +25,8 @@ jest.mock('../../src/helpers/calendarHelper', () => ({
 
 jest.mock('../../src/helpers', () => ({
   momentFormat: jest.fn(() => '2026-07-08'),
-  parseListItemsFromQuery: jest.fn(() => [])
+  parseListItemsFromQuery: jest.fn(() => []),
+  resolveWasteMarkedDatesForDisplay: jest.fn((markedDates) => markedDates)
 }));
 
 jest.mock('../../src/components', () => {

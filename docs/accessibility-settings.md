@@ -445,7 +445,9 @@ Behavior:
   - Replaces low-contrast text colors in app text rendering with stronger contrast where applicable.
 - **Grayscale**
   - Applies a luminance-preserving grayscale palette to light and dark themes.
-  - Converts remote app design-system colors and filters app images on iOS and Android.
+  - Converts remote app design-system colors, item-level service-tile styles and runtime waste
+    colors on iOS and Android.
+  - Filters both app images and images rendered from HTML content on iOS and Android.
   - Uses React Native's descendant grayscale filter as an additional Android safeguard.
 - **Reduce Motion**
   - Exposes reduced-motion state in accessibility context.

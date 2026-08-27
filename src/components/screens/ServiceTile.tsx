@@ -4,8 +4,9 @@ import React, { ComponentProps, useCallback, useContext, useState } from 'react'
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { AccessibilityContext } from '../../AccessibilityProvider';
 import { consts, Icon, IconSet, IconUrl, normalize } from '../../config';
-import { normalizeStyleValues } from '../../helpers';
+import { resolveServiceTileStyle } from '../../helpers';
 import { IconLibrary } from '../../IconProvider';
 import { OrientationContext } from '../../OrientationProvider';
 import { Image } from '../Image';
@@ -105,6 +106,7 @@ export const ServiceTile = ({
   const styles = useThemeStyles(createStyles);
   const navigation = useNavigation<StackNavigationProp<any>>();
   const route = useRoute();
+  const { isGrayscaleEnabled } = useContext(AccessibilityContext);
   const { orientation, dimensions } = useContext(OrientationContext);
   const safeAreaInsets = useSafeAreaInsets();
   const columns = resolveColumns({ item, layoutColumns, orientation });
@@ -139,14 +141,22 @@ export const ServiceTile = ({
     tileStyle: itemTileStyle = {}
   } = itemStyle || {};
 
-  const normalizedFontStyle = normalizeStyleValues(
-    Object.keys(itemFontStyle).length ? itemFontStyle : fontStyle
-  );
-  const normalizedIconStyle = normalizeStyleValues(
-    Object.keys(itemIconStyle).length ? itemIconStyle : iconStyle
-  );
+  const normalizedFontStyle = resolveServiceTileStyle({
+    fallbackStyle: fontStyle,
+    isGrayscaleEnabled,
+    itemStyle: itemFontStyle
+  });
+  const normalizedIconStyle = resolveServiceTileStyle({
+    fallbackStyle: iconStyle,
+    isGrayscaleEnabled,
+    itemStyle: itemIconStyle
+  });
   const normalizedTileStyle = omitTileDimensionOverrides(
-    normalizeStyleValues(Object.keys(itemTileStyle).length ? itemTileStyle : tileStyle)
+    resolveServiceTileStyle({
+      fallbackStyle: tileStyle,
+      isGrayscaleEnabled,
+      itemStyle: itemTileStyle
+    })
   );
   const hasTileStyle = !!Object.keys(itemTileStyle).length || !!Object.keys(tileStyle).length;
   const serviceIconColor = normalizedIconStyle.color

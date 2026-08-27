@@ -1,4 +1,3 @@
-import { useFocusEffect } from 'expo-router/react-navigation';
 import _isArray from 'lodash/isArray';
 import _sortBy from 'lodash/sortBy';
 import moment from 'moment';
@@ -15,6 +14,7 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Calendar as RNCalendar } from 'react-native-calendars';
 import { Overlay } from 'react-native-elements';
 
+import { AccessibilityContext } from '../AccessibilityProvider';
 import {
   AccessibilityHeader,
   BoldText,
@@ -38,7 +38,11 @@ import { HEADER_RIGHT_ICON_STROKE_WIDTH } from '../components/headerIconConfig';
 import { DayComponent } from '../components/DayComponent';
 import { FeedbackFooter } from '../components/FeedbackFooter';
 import { consts, device, Icon, normalize, texts } from '../config';
-import { momentFormat, parseListItemsFromQuery } from '../helpers';
+import {
+  momentFormat,
+  parseListItemsFromQuery,
+  resolveWasteMarkedDatesForDisplay
+} from '../helpers';
 import { getCalendarTheme, setupLocales } from '../helpers/calendarHelper';
 import {
   useKeyboardHeight,
@@ -122,6 +126,7 @@ export const WasteCollectionScreen = ({ navigation, route }) => {
   const { colors: colors } = useTheme();
 
   const styles = useThemeStyles(createStyles);
+  const { isGrayscaleEnabled } = useContext(AccessibilityContext);
   const { globalSettings } = useContext(SettingsContext);
   const { navigation: navigationType, settings = {}, waste = {} } = globalSettings;
   const { wasteAddresses = {} } = settings;
@@ -157,6 +162,10 @@ export const WasteCollectionScreen = ({ navigation, route }) => {
     streetData,
     selectedTypes: selectedTypes || typesData
   });
+  const displayMarkedDates = useMemo(
+    () => resolveWasteMarkedDatesForDisplay(markedDates, isGrayscaleEnabled),
+    [isGrayscaleEnabled, markedDates]
+  );
   const keyboardHeight = useKeyboardHeight();
   const query = QUERY_TYPES.WASTE_STREET;
 
@@ -351,7 +360,7 @@ export const WasteCollectionScreen = ({ navigation, route }) => {
                 <RNCalendar
                   dayComponent={DayComponent}
                   firstDay={1}
-                  markedDates={markedDates}
+                  markedDates={displayMarkedDates}
                   markingType="multi-dot"
                   onDayPress={onDayPress}
                   renderArrow={renderArrow}

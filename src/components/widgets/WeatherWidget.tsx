@@ -10,16 +10,15 @@ import { NetworkContext } from '../../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { WidgetProps } from '../../types';
 import { Image } from '../Image';
-import { BoldText, RegularText } from '../Text';
+import { BoldText } from '../Text';
 import { WrapperRow } from '../Wrapper';
 
-import { omitResponsiveDimensions, WidgetLayoutContext } from './WidgetLayoutContext';
+import { WidgetContent } from './WidgetContent';
+import { omitResponsiveDimensions } from './WidgetLayoutContext';
 
 const { POLL_INTERVALS } = consts;
 
 export const WeatherWidget = ({ text, widgetStyle }: WidgetProps) => {
-  const { mode } = useContext(WidgetLayoutContext);
-  const isList = mode === 'list';
   const navigation = useNavigation();
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
@@ -56,82 +55,39 @@ export const WeatherWidget = ({ text, widgetStyle }: WidgetProps) => {
       onPress={onPress}
       style={[normalizedWidgetStyle, styles.widget]}
     >
-      <View style={[styles.container, isList && styles.listContainer]}>
-        <WrapperRow center style={[styles.visualRow, isList && styles.listVisualRow]}>
-          <View style={[styles.iconContainer, normalizedIconStyle]}>
-            <Image
-              source={{
-                uri: `https://openweathermap.org/img/wn/${icon}@2x.png`,
-                captionText: description
-              }}
-              style={styles.icon}
-              resizeMode="contain"
-            />
-          </View>
-          <BoldText primary big>
-            {roundedTemperature}°C
-          </BoldText>
-        </WrapperRow>
-        <View style={[styles.labelContainer, isList && styles.listLabelContainer]}>
-          <RegularText
-            primary
-            small
-            style={[styles.label, isList && styles.listLabel, normalizedFontStyle]}
-          >
-            {text ?? texts.widgets.weather}
-          </RegularText>
-        </View>
-      </View>
+      <WidgetContent
+        label={text ?? texts.widgets.weather}
+        labelStyle={normalizedFontStyle}
+        visual={
+          <WrapperRow center>
+            <View style={[styles.iconContainer, normalizedIconStyle]}>
+              <Image
+                source={{
+                  uri: `https://openweathermap.org/img/wn/${icon}@2x.png`,
+                  captionText: description
+                }}
+                style={styles.icon}
+                resizeMode="contain"
+              />
+            </View>
+            <BoldText primary big>
+              {roundedTemperature}°C
+            </BoldText>
+          </WrapperRow>
+        }
+      />
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 4,
-    paddingVertical: 16,
-    width: '100%'
-  },
   icon: {
     aspectRatio: 1,
-    width: normalize(44)
+    width: normalize(40)
   },
   iconContainer: {
     alignItems: 'center',
     justifyContent: 'center'
-  },
-  label: {
-    flexShrink: 1,
-    textAlign: 'center'
-  },
-  labelContainer: {
-    alignItems: 'center',
-    marginTop: 4,
-    width: '100%'
-  },
-  listContainer: {
-    flexDirection: 'row',
-    minHeight: 64,
-    paddingHorizontal: 12
-  },
-  listLabel: {
-    textAlign: 'left'
-  },
-  listLabelContainer: {
-    alignItems: 'flex-start',
-    flex: 1,
-    marginTop: 0,
-    width: 'auto'
-  },
-  listVisualRow: {
-    marginRight: 12,
-    minWidth: 72
-  },
-  visualRow: {
-    alignItems: 'center',
-    minHeight: 44
   },
   widget: {
     alignItems: 'stretch',
