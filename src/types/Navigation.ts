@@ -70,7 +70,10 @@ export enum ScreenName {
   ParticipationProjectHome = 'ParticipationProject',
   ParticipationProjectMap = 'ParticipationProjectMap',
   Profile = 'Profile',
+  ProfileContent = 'ProfileContent',
   ProfileConversations = 'ProfileConversations',
+  ProfileCreateContentForm = 'ProfileCreateContentForm',
+  ProfileCreateContentHome = 'ProfileCreateContentHome',
   ProfileDelete = 'ProfileDelete',
   ProfileEditMail = 'ProfileEditMail',
   ProfileEditPassword = 'ProfileEditPassword',
@@ -78,6 +81,7 @@ export enum ScreenName {
   ProfileMessaging = 'ProfileMessaging',
   ProfileRegistration = 'ProfileRegistration',
   ProfileResetPassword = 'ProfileResetPassword',
+  ProfileSettings = 'ProfileSettings',
   ProfileSignup = 'ProfileSignup',
   ProfileUpdate = 'ProfileUpdate',
   Search = 'Search',
@@ -163,6 +167,7 @@ export type CustomTab = {
   iconSet?: IconLibrary;
   iconSize?: number;
   iconStyle?: ViewStyle;
+  isHighlightedTab?: boolean;
   label: string;
   params?: Record<string, unknown>;
   screen: ScreenName;

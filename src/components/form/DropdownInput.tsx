@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Control, FieldValues } from 'react-hook-form';
 import { StyleSheet } from 'react-native';
 
 import { normalize, texts } from '../../config';
@@ -7,29 +8,32 @@ import { useThemeStyles } from '../../hooks/useThemeStyles';
 
 import { Input } from './Input';
 
+type DropdownEntry = {
+  id: number;
+  value: string;
+  selected?: boolean;
+  index?: number;
+  name?: string;
+  contentcontainer_id?: number;
+  guid?: string;
+  display_name?: string;
+  gender?: string;
+  isPlaceholder?: boolean;
+};
+
 export type DropdownInputProps = {
   boldLabel?: boolean;
-  errors: any;
+  errors: Record<string, unknown>;
   required?: boolean;
-  data: [
-    {
-      id: number;
-      name: string;
-      selected?: boolean;
-      contentcontainer_id?: number;
-      guid?: string;
-      display_name?: string;
-      gender?: string;
-    }
-  ];
+  data: DropdownEntry[];
   multipleSelect?: boolean;
-  value: number | number[];
-  valueKey: 'contentcontainer_id' | 'guid' | 'id' | 'gender';
-  onChange: (...event: any[]) => void;
+  value: number | string | Array<number | string>;
+  valueKey: 'contentcontainer_id' | 'gender' | 'guid' | 'id' | 'index' | 'name';
+  onChange: (...event: unknown[]) => void;
   name: string;
   label: string;
   placeholder: string;
-  control: any;
+  control: Control<FieldValues>;
   showSearch?: boolean;
 };
 
@@ -49,33 +53,147 @@ export const DropdownInput = ({
   showSearch = true
 }: DropdownInputProps) => {
   const styles = useThemeStyles(createStyles);
-  const [dropdownData, setDropdownData] = useState([
-    {
-      id: 0,
-      index: 0,
-      value: placeholder || '',
-      selected: value ? false : true
+  const isPlaceholderValue = (inputValue: unknown) => inputValue === '' || inputValue === -1;
+
+  const hasSelectedValue = (inputValue: unknown) => {
+    if (Array.isArray(inputValue)) {
+      return inputValue.length > 0;
+    }
+
+    if (isPlaceholderValue(inputValue)) {
+      return false;
+    }
+
+    return inputValue === 0 || inputValue === '0' || !!inputValue;
+  };
+
+  const validateRequiredValue = (inputValue: unknown) => {
+    if (!required) {
+      return true;
+    }
+
+    return hasSelectedValue(inputValue);
+  };
+
+  const onChangeRef = useRef(onChange);
+
+  useEffect(() => {
+    onChangeRef.current = onChange;
+  }, [onChange]);
+
+  const getEntryValue = useCallback(
+    (entry: DropdownEntry) => entry[valueKey] as string | number | undefined,
+    [valueKey]
+  );
+  const buildDropdownData = useCallback(
+    (inputValue: number | string | Array<number | string>, inputData: DropdownEntry[]) => [
+      {
+        id: -1,
+        index: 0,
+        isPlaceholder: true,
+        value: placeholder || '',
+        selected: !hasSelectedValue(inputValue)
+      },
+      ...inputData.map((item) =>
+        multipleSelect
+          ? {
+              ...item,
+              selected: (Array.isArray(inputValue) ? inputValue : []).includes(
+                getEntryValue(item) ?? ''
+              )
+            }
+          : { ...item, selected: getEntryValue(item) == inputValue }
+      )
+    ],
+    [getEntryValue, multipleSelect, placeholder]
+  );
+
+  const areValuesEqual = useCallback(
+    (
+      left: number | string | Array<number | string>,
+      right: number | string | Array<number | string>
+    ) => {
+      if (Array.isArray(left) && Array.isArray(right)) {
+        if (left.length !== right.length) {
+          return false;
+        }
+
+        return left.every((entry, index) => entry === right[index]);
+      }
+
+      return left === right;
     },
-    ...data.map((item) =>
-      multipleSelect
-        ? { ...item, selected: (value as any[]).includes(item[valueKey]) }
-        : { ...item, selected: item[valueKey] == value }
-    )
-  ]);
+    []
+  );
+  const areDropdownEntriesEqual = useCallback(
+    (left: DropdownEntry[], right: DropdownEntry[]) => {
+      if (left.length !== right.length) {
+        return false;
+      }
+
+      return left.every((entry, index) => {
+        const comparedEntry = right[index];
+
+        return (
+          entry.id === comparedEntry.id &&
+          entry.value === comparedEntry.value &&
+          entry.selected === comparedEntry.selected &&
+          entry.isPlaceholder === comparedEntry.isPlaceholder
+        );
+      });
+    },
+    []
+  );
+
+  const [dropdownData, setDropdownData] = useState(buildDropdownData(value, data));
+
+  const getSelectedMultipleValues = useCallback(
+    () =>
+      dropdownData
+        ?.filter((entry) => entry.selected && !entry.isPlaceholder)
+        .map((entry) => getEntryValue(entry))
+        .filter((entry): entry is string | number => entry !== undefined) ?? [],
+    [dropdownData, getEntryValue]
+  );
+
+  const getSelectedValue = useCallback(() => {
+    const selectedData = dropdownData?.find((entry) => entry.selected);
+
+    if (!selectedData || selectedData.isPlaceholder) {
+      return '';
+    }
+
+    return getEntryValue(selectedData) ?? '';
+  }, [dropdownData, getEntryValue]);
+
+  useEffect(() => {
+    const nextDropdownData = buildDropdownData(value, data);
+    setDropdownData((currentDropdownData) =>
+      areDropdownEntriesEqual(currentDropdownData, nextDropdownData)
+        ? currentDropdownData
+        : nextDropdownData
+    );
+  }, [areDropdownEntriesEqual, buildDropdownData, data, value]);
 
   useEffect(() => {
     if (multipleSelect) {
-      const selectedMultipleData = dropdownData?.filter((entry) => entry.selected);
-      const selectedMultipleValues = selectedMultipleData?.map((entry) => entry?.[valueKey]);
+      const selectedMultipleValues = getSelectedMultipleValues();
 
-      onChange(selectedMultipleValues ?? []);
+      if (Array.isArray(value) && areValuesEqual(value, selectedMultipleValues)) {
+        return;
+      }
+
+      onChangeRef.current(selectedMultipleValues);
     } else {
-      const selectedData = dropdownData?.find((entry) => entry.selected);
-      const selectedValue = selectedData?.[valueKey];
+      const selectedValue = getSelectedValue();
 
-      onChange(selectedValue ?? '');
+      if (!Array.isArray(value) && areValuesEqual(value, selectedValue ?? '')) {
+        return;
+      }
+
+      onChangeRef.current(selectedValue ?? '');
     }
-  }, [dropdownData]);
+  }, [areValuesEqual, getSelectedMultipleValues, getSelectedValue, multipleSelect, value]);
 
   return (
     <>
@@ -96,7 +214,7 @@ export const DropdownInput = ({
         name={name}
         hidden
         validate
-        rules={{ required }}
+        rules={{ validate: validateRequiredValue }}
         errorMessage={errors[name] && `${label} muss ausgewählt werden`}
         control={control}
       />

@@ -55,6 +55,9 @@ import {
   ParticipationProjectMapScreen,
   PdfScreen,
   ProfileConversationsScreen,
+  ProfileContentScreen,
+  ProfileCreateContentFormScreen,
+  ProfileCreateContentHomeScreen,
   ProfileDeleteScreen,
   ProfileEditMailScreen,
   ProfileEditPasswordScreen,
@@ -63,6 +66,7 @@ import {
   ProfileMessagingScreen,
   ProfileRegistrationScreen,
   ProfileResetPasswordScreen,
+  ProfileSettingsScreen,
   ProfileSignupScreen,
   ProfileUpdateScreen,
   SearchScreen,
@@ -475,6 +479,28 @@ export const defaultStackConfig = ({
       screenComponent: ProfileConversationsScreen
     },
     {
+      initialParams: initialParams || { title: texts.screenTitles.profile.myContent },
+      routeName: ScreenName.ProfileContent,
+      screenComponent: ProfileContentScreen
+    },
+    {
+      initialParams: initialParams || { title: texts.screenTitles.profile.create },
+      routeName: ScreenName.ProfileCreateContentForm,
+      screenComponent: ProfileCreateContentFormScreen
+    },
+    {
+      initialParams: initialParams || {
+        title: texts.screenTitles.profile.create,
+        query: QUERY_TYPES.PUBLIC_JSON_FILE,
+        queryVariables: {
+          name: 'profile'
+        },
+        rootRouteName: ScreenName.Profile
+      },
+      routeName: ScreenName.ProfileCreateContentHome,
+      screenComponent: ProfileCreateContentHomeScreen
+    },
+    {
       initialParams: initialParams || { title: texts.screenTitles.profile.home },
       routeName: ScreenName.ProfileDelete,
       screenComponent: ProfileDeleteScreen
@@ -508,6 +534,11 @@ export const defaultStackConfig = ({
       initialParams: initialParams || { title: texts.screenTitles.profile.home },
       routeName: ScreenName.ProfileResetPassword,
       screenComponent: ProfileResetPasswordScreen
+    },
+    {
+      initialParams: initialParams || { title: texts.screenTitles.profile.settings },
+      routeName: ScreenName.ProfileSettings,
+      screenComponent: ProfileSettingsScreen
     },
     {
       initialParams: initialParams || { title: texts.screenTitles.profile.home },

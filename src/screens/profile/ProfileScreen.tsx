@@ -9,22 +9,18 @@ import {
   Button,
   LoadingSpinner,
   SafeAreaViewFlex,
-  SectionHeader,
   ServiceTiles,
   TextListItem,
   VolunteerAvatar,
-  Wrapper,
-  WrapperHorizontal
+  Wrapper
 } from '../../components';
-import { normalize, texts } from '../../config';
-import { storeProfileAuthToken, storeProfileUserData } from '../../helpers';
+import { texts } from '../../config';
+import { storeProfileUserData, storeTokens } from '../../helpers';
 import { NetworkContext } from '../../NetworkProvider';
-import { useProfileContext } from '../../ProfileProvider';
 import { QUERY_TYPES } from '../../queries';
 import { member } from '../../queries/profile';
 import { ProfileMember, ScreenName } from '../../types';
 import { useMessagesContext } from '../../UnreadMessagesProvider';
-import { useThemeStyles } from '../../hooks/useThemeStyles';
 import { useTheme } from '../../hooks/useTheme';
 
 import { ProfileUpdateScreen } from './ProfileUpdateScreen';
@@ -39,21 +35,12 @@ export const showLoginAgainAlert = ({ onPress }: { onPress: () => void }) =>
 
 export const ProfileScreen = ({ navigation, route }: StackScreenProps<any, string>) => {
   const { colors: colors } = useTheme();
-
-  const styles = useThemeStyles(createStyles);
   const { refetch: refetchUnreadMessages, reset: resetUnreadMessages } = useMessagesContext();
-  const { currentUserData } = useProfileContext();
   const { isConnected } = useContext(NetworkContext);
-  const isProfileUpdated =
-    !!Object.keys(currentUserData?.member?.preferences || {}).length &&
-    !!currentUserData?.member?.first_name &&
-    !!currentUserData?.member?.last_name;
-
   const { isLoading, data, refetch } = useQuery(QUERY_TYPES.PROFILE.MEMBER, member, {
     onSuccess: (responseData: ProfileMember) => {
-      if (!responseData?.member) {
-        storeProfileAuthToken();
-        storeProfileUserData();
+      if (!responseData?.member || !responseData?.member?.keycloak_refresh_token) {
+        storeTokens();
 
         showLoginAgainAlert({
           onPress: () =>
@@ -113,8 +100,14 @@ export const ProfileScreen = ({ navigation, route }: StackScreenProps<any, strin
             item={{
               bottomDivider: false,
               leftIcon: <VolunteerAvatar item={{ user: { display_name: displayName } }} />,
+              onPress: () =>
+                navigation.navigate(ScreenName.ProfileSettings, {
+                  email: email,
+                  member: data.member
+                }),
               title: displayName
             }}
+            navigation={navigation}
           />
         </Wrapper>
 
@@ -124,67 +117,12 @@ export const ProfileScreen = ({ navigation, route }: StackScreenProps<any, strin
 
         <Divider />
 
-        <SectionHeader containerStyle={styles.settingsContainer} title={texts.profile.settings} />
-
-        <WrapperHorizontal>
-          <TextListItem
-            item={{
-              isHeadlineTitle: false,
-              onPress: () => navigation.navigate(ScreenName.ProfileUpdate, { member: data.member }),
-              routeName: ScreenName.ProfileUpdate,
-              bottomDivider: true,
-              topDivider: true,
-              title: texts.profile.editProfile
-            }}
-            navigation={navigation}
-            noSubtitle
-          />
-
-          <TextListItem
-            item={{
-              isHeadlineTitle: false,
-              onPress: () =>
-                navigation.navigate(ScreenName.ProfileEditMail, { email: data.member.email }),
-              routeName: ScreenName.ProfileEditMail,
-              bottomDivider: true,
-              title: texts.profile.editMail
-            }}
-            navigation={navigation}
-            noSubtitle
-          />
-
-          <TextListItem
-            item={{
-              bottomDivider: true,
-              isHeadlineTitle: false,
-              onPress: () => navigation.navigate(ScreenName.ProfileEditPassword),
-              routeName: ScreenName.ProfileEditPassword,
-              title: texts.profile.editPassword
-            }}
-            navigation={navigation}
-            noSubtitle
-          />
-
-          <TextListItem
-            item={{
-              bottomDivider: true,
-              isHeadlineTitle: false,
-              onPress: () => navigation.navigate(ScreenName.ProfileDelete),
-              routeName: ScreenName.ProfileDelete,
-              title: texts.profile.deleteProfile
-            }}
-            navigation={navigation}
-            noSubtitle
-          />
-        </WrapperHorizontal>
-
         <Wrapper>
           <Button
             invert
             onPress={() => {
               resetUnreadMessages();
-              storeProfileAuthToken();
-              storeProfileUserData();
+              storeTokens();
               navigation.navigate(ScreenName.Profile, { refreshUser: new Date().valueOf() });
             }}
             title={texts.profile.logout}
@@ -194,10 +132,3 @@ export const ProfileScreen = ({ navigation, route }: StackScreenProps<any, strin
     </SafeAreaViewFlex>
   );
 };
-
-const createStyles = () => ({
-  settingsContainer: {
-    marginBottom: normalize(9),
-    marginTop: normalize(9)
-  }
-});

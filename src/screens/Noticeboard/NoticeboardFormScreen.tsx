@@ -1,5 +1,5 @@
 import { StackNavigationProp } from 'expo-router/js-stack';
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext, useRef, useState } from 'react';
 import { ActivityIndicator, RefreshControl, ScrollView } from 'react-native';
 
 import {
@@ -39,6 +39,7 @@ export const NoticeboardFormScreen = ({
   const { isConnected } = useContext(NetworkContext);
   const scrollContentContainerStyle = useReadAloudScrollContentContainerStyle();
   const [refreshing, setRefreshing] = useState(false);
+  const scrollViewRef = useRef<ScrollView | null>(null);
 
   const name = route?.params?.name ?? '';
   const isLoginRequired = route?.params?.isLoginRequired || false;
@@ -76,15 +77,11 @@ export const NoticeboardFormScreen = ({
 
   const images = details?.mediaContents?.filter((item) => item.contentType === 'image');
 
-  const CreateFormComponent = isLoginRequired
-    ? ProfileNoticeboardCreateForm
-    : NoticeboardCreateForm;
-  const Component = isNewEntryForm ? CreateFormComponent : NoticeboardMessageForm;
-
   return (
     <SafeAreaViewFlex>
       <DefaultKeyboardAvoidingView>
         <ScrollView
+          ref={scrollViewRef}
           contentContainerStyle={scrollContentContainerStyle}
           keyboardShouldPersistTaps="handled"
           refreshControl={
@@ -133,7 +130,19 @@ export const NoticeboardFormScreen = ({
             />
           )}
 
-          <Component {...{ data: details, navigation, route, queryVariables }} />
+          {isNewEntryForm ? (
+            isLoginRequired ? (
+              <ProfileNoticeboardCreateForm
+                {...{ data: details, navigation, queryVariables, route, scrollViewRef }}
+              />
+            ) : (
+              <NoticeboardCreateForm
+                {...{ data: details, navigation, queryVariables, route, scrollViewRef }}
+              />
+            )
+          ) : (
+            <NoticeboardMessageForm {...{ data: details, navigation, route, queryVariables }} />
+          )}
         </ScrollView>
       </DefaultKeyboardAvoidingView>
     </SafeAreaViewFlex>

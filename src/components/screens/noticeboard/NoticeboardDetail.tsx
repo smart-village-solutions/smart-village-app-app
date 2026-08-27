@@ -5,7 +5,8 @@ import { useMutation, useQuery } from 'react-apollo';
 import { Alert, View } from 'react-native';
 
 import { useProfileContext } from '../../../ProfileProvider';
-import { Icon, normalize, texts } from '../../../config';
+import { colors, Icon, normalize, texts } from '../../../config';
+import { AUTH_MODE_USER, getApolloAuthContext } from '../../../graphqlAuth';
 import {
   filterGenericItems,
   getGenericItemMatomoName,
@@ -83,6 +84,7 @@ export const NoticeboardDetail = ({
   const isCurrentUser = !!currentUserMemberId && !!memberId && currentUserMemberId == memberId;
 
   const [deleteEntry] = useMutation(DELETE_GENERIC_ITEM, {
+    ...getApolloAuthContext(AUTH_MODE_USER),
     variables: { id },
     onCompleted: () => navigation.goBack()
   });
@@ -104,6 +106,8 @@ export const NoticeboardDetail = ({
   const { data: conversationsData, refetch: conversationsRefetch } = useQuery(
     getQuery(QUERY_TYPES.PROFILE.GET_CONVERSATIONS),
     {
+      ...getApolloAuthContext(AUTH_MODE_USER),
+      skip: !isLoggedIn,
       variables: {
         conversationableId: id,
         conversationableType: 'GenericItem'
@@ -114,14 +118,18 @@ export const NoticeboardDetail = ({
   const conversations = conversationsData?.[QUERY_TYPES.PROFILE.GET_CONVERSATIONS];
 
   useEffect(() => {
-    refetchMemberIndex();
-  }, [data]);
+    if (memberId) {
+      refetchMemberIndex();
+    }
+  }, [data, memberId, refetchMemberIndex]);
 
   useFocusEffect(
     useCallback(() => {
       refetch();
-      conversationsRefetch();
-    }, [])
+      if (isLoggedIn) {
+        conversationsRefetch();
+      }
+    }, [conversationsRefetch, isLoggedIn, refetch])
   );
 
   useLayoutEffect(() => {

@@ -18,7 +18,7 @@ import {
   WrapperVertical
 } from '../../components';
 import { consts, normalize, texts } from '../../config';
-import { storeProfileAuthToken } from '../../helpers';
+import { storeTokens } from '../../helpers';
 import { useStaticContent } from '../../hooks';
 import { profileEditMail } from '../../queries/profile';
 import { useReadAloudScrollContentContainerStyle } from '../../ReadAloudAvailabilityProvider';
@@ -94,7 +94,7 @@ export const ProfileEditMailScreen = ({ navigation, route }: StackScreenProps<an
 
         showUpdateSuccessAlert({
           onPress: () => {
-            storeProfileAuthToken();
+            storeTokens();
             navigation.navigate(ScreenName.Profile, { refreshUser: new Date().valueOf() });
           }
         });

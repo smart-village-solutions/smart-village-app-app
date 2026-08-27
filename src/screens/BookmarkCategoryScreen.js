@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
-import React, { useContext } from 'react';
-import { useQuery } from 'react-apollo';
+import React, { useMemo } from 'react';
 import { ActivityIndicator } from 'react-native';
+import { useQuery as RQuseQuery } from 'react-query';
 
 import {
   ListComponent,
@@ -11,11 +11,11 @@ import {
   Wrapper
 } from '../components';
 import { consts, texts } from '../config';
-import { graphqlFetchPolicy, parseListItemsFromQuery } from '../helpers';
-import { useBookmarks, useMatomoTrackScreenView, useRefreshTime } from '../hooks';
-import { NetworkContext } from '../NetworkProvider';
-import { getQuery, QUERY_TYPES } from '../queries';
+import { parseListItemsFromQuery } from '../helpers';
+import { useBookmarks, useMatomoTrackScreenView } from '../hooks';
 import { useTheme } from '../hooks/useTheme';
+import { getQuery, QUERY_TYPES } from '../queries';
+import { ReactQueryClient } from '../ReactQueryClient';
 
 const { LIST_TYPES, MATOMO_TRACKING } = consts;
 
@@ -31,21 +31,22 @@ export const BookmarkCategoryScreen = ({ navigation, route }) => {
   const bookmarks = useBookmarks(query, suffix);
   const listType = route.params?.listType ?? LIST_TYPES.TEXT_LIST;
 
-  const variables = { ...queryVariables, ids: bookmarks };
-
-  const { isConnected, isMainserverUp } = useContext(NetworkContext);
-
-  const refreshTime = useRefreshTime('bookmarks', consts.REFRESH_INTERVALS.BOOKMARKS);
-
-  const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime });
+  const variables = useMemo(
+    () => ({ ...(route.params?.queryVariables ?? {}), ids: bookmarks }),
+    [bookmarks, route.params?.queryVariables]
+  );
 
   // skipping if no bookmark ids results in no additional "unfiltered" queries
   // while bookmarks are loading
-  const { loading, data } = useQuery(getQuery(query), {
-    fetchPolicy,
-    variables,
-    skip: !bookmarks?.length
-  });
+  const { data, isLoading: loading } = RQuseQuery(
+    [query, variables],
+    async () => {
+      const client = await ReactQueryClient();
+
+      return await client.request(getQuery(query), variables);
+    },
+    { enabled: !!bookmarks?.length }
+  );
 
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.BOOKMARK_CATEGORY);
 
@@ -81,6 +82,14 @@ export const BookmarkCategoryScreen = ({ navigation, route }) => {
     skipLastDivider: true,
     queryKey
   });
+
+  if (!listItems?.length) {
+    return (
+      <Wrapper>
+        <RegularText>{texts.errors.noData}</RegularText>
+      </Wrapper>
+    );
+  }
 
   return (
     <SafeAreaViewFlex>

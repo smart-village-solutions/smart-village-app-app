@@ -20,7 +20,7 @@ import {
   WrapperVertical
 } from '../../components';
 import { consts, normalize, texts } from '../../config';
-import { storeProfileAuthToken, storeProfileUserData } from '../../helpers';
+import { storeProfileUserData, storeTokens } from '../../helpers';
 import { addMemberIdToTokenOnServer } from '../../pushNotifications';
 import { QUERY_TYPES } from '../../queries';
 import { member, profileLogIn } from '../../queries/profile';
@@ -96,7 +96,10 @@ export const ProfileLoginScreen = ({ navigation, route }: StackScreenProps<any>)
         addMemberIdToTokenOnServer(responseData.member.id);
 
         // wait for saving auth token to global state
-        return storeProfileAuthToken(responseData.member.authentication_token);
+        return storeTokens(
+          responseData.member.authentication_token,
+          responseData.user.authentication_token
+        );
       }
     });
 

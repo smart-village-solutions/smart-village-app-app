@@ -8,6 +8,8 @@ import { consts, device, Icon, normalize } from '../../config';
 import { useTheme } from '../../hooks/useTheme';
 import { Label } from '../Label';
 
+import { RichTextInput } from './RichTextInput';
+
 const { a11yLabel } = consts;
 
 const getTextFromAccessibilitySource = (value?: React.ReactNode) => {
@@ -63,6 +65,7 @@ type Props = InputProps &
     row?: boolean;
     chat?: boolean;
     boldLabel?: boolean;
+    richText?: boolean;
   };
 
 /* eslint-disable complexity */
@@ -82,6 +85,7 @@ export const Input = forwardRef(
       multiline = false,
       rightIcon,
       chat = false,
+      richText = false,
       inputContainerStyle,
       inputStyle,
       containerStyle,
@@ -129,6 +133,24 @@ export const Input = forwardRef(
       disabled,
       ...(errorMessage ? { invalid: true } : {})
     };
+
+    if (richText) {
+      return (
+        <RichTextInput
+          {...{
+            boldLabel,
+            containerStyle,
+            disabled,
+            errorMessage,
+            field,
+            inputContainerStyle,
+            isReduceTransparencyEnabled,
+            label,
+            ...furtherProps
+          }}
+        />
+      );
+    }
 
     if (chat) {
       return (

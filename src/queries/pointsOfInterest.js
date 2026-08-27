@@ -26,8 +26,11 @@ export const GET_POINTS_OF_INTEREST = gql`
       location: $location
     ) {
       id
+      createdAt
       name
       payload
+      updatedAt
+      visible
       categories {
         id
         name
@@ -290,6 +293,49 @@ export const GET_POINT_OF_INTEREST_TRAVEL_TIMES = gql`
           tripHeadsign
         }
       }
+    }
+  }
+`;
+
+export const CREATE_POINT_OF_INTEREST = gql`
+  mutation CreatePointOfInterest(
+    $addresses: [AddressInput!]
+    $categories: [CategoryInput!]
+    $contact: ContactInput
+    $description: String
+    $id: ID
+    $location: LocationInput
+    $mediaContents: [MediaContentInput!]
+    $name: String!
+    $openingHours: [OpeningHourInput!]
+    $priceInformations: [PriceInput!]
+    $webUrls: [WebUrlInput!]
+  ) {
+    createPointOfInterest(
+      addresses: $addresses
+      categories: $categories
+      contact: $contact
+      description: $description
+      id: $id
+      location: $location
+      mediaContents: $mediaContents
+      name: $name
+      openingHours: $openingHours
+      priceInformations: $priceInformations
+      webUrls: $webUrls
+    ) {
+      id
+      name
+    }
+  }
+`;
+
+export const DELETE_POINT_OF_INTEREST = gql`
+  mutation DeletePointOfInterest($id: ID!) {
+    changeVisibility(id: $id, recordType: "PointOfInterest", visible: false) {
+      id
+      status
+      statusCode
     }
   }
 `;

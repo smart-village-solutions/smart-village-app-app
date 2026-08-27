@@ -29,7 +29,10 @@ export const GET_NEWS_ITEMS = gql`
     ) {
       id
       mainTitle: title
+      createdAt
       publishedAt
+      updatedAt
+      visible
       categories {
         id
         parent {
@@ -55,6 +58,7 @@ export const GET_NEWS_ITEMS = gql`
       sourceUrl {
         id
         url
+        description
       }
       dataProvider {
         id
@@ -100,6 +104,7 @@ export const GET_NEWS_ITEMS_AND_DATA_PROVIDERS = gql`
       id
       mainTitle: title
       publishedAt
+      visible
       categories {
         id
       }
@@ -122,6 +127,7 @@ export const GET_NEWS_ITEMS_AND_DATA_PROVIDERS = gql`
       sourceUrl {
         id
         url
+        description
       }
       dataProvider {
         id
@@ -168,6 +174,7 @@ export const GET_NEWS_ITEM = gql`
       sourceUrl {
         id
         url
+        description
       }
       dataProvider {
         id
@@ -186,6 +193,41 @@ export const GET_NEWS_ITEM = gql`
         displayOnlySummary
         onlySummaryLinkText
       }
+    }
+  }
+`;
+
+export const CREATE_NEWS_ITEM = gql`
+  mutation CreateNewsItem(
+    $categories: [CategoryInput!]
+    $contentBlocks: [ContentBlockInput!]
+    $id: ID
+    $publishedAt: String
+    $pushNotification: Boolean
+    $sourceUrl: WebUrlInput
+    $title: String
+  ) {
+    createNewsItem(
+      categories: $categories
+      contentBlocks: $contentBlocks
+      id: $id
+      publishedAt: $publishedAt
+      pushNotification: $pushNotification
+      sourceUrl: $sourceUrl
+      title: $title
+    ) {
+      id
+      title
+    }
+  }
+`;
+
+export const DELETE_NEWS_ITEM = gql`
+  mutation DeleteNewsItem($id: ID!) {
+    changeVisibility(id: $id, recordType: "NewsItem", visible: false) {
+      id
+      status
+      statusCode
     }
   }
 `;

@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import { ViewStyle } from 'react-native';
+import { StyleSheet, View, ViewStyle } from 'react-native';
 
 import { OrientationAwareIcon } from '../../components';
 import { resolveTabIconColors } from '../../helpers/tabNavigationHelper';
@@ -18,6 +18,17 @@ type TabBarIconProps = {
   color: string;
   size: number;
 };
+
+const dynamicTabStyles = StyleSheet.create({
+  highlightedIconWrapper: {
+    alignItems: 'center',
+    borderRadius: normalize(28),
+    height: normalize(56),
+    justifyContent: 'center',
+    marginTop: -normalize(14),
+    width: normalize(56)
+  }
+});
 
 const getDefaultTabIconProps = (color: string, focused: boolean, fillOnFocus: boolean) =>
   resolveTabIconColors(focused, color, fillOnFocus);
@@ -168,11 +179,13 @@ export const createDynamicTabConfig = (
   iconSet?: IconLibrary,
   iconStyle?: ViewStyle,
   initialParams?: Record<string, any>,
+  isHighlightedTab?: boolean,
   strokeColor?: string,
   strokeWidth?: number,
   tabBarLabelStyle?: ViewStyle,
   tilesScreenParams?: Record<string, any>,
-  tabBarIconFillOnFocus: boolean = false
+  tabBarIconFillOnFocus: boolean = false,
+  colors: ThemeColorPalette = lightColors
 ): TabConfig => ({
   stackConfig: defaultStackConfig({
     initialParams,
@@ -185,21 +198,35 @@ export const createDynamicTabConfig = (
     tabBarLabel: label,
     tabBarLabelStyle,
     tabBarIcon: ({ color, focused }: TabBarIconProps) => {
+      // Highlight the center tab in dynamic tab lists.
       const selectedIconName = !!activeIconName && focused ? activeIconName : iconName;
       const iconColors = resolveTabIconColors(focused, color, tabBarIconFillOnFocus, strokeColor);
       const SelectedIcon = Icon[selectedIconName] as (props: IconProps) => React.JSX.Element;
-
-      return (
+      const iconComponent = (
         <OrientationAwareIcon
-          {...iconColors}
+          {...(isHighlightedTab
+            ? { color: colors.surface, fillColor: colors.surface, strokeColor: colors.surface }
+            : iconColors)}
           Icon={SelectedIcon}
           iconName={selectedIconName}
           iconSet={iconSet}
           landscapeStyle={iconLandscapeStyle}
-          size={normalize(iconSize)}
+          size={normalize(isHighlightedTab ? 28 : iconSize)}
           strokeWidth={strokeWidth}
           style={iconStyle}
         />
+      );
+
+      if (!isHighlightedTab) {
+        return iconComponent;
+      }
+
+      return (
+        <View
+          style={[dynamicTabStyles.highlightedIconWrapper, { backgroundColor: colors.primary }]}
+        >
+          {iconComponent}
+        </View>
       );
     }
   }

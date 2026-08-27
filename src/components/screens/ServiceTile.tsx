@@ -1,4 +1,4 @@
-import { useNavigation } from 'expo-router/react-navigation';
+import { useNavigation, useRoute } from 'expo-router/react-navigation';
 import { StackNavigationProp } from 'expo-router/js-stack';
 import React, { ComponentProps, useCallback, useContext, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
@@ -81,6 +81,7 @@ export const ServiceTile = ({
   layoutColumns = 3,
   onToggleVisibility,
   serviceTiles,
+  staticJsonName,
   shouldAddMargin = false,
   tileSizeFactor = 1
 }: {
@@ -95,6 +96,7 @@ export const ServiceTile = ({
     setIsVisible: (isVisible: boolean) => void
   ) => void;
   serviceTiles?: any;
+  staticJsonName?: string;
   shouldAddMargin?: boolean;
   tileSizeFactor?: number;
 }) => {
@@ -102,6 +104,7 @@ export const ServiceTile = ({
 
   const styles = useThemeStyles(createStyles);
   const navigation = useNavigation<StackNavigationProp<any>>();
+  const route = useRoute();
   const { orientation, dimensions } = useContext(OrientationContext);
   const safeAreaInsets = useSafeAreaInsets();
   const columns = resolveColumns({ item, layoutColumns, orientation });
@@ -110,8 +113,21 @@ export const ServiceTile = ({
     () =>
       isEditMode
         ? onToggleVisibility(draggableId, isVisible, setIsVisible)
-        : navigation.push(item.routeName, item.params),
-    [isEditMode, onToggleVisibility, draggableId, isVisible, item, navigation]
+        : navigation.push(item.routeName, {
+            ...(item.params ?? {}),
+            navigationSourceStaticJsonName: staticJsonName,
+            navigationSourceRouteName: route.name
+          }),
+    [
+      isEditMode,
+      onToggleVisibility,
+      draggableId,
+      isVisible,
+      item,
+      navigation,
+      route.name,
+      staticJsonName
+    ]
   );
   const ToggleVisibilityIcon = isVisible ? Icon.Visible : Icon.Unvisible;
   const { fontStyle = {}, iconStyle = {}, numberOfLines, tileStyle = {} } = serviceTiles;

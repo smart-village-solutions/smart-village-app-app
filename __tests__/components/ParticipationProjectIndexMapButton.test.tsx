@@ -21,6 +21,10 @@ jest.mock('react-apollo', () => ({
   useQuery: jest.fn()
 }));
 
+jest.mock('expo-router/react-navigation', () => ({
+  useFocusEffect: jest.fn()
+}));
+
 jest.mock('../../src/ConfigurationsProvider', () => {
   const React = require('react');
 

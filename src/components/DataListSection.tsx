@@ -55,6 +55,7 @@ type Props = {
   sectionData?: unknown[];
   sectionTitle?: string;
   sectionTitleDetail?: string;
+  showEventDateTime?: boolean;
   showButton?: boolean;
   showLink?: boolean;
   skipLastDivider?: boolean;
@@ -90,6 +91,7 @@ export const DataListSection = ({
   sectionData,
   sectionTitle = getTitleForQuery(query),
   sectionTitleDetail,
+  showEventDateTime = false,
   showButton,
   showLink,
   skipLastDivider = false
@@ -117,12 +119,15 @@ export const DataListSection = ({
   const isPointsOfInterestAndTours = query === QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS;
   const queryOptions = {
     withDate:
-      (query === QUERY_TYPES.EVENT_RECORDS && !queryVariables?.onlyUniqEvents) ||
+      (query === QUERY_TYPES.EVENT_RECORDS &&
+        (showEventDateTime || !queryVariables?.onlyUniqEvents)) ||
       query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL ||
       query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY ||
       query === QUERY_TYPES.VOLUNTEER.CONVERSATIONS,
-    dateTimeFormat: dateTimeFormat,
-    withTime: query === QUERY_TYPES.EVENT_RECORDS && !queryVariables?.onlyUniqEvents,
+    dateTimeFormat,
+    withTime:
+      query === QUERY_TYPES.EVENT_RECORDS && (showEventDateTime || !queryVariables?.onlyUniqEvents),
+    skipLastDivider: true,
     queryKey: query === QUERY_TYPES.VOUCHERS ? QUERY_TYPES.GENERIC_ITEMS : query
   };
 

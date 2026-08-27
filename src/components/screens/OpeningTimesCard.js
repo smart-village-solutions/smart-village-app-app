@@ -27,6 +27,34 @@ const DateBox = styled(TimeBox)`
     `};
 `;
 
+const weekdayLabels = [
+  texts.noticeboard?.weekday?.monday,
+  texts.noticeboard?.weekday?.tuesday,
+  texts.noticeboard?.weekday?.wednesday,
+  texts.noticeboard?.weekday?.thursday,
+  texts.noticeboard?.weekday?.friday,
+  texts.noticeboard?.weekday?.saturday,
+  texts.noticeboard?.weekday?.sunday
+];
+
+const getReadableWeekday = (weekday) => {
+  if (weekday === null || weekday === undefined || weekday === '') {
+    return '';
+  }
+
+  if (typeof weekday === 'number' && weekday >= 0 && weekday < weekdayLabels.length) {
+    return weekdayLabels[weekday] ?? weekday;
+  }
+
+  if (typeof weekday === 'string' && /^\d+$/.test(weekday)) {
+    const weekdayIndex = Number(weekday);
+
+    return weekdayLabels[weekdayIndex] ?? weekday;
+  }
+
+  return weekday;
+};
+
 const normalizeTimeLabel = (time) => time?.replace(/\s*Uhr\s*$/i, '').trim();
 
 const formatTimeLabel = (time) => {
@@ -93,6 +121,7 @@ export const OpeningTimesCard = ({
             useYear = false
           } = item;
           const returnFormatDate = useYear ? 'DD.MM.YYYY' : 'DD.MM.';
+          const readableWeekday = getReadableWeekday(weekday);
           const hasDateOrTime = !!timeFrom || !!timeTo || !!dateFrom || !!dateTo;
           const showInlineDateTime = inlineDateTime && open !== false;
 
@@ -106,7 +135,9 @@ export const OpeningTimesCard = ({
                 index === slicedArray.length - 1 && styles.noPaddingBottom
               ]}
             >
-              {!!weekday && <BoldText style={styles.marginBottom}>{weekday}</BoldText>}
+              {!!readableWeekday && (
+                <BoldText style={styles.marginBottom}>{readableWeekday}</BoldText>
+              )}
 
               {hasDateOrTime && showInlineDateTime && (
                 <RegularText>
@@ -228,7 +259,7 @@ OpeningTimesCard.propTypes = {
       timeFrom: PropTypes.string,
       timeTo: PropTypes.string,
       useYear: PropTypes.bool,
-      weekday: PropTypes.string
+      weekday: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
     })
   )
 };

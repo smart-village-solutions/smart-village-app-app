@@ -63,7 +63,7 @@ export const DropdownSelect = ({
   const [arrow, setArrow] = useState('down');
   const selectedData = data?.find((entry) => entry.selected);
   const selectedValue = selectedData?.value;
-  const selectedIndex = selectedData?.index;
+  const selectedIndex = data?.findIndex((entry) => entry.selected) ?? -1;
   const selectedMultipleData = data?.filter((entry) => entry.selected);
   const selectedMultipleValues = selectedMultipleData?.map((entry) => entry.value).join(', ');
 
@@ -106,7 +106,11 @@ export const DropdownSelect = ({
     [colors.darkText, colors.primary, data, multipleSelect, placeholder, selectedValue, styles]
   );
 
-  const preselect = (index) => dropdownRef.current?.select(index);
+  const preselect = (index) => {
+    if (index < 0) return;
+
+    dropdownRef.current?.select(index);
+  };
 
   useEffect(() => {
     preselect(selectedIndex);
@@ -117,10 +121,23 @@ export const DropdownSelect = ({
     let updatedData = [...data];
 
     if (multipleSelect) {
+      const selectedIndex = Number(index);
       const selectedOptionCount = updatedData.filter(
         (entry) => entry.id !== 0 && entry.selected
       ).length;
       const selectedEntry = updatedData.find((entry) => entry.value === value);
+
+      if (selectedIndex === 0) {
+        if (requireSelection) return false;
+
+        updatedData = updatedData.map((entry, entryIndex) => ({
+          ...entry,
+          selected: entryIndex === 0
+        }));
+        setData(updatedData);
+
+        return false;
+      }
 
       if (requireSelection && selectedEntry?.selected && selectedOptionCount === 1) {
         return false;

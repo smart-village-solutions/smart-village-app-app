@@ -1,8 +1,8 @@
 import gql from 'graphql-tag';
 
 export const GET_CATEGORIES = gql`
-  query Categories($ids: [ID!], $excludeIds: [ID!], $location: String) {
-    categories(ids: $ids, excludeIds: $excludeIds) {
+  query Categories($ids: [ID!], $excludeIds: [ID!], $location: String, $tagList: [String!]) {
+    categories(ids: $ids, excludeIds: $excludeIds, tagList: $tagList) {
       id
       iconName
       name

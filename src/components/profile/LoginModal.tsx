@@ -5,7 +5,7 @@ import { Overlay } from 'react-native-elements';
 import { useQuery } from 'react-query';
 
 import { Icon, normalize, texts } from '../../config';
-import { storeProfileAuthToken, storeProfileUserData } from '../../helpers';
+import { storeProfileUserData, storeTokens } from '../../helpers';
 import { useStaticContent } from '../../hooks';
 import { useProfileContext } from '../../ProfileProvider';
 import { QUERY_TYPES } from '../../queries';
@@ -45,7 +45,7 @@ export const LoginModal = ({ navigation, publicJsonFile }: TLoginModal) => {
     !!currentUserData?.member?.first_name &&
     !!currentUserData?.member?.last_name;
 
-  const { data: contentData, loading: contentLoading } = useStaticContent<DataItem[]>({
+  const { data: contentData, loading: contentLoading } = useStaticContent<DataItem>({
     refreshTimeKey: `publicJsonFile-${publicJsonFile}`,
     name: publicJsonFile,
     type: 'json'
@@ -54,9 +54,8 @@ export const LoginModal = ({ navigation, publicJsonFile }: TLoginModal) => {
   const { data: memberData } = useQuery(QUERY_TYPES.PROFILE.MEMBER, member, {
     enabled: isLoggedIn,
     onSuccess: (responseData: ProfileMember) => {
-      if (!responseData?.member) {
-        storeProfileAuthToken();
-        storeProfileUserData();
+      if (!responseData?.member || !responseData.member.keycloak_refresh_token) {
+        storeTokens();
         refresh();
 
         return;

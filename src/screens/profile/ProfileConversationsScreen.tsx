@@ -6,6 +6,7 @@ import { RefreshControl } from 'react-native';
 
 import { EmptyMessage, ListComponent, LoadingSpinner, SafeAreaViewFlex } from '../../components';
 import { texts } from '../../config';
+import { AUTH_MODE_USER, getApolloAuthContext } from '../../graphqlAuth';
 import { parseListItemsFromQuery } from '../../helpers';
 import { useProfileContext } from '../../ProfileProvider';
 import { QUERY_TYPES, getQuery } from '../../queries';
@@ -27,7 +28,10 @@ export const ProfileConversationsScreen = ({ navigation }: StackScreenProps<any>
     data: conversationData,
     loading,
     refetch
-  } = useQuery(getQuery(query), { pollInterval: 10000 }); // 10 seconds
+  } = useQuery(getQuery(query), {
+    ...getApolloAuthContext(AUTH_MODE_USER),
+    pollInterval: 10000
+  }); // 10 seconds
 
   const listItems = useMemo(
     () => parseListItemsFromQuery(query, conversationData, undefined),

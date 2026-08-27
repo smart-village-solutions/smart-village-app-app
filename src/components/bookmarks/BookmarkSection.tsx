@@ -1,9 +1,8 @@
 import { useFocusEffect } from 'expo-router/react-navigation';
 import { StackNavigationProp } from 'expo-router/js-stack';
-import React, { useCallback, useContext, useEffect } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { useQuery as RQuseQuery } from 'react-query';
 
-import { BookmarkContext } from '../../BookmarkProvider';
 import { ReactQueryClient } from '../../ReactQueryClient';
 import { texts } from '../../config';
 import { QUERY_TYPES, getQuery } from '../../queries';
@@ -16,11 +15,16 @@ type Props = {
   categoryTitleDetail?: string;
   ids: string[];
   bookmarkKey: string;
-  navigation: StackNavigationProp<any>;
+  navigation: StackNavigationProp<Record<string, object | undefined>>;
   listType: string;
   query: string;
   sectionTitle?: string;
   setConnectionState: React.Dispatch<React.SetStateAction<{ [key: string]: boolean }>>;
+};
+
+type BookmarkQueryVariables = {
+  ids: string[];
+  onlyUniqEvents?: boolean;
 };
 
 export const BookmarkSection = ({
@@ -34,24 +38,32 @@ export const BookmarkSection = ({
   sectionTitle,
   setConnectionState
 }: Props) => {
-  const { toggleBookmark } = useContext(BookmarkContext);
   // slice the first 3 entries off of the bookmark ids, to get the 3 most recently bookmarked items,
   // skip that for vouchers
-  const variables = query === QUERY_TYPES.VOUCHERS ? { ids } : { ids: ids.slice(0, 3) };
+  const variables: BookmarkQueryVariables = useMemo(() => {
+    const queryIds = query === QUERY_TYPES.VOUCHERS ? ids : ids.slice(0, 3);
 
-  if (query === QUERY_TYPES.EVENT_RECORDS) {
-    variables.onlyUniqEvents = true;
-  }
+    return query === QUERY_TYPES.EVENT_RECORDS
+      ? { ids: queryIds, onlyUniqEvents: true }
+      : { ids: queryIds };
+  }, [ids, query]);
+  const queryKey = query === QUERY_TYPES.VOUCHERS ? QUERY_TYPES.GENERIC_ITEMS : query;
 
   const {
     data,
+    isError,
     isLoading: loading,
     refetch
-  } = RQuseQuery([query, variables], async () => {
-    const client = await ReactQueryClient();
+  } = RQuseQuery(
+    [query, variables],
+    async () => {
+      const client = await ReactQueryClient();
 
-    return await client.request(getQuery(query), variables);
-  });
+      return await client.request(getQuery(query), variables);
+    },
+    { enabled: !!variables.ids.length }
+  );
+  const listData = data?.[queryKey];
 
   const onPressShowMore = useCallback(
     () =>
@@ -63,32 +75,26 @@ export const BookmarkSection = ({
         categoryTitleDetail,
         listType
       }),
-    [navigation, suffix]
+    [categoryTitleDetail, listType, navigation, query, sectionTitle, suffix, variables]
   );
 
   useEffect(() => {
     if (!loading) {
       setConnectionState((state) => {
         const newState = { ...state };
-        newState[bookmarkKey] = !!data;
+        newState[bookmarkKey] = !isError && !!listData?.length;
         return newState;
       });
-
-      if (!data?.[query === QUERY_TYPES.VOUCHERS ? QUERY_TYPES.GENERIC_ITEMS : query]?.length) {
-        for (const id of ids) {
-          toggleBookmark(query, id, suffix);
-        }
-      }
     }
-  }, [data]);
+  }, [bookmarkKey, isError, listData?.length, loading, setConnectionState]);
 
   useFocusEffect(
     useCallback(() => {
       refetch();
-    }, [])
+    }, [refetch])
   );
 
-  if (!data?.[query === QUERY_TYPES.VOUCHERS ? QUERY_TYPES.GENERIC_ITEMS : query]?.length) {
+  if (!loading && !listData?.length) {
     return null;
   }
 
@@ -108,6 +114,7 @@ export const BookmarkSection = ({
         sectionTitle={sectionTitle}
         sectionTitleDetail={categoryTitleDetail}
         showButton={ids.length > 3}
+        showEventDateTime={query === QUERY_TYPES.EVENT_RECORDS}
       />
     </WrapperVertical>
   );

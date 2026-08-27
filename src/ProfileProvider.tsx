@@ -1,12 +1,7 @@
 import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { useQuery } from 'react-query';
 
-import {
-  profileAuthToken,
-  profileUserData,
-  storeProfileAuthToken,
-  storeProfileUserData
-} from './helpers';
+import { profileAuthToken, profileUserData, storeProfileUserData, storeTokens } from './helpers';
 import { useHomeRefresh } from './hooks';
 import { NetworkContext } from './NetworkProvider';
 import { QUERY_TYPES } from './queries';
@@ -34,7 +29,7 @@ export const ProfileProvider = ({ children }: { children?: React.ReactNode }) =>
   const pendingMemberSync = useRef(false);
 
   const clearProfileSession = useCallback(() => {
-    storeProfileAuthToken();
+    storeTokens();
     storeProfileUserData();
     setIsLoggedIn(false);
     setCurrentUserData(null);
@@ -43,7 +38,7 @@ export const ProfileProvider = ({ children }: { children?: React.ReactNode }) =>
 
   const handleMemberResponse = useCallback(
     (responseData: ProfileMember) => {
-      if (!responseData?.member) {
+      if (!responseData?.member || !responseData.member.keycloak_refresh_token) {
         clearProfileSession();
 
         return;

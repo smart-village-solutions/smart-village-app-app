@@ -3,7 +3,10 @@ import gql from 'graphql-tag';
 const defaultFragment = `
   id
   title
+  createdAt
   listDate
+  updatedAt
+  visible
   mediaContents {
     id
     contentType
@@ -149,6 +152,10 @@ export const GET_EVENT_RECORD = gql`
     eventRecord(id: $id) {
       ...defaultFields
       ...dateFields
+      recurring
+      recurringInterval
+      recurringType
+      recurringWeekdays
       dates {
         id
         weekday
@@ -247,23 +254,42 @@ export const GET_EVENT_RECORD = gql`
 
 export const CREATE_EVENT_RECORDS = gql`
   mutation CreateEventRecord(
-    $title: String!
+    $addresses: [AddressInput!]
+    $categories: [CategoryInput!]
     $categoryName: String
+    $contacts: [ContactInput!]
+    $dates: [DateInput!]
     $description: String
-    $dateStart: String
-    $dateEnd: String
-    $timeStart: String
-    $timeEnd: String
-    $city: String
+    $externalId: String
+    $id: ID
+    $mediaContents: [MediaContentInput!]
+    $organizer: OperatingCompanyInput
+    $priceInformations: [PriceInput!]
+    $recurring: String
+    $recurringInterval: String
+    $recurringType: String
+    $recurringWeekdays: [String!]
+    $title: String!
+    $urls: [WebUrlInput!]
   ) {
     createEventRecord(
-      title: $title
+      addresses: $addresses
+      categories: $categories
       categoryName: $categoryName
+      contacts: $contacts
+      dates: $dates
       description: $description
-      dates: [
-        { dateStart: $dateStart, dateEnd: $dateEnd, timeStart: $timeStart, timeEnd: $timeEnd }
-      ]
-      addresses: [{ city: $city, kind: "default" }]
+      externalId: $externalId
+      id: $id
+      mediaContents: $mediaContents
+      organizer: $organizer
+      priceInformations: $priceInformations
+      recurring: $recurring
+      recurringInterval: $recurringInterval
+      recurringType: $recurringType
+      recurringWeekdays: $recurringWeekdays
+      title: $title
+      urls: $urls
     ) {
       id
       title
@@ -275,6 +301,16 @@ export const GET_EVENT_RECORDS_ADDRESSES = gql`
   query {
     eventRecordsAddresses {
       city
+    }
+  }
+`;
+
+export const DELETE_EVENT_RECORD = gql`
+  mutation DeleteEventRecord($id: ID!) {
+    changeVisibility(id: $id, recordType: "EventRecord", visible: false) {
+      id
+      status
+      statusCode
     }
   }
 `;

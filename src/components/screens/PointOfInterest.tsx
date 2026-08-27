@@ -1,12 +1,18 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
-import { FlatList, StyleSheet, View } from 'react-native';
+import { useMutation } from 'react-apollo';
+import { Alert, FlatList, StyleSheet, View } from 'react-native';
 
 import { NetworkContext } from '../../NetworkProvider';
+import { useProfileContext } from '../../ProfileProvider';
 import { SettingsContext } from '../../SettingsProvider';
-import { consts, normalize, texts } from '../../config';
+import { Icon, consts, normalize, texts } from '../../config';
+import { AUTH_MODE_USER, getApolloAuthContext } from '../../graphqlAuth';
 import { matomoTrackingString, parseListItemsFromQuery } from '../../helpers';
-import { useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
+import { useDetailRefresh, useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
+import { useTheme } from '../../hooks/useTheme';
 import { QUERY_TYPES } from '../../queries';
+import { DELETE_POINT_OF_INTEREST } from '../../queries/pointsOfInterest';
+import { ScreenName } from '../../types';
 import { Button } from '../Button';
 import { DataProviderButton } from '../DataProviderButton';
 import { DataProviderNotice } from '../DataProviderNotice';
@@ -15,7 +21,7 @@ import { ImageSection } from '../ImageSection';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { SectionHeader } from '../SectionHeader';
 import { HeadlineText } from '../Text';
-import { Wrapper, WrapperHorizontal, WrapperVertical } from '../Wrapper';
+import { Wrapper, WrapperHorizontal, WrapperRow, WrapperVertical } from '../Wrapper';
 import { DistanceDirectionCard, InfoCard } from '../infoCard';
 import { MapLibre } from '../map';
 import { VoucherListItem } from '../vouchers';
@@ -41,8 +47,9 @@ export const INCREMENT_VOUCHER_COUNT = 5;
 type PointOfInterestProps = {
   data: any;
   hideMap?: boolean;
-  navigation?: any;
+  navigation: any;
   readAloudControls?: React.ReactNode;
+  refetch?: () => void | Promise<unknown>;
   route: any;
 };
 
@@ -51,9 +58,12 @@ export const PointOfInterest = ({
   hideMap,
   navigation,
   readAloudControls,
+  refetch,
   route
 }: PointOfInterestProps) => {
+  const { colors } = useTheme();
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
+  const { currentUserData } = useProfileContext();
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { showOpeningTimes = true, showDistanceDirection = {} } = settings;
@@ -144,6 +154,19 @@ export const PointOfInterest = ({
   }, [payload?.freeStatusUrl]);
 
   const businessAccount = dataProvider?.dataType === 'business_account';
+  const currentUserDataProviderId = currentUserData?.user?.data_provider_id;
+  const isCurrentUser =
+    !!currentUserDataProviderId &&
+    !!dataProvider?.id &&
+    currentUserDataProviderId == dataProvider.id;
+  const [deletePointOfInterest] = useMutation(DELETE_POINT_OF_INTEREST, {
+    ...getApolloAuthContext(AUTH_MODE_USER),
+    variables: { id: data.id },
+    onCompleted: () => navigation.goBack()
+  });
+  useDetailRefresh(() => {
+    refetch?.();
+  });
 
   const categoryName = route.params?.queryVariables?.categoryName;
   let nestedCategory;
@@ -184,6 +207,47 @@ export const PointOfInterest = ({
 
   return (
     <WrapperVertical>
+      {isCurrentUser && (
+        <Wrapper noPaddingBottom>
+          <WrapperRow spaceAround>
+            <Button
+              icon={<Icon.Pencil color={colors.lightestText} />}
+              iconPosition="left"
+              notFullWidth
+              onPress={() =>
+                navigation.push(ScreenName.ProfileCreateContentForm, {
+                  initialData: data,
+                  mode: 'edit',
+                  query: QUERY_TYPES.POINT_OF_INTEREST
+                })
+              }
+              title={texts.noticeboard.edit}
+            />
+            <Button
+              icon={<Icon.Trash />}
+              iconPosition="left"
+              invert
+              notFullWidth
+              onPress={() =>
+                Alert.alert(texts.noticeboard.alerts.hint, texts.noticeboard.alerts.delete, [
+                  {
+                    text: texts.noticeboard.abort,
+                    onPress: () => null,
+                    style: 'cancel'
+                  },
+                  {
+                    text: texts.noticeboard.delete,
+                    onPress: () => deletePointOfInterest(),
+                    style: 'destructive'
+                  }
+                ])
+              }
+              title={texts.noticeboard.delete}
+            />
+          </WrapperRow>
+        </Wrapper>
+      )}
+
       {(!!nestedCategory?.name || category?.name) && (
         <WrapperHorizontal>
           <HeadlineText smaller uppercase>

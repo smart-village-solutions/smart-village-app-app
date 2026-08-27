@@ -1,4 +1,4 @@
-import { useNavigation } from 'expo-router/react-navigation';
+import { useNavigation, useRoute } from 'expo-router/react-navigation';
 import { StackNavigationProp } from 'expo-router/js-stack';
 import React, { useCallback, useContext, useMemo } from 'react';
 import { TouchableOpacity, View } from 'react-native';
@@ -6,10 +6,12 @@ import { TouchableOpacity, View } from 'react-native';
 import { AccessibilityContext } from '../../AccessibilityProvider';
 import { consts, normalize, texts } from '../../config';
 import { ConfigurationsContext } from '../../ConfigurationsProvider';
+import { filterProfileEditorialTiles } from '../../helpers/profileEditorialContentHelper';
 import { DEFAULT_TILE_GRID_COLUMNS, resolveTileGridLayout } from '../../helpers/serviceTileLayout';
 import { umlautSwitcher } from '../../helpers/umlautSwitcher';
 import { usePersonalizedTiles } from '../../hooks';
 import { OrientationContext } from '../../OrientationProvider';
+import { ProfileContext } from '../../ProfileProvider';
 import { SettingsContext } from '../../SettingsProvider';
 import { ScreenName } from '../../types';
 import { DiagonalGradient } from '../DiagonalGradient';
@@ -27,12 +29,21 @@ const { MATOMO_TRACKING } = consts;
 /* eslint-disable complexity */
 export const Service = ({
   data,
-  isEditMode,
+  isEditMode = false,
+  alignIncompleteRowsLeft = false,
+  rowHorizontalPadding = 0,
+  tileLayoutColumns,
   staticJsonName,
   hasDiagonalGradientBackground
 }: {
   data: any;
-  isEditMode: boolean;
+  isEditMode?: boolean;
+  alignIncompleteRowsLeft?: boolean;
+  rowHorizontalPadding?: number;
+  tileLayoutColumns?: {
+    landscape?: number;
+    portrait?: number;
+  };
   staticJsonName: string;
   hasDiagonalGradientBackground?: boolean;
 }) => {
@@ -41,6 +52,9 @@ export const Service = ({
   const styles = useThemeStyles(createStyles);
   const { globalSettings } = useContext(SettingsContext);
   const { orientation } = useContext(OrientationContext);
+  const { currentUserData } = useContext(ProfileContext);
+  const roles = currentUserData?.roles || undefined;
+  const route = useRoute();
   const { textScaleMultiplier = 1 } = useContext(AccessibilityContext);
   const { settings = {} } = globalSettings;
   const { personalizedTiles: isPersonalizable = false, tileSizeFactor = 1 } = settings;
@@ -86,10 +100,22 @@ export const Service = ({
         draggableKey={`item${item.title || item.accessibilityLabel}-index${index}`}
         hasDiagonalGradientBackground={hasDiagonalGradientBackground}
         isEditMode={isEditMode}
-        item={item}
+        item={
+          tileLayoutColumns
+            ? {
+                ...item,
+                numberOfTiles: {
+                  ...item.numberOfTiles,
+                  landscape: tileLayoutColumns.landscape ?? item.numberOfTiles?.landscape,
+                  portrait: tileLayoutColumns.portrait ?? item.numberOfTiles?.portrait
+                }
+              }
+            : item
+        }
         key={`item${item.title || item.accessibilityLabel}-index${index}`}
         onToggleVisibility={onToggleVisibility}
         serviceTiles={serviceTiles}
+        staticJsonName={staticJsonName}
         shouldAddMargin={shouldAddMargin}
         layoutColumns={itemsPerRow}
         tileSizeFactor={tileSizeFactor}
@@ -100,6 +126,7 @@ export const Service = ({
       hasDiagonalGradientBackground,
       onToggleVisibility,
       serviceTiles,
+      tileLayoutColumns,
       itemsPerRow,
       tileSizeFactor
     ]
@@ -123,13 +150,22 @@ export const Service = ({
 
   if (isLoading && isEditMode) return <LoadingSpinner loading />;
 
-  const tilesCount = tiles?.length || 0;
+  const visibleTiles = useMemo(() => {
+    if (isEditMode) {
+      return tiles;
+    }
 
-  // Split the tiles array into subarrays (rows), each containing up to itemsPerRow elements.
-  // This is done to render tiles row-by-row in a grid layout based on screen orientation.
+    if (route.name === ScreenName.Profile) {
+      return filterProfileEditorialTiles(tiles, roles);
+    }
+
+    return tiles;
+  }, [tiles, route.name, isEditMode, roles]);
+
+  // Split the visible tiles into rows for grid layout based on screen orientation.
   const rows: TServiceTile[][] = [];
-  for (let i = 0; i < tilesCount; i += itemsPerRow) {
-    rows.push(tiles.slice(i, i + itemsPerRow));
+  for (let i = 0; i < (visibleTiles?.length || 0); i += itemsPerRow) {
+    rows.push(visibleTiles.slice(i, i + itemsPerRow));
   }
 
   return isEditMode ? (
@@ -138,7 +174,7 @@ export const Service = ({
       style={styles.diagonalGradient}
     >
       <DraggableGrid columns={itemsPerRow} onDragEnd={onDragEnd}>
-        {tiles?.map(renderItem)}
+        {tiles?.map((item, index) => renderItem(item, index))}
       </DraggableGrid>
       {toggler}
     </DiagonalGradient>
@@ -149,20 +185,22 @@ export const Service = ({
         const isIncompleteRow = row.length < itemsPerRow;
         const rowKey = row.map((tile) => tile.title || tile.accessibilityLabel);
         const isLastAndIncompleteRow = isLastRow && isIncompleteRow;
-        // marginLeft add only if it's the last row and there is more than one item
-        const shouldAddMargin = isLastAndIncompleteRow && row.length > 1;
+        const shouldCenterIncompleteRow = isLastAndIncompleteRow && !alignIncompleteRowsLeft;
+        // marginLeft add only if it's the last row, centered and there is more than one item
+        const shouldAddMargin = shouldCenterIncompleteRow && row.length > 1;
 
         return (
           <WrapperWrap
             key={rowKey}
-            center={isLastAndIncompleteRow}
+            center={shouldCenterIncompleteRow}
             spaceBetween={!isLastAndIncompleteRow}
+            style={rowHorizontalPadding ? { paddingHorizontal: rowHorizontalPadding } : undefined}
           >
             {row.map((item, index) => renderItem(item, index, shouldAddMargin))}
           </WrapperWrap>
         );
       })}
-      {toggler}
+      {!!visibleTiles?.length && toggler}
     </>
   );
 };

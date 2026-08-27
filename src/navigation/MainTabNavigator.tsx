@@ -18,6 +18,11 @@ import { renderThemeAwareBottomTabBar } from './ThemeAwareBottomTabBar';
 
 const { REFRESH_INTERVALS } = consts;
 
+const isTabConfig = (
+  tabConfig: CustomTab | TabConfig | string | undefined
+): tabConfig is TabConfig =>
+  !!tabConfig && typeof tabConfig !== 'string' && 'stackConfig' in tabConfig;
+
 export const useTabRoutes = () => {
   const { colors, mode } = useTheme();
   const defaultTabRoutes = useMemo(() => createDefaultTabNavigatorConfig(colors), [colors]);
@@ -65,11 +70,13 @@ export const useTabRoutes = () => {
             tabConfig.iconSet,
             tabConfig.iconStyle,
             tabConfig.params,
+            tabConfig.isHighlightedTab,
             tabConfig.strokeColor,
             tabConfig.strokeWidth,
             tabConfig.tabBarLabelStyle,
             tabConfig.tilesScreenParams,
-            tabConfig.tabBarIconFillOnFocus ?? defaultIconFillOnFocus
+            tabConfig.tabBarIconFillOnFocus ?? defaultIconFillOnFocus,
+            colors
           );
         }
       }
@@ -77,7 +84,7 @@ export const useTabRoutes = () => {
 
     return {
       ...tabBarColors,
-      tabConfigs: dynamicTabs.filter(Boolean) as TabConfig[]
+      tabConfigs: dynamicTabs.filter(isTabConfig)
     };
   }, [colors, defaultTabRoutes, loading, mode, tabRoutesData]);
 

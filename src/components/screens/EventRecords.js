@@ -10,6 +10,7 @@ import { useInfiniteQuery } from 'react-query';
 
 import { consts, normalize, texts } from '../../config';
 import { ConfigurationsContext } from '../../ConfigurationsProvider';
+import { AUTH_MODE_PUBLIC } from '../../graphqlAuth';
 import {
   filterTypesHelper,
   geoLocationFilteredListItem,
@@ -75,6 +76,9 @@ export const EventRecords = ({ navigation, route }) => {
   const genericItemEventSources = settings.eventCalendar?.genericItemEventSources || [];
   const { eventListIntro } = sections;
   const query = route.params?.query ?? '';
+  const authMode = route.params?.authMode ?? AUTH_MODE_PUBLIC;
+  const hideInvisible = route.params?.hideInvisible ?? false;
+  const hideVolunteerEvents = route.params?.hideVolunteerEvents ?? false;
   const initialQueryVariables = route.params?.queryVariables || {};
   const [queryVariables, setQueryVariables] = useState({
     ...initialQueryVariables,
@@ -105,10 +109,14 @@ export const EventRecords = ({ navigation, route }) => {
       async ({ pageParam = 0 }) => {
         const client = await ReactQueryClient();
 
-        return await client.request(getQuery(QUERY_TYPES.EVENT_RECORDS), {
-          ...queryVariables,
-          offset: pageParam
-        });
+        return await client.request(
+          getQuery(QUERY_TYPES.EVENT_RECORDS),
+          {
+            ...queryVariables,
+            offset: pageParam
+          },
+          { authMode }
+        );
       },
       {
         enabled: !showCalendar,
@@ -160,16 +168,29 @@ export const EventRecords = ({ navigation, route }) => {
     () =>
       hasNativeFilterSelection
         ? []
-        : [...(showVolunteerEvents ? dataVolunteerEvents || [] : []), ...genericItemEvents],
-    [dataVolunteerEvents, genericItemEvents, hasNativeFilterSelection, showVolunteerEvents]
+        : [
+            ...(showVolunteerEvents && !hideVolunteerEvents ? dataVolunteerEvents || [] : []),
+            ...genericItemEvents
+          ],
+    [
+      dataVolunteerEvents,
+      genericItemEvents,
+      hasNativeFilterSelection,
+      hideVolunteerEvents,
+      showVolunteerEvents
+    ]
   );
 
   const listItems = useMemo(() => {
+    const eventRecordData = data?.pages?.flatMap((page) => page?.[query]) || [];
+    const visibleEventRecordData = hideInvisible
+      ? eventRecordData.filter((item) => item?.visible !== false)
+      : eventRecordData;
     let parsedListItems =
       parseListItemsFromQuery(
         query,
         {
-          [query]: data?.pages?.flatMap((page) => page?.[query])
+          [query]: visibleEventRecordData
         },
         undefined,
         {
@@ -208,6 +229,7 @@ export const EventRecords = ({ navigation, route }) => {
   }, [
     query,
     data?.pages,
+    hideInvisible,
     additionalData,
     queryVariables,
     hasDailyFilterSelection,

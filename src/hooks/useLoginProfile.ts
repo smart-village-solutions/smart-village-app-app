@@ -15,7 +15,7 @@ import { Alert } from 'react-native';
 
 import * as appJson from '../../app.json';
 import { device, texts } from '../config';
-import { storeProfileAuthToken, storeProfileUserData } from '../helpers';
+import { storeProfileAuthToken, storeTokens } from '../helpers';
 
 const PROFILE_ACCESS_TOKEN = 'profileAccessToken';
 
@@ -65,8 +65,7 @@ export const useLoginProfile = (
 
   const clearStoredToken = useCallback(async () => {
     await SecureStore.deleteItemAsync(PROFILE_ACCESS_TOKEN);
-    storeProfileAuthToken();
-    storeProfileUserData();
+    storeTokens();
     setIsLoggedIn(false);
     await onLogout?.();
   }, [onLogout]);

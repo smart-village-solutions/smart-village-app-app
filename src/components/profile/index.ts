@@ -1,3 +1,4 @@
+export * from './createContentForms';
 export * from './noticeboard';
 
 export * from './Badge';

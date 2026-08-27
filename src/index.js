@@ -5,7 +5,6 @@ import { ApolloClient } from 'apollo-client';
 import { ApolloLink } from 'apollo-link';
 import { setContext } from 'apollo-link-context';
 import { createHttpLink } from 'apollo-link-http';
-import * as SecureStore from 'expo-secure-store';
 import _isEmpty from 'lodash/isEmpty';
 import React, { useContext, useEffect, useState } from 'react';
 import { ApolloProvider } from 'react-apollo';
@@ -23,10 +22,9 @@ import {
   geoLocationToLocationObject,
   graphqlFetchPolicy,
   parsedImageAspectRatio,
-  profileAuthToken,
-  storageHelper,
-  voucherAuthToken
+  storageHelper
 } from './helpers';
+import { AUTH_MODE_PUBLIC, getGraphqlAuthHeaders } from './graphqlAuth';
 import { IconProvider } from './IconProvider';
 import { Navigator } from './navigation/Navigator';
 import { NetworkContext, NetworkProvider } from './NetworkProvider';
@@ -90,17 +88,14 @@ const MainAppWithApolloProvider = () => {
     const httpLink = createHttpLink({
       uri: `${secrets[namespace].serverUrl}${secrets[namespace].graphqlEndpoint}`
     });
-    const authLink = setContext(async (_, { headers }) => {
-      // get the authentication token from local SecureStore if it exists
-      const accessToken = await SecureStore.getItemAsync('ACCESS_TOKEN');
-      const authToken = (await profileAuthToken()) || (await voucherAuthToken());
+    const authLink = setContext(async (operation, previousContext = {}) => {
+      const authMode = previousContext?.authMode ?? AUTH_MODE_PUBLIC;
+      const authHeaders = await getGraphqlAuthHeaders(authMode);
 
-      // return the headers to the context so httpLink can read them
       return {
         headers: {
-          ...headers,
-          authorization: accessToken ? `Bearer ${accessToken}` : '',
-          'X-Authorization': authToken || ''
+          ...previousContext?.headers,
+          ...authHeaders
         }
       };
     });

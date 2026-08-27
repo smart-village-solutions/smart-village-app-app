@@ -1,5 +1,6 @@
 import { useFocusEffect } from 'expo-router/react-navigation';
 import { StackScreenProps } from 'expo-router/js-stack';
+import _isEqual from 'lodash/isEqual';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useQuery } from 'react-apollo';
 import { ActivityIndicator, RefreshControl, View } from 'react-native';
@@ -21,14 +22,16 @@ import {
 } from '../../components';
 import { Icon, texts } from '../../config';
 import { ConfigurationsContext } from '../../ConfigurationsProvider';
+import { getApolloAuthContext } from '../../graphqlAuth';
 import {
   filterTypesHelper,
   graphqlFetchPolicy,
+  resolveNoticeboardScope,
   parseListItemsFromQuery,
   profileAuthToken,
   profileUserData,
-  storeProfileAuthToken,
   storeProfileUserData,
+  storeTokens,
   updateResourceFiltersStateHelper
 } from '../../helpers';
 import { useStaticContent } from '../../hooks';
@@ -43,6 +46,8 @@ import { useThemeStyles } from '../../hooks/useThemeStyles';
 import { useTheme } from '../../hooks/useTheme';
 
 /* eslint-disable complexity */
+const EMPTY_QUERY_VARIABLES = {};
+
 export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<any>) => {
   const { colors: colors } = useTheme();
 
@@ -56,26 +61,50 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
   const isLoginRequired = route.params?.isLoginRequired || false;
   const content = route.params?.content ?? '';
   const query = route.params?.query ?? '';
-  const initialQueryVariables = route.params?.queryVariables ?? {};
+  const initialQueryVariables = route.params?.queryVariables ?? EMPTY_QUERY_VARIABLES;
+  const navigationSourceRouteName = route.params?.navigationSourceRouteName ?? '';
+  const navigationSourceStaticJsonName = route.params?.navigationSourceStaticJsonName ?? '';
   const subQuery = route.params?.subQuery ?? {};
   const rootRouteName = route.params?.rootRouteName ?? '';
   const categoryIds = initialQueryVariables?.categoryIds ?? [];
-  const currentMember = initialQueryVariables?.currentMember ?? false;
+  const { authMode, currentMember } = resolveNoticeboardScope({
+    initialQueryVariables,
+    navigationSourceRouteName,
+    navigationSourceStaticJsonName,
+    query,
+    rootRouteName
+  });
+
   const { resourceFiltersState = {}, resourceFiltersDispatch } = useContext(PermanentFilterContext);
   const { resourceFilters } = useContext(ConfigurationsContext);
-  const [queryVariables, setQueryVariables] = useState({
-    ...initialQueryVariables,
-    ...resourceFiltersState[GenericType.Noticeboard]
-  });
+  const persistedQueryVariables =
+    resourceFiltersState[GenericType.Noticeboard] ?? EMPTY_QUERY_VARIABLES;
+  const buildQueryVariables = useCallback(
+    () => ({
+      ...persistedQueryVariables,
+      ...initialQueryVariables,
+      currentMember
+    }),
+    [currentMember, initialQueryVariables, persistedQueryVariables]
+  );
+  const [queryVariables, setQueryVariables] = useState(buildQueryVariables);
+
+  useEffect(() => {
+    const nextQueryVariables = buildQueryVariables();
+    setQueryVariables((previousQueryVariables) =>
+      _isEqual(previousQueryVariables, nextQueryVariables)
+        ? previousQueryVariables
+        : nextQueryVariables
+    );
+  }, [buildQueryVariables]);
 
   const [selectedCategory, setSelectedCategory] = useState<number>();
 
   const { isLoading: isLoadingMember } = RQuseQuery(QUERY_TYPES.PROFILE.MEMBER, member, {
     enabled: isLoginRequired && isProfileLoggedIn,
     onSuccess: (responseData: ProfileMember) => {
-      if (!responseData?.member) {
-        storeProfileAuthToken();
-        storeProfileUserData();
+      if (!responseData?.member || !responseData?.member?.keycloak_refresh_token) {
+        storeTokens();
         setIsProfileLoggedIn(false);
         setUserData(null);
 
@@ -87,6 +116,7 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
   });
 
   const { data, loading, refetch } = useQuery(getQuery(query), {
+    ...getApolloAuthContext(authMode),
     fetchPolicy,
     skip: isLoginRequired && !isProfileLoggedIn,
     variables: queryVariables

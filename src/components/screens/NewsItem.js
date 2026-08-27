@@ -1,11 +1,19 @@
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Alert, View } from 'react-native';
+import { useMutation } from 'react-apollo';
 
-import { consts } from '../../config';
-import { matomoTrackingString, momentFormatUtcToLocal, trimNewLines } from '../../helpers';
-import { useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
+import { useProfileContext } from '../../ProfileProvider';
 import { SettingsContext } from '../../SettingsProvider';
+import { Icon, consts, texts } from '../../config';
+import { AUTH_MODE_USER, getApolloAuthContext } from '../../graphqlAuth';
+import { matomoTrackingString, momentFormatUtcToLocal, trimNewLines } from '../../helpers';
+import { useDetailRefresh, useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
+import { useTheme } from '../../hooks/useTheme';
+import { DELETE_NEWS_ITEM } from '../../queries/newsItems';
+import { QUERY_TYPES } from '../../queries';
+import { ScreenName } from '../../types';
+import { Button } from '../Button';
 import { DataProviderButton } from '../DataProviderButton';
 import { ImageSection } from '../ImageSection';
 import { SectionHeader } from '../SectionHeader';
@@ -17,8 +25,10 @@ const { MATOMO_TRACKING } = consts;
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
-export const NewsItem = ({ data, readAloudControls, route }) => {
+export const NewsItem = ({ data, navigation, readAloudControls, refetch, route }) => {
+  const { colors } = useTheme();
   const { globalSettings } = useContext(SettingsContext);
+  const { currentUserData, isLoggedIn } = useProfileContext();
   const { showImageRights, settings = {} } = globalSettings || {};
   const { detailDateFormat } = settings?.news || {};
   const imageRightsPosition = showImageRights?.newsDetail?.imageRightsPosition;
@@ -57,14 +67,73 @@ export const NewsItem = ({ data, readAloudControls, route }) => {
   );
 
   const businessAccount = dataProvider?.dataType === 'business_account';
+  const currentUserDataProviderId = currentUserData?.user?.data_provider_id;
+  const isCurrentUser =
+    isLoggedIn &&
+    !!currentUserDataProviderId &&
+    !!dataProvider?.id &&
+    currentUserDataProviderId == dataProvider.id;
+  const [deleteNewsItem] = useMutation(DELETE_NEWS_ITEM, {
+    ...getApolloAuthContext(AUTH_MODE_USER),
+    awaitRefetchQueries: true,
+    refetchQueries: ['NewsItems'],
+    variables: { id: data.id },
+    onCompleted: () => navigation.goBack()
+  });
+
+  useDetailRefresh(() => {
+    refetch?.();
+  });
+
   const formattedPublishedAt = publishedAt
     ? momentFormatUtcToLocal(publishedAt, detailDateFormat)
     : null;
 
   return (
     <View>
+      {isCurrentUser && (
+        <Wrapper noPaddingBottom>
+          <WrapperRow spaceAround>
+            <Button
+              icon={<Icon.Pencil color={colors.lightestText} />}
+              iconPosition="left"
+              notFullWidth
+              onPress={() =>
+                navigation.push(ScreenName.ProfileCreateContentForm, {
+                  initialData: data,
+                  mode: 'edit',
+                  query: QUERY_TYPES.NEWS_ITEM
+                })
+              }
+              title={texts.noticeboard.edit}
+            />
+            <Button
+              icon={<Icon.Trash />}
+              iconPosition="left"
+              invert
+              notFullWidth
+              onPress={() =>
+                Alert.alert(texts.noticeboard.alerts.hint, texts.noticeboard.alerts.delete, [
+                  {
+                    text: texts.noticeboard.abort,
+                    onPress: () => null,
+                    style: 'cancel'
+                  },
+                  {
+                    text: texts.noticeboard.delete,
+                    onPress: () => deleteNewsItem(),
+                    style: 'destructive'
+                  }
+                ])
+              }
+              title={texts.noticeboard.delete}
+            />
+          </WrapperRow>
+        </Wrapper>
+      )}
+
       {!!subtitle && (
-        <WrapperVertical style={styles.noPaddingBottom}>
+        <WrapperVertical noPaddingBottom>
           <WrapperRow center>
             <HeadlineText smaller uppercase>
               {subtitle}
@@ -110,15 +179,10 @@ export const NewsItem = ({ data, readAloudControls, route }) => {
 };
 /* eslint-enable complexity */
 
-const styles = StyleSheet.create({
-  noPaddingBottom: {
-    paddingBottom: 0
-  }
-});
-
 NewsItem.propTypes = {
   data: PropTypes.object.isRequired,
   navigation: PropTypes.object.isRequired,
+  refetch: PropTypes.func,
   readAloudControls: PropTypes.node,
   route: PropTypes.object.isRequired
 };
