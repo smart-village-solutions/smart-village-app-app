@@ -858,6 +858,16 @@
     - publisher: Nader Dabit & Monte Thakkar
     - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-elements
     - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-elements/LICENSE
+- **[react-native-enriched@0.4.0](https://github.com/software-mansion/react-native-enriched)**
+    - name: react-native-enriched
+    - version: 0.4.0
+    - description: Rich Text Editor component for React Native
+    - copyright: Copyright (c) 2025 Software Mansion. Permission is hereby granted, free of charge, to any person obtaining a copy. of this software and associated documentation files (the "Software"), to deal. in the Software without restriction, including without limitation the rights. to use, copy, modify, merge, publish, distribute, sublicense, and/or sell. copies of the Software, and to permit persons to whom the Software is. furnished to do so, subject to the following conditions:
+    - licenses: MIT
+    - repository: https://github.com/software-mansion/react-native-enriched
+    - publisher: Software Mansion
+    - path: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-enriched
+    - licenseFile: /home/runner/work/smart-village-app-app/smart-village-app-app/node_modules/react-native-enriched/LICENSE
 - **[react-native-expo-image-cache@4.1.0](https://github.com/wcandillon/react-native-expo-image-cache)**
     - name: react-native-expo-image-cache
     - version: 4.1.0

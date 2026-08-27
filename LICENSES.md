@@ -10,7 +10,7 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
 
 | License | Packages count |
 |---------|---------------:|
-| [MIT](https://spdx.org/licenses/MIT.html) | 962 |
+| [MIT](https://spdx.org/licenses/MIT.html) | 963 |
 | [ISC](https://spdx.org/licenses/ISC.html) | 63 |
 | [BSD-3-Clause](https://spdx.org/licenses/BSD-3-Clause.html) | 22 |
 | [Apache-2.0](https://spdx.org/licenses/Apache-2.0.html) | 21 |
@@ -9225,6 +9225,17 @@ To list direct dependencies in your app you can link to [LICENSES_DIRECT.md](LIC
     "name": "react-native-elements",
     "version": "3.4.3",
     "description": "React Native Elements & UI Toolkit"
+  },
+  "react-native-enriched@0.4.0": {
+    "licenses": "MIT",
+    "repository": "https://github.com/software-mansion/react-native-enriched",
+    "publisher": "Software Mansion",
+    "email": "contact@swmansion.com",
+    "licenseText": "MIT License\n\nCopyright (c) 2025 Software Mansion\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
+    "copyright": "Copyright (c) 2025 Software Mansion. Permission is hereby granted, free of charge, to any person obtaining a copy. of this software and associated documentation files (the \"Software\"), to deal. in the Software without restriction, including without limitation the rights. to use, copy, modify, merge, publish, distribute, sublicense, and/or sell. copies of the Software, and to permit persons to whom the Software is. furnished to do so, subject to the following conditions:",
+    "name": "react-native-enriched",
+    "version": "0.4.0",
+    "description": "Rich Text Editor component for React Native"
   },
   "react-native-expo-image-cache@4.1.0": {
     "licenses": "MIT",
