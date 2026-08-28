@@ -2,7 +2,7 @@ import { useIsFocused } from 'expo-router/react-navigation';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useMemo, useRef, useState } from 'react';
 import { Query } from 'react-apollo';
-import { ActivityIndicator, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Easing } from 'react-native-reanimated';
 import Carousel from 'react-native-reanimated-carousel';
 
@@ -19,6 +19,8 @@ import { SettingsContext } from '../SettingsProvider';
 
 import { ImagesCarouselItem } from './ImagesCarouselItem';
 import { LoadingContainer } from './LoadingContainer';
+
+const MAX_DOT_PAGINATION_ITEMS = 10;
 
 /* eslint-disable complexity */
 export const ImagesCarousel = ({
@@ -44,9 +46,10 @@ export const ImagesCarousel = ({
     size: sizeSliderPauseButton = 25,
     verticalPosition = 'bottom'
   } = sliderPauseButton;
-  const { showNavigationButtons = false } = sliderSettings;
+  const { showNavigationButtons = false, showPagination = false } = sliderSettings;
   const refreshTime = useRefreshTime(refreshTimeKey);
   const [isPaused, setIsPaused] = useState(false);
+  const [carouselImageIndex, setCarouselImageIndex] = useState(0);
   const carouselRef = useRef(null);
 
   const isFocused = useIsFocused();
@@ -61,6 +64,7 @@ export const ImagesCarousel = ({
 
   const shouldShowNavigationButtons = showNavigationButtons && !isDisturber;
   const shouldShowPauseButton = showSliderPauseButton && !isDisturber && !isReduceMotionEnabled;
+  const shouldShowPagination = showPagination && !isDisturber;
 
   const fetchPolicy = graphqlFetchPolicy({
     isConnected,
@@ -189,12 +193,21 @@ export const ImagesCarousel = ({
         defaultIndex={0}
         itemWidth={itemWidth}
         loop
+        onSnapToItem={setCarouselImageIndex}
         renderItem={({ item }) =>
           renderItem({ item, refreshInterval: sliderSettings.refreshInterval })
         }
         style={[styles.carousel, { height: itemHeight, width: dimensions.width }]}
         withAnimation={withAnimation}
       />
+
+      {shouldShowPagination && (
+        <CarouselPagination
+          activeIndex={carouselImageIndex}
+          itemCount={carouselData.length}
+          styles={styles}
+        />
+      )}
 
       {(shouldShowNavigationButtons || shouldShowPauseButton) && (
         <CarouselControls
@@ -216,6 +229,30 @@ export const ImagesCarousel = ({
   );
 };
 /* eslint-enable complexity */
+
+export const CarouselPagination = ({ activeIndex, itemCount, styles }) => {
+  const normalizedIndex = ((activeIndex % itemCount) + itemCount) % itemCount;
+  const shouldShowDots = itemCount <= MAX_DOT_PAGINATION_ITEMS;
+
+  return (
+    <View
+      accessible
+      accessibilityLabel={`Bild ${normalizedIndex + 1} von ${itemCount}`}
+      style={styles.pagination}
+    >
+      {shouldShowDots ? (
+        Array.from({ length: itemCount }, (_, index) => (
+          <View
+            key={index}
+            style={[styles.paginationDot, index === normalizedIndex && styles.paginationDotActive]}
+          />
+        ))
+      ) : (
+        <Text style={styles.paginationText}>{`${normalizedIndex + 1} / ${itemCount}`}</Text>
+      )}
+    </View>
+  );
+};
 
 const CarouselControls = ({
   colors,
@@ -338,8 +375,45 @@ const createStyles = (colors) => ({
     alignSelf: 'center',
     backgroundColor: colors.surface,
     justifyContent: 'center'
+  },
+  pagination: {
+    alignSelf: 'center',
+    backgroundColor: colors.overlayRgba,
+    borderRadius: normalize(12),
+    bottom: normalize(12),
+    flexDirection: 'row',
+    paddingHorizontal: normalize(8),
+    paddingVertical: normalize(6),
+    position: 'absolute',
+    zIndex: 1
+  },
+  paginationDot: {
+    backgroundColor: colors.surface,
+    borderRadius: normalize(3),
+    height: normalize(6),
+    marginHorizontal: normalize(3),
+    opacity: 0.5,
+    width: normalize(6)
+  },
+  paginationDotActive: {
+    opacity: 1,
+    width: normalize(16)
+  },
+  paginationText: {
+    color: colors.surface,
+    fontSize: normalize(13),
+    fontVariant: ['tabular-nums'],
+    lineHeight: normalize(16),
+    minWidth: normalize(42),
+    textAlign: 'center'
   }
 });
+
+CarouselPagination.propTypes = {
+  activeIndex: PropTypes.number.isRequired,
+  itemCount: PropTypes.number.isRequired,
+  styles: PropTypes.object.isRequired
+};
 
 ImagesCarousel.propTypes = {
   aspectRatio: PropTypes.object,
