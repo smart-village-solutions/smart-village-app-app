@@ -2,7 +2,14 @@ import React, { useEffect } from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
 import renderer from 'react-test-renderer';
 
+import { setIosGrayscaleCompositorEnabled } from '../../modules/grayscale-compositor';
 import { AppWideGrayscaleFilter } from '../../src/components/AppWideGrayscaleFilter';
+
+jest.mock('../../modules/grayscale-compositor', () => {
+  return {
+    setIosGrayscaleCompositorEnabled: jest.fn(() => Promise.resolve())
+  };
+});
 
 const mountSpy = jest.fn();
 const unmountSpy = jest.fn();
@@ -25,6 +32,7 @@ describe('AppWideGrayscaleFilter', () => {
   beforeEach(() => {
     mountSpy.mockClear();
     unmountSpy.mockClear();
+    jest.mocked(setIosGrayscaleCompositorEnabled).mockClear();
   });
 
   afterEach(() => {
@@ -72,9 +80,12 @@ describe('AppWideGrayscaleFilter', () => {
     expect(StyleSheet.flatten(tree!.root.findAllByType(View)[0].props.style)).toMatchObject({
       filter: [{ grayscale: 1 }]
     });
+    expect(
+      tree!.root.findAllByType(View).filter((view) => view.props.pointerEvents === 'none')
+    ).toHaveLength(0);
   });
 
-  it('does not render an unsupported blend overlay on iOS', () => {
+  it('updates the window-level native compositor on iOS', () => {
     Object.defineProperty(Platform, 'OS', { configurable: true, value: 'ios' });
 
     let tree: renderer.ReactTestRenderer;
@@ -86,6 +97,33 @@ describe('AppWideGrayscaleFilter', () => {
       );
     });
 
-    expect(tree!.root.findAllByType(View)).toHaveLength(3);
+    expect(StyleSheet.flatten(tree!.root.findAllByType(View)[0].props.style)).not.toHaveProperty(
+      'filter'
+    );
+    expect(setIosGrayscaleCompositorEnabled).toHaveBeenCalledWith(true);
+  });
+
+  it.each(['android', 'ios'])('does not apply grayscale rendering on %s while disabled', (os) => {
+    Object.defineProperty(Platform, 'OS', { configurable: true, value: os });
+
+    let tree: renderer.ReactTestRenderer;
+    renderer.act(() => {
+      tree = renderer.create(
+        <AppWideGrayscaleFilter isGrayscaleEnabled={false}>
+          <View />
+        </AppWideGrayscaleFilter>
+      );
+    });
+
+    const views = tree!.root.findAllByType(View);
+
+    expect(StyleSheet.flatten(views[0].props.style)).not.toHaveProperty('filter');
+    expect(StyleSheet.flatten(views[0].props.style)).not.toHaveProperty('isolation');
+
+    if (os === 'ios') {
+      expect(setIosGrayscaleCompositorEnabled).toHaveBeenCalledWith(false);
+    } else {
+      expect(setIosGrayscaleCompositorEnabled).not.toHaveBeenCalled();
+    }
   });
 });

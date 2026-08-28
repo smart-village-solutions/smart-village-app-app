@@ -1,0 +1,7 @@
+{
+  "platforms": ["apple"],
+  "apple": {
+    "modules": ["GrayscaleCompositorModule"],
+    "podspecPath": "ios/GrayscaleCompositor.podspec"
+  }
+}

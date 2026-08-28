@@ -16,13 +16,6 @@ jest.mock('expo-image', () => {
 jest.mock('../../src/components/ImageButton', () => ({ ImageButton: () => null }));
 jest.mock('../../src/components/ImageMessage', () => ({ ImageMessage: () => null }));
 jest.mock('../../src/components/ImageRights', () => ({ ImageRights: () => null }));
-jest.mock('../../src/AccessibilityProvider', () => {
-  const ReactLocal = require('react');
-
-  return {
-    AccessibilityContext: ReactLocal.createContext({ isGrayscaleEnabled: false })
-  };
-});
 jest.mock('../../src/ConfigurationsProvider', () => {
   const ReactLocal = require('react');
 

@@ -19,10 +19,6 @@ jest.mock('react-native-webview', () => ({
   WebView: () => null
 }));
 
-jest.mock('react-native-color-matrix-image-filters', () => ({
-  Grayscale: 'mock-grayscale'
-}));
-
 jest.mock('../../src/AccessibilityProvider', () => {
   const ReactLocal = require('react');
 
@@ -197,7 +193,6 @@ jest.mock('react-native-render-html', () => {
 });
 
 import { HtmlView } from '../../src/components/HtmlView';
-import { AccessibilityContext } from '../../src/AccessibilityProvider';
 
 const renderWithAct = (component: React.ReactElement) => {
   let testRenderer: renderer.ReactTestRenderer;
@@ -230,21 +225,6 @@ describe('HtmlView accessibility', () => {
     expect(image.props.accessible).toBe(true);
     expect(image.props.accessibilityRole).toBe('image');
     expect(image.props.accessibilityLabel).toBe('(Bild)');
-  });
-
-  it('filters HTML images while grayscale mode is enabled', () => {
-    const tree = renderWithAct(
-      <AccessibilityContext.Provider
-        value={
-          { isBoldTextEnabled: false, isGrayscaleEnabled: true, textScaleMultiplier: 1 } as never
-        }
-      >
-        <HtmlView html={'<img src="https://example.com/logo.png" alt="Logo">'} />
-      </AccessibilityContext.Provider>
-    );
-
-    expect(tree.root.findByType('mock-grayscale')).toBeTruthy();
-    expect(tree.root.findByType('mock-img-element').props.accessibilityLabel).toBe('Logo');
   });
 
   it('uses the complete available width only for full-width images', () => {

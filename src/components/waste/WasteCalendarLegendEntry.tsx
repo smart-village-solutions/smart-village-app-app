@@ -1,9 +1,7 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { AccessibilityContext } from '../../AccessibilityProvider';
 import { normalize } from '../../config';
-import { resolveWasteDisplayColor } from '../../helpers';
 import { RegularText } from '../Text';
 import { WrapperRow } from '../Wrapper';
 
@@ -16,10 +14,7 @@ type EntryProps = {
 };
 
 export const Dot = ({ color, style }: { color: string; style?: any }) => {
-  const { isGrayscaleEnabled } = useContext(AccessibilityContext);
-  const displayColor = resolveWasteDisplayColor(color, isGrayscaleEnabled);
-
-  return <View style={[styles.dot, { backgroundColor: displayColor }, style]} />;
+  return <View style={[styles.dot, { backgroundColor: color }, style]} />;
 };
 
 export const WasteCalendarLegendEntry = ({

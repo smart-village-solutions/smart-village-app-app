@@ -1,41 +1,28 @@
 jest.mock('../../src/config', () => ({
-  normalize: (value: number) => value
+  normalize: (value: number) => value * 2
 }));
 
 import { resolveServiceTileStyle } from '../../src/helpers/serviceTileStyle';
 
 describe('serviceTileStyle', () => {
-  it('converts item-level tile colors in grayscale mode', () => {
+  it('prefers item-level styles and normalizes numeric values', () => {
     const style = resolveServiceTileStyle({
       fallbackStyle: { backgroundColor: '#0000FF' },
-      isGrayscaleEnabled: true,
       itemStyle: { backgroundColor: '#C44D36', borderColor: '#FFFFFF', borderWidth: 2 }
     });
 
     expect(style).toEqual({
-      backgroundColor: expect.stringMatching(/^rgb\((\d+), \1, \1\)$/),
-      borderColor: 'rgb(255, 255, 255)',
-      borderWidth: 2
+      backgroundColor: '#C44D36',
+      borderColor: '#FFFFFF',
+      borderWidth: 4
     });
   });
 
-  it('uses and converts the global fallback when no item override exists', () => {
+  it('uses and normalizes the global fallback when no item override exists', () => {
     const style = resolveServiceTileStyle({
-      fallbackStyle: { color: '#C44D36', fontSize: 14 },
-      isGrayscaleEnabled: true
+      fallbackStyle: { color: '#C44D36', fontSize: 14 }
     });
 
-    expect(style.color).toMatch(/^rgb\((\d+), \1, \1\)$/);
-    expect(style.fontSize).toBe(14);
-  });
-
-  it('preserves configured colors when grayscale mode is disabled', () => {
-    expect(
-      resolveServiceTileStyle({
-        fallbackStyle: { backgroundColor: '#0000FF' },
-        isGrayscaleEnabled: false,
-        itemStyle: { backgroundColor: '#C44D36' }
-      })
-    ).toEqual({ backgroundColor: '#C44D36' });
+    expect(style).toEqual({ color: '#C44D36', fontSize: 28 });
   });
 });

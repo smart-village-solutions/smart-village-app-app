@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Platform, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
+
+import { setIosGrayscaleCompositorEnabled } from '../../modules/grayscale-compositor';
 
 type AppWideGrayscaleFilterProps = {
   children: React.ReactNode;
@@ -15,12 +17,16 @@ export const AppWideGrayscaleFilter = ({
   style
 }: AppWideGrayscaleFilterProps) => {
   const baseStyle = fillContainer ? styles.flex : undefined;
-  const isAndroid = Platform.OS === 'android';
+  const usesAndroidFilter = isGrayscaleEnabled && Platform.OS === 'android';
 
-  // React Native supports descendant grayscale filters only on Android.
-  // iOS is handled through the grayscale theme palette and per-image filters.
+  useEffect(() => {
+    if (Platform.OS !== 'ios') return;
+
+    void setIosGrayscaleCompositorEnabled(isGrayscaleEnabled);
+  }, [isGrayscaleEnabled]);
+
   return (
-    <View style={[style, baseStyle, isAndroid && isGrayscaleEnabled && styles.androidGrayscale]}>
+    <View style={[style, baseStyle, usesAndroidFilter && styles.androidGrayscale]}>
       <View style={baseStyle}>{children}</View>
     </View>
   );

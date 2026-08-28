@@ -4,7 +4,6 @@ import React, { ComponentProps, useCallback, useContext, useState } from 'react'
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { AccessibilityContext } from '../../AccessibilityProvider';
 import { consts, Icon, IconSet, IconUrl, normalize } from '../../config';
 import { resolveServiceTileStyle } from '../../helpers';
 import { IconLibrary } from '../../IconProvider';
@@ -106,7 +105,6 @@ export const ServiceTile = ({
   const styles = useThemeStyles(createStyles);
   const navigation = useNavigation<StackNavigationProp<any>>();
   const route = useRoute();
-  const { isGrayscaleEnabled } = useContext(AccessibilityContext);
   const { orientation, dimensions } = useContext(OrientationContext);
   const safeAreaInsets = useSafeAreaInsets();
   const columns = resolveColumns({ item, layoutColumns, orientation });
@@ -143,18 +141,15 @@ export const ServiceTile = ({
 
   const normalizedFontStyle = resolveServiceTileStyle({
     fallbackStyle: fontStyle,
-    isGrayscaleEnabled,
     itemStyle: itemFontStyle
   });
   const normalizedIconStyle = resolveServiceTileStyle({
     fallbackStyle: iconStyle,
-    isGrayscaleEnabled,
     itemStyle: itemIconStyle
   });
   const normalizedTileStyle = omitTileDimensionOverrides(
     resolveServiceTileStyle({
       fallbackStyle: tileStyle,
-      isGrayscaleEnabled,
       itemStyle: itemTileStyle
     })
   );

@@ -1,10 +1,8 @@
 import { Image as ExpoImage } from 'expo-image';
 import type { ImageContentPosition, ImageSource } from 'expo-image';
-import { Grayscale } from 'react-native-color-matrix-image-filters';
 import React, { useContext, useMemo, useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
-import { AccessibilityContext } from '../AccessibilityProvider';
 import { ConfigurationsContext } from '../ConfigurationsProvider';
 import { SettingsContext } from '../SettingsProvider';
 import { consts, device } from '../config';
@@ -89,7 +87,6 @@ export const Image = ({
     );
   const placeholderStyle = placeholderStyleProp || styles.placeholderStyle;
 
-  const { isGrayscaleEnabled } = useContext(AccessibilityContext);
   const { globalSettings } = useContext(SettingsContext);
   const timestamp = useInterval(refreshInterval);
   const { sueConfig = {} } = useContext(ConfigurationsContext);
@@ -186,7 +183,7 @@ export const Image = ({
 
   return (
     <View style={[containerStyle, placeholderStyle]}>
-      {isGrayscaleEnabled ? <Grayscale>{imageElement}</Grayscale> : imageElement}
+      {imageElement}
 
       {loading && (
         <View style={[overlayStyle, styles.loadingStyle]} pointerEvents="none">

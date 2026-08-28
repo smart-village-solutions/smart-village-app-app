@@ -76,6 +76,8 @@ export const ConfigurationsProvider = ({ children }: { children?: ReactNode }) =
   const themedAppDesignSystem = useMemo(() => {
     const resolvedAppDesignSystem = resolveAppDesignSystem(appDesignSystem, mode);
 
+    // The root native filter is authoritative. This conversion keeps
+    // configuration-driven styles consistent in native portal surfaces.
     return isGrayscaleEnabled
       ? resolveGrayscaleConfiguration(resolvedAppDesignSystem)
       : resolvedAppDesignSystem;

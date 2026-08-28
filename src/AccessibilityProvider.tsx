@@ -259,6 +259,8 @@ export const AccessibilityProvider = ({ children }: { children?: React.ReactNode
     systemAccessibility.isGrayscaleEnabled ||
     (features.isGrayscaleEnabled && preferences.isGrayscaleEnabled);
   const themeColors = useMemo(
+    // RootView applies the visual filter. The palette is a centralized
+    // fallback for native portals that may be hosted outside that view tree.
     () => (isGrayscaleEnabled ? resolveGrayscaleThemePalette(baseThemeColors) : baseThemeColors),
     [baseThemeColors, isGrayscaleEnabled]
   );

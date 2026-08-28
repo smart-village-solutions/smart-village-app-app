@@ -444,11 +444,17 @@ Behavior:
 - **High Contrast**
   - Replaces low-contrast text colors in app text rendering with stronger contrast where applicable.
 - **Grayscale**
-  - Applies a luminance-preserving grayscale palette to light and dark themes.
-  - Converts remote app design-system colors, item-level service-tile styles and runtime waste
-    colors on iOS and Android.
-  - Filters both app images and images rendered from HTML content on iOS and Android.
-  - Uses React Native's descendant grayscale filter as an additional Android safeguard.
+  - Uses one shared app-root compositor controlled by the accessibility preference.
+  - Android uses React Native's native descendant grayscale filter. React Native 0.86 does not
+    support that filter on iOS, so iOS uses a local native Core Animation saturation compositor
+    over the application window instead.
+  - The root compositor covers React Native views, images, HTML/WebView content, maps, animated
+    ticker content, tab navigation and remote runtime colors without component-specific grayscale
+    logic.
+  - Applies a luminance-preserving theme palette and converts the remote app design system only as
+    centralized fallbacks for native portal surfaces that can render outside the root view tree.
+  - The accessibility settings overlay uses the same shared root-filter component so its live
+    preview remains synchronized while the grayscale preference is toggled.
 - **Reduce Motion**
   - Exposes reduced-motion state in accessibility context.
   - Stack navigation transitions are disabled in reduced-motion mode.
