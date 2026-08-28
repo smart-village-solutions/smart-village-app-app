@@ -118,7 +118,7 @@ const renderWasteHeaderRight = ({
  */
 /* eslint-disable complexity */
 export const WasteCollectionScreen = ({ navigation, route }) => {
-  const { colors: colors } = useTheme();
+  const { colors } = useTheme();
 
   const styles = useThemeStyles(createStyles);
   const { globalSettings } = useContext(SettingsContext);
@@ -395,7 +395,7 @@ export const WasteCollectionScreen = ({ navigation, route }) => {
                         onPress={() => setIsDayOverlayVisible(false)}
                         style={styles.overlayCloseButton}
                       >
-                        <Icon.Close size={normalize(20)} color={colors.darkText} />
+                        <Icon.Close size={normalize(20)} color={colors.text} />
                       </TouchableOpacity>
                     </WrapperRow>
                   )}
@@ -456,7 +456,7 @@ export const WasteCollectionScreen = ({ navigation, route }) => {
 };
 /* eslint-enable complexity */
 
-const createStyles = () => ({
+export const createStyles = (colors) => ({
   exportButtonContainer: {
     alignSelf: 'center',
     position: 'absolute',
@@ -482,6 +482,7 @@ const createStyles = () => ({
   },
 
   overlay: {
+    backgroundColor: colors.surface,
     borderRadius: normalize(8),
     padding: normalize(30),
     paddingBottom: normalize(9)
