@@ -14,9 +14,9 @@ Reference points used while preparing this guide:
 
 - Mobile starting tag: `v4.3.0` / `c14bbad7e708a34f3c931e87d7d26f98e288f37b`
   (4 May 2026)
-- Reviewed `master` snapshot: `47508475dfe22661e24c0f76f155c0c52b8481c7`
-  (27 August 2026)
-- Reviewed range: 501 commits and changes in 934 files
+- Reviewed `master` snapshot: `4242583f4c8200b912338a3b12a5de3b16845b0e`
+  (28 August 2026)
+- Reviewed range: 509 commits and changes in 943 files
 - Main-Server comparison baseline: `5b4ba192705c3e1c8cb269bdaf301ea1fc5c43f0`
   (4 May 2026)
 - Reviewed remote Main-Server `saas` head: `d3c803683d6b041421df656644c610ede61878c5`
@@ -63,37 +63,40 @@ The most important outcomes of the migration are:
    retained for older clients.
 6. Accessibility, dark mode, Participation Projects, interactive floor plans, cache lifetimes,
    SUE internal-status presentation, feedback diagnostics, and flexible waste reminders are
-   configuration-driven. Introduce them deliberately through `globalSettings`, module
-   configuration, static content, and the required backend data.
-7. Generic Item records can now become calendar events, and icon libraries can be selected globally
+   configuration-driven. Grayscale now covers the application root through an Android descendant
+   filter and a local iOS compositor, so the iOS implementation requires a freshly built binary.
+7. Map start zoom, image-carousel pagination, and recurring POI opening-time grouping are new
+   presentation controls. They are opt-in or retain existing fallbacks, but their StaticContent
+   scope and limited screen coverage must be understood before enabling them tenant-wide.
+8. Generic Item records can now become calendar events, and icon libraries can be selected globally
    or per configured tab/service tile. Both features depend on validated tenant configuration;
    Generic Item events additionally depend on complete, bounded datasets with usable dates.
-8. Profile header login now uses `expo-auth-session`, SecureStore-backed token restoration, and a
+9. Profile header login now uses `expo-auth-session`, SecureStore-backed token restoration, and a
    configurable OAuth endpoint set. Register the app redirect URI, use a public-client/PKCE setup,
    and test legacy, expired, invalid, and temporarily unrefreshable sessions.
-9. Push navigation now handles foreground, background, and Android cold-start responses at the app
-   root. Push producers must supply the supported `query_type`/`queryType` and `id` payload contract.
-10. The highest merge-conflict risk is in `app.json`, `eas.json`, their template files,
+10. Push navigation now handles foreground, background, and Android cold-start responses at the app
+    root. Push producers must supply the supported `query_type`/`queryType` and `id` payload contract.
+11. The highest merge-conflict risk is in `app.json`, `eas.json`, their template files,
     `package.json`, `yarn.lock`, the legacy `src/config/colors.js`, and tenant-specific navigation or
     static content.
 
 ## 3. Platform and dependency changes
 
-| Area          | v4.3.0                                   | Reviewed v5 target                         | Migration impact                                                                                    |
-| ------------- | ---------------------------------------- | ------------------------------------------ | --------------------------------------------------------------------------------------------------- |
-| Node.js       | 20.19.4                                  | 22.13.0                                    | Align local development, CI, and EAS                                                                |
-| Yarn          | 1.22.22                                  | 1.22.22                                    | Unchanged; generate the lockfile with Yarn 1                                                        |
-| Expo          | 54.0.34                                  | 57.0.14                                    | Clean prebuild and new development/production builds required                                       |
-| React Native  | 0.81.5                                   | 0.86.2                                     | Retest native behavior and the supported device matrix                                              |
-| React         | 19.1.0                                   | 19.2.3                                     | Keep React and the test renderer on compatible versions                                             |
-| TypeScript    | 5.9.2                                    | 6.0.3                                      | Recheck tenant-specific type errors                                                                 |
-| Reanimated    | 4.1.1                                    | 4.5.1                                      | Keep it paired with `react-native-worklets` 0.10.1                                                  |
-| Navigation    | Direct `@react-navigation/*` imports     | Primarily `expo-router` entry points       | Do not restore removed navigation packages; review the temporary Floor Plan direct-import exception |
-| File system   | Primarily legacy API                     | `File`, `Directory`, `Paths`, `expo/fetch` | Retest upload, AR download, and wallet sharing                                                      |
-| Carousel      | `react-native-snap-carousel`             | `react-native-reanimated-carousel`         | Retest sizing, autoplay, reduced motion, and accessibility                                          |
-| Chat          | GiftedChat 2.8.1 plus patch              | GiftedChat 3.4.0                           | Message dates and matcher/action APIs changed                                                       |
-| Profile OAuth | No direct `expo-auth-session` dependency | `expo-auth-session` 57.0.7                 | Register the scheme redirect, verify the fixed OAuth endpoints, and upgrade-test stored sessions    |
-| Rich text     | No `react-native-enriched` dependency    | `react-native-enriched` 0.4.0              | Rebuild native apps and test the content editor, keyboard, links, lists, and persisted HTML         |
+| Area          | v4.3.0                                   | Reviewed v5 target                         | Migration impact                                                                                 |
+| ------------- | ---------------------------------------- | ------------------------------------------ | ------------------------------------------------------------------------------------------------ |
+| Node.js       | 20.19.4                                  | 22.13.0                                    | Align local development, CI, and EAS                                                             |
+| Yarn          | 1.22.22                                  | 1.22.22                                    | Unchanged; generate the lockfile with Yarn 1                                                     |
+| Expo          | 54.0.34                                  | 57.0.14                                    | Clean prebuild and new development/production builds required                                    |
+| React Native  | 0.81.5                                   | 0.86.2                                     | Retest native behavior and the supported device matrix                                           |
+| React         | 19.1.0                                   | 19.2.3                                     | Keep React and the test renderer on compatible versions                                          |
+| TypeScript    | 5.9.2                                    | 6.0.3                                      | Recheck tenant-specific type errors                                                              |
+| Reanimated    | 4.1.1                                    | 4.5.1                                      | Keep it paired with `react-native-worklets` 0.10.1                                               |
+| Navigation    | Direct `@react-navigation/*` imports     | `expo-router` entry points                 | Do not restore removed navigation packages or their old imports                                  |
+| File system   | Primarily legacy API                     | `File`, `Directory`, `Paths`, `expo/fetch` | Retest upload, AR download, and wallet sharing                                                   |
+| Carousel      | `react-native-snap-carousel`             | `react-native-reanimated-carousel`         | Retest sizing, autoplay, reduced motion, and accessibility                                       |
+| Chat          | GiftedChat 2.8.1 plus patch              | GiftedChat 3.4.0                           | Message dates and matcher/action APIs changed                                                    |
+| Profile OAuth | No direct `expo-auth-session` dependency | `expo-auth-session` 57.0.7                 | Register the scheme redirect, verify the fixed OAuth endpoints, and upgrade-test stored sessions |
+| Rich text     | No `react-native-enriched` dependency    | `react-native-enriched` 0.4.0              | Rebuild native apps and test the content editor, keyboard, links, lists, and persisted HTML      |
 
 Official upgrade references:
 
@@ -110,19 +113,20 @@ Official upgrade references:
 - Expo SDK 56 raises the minimum iOS version to 16.4 and requires Xcode 26.4. The existing
   `LSMinimumSystemVersion: "12.0"` value in `app.json` does not guarantee the generated deployment
   target. Verify the generated Xcode project and the resulting App Store device coverage.
-- Application code should use the Expo Router navigation entry points after the SDK 56 migration.
-  The reviewed Floor Plan/navigation helper and several new profile content screens/forms still
-  import from `@react-navigation/native` or `@react-navigation/stack`, even though those packages
-  are not declared directly. Align them with `expo-router/react-navigation` and
-  `expo-router/js-stack` before release; do not rely silently on transitive packages or restore the
-  removed direct dependencies.
+- Application code uses the Expo Router navigation entry points after the SDK 56 migration. The
+  reviewed snapshot also moves the remaining Floor Plan and profile content imports to
+  `expo-router/react-navigation` and `expo-router/js-stack`. Preserve those imports during conflict
+  resolution; do not restore undeclared direct `@react-navigation/native` or
+  `@react-navigation/stack` dependencies.
 - The SDK 57 Hermes/Reanimated memory regression was fixed in `expo@57.0.9` and React Native
   0.86.2. The reviewed target uses `expo@57.0.14` and React Native 0.86.2. Do not resolve merge
   conflicts by downgrading to an earlier SDK 57 combination.
 - With SDK 57, `expo prebuild` cleans and regenerates native projects by default. In this repository,
   `ios/` and `android/` are generated directories and are ignored by Git.
-- `expo-speech`, `react-native-color-matrix-image-filters`, the Reanimated/Worklets updates, and
-  `modules/on-off-switch-labels` make a store binary update mandatory.
+- `expo-speech`, the Reanimated/Worklets updates, `modules/on-off-switch-labels`, and the local iOS
+  `modules/grayscale-compositor` Expo module make a store binary update mandatory. The temporary
+  `react-native-color-matrix-image-filters` dependency has been removed and must not be restored
+  during lockfile conflict resolution.
 - `expo-auth-session` is now a direct dependency for profile header login. The configured OAuth
   client must accept `<app-scheme>://redirect`; do not treat a value shipped as `clientSecret` in
   `globalSettings` as confidential mobile-app secret material.
@@ -174,6 +178,10 @@ Record the following for every tenant/release branch:
 - existing waste reminder registrations, selected collection address, and push-token ownership;
 - tenant cache policy and the `wasteTypes`, `floorPlan`, `feedbackContent`, and `tabNavigation`
   StaticContent records;
+- the `mapSettings` StaticContent, including the existing single/multiple-marker zoom values and
+  any tenant-specific `initialZoom` override;
+- carousel navigation/pause/pagination choices and the POI recurring-opening-time presentation
+  policy;
 - Generic Item event sources and their expected type/status/date payloads;
 - the global icon-family priority and any per-tab or per-service-tile `iconSet` overrides;
 - profile OAuth client registration, redirect URI, scopes, endpoint base URL, and staged test
@@ -254,6 +262,7 @@ downgrade or restore:
 - `expo-constants` or other packages covered by `resolutions` pins;
 - GiftedChat 2.8.1 or its removed local patch;
 - `react-native-snap-carousel` in place of `react-native-reanimated-carousel`;
+- the removed `react-native-color-matrix-image-filters` package or its transitive lockfile entries;
 - `react-native-enriched` 0.4.0 when profile content creation is enabled.
 
 Do not merge `yarn.lock` line by line. Resolve the final `package.json`, regenerate or install the
@@ -404,12 +413,18 @@ Example skeleton for newly introduced settings:
       "listDateFormat": "YYYY-MM-DD HH:mm:ss Z",
       "detailDateFormat": "YYYY-MM-DD HH:mm:ss Z"
     },
+    "openingTimes": {
+      "groupByWeekday": true
+    },
     "profile": {
       "clientId": "<public-mobile-client-id>",
       "clientSecret": "",
       "scopes": ["openid", "profile", "email"],
       "serverUrl": "https://identity.example.org/realms/example/protocol/openid-connect",
       "usePKCE": true
+    },
+    "sliderSettings": {
+      "showPagination": true
     },
     "showDistanceDirection": {
       "poi": false,
@@ -433,6 +448,20 @@ Example skeleton for newly introduced settings:
 This is only a skeleton of newly introduced fields. Preserve existing tenant configuration such as
 `navigation`, `sections`, `filter`, `waste`, `widgets`, `hdvt`, `whistleblow`, and other top-level
 properties.
+
+The map start zoom does **not** belong in `globalSettings`. It is read from the separate JSON
+StaticContent record named `mapSettings`. Merge `initialZoom` into the tenant's existing
+`zoomLevel` object instead of replacing its marker-specific values:
+
+```json
+{
+  "zoomLevel": {
+    "initialZoom": 12,
+    "multipleMarkers": 10,
+    "singleMarker": 15
+  }
+}
+```
 
 ### 5.2. BUS breaking migration
 
@@ -502,18 +531,24 @@ New accessibility features remain disabled unless explicitly enabled in
   built-in colors.
 - User preferences persist in AsyncStorage, so an in-place upgrade test is required.
 
-Grayscale no longer means only desaturating a few built-in colors. When enabled, v5 derives a
-luminance-preserving grayscale palette for light and dark themes, recursively transforms color
-values in remote `appDesignSystem` configuration, filters images on iOS and Android, and adds a
-descendant filter on Android as a safeguard. Validate tenant logos, remote images, gradients,
-overlays, configured component colors, and contrast in both themes; testing the settings modal
-alone is not sufficient.
+Grayscale no longer means only desaturating a few built-in colors. The reviewed implementation uses
+one application-root compositor: Android applies React Native's descendant grayscale filter, while
+iOS uses the local `modules/grayscale-compositor` Expo module to place a non-interactive Core
+Animation saturation compositor over the active application window. This covers React Native
+views, images, HTML/WebView content, maps, animated tickers, navigation, and runtime colors. The
+luminance-preserving theme palette and recursively transformed remote `appDesignSystem` remain as
+fallbacks for native portal surfaces outside the root tree. Validate tenant logos, remote images,
+gradients, overlays, maps, WebViews, configured component colors, and contrast in both themes on
+real iOS and Android builds; an OTA installed into a binary without the iOS module cannot provide
+the complete behavior.
 
-The home widget grid is now responsive to safe-area width, system font scale, and the app's text
-scale. At the standard effective text scale (`<= 1.1`) it can use up to five columns with a minimum
-64-point item width; at larger scales it reduces and balances columns and may switch widgets to
-their list presentation. Do not carry forward tenant assumptions that widgets always render three
-per row. Test every supported device width, orientation, widget count, and text-scale level.
+The home widget grid is now responsive to its measured container width, safe-area insets, normalized
+spacing, system font scale, and the app's text scale. At the standard effective text scale
+(`<= 1.1`) it can use up to five columns with a normalized minimum 64-point item width. At larger
+scales it caps the grid at two columns; a one-column result switches widgets to their list
+presentation. Rows are not rebalanced solely to fill the last row. Do not carry forward tenant
+assumptions that widgets always render three per row. Test every supported device width,
+orientation, widget count, and text-scale level.
 
 Tab bar colors do not come from the `globalSettings` palette. They are resolved from
 `themeColors.light` and `themeColors.dark` in the `tabNavigation` static content.
@@ -858,6 +893,9 @@ any category.
 | Bot-controlled WebView         | Route parameter `hasBotControl`                                   | Update static navigation/widget parameters                                      |
 | POI/Tour direction             | `settings.showDistanceDirection.poi/tour`                         | Requires coordinates; no schema change                                          |
 | Tour stop initial zoom         | `settings.locationService.tours.initialMapMinZoom`                | Valid range 0–18; invalid values fall back to 14                                |
+| Main map initial zoom          | `mapSettings.zoomLevel.initialZoom`                               | Separate JSON StaticContent; existing marker-specific zooms remain fallbacks    |
+| Image-carousel pagination      | `settings.sliderSettings.showPagination`                          | Opt-in; no schema change; does not affect Disturber or `MediaCarousel`          |
+| POI opening-time grouping      | `settings.openingTimes.groupByWeekday`                            | Strict boolean opt-in; backend order and recurring weekday data must be stable  |
 | Parking availability           | POI `payload.freeStatusUrl` and external feature payload          | Main-Server carries the URL/payload; verify the external endpoint               |
 | Bookmark icon                  | `settings.bookmarkIcon`                                           | No Main-Server schema change                                                    |
 | SUE version label              | `app.json.expo.extra.sueVersion`                                  | Build-time value, not server configuration                                      |
@@ -1164,10 +1202,64 @@ general user-role, and data-provider ownership rules for every read and mutation
 content-type-role enforcement when it is part of the tenant's authorization policy; never rely on
 the client-side comparison alone.
 
+The reviewed snapshot also completes the Expo Router import migration and accessibility coverage
+for these screens. Rich-text inputs expose field state, formatting controls expose button/selected
+semantics, validation errors use a polite live region, repeated-field delete controls have a
+44-point target, and form colors follow the active theme. Preserve these behaviors when resolving
+tenant form conflicts and include VoiceOver/TalkBack plus dark-mode form checks in acceptance
+testing.
+
 Before rollout, use a staging user for each role combination to create, reopen, edit, hide, and
 reload every enabled type. Also verify image upload before mutation, rich-text round trips,
 categories, dates/opening hours, contacts, URLs, prices, push-notification options, validation
 scrolling, offline/error recovery, and denial of cross-provider IDs.
+
+### 5.16. Map, carousel, and opening-times presentation controls
+
+#### Main map initial zoom
+
+`MapScreen` and `MapViewScreen` now read `zoomLevel.initialZoom` from the separate `mapSettings`
+JSON StaticContent. When it is absent, `MapLibre` keeps the existing fallback to
+`zoomLevel.multipleMarkers` or `zoomLevel.singleMarker`, according to the map mode. The
+`mapSettings` record is refreshed once per minute while in use.
+
+Use a finite MapLibre zoom value that is consistent with the tenant's `minZoom`, center, bounds,
+and marker distribution. The client does not validate or clamp the configured `initialZoom` before
+passing it to the camera. This new override is explicitly wired only to the two main map screens;
+embedded maps continue to use their own props and the single/multiple-marker fallbacks. Test both
+an omitted value and the configured value instead of assuming every map surface changes together.
+
+#### Image-carousel pagination
+
+Set `globalSettings.settings.sliderSettings.showPagination` to `true` to opt image carousels into a
+visible and screen-reader-labelled position indicator. Pagination is off by default. After inactive
+entries are filtered, carousels with two to ten visible slides render dots and larger carousels
+render `current / total`; a single visible item keeps the existing non-carousel presentation.
+
+The setting applies to `ImagesCarousel` consumers, including connected home/static-content
+carousels. It is intentionally suppressed for Disturber content and is not currently implemented by
+`MediaCarousel`. Preserve existing `showNavigationButtons`, `autoplayInterval`, `refreshInterval`,
+and pause-button settings when adding the new field. Verify pagination after date-based item
+activation changes, with zero active items, with reduced motion, and at the 10/11-item boundary.
+The reviewed component checks the unfiltered source length before applying active-date filters, so
+an all-inactive source can currently reach pagination with an item count of zero and produce an
+invalid position label. Fix or explicitly guard that state before enabling pagination in
+production.
+
+#### Recurring POI opening times
+
+Set `globalSettings.settings.openingTimes.groupByWeekday` to the boolean value `true` to group
+adjacent recurring PointOfInterest opening-hour windows under one weekday heading. Missing,
+`false`, or string values retain the legacy one-entry-per-heading presentation. This flag is
+currently passed only by the POI detail screen; EventRecord, Offer, and Participation Project
+opening-time cards retain their existing layout.
+
+Grouping preserves backend order and combines only adjacent, open, date-free entries with the same
+raw weekday and description and at least one time value. Closed entries, special date/date-range
+entries, different descriptions, and different weekdays stay separate. Numeric weekdays `0` to `6`
+and their string forms are displayed through the localized Monday-to-Sunday labels. No Main-Server
+schema change is required, but backend ordering and consistent weekday types determine whether the
+intended rows actually group.
 
 ## 6. Main-Server migration decision
 
@@ -1347,13 +1439,14 @@ image, and address values; a successful but truncated response is not sufficient
 
 Also perform these read-only REST/content checks in staging:
 
-- request `globalSettings`, `tabNavigation`, and every enabled `wasteTypes`, `floorPlan`, or
-  `feedbackContent` record with the exact name and version the client will use;
+- request `globalSettings`, `mapSettings`, `tabNavigation`, and every enabled `wasteTypes`,
+  `floorPlan`, or `feedbackContent` record with the exact name and version the client will use;
 - request `profileService`, `profileCreateContentServiceTop`, and
   `profileCreateContentServiceBottom`; validate every route, query value, icon, and required form
   parameter;
-- verify that `globalSettings` contains the intended `iconFamilies`, `eventCalendar`, and `profile`
-  values, and that every tab/service-tile `iconSet` resolves to a visible icon;
+- verify that `globalSettings` contains the intended `iconFamilies`, `eventCalendar`, `profile`,
+  `sliderSettings`, and `openingTimes` values, that `mapSettings` preserves the tenant's zoom
+  object, and that every tab/service-tile `iconSet` resolves to a visible icon;
 - verify the profile OAuth `/auth`, `/token`, and `/logout` flows, the configured `/revoke` metadata,
   the registered app redirect URI, and the Main-Server `/member` bearer-token contract with a
   staging account;
@@ -1376,7 +1469,7 @@ tenant policy, also verify that direct API calls with a missing type role are re
 
 ### 7.1. Known release blockers in the reviewed snapshot
 
-At the time of review on 27 August 2026:
+At the time of review on 28 August 2026:
 
 - `package.json.version` is still `4.3.0`;
 - `app.json.expo.version` is still `4.3.0`;
@@ -1385,16 +1478,14 @@ At the time of review on 27 August 2026:
 - `app.json.erb.tmpl` is not synchronized with `app.json`: its SUE version is still `1.0.0`, its
   splash plugin lacks the dark configuration, it still grants legacy Android read permissions,
   and it registers the MapLibre plugin twice;
-- the Floor Plan/navigation helper and the profile content home, content overview, settings, form,
-  NewsForm, EventForm, and PointOfInterestForm implementations directly import
-  `@react-navigation/native` or `@react-navigation/stack`, although neither package is declared as
-  a direct dependency;
 - `.github/scripts/eas-update.js` does not provide the `eas update --environment ...` argument
   required after the SDK 55 update;
 - `APP_DESIGN_SYSTEM_DARK_MODE.md` links to a missing
   `docs/app-design-system-dark-mode.json` file;
 - `docs/icons/MULTI_ICON_LIBRARY.md` documents `settings.icon`, while the reviewed implementation
   reads `settings.iconFamilies`;
+- `ImagesCarousel` checks the source length before active-date filtering; with pagination enabled,
+  an all-inactive source can reach a zero-item indicator and expose an invalid accessible position;
 - profile header OAuth support is implemented but no reviewed default stack screen enables
   `withProfile`; confirm the intended product entry point and public-client/PKCE policy before
   release;
@@ -1454,17 +1545,19 @@ recovered from a normal source diff.
 
 ### 7.4. Quality-gate status of the reviewed snapshot
 
-The local review on 27 August 2026 found existing quality/infrastructure failures:
+The local review on 28 August 2026 found existing quality/infrastructure failures:
 
 - `yarn lint` does not reach a result. It repeatedly reports parser errors where the outdated
   `@typescript-eslint/parser` encounters Flow syntax in React Native, and the review run was stopped
-  after 30 seconds of repeated errors. Align the ESLint/parser/import-resolver toolchain with
+  after more than 60 seconds of repeated errors. Align the ESLint/parser/import-resolver toolchain with
   TypeScript 6 and React Native 0.86, then resolve remaining project errors before release.
-- `yarn test --runInBand` passes 121 of 164 suites and 623 of 628 tests. It fails 43 suites and 3
-  tests, with 2 skipped tests. Most suite failures are caused by the intentionally untracked
-  `src/config/secrets.js` file being unavailable; the remaining failures include obsolete
-  `@react-navigation/native` mocks and stale waste/settings mocks. Provide a secret-free Jest module
-  mock or safe test-time provisioning in CI; never commit a real secret file.
+- `yarn test` passes 125 of 166 suites and 660 of 669 tests. It fails 41 suites and 7 tests, with 2
+  skipped tests. Most suite failures are caused by the intentionally untracked
+  `src/config/secrets.js` file being unavailable; the remaining assertion failures include stale
+  waste/settings expectations. Provide a secret-free Jest module mock or safe test-time
+  provisioning in CI; never commit a real secret file.
+- A focused run covering opening-time grouping, carousel accessibility, the grayscale compositor,
+  widget layout, initial map zoom, and accessible inputs passes all 7 suites and 37 tests.
 - `npx expo-doctor@latest` cannot start its project checks because evaluating Expo config reaches
   the same missing `src/config/secrets.js` dependency. Ensure CI can evaluate Expo config through
   safe test-time provisioning.
@@ -1506,8 +1599,14 @@ For the accessibility changes, also run:
   notifications followed by a push-token or permission change;
 - first launch while online, offline, and while Main-Server is unavailable;
 - cached legacy `globalSettings` followed by the new 5.0.0 content;
+- existing `mapSettings` without `initialZoom`, followed by a record that adds the override without
+  removing `singleMarker` or `multipleMarkers`;
+- pagination and POI opening-time grouping omitted, disabled, and enabled through versioned
+  configuration;
 - concurrent use by a v4.3.0 client and a v5 client against the same Main-Server deployment;
 - cold start in light, dark, and system theme modes;
+- grayscale toggled repeatedly in a clean v5 native build on both platforms, including WebView,
+  map, modal/portal, orientation, background, and foreground transitions;
 - no OTA, downloading OTA, OTA ready, and reload flows.
 
 ### 8.3. Module smoke tests
@@ -1520,18 +1619,19 @@ For the accessibility changes, also run:
 | Generic events  | Every configured Generic Item type/filter/date maps consistently into list, calendar, home, and widget; native filters suppress external data; refresh, loading, deduplication, and large/truncated datasets are verified                                                |
 | Icons           | Global family order, per-tab/tile overrides, unified mappings, custom SVG priority, missing-name fallback, fill/stroke, theme, and accessibility states render correctly                                                                                                 |
 | Profile OAuth   | Redirect, authorization-code exchange, PKCE, restore, refresh, transient outage, invalid/revoked token, logout, missing-member cleanup, and offline-to-online recovery work without exposing confidential secrets                                                        |
-| Profile content | Member/user token handoff, role-filtered tiles, owner lists, create/edit/hide for news/events/POIs/noticeboard, image and rich-text round trips, cross-provider denial, and Keycloak role refresh work                                                                   |
+| Profile content | Member/user token handoff, role-filtered tiles, owner lists, create/edit/hide for news/events/POIs/noticeboard, image and rich-text round trips, accessible rich-text controls/errors/touch targets, dark mode, cross-provider denial, and Keycloak role refresh work    |
 | Cache           | General, Apollo, Home, and SUE expiration values apply; invalid values fall back safely; legacy Apollo data receives metadata; expiration removes the expected scope only                                                                                                |
 | Waste           | Legacy and flexible UI modes work; per-type slots, 50-item limit, coverage reminders, permission/token/address resync, disruption registration, local tap navigation, and server fallback suppression are verified                                                       |
 | Floor Plan      | Remote and inline SVG floors render; floor/view switches, pins, linked content, invalid config, theme, scaling, gestures, and the screen-reader list alternative work                                                                                                    |
 | Theme           | App shell, tabs/drawer, modals, forms, maps, calendar, WebView loading, SUE, and static carousels are checked in both themes                                                                                                                                             |
-| Accessibility   | Text scaling, bold text, luminance-preserving grayscale for remote colors/images, responsive 1–5-column widget layout, high contrast, reduced motion/transparency, switch labels, and read aloud are tested on real devices                                              |
+| Accessibility   | Text scaling, bold text, Android root grayscale, iOS compositor coverage, native portal fallbacks, responsive 1–5-column widgets with a two-column large-text cap, high contrast, reduced motion/transparency, switch labels, and read aloud are tested on real devices  |
 | Upload          | Volunteer calendar/post/email, Consul attachments, wallet card sharing, and AR download/delete work                                                                                                                                                                      |
-| Chat/carousel   | GiftedChat messages, quick replies, attachments, links, carousel autoplay/pause, and single-image height work                                                                                                                                                            |
+| Chat/carousel   | GiftedChat messages, quick replies, attachments, links, carousel autoplay/pause, pagination disabled/enabled, zero active and 1/10/11 visible items, Disturber exclusion, reduced motion, and single-image height work                                                   |
 | Feedback        | Configured HTML renders; diagnostic checkbox defaults to off; each granular/legacy flag exposes only the intended category; nothing is sent without opt-in; expected email/payload is produced after opt-in                                                              |
 | SUE/Defect      | Missing/partial/complete SUE configuration, paginated locations/requests, stored-report status refresh and provenance, hidden/shown internal pending status, camera/gallery draft and EXIF flows, reports with and without location, and category position ordering work |
 | WebView         | Incognito precedence, platform user agent, bot control, external browser, and modal browser behavior work                                                                                                                                                                |
-| Maps            | POI/Tour direction card, TourStop zoom/bounds, parking status, and invalid coordinates are handled                                                                                                                                                                       |
+| Maps            | POI/Tour direction card, TourStop zoom/bounds, `mapSettings` initial-zoom override/fallback, embedded-map isolation, parking status, and invalid coordinates are handled                                                                                                 |
+| Opening times   | POI grouping disabled/enabled, adjacent windows, backend order, numeric/string weekdays, descriptions, closed entries, special dates, pagination boundary, and unaffected Event/Offer/Participation cards are verified                                                   |
 | Push            | Canonical and normalized payloads navigate once in foreground/background/cold start; queueing before navigator readiness, query type aliases, missing fields, local waste taps, deep links, and notification categories work                                             |
 
 ### 8.4. Pre-production monitoring
@@ -1554,6 +1654,12 @@ For the accessibility changes, also run:
   unauthorized content mutations, upload failures, and cross-provider access attempts without
   logging token values;
 - monitor unresolved icon names and question-mark fallbacks after static-content updates;
+- monitor invalid `mapSettings.zoomLevel.initialZoom` values and unexpected main-map camera starts;
+- monitor image-carousel rendering/accessibility errors around pagination and changing active-item
+  counts;
+- monitor POI opening-hour payload order/type inconsistencies that prevent expected weekday groups;
+- monitor iOS grayscale-compositor warnings and verify grayscale state after scene/window,
+  foreground, orientation, modal, WebView, and map transitions;
 - monitor memory, startup, carousel, and chat crashes, with particular attention to
   Reanimated/Worklets;
 - support v4.3.0 and v5.0.0 clients concurrently during staged rollout.
@@ -1581,14 +1687,20 @@ For the accessibility changes, also run:
     from `profileService` and remove both `profileCreateContentService*` records or replace them with
     safe empty arrays. Do not delete or reassign created content; retain server authorization and
     token compatibility while already-installed v5 clients and cached content are still active.
-11. To disable Floor Plan, remove its navigation entry and StaticContent reference. No stored user
+11. To restore the previous main-map camera fallback, remove only `zoomLevel.initialZoom` from
+    `mapSettings`; retain the tenant's `singleMarker`, `multipleMarkers`, bounds, center, and styling.
+12. To hide image-carousel pagination, remove `settings.sliderSettings.showPagination` or set it to
+    `false`; preserve the rest of `sliderSettings` and `sliderPauseButton`.
+13. To restore the legacy POI opening-time presentation, remove
+    `settings.openingTimes.groupByWeekday` or set it to `false`. No backend data rollback is needed.
+14. To disable Floor Plan, remove its navigation entry and StaticContent reference. No stored user
     data or server schema needs to be deleted.
-12. To disable flexible waste reminders, restore a `wasteTypes` payload without explicit push slots,
+15. To disable flexible waste reminders, restore a `wasteTypes` payload without explicit push slots,
     resynchronize/clear the app-owned native reminders, and keep the compatible server columns and
     index in place during the client rollback window.
-13. Removing cache overrides returns invalid or missing scopes to the end-of-day fallback. Do not
+16. Removing cache overrides returns invalid or missing scopes to the end-of-day fallback. Do not
     delete persisted data manually unless the rollback procedure explicitly requires it.
-14. Follow the Main-Server repository's backup and rollback procedure for server-side migrations.
+17. Follow the Main-Server repository's backup and rollback procedure for server-side migrations.
     A mobile rollback does not authorize a backend schema downgrade.
 
 Do not move the published `v5.0.0` tag during rollback. A corrected source release must use a new
@@ -1620,7 +1732,11 @@ semantic version and a new immutable tag.
 - [ ] Waste registration migrations and REST/token/fallback contracts are deployed before flexible reminders or disruptions are enabled.
 - [ ] Waste reminder slots use stable IDs, and legacy/flexible modes, local coverage, native inventory, token rotation, and selected-address migration are verified.
 - [ ] SUE pagination, stored-status refresh/provenance, internal pending-status configuration, and media permission/draft flows are verified.
-- [ ] Grayscale tenant colors/images and responsive widgets are verified across both themes, device widths, orientations, and text scales.
+- [ ] Grayscale covers the complete Android root and iOS compositor surfaces in a clean native build, including maps, WebViews, portals, orientation, and app lifecycle transitions.
+- [ ] Responsive widgets are verified across both themes, device/container widths, orientations, standard text scales, and the two-column large-text cap.
+- [ ] Existing `mapSettings` values are preserved and `zoomLevel.initialZoom` plus its missing-value fallback are verified on both main map screens.
+- [ ] Carousel pagination is tested disabled/enabled with zero, 1, 10, and 11 active items, while Disturber and `MediaCarousel` remain unaffected.
+- [ ] POI weekday grouping is tested against production-ordered recurring, closed, described, and special-date opening-hour data; non-POI cards remain unchanged.
 - [ ] Push producers emit a supported query type and ID, and foreground/background/cold-start navigation is verified.
 - [ ] Privacy and email processing are approved before feedback diagnostics are enabled.
 - [ ] Feedback HTML and every enabled granular diagnostic category are verified with and without user consent.
