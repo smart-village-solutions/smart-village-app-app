@@ -1,2 +1,2 @@
 export const isOpeningTimesGroupingEnabled = (settings = {}) =>
-  settings?.openingTimes?.groupByWeekday === true;
+  settings?.openingTimes?.groupByWeekday !== false;

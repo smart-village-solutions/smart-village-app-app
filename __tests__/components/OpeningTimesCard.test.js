@@ -144,16 +144,16 @@ const getDividerCount = (component) =>
   }).length;
 
 describe('isOpeningTimesGroupingEnabled', () => {
-  it('keeps the legacy view by default', () => {
-    expect(isOpeningTimesGroupingEnabled()).toBe(false);
-    expect(isOpeningTimesGroupingEnabled({})).toBe(false);
-    expect(isOpeningTimesGroupingEnabled({ openingTimes: {} })).toBe(false);
+  it('enables grouping by default', () => {
+    expect(isOpeningTimesGroupingEnabled()).toBe(true);
+    expect(isOpeningTimesGroupingEnabled({})).toBe(true);
+    expect(isOpeningTimesGroupingEnabled({ openingTimes: {} })).toBe(true);
   });
 
-  it('only enables grouping for an explicit boolean true setting', () => {
+  it('only disables grouping for an explicit boolean false setting', () => {
     expect(isOpeningTimesGroupingEnabled({ openingTimes: { groupByWeekday: true } })).toBe(true);
     expect(isOpeningTimesGroupingEnabled({ openingTimes: { groupByWeekday: false } })).toBe(false);
-    expect(isOpeningTimesGroupingEnabled({ openingTimes: { groupByWeekday: 'true' } })).toBe(false);
+    expect(isOpeningTimesGroupingEnabled({ openingTimes: { groupByWeekday: 'false' } })).toBe(true);
   });
 });
 
