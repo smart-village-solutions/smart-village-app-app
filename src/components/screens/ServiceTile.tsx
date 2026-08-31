@@ -4,8 +4,13 @@ import React, { ComponentProps, useCallback, useContext, useState } from 'react'
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { AccessibilityContext } from '../../AccessibilityProvider';
 import { consts, Icon, IconSet, IconUrl, normalize } from '../../config';
-import { resolveServiceTileStyle } from '../../helpers';
+import {
+  DEFAULT_TILE_GRID_COLUMNS,
+  resolveServiceTileIconSize,
+  resolveServiceTileStyle
+} from '../../helpers';
 import { IconLibrary } from '../../IconProvider';
 import { OrientationContext } from '../../OrientationProvider';
 import { Image } from '../Image';
@@ -105,9 +110,14 @@ export const ServiceTile = ({
   const styles = useThemeStyles(createStyles);
   const navigation = useNavigation<StackNavigationProp<any>>();
   const route = useRoute();
+  const { textScaleMultiplier = 1 } = useContext(AccessibilityContext);
   const { orientation, dimensions } = useContext(OrientationContext);
   const safeAreaInsets = useSafeAreaInsets();
   const columns = resolveColumns({ item, layoutColumns, orientation });
+  const defaultColumns =
+    orientation === 'landscape'
+      ? DEFAULT_TILE_GRID_COLUMNS.landscape
+      : DEFAULT_TILE_GRID_COLUMNS.portrait;
   const [isVisible, setIsVisible] = useState(item.isVisible ?? true);
   const onPress = useCallback(
     () =>
@@ -159,7 +169,13 @@ export const ServiceTile = ({
     : hasDiagonalGradientBackground
     ? colors.lightestText
     : colors.primary;
-  const serviceIconSize = normalizedIconStyle.size || normalize(30);
+  const serviceIconSize = resolveServiceTileIconSize({
+    columns,
+    defaultColumns,
+    fallbackSize: normalize(30),
+    size: normalizedIconStyle.size,
+    textScaleMultiplier
+  });
   const serviceIconFallback = (
     <Icon.NamedIcon color={serviceIconColor} hasNoHitSlop name="photo-off" size={serviceIconSize} />
   );
