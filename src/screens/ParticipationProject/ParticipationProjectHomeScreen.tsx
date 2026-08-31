@@ -1,6 +1,6 @@
 import { StackScreenProps } from 'expo-router/js-stack';
 import React, { useCallback, useMemo, useState } from 'react';
-import { DeviceEventEmitter, FlatList, RefreshControl } from 'react-native';
+import { DeviceEventEmitter, FlatList, RefreshControl, View } from 'react-native';
 import { useQuery } from 'react-query';
 
 import {
@@ -456,11 +456,13 @@ export const ParticipationProjectHomeScreen = ({
         ListHeaderComponent={
           <>
             {homeConfig.showCarousel && (
-              <ConnectedImagesCarousel
-                isImageFullWidth={homeConfig.isCarouselImageFullWidth}
-                navigation={navigation}
-                publicJsonFile={homeConfig.carouselPublicJsonFile}
-              />
+              <View style={styles.carouselContainer}>
+                <ConnectedImagesCarousel
+                  isImageFullWidth={homeConfig.isCarouselImageFullWidth}
+                  navigation={navigation}
+                  publicJsonFile={homeConfig.carouselPublicJsonFile}
+                />
+              </View>
             )}
 
             {!!introHtml && (
@@ -518,6 +520,9 @@ export const ParticipationProjectHomeScreen = ({
 };
 
 const createStyles = () => ({
+  carouselContainer: {
+    marginHorizontal: -normalize(16)
+  },
   contentContainer: {
     flexGrow: 1,
     paddingHorizontal: normalize(16)

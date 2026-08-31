@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires, react/prop-types */
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react-native';
-import { RefreshControl } from 'react-native';
+import { RefreshControl, StyleSheet, View } from 'react-native';
 
 import { darkColors } from '../../src/config/colors';
 import { ParticipationProjectHomeScreen } from '../../src/screens/ParticipationProject/ParticipationProjectHomeScreen';
@@ -179,6 +179,18 @@ describe('ParticipationProjectHomeScreen', () => {
 
     expect(getByText('<p>Intro zum Beteiligungsportal</p>')).toBeTruthy();
     expect(queryByTestId('participation-project-home-content')).toBeNull();
+  });
+
+  it('renders the carousel outside the list horizontal padding', () => {
+    const screen = render(
+      <ParticipationProjectHomeScreen navigation={{ navigate: jest.fn() } as never} />
+    );
+    const carouselContainer = screen
+      .UNSAFE_getAllByType(View)
+      .find((view) => StyleSheet.flatten(view.props.style)?.marginHorizontal === -16);
+
+    expect(carouselContainer).toBeTruthy();
+    expect(carouselContainer?.findByProps({ testID: 'carousel' })).toBeTruthy();
   });
 
   it('uses the active theme color for pull to refresh', () => {
