@@ -29,6 +29,62 @@ jest.mock('../../src/helpers', () => ({
 }));
 
 describe('Image loading states', () => {
+  it('uses a configured accessibility label for informative images', () => {
+    const { getByTestId } = render(
+      <Image
+        PlaceholderContent={null}
+        source={{
+          uri: 'https://example.com/informative.png',
+          accessibilityLabel: 'Landeshauptstadt Magdeburg'
+        }}
+      />
+    );
+
+    const image = getByTestId('expo-image', { includeHiddenElements: true });
+
+    expect(image.props.accessible).toBe(true);
+    expect(image.props.accessibilityRole).toBe('image');
+    expect(image.props.accessibilityLabel).toContain('Landeshauptstadt Magdeburg');
+  });
+
+  it('treats an explicitly empty accessibility label as decorative', () => {
+    const { getByTestId } = render(
+      <Image
+        PlaceholderContent={null}
+        source={{
+          uri: 'https://example.com/decorative.png',
+          accessibilityLabel: '',
+          captionText: 'Legacy fallback must not be announced'
+        }}
+      />
+    );
+
+    const image = getByTestId('expo-image', { includeHiddenElements: true });
+
+    expect(image.props.accessible).toBe(false);
+    expect(image.props.accessibilityElementsHidden).toBe(true);
+    expect(image.props.importantForAccessibility).toBe('no');
+    expect(image.props.accessibilityLabel).toBeUndefined();
+  });
+
+  it('allows an accessible parent control to hide its nested image', () => {
+    const { getByTestId } = render(
+      <Image
+        accessible={false}
+        PlaceholderContent={null}
+        source={{
+          uri: 'https://example.com/linked.png',
+          accessibilityLabel: 'Karriereportal öffnen'
+        }}
+      />
+    );
+
+    const image = getByTestId('expo-image', { includeHiddenElements: true });
+
+    expect(image.props.accessible).toBe(false);
+    expect(image.props.accessibilityLabel).toBeUndefined();
+  });
+
   it('honors an explicitly empty loading placeholder', () => {
     const { UNSAFE_queryByType } = render(
       <Image PlaceholderContent={null} source={{ uri: 'https://example.com/icon.png' }} />
@@ -59,7 +115,7 @@ describe('Image loading states', () => {
       />
     );
 
-    fireEvent(getByTestId('expo-image'), 'error');
+    fireEvent(getByTestId('expo-image', { includeHiddenElements: true }), 'error');
 
     await waitFor(() => expect(getByText('fallback image')).toBeTruthy());
   });
@@ -74,7 +130,7 @@ describe('Image loading states', () => {
       />
     );
 
-    fireEvent(getByTestId('expo-image'), 'error');
+    fireEvent(getByTestId('expo-image', { includeHiddenElements: true }), 'error');
     await waitFor(() => expect(getByText('fallback image')).toBeTruthy());
 
     rerender(

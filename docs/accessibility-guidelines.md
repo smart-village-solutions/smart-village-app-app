@@ -52,6 +52,12 @@ Full-scan tests still run for visibility but do not block PRs by themselves.
 8. Media and scanner surfaces must provide labels and usable fallback actions.
 9. UI colors must come from the runtime theme palette. Use `useThemeStyles`, `useTheme`, `ThemeContext`, or styled-components `theme`; do not use the static light `colors` export in renderable UI.
 10. Prefer semantic color tokens (`background`, `surface`, `surfaceElevated`, `text`, `textMuted`, `onPrimary`, `border`, `primary`, `error`) over visual names or hardcoded values.
+11. Classify images by purpose:
+    - informative images need a concise label conveying their essential information
+    - functional images need a label describing their action or destination
+    - purely decorative images must be hidden from assistive technologies
+12. In HTML content, use a meaningful `alt` value for informative or functional images and
+    `alt=""` for purely decorative images. Do not omit `alt` as a substitute for an empty value.
 
 ## Color, Motion, and Typography
 

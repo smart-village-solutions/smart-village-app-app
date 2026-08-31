@@ -22,6 +22,17 @@ import { LoadingContainer } from './LoadingContainer';
 
 const MAX_DOT_PAGINATION_ITEMS = 10;
 
+const isExplicitlyDecorativeCarouselItem = (item) => {
+  const { button, buttons, message, picture = {} } = item;
+  const hasEmptyAccessibilityLabel =
+    typeof picture.accessibilityLabel === 'string' &&
+    picture.accessibilityLabel.trim().length === 0;
+  const hasFunctionOrContent =
+    !!picture.routeName || !!picture.copyright || !!button || !!buttons?.length || !!message;
+
+  return hasEmptyAccessibilityLabel && !hasFunctionOrContent;
+};
+
 /* eslint-disable complexity */
 export const ImagesCarousel = ({
   aspectRatio,
@@ -173,6 +184,8 @@ export const ImagesCarousel = ({
 
   // filter data for present items and items with active date/time periods
   const carouselData = data.filter((item) => item && isActive(item));
+  const isExplicitlyDecorative =
+    carouselData.length > 0 && carouselData.every(isExplicitlyDecorativeCarouselItem);
 
   // if there is one entry in the data, we do not want to render a whole carousel, we than just
   // need the one item to render
@@ -184,7 +197,11 @@ export const ImagesCarousel = ({
   const isCopyrighted = data.some((item) => item.picture?.copyright);
 
   return (
-    <View style={[styles.carouselContainer, { height: itemHeight }]}>
+    <View
+      accessibilityElementsHidden={isExplicitlyDecorative}
+      importantForAccessibility={isExplicitlyDecorative ? 'no-hide-descendants' : 'auto'}
+      style={[styles.carouselContainer, { height: itemHeight }]}
+    >
       <Carousel
         ref={carouselRef}
         autoPlay={isFocused && !isPaused && !isReduceMotionEnabled}

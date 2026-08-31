@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React from 'react';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import renderer from 'react-test-renderer';
 
 jest.mock('expo-router/react-navigation', () => ({
@@ -309,6 +309,53 @@ describe('Carousel accessibility', () => {
 
     expect(labels).not.toContain('Vorheriges Bild im Bilderkarussell (Taste)');
     expect(labels).not.toContain('Nächstes Bild im Bilderkarussell (Taste)');
+  });
+
+  it('hides an explicitly decorative images carousel from assistive technologies', () => {
+    const tree = renderWithAct(
+      wrapWithContexts(
+        <ImagesCarousel
+          data={[
+            { picture: { accessibilityLabel: '', uri: 'https://example.com/1.jpg' } },
+            { picture: { accessibilityLabel: '', uri: 'https://example.com/2.jpg' } }
+          ]}
+          navigation={{}}
+        />
+      )
+    );
+
+    const hiddenContainer = tree.root
+      .findAllByType(View)
+      .find((item) => item.props.importantForAccessibility === 'no-hide-descendants');
+
+    expect(hiddenContainer?.props.accessibilityElementsHidden).toBe(true);
+  });
+
+  it('keeps a linked carousel available even if its accessibility label is empty', () => {
+    const tree = renderWithAct(
+      wrapWithContexts(
+        <ImagesCarousel
+          data={[
+            {
+              picture: {
+                accessibilityLabel: '',
+                params: { url: 'https://example.com/careers' },
+                routeName: 'Web',
+                uri: 'https://example.com/1.jpg'
+              }
+            },
+            { picture: { accessibilityLabel: '', uri: 'https://example.com/2.jpg' } }
+          ]}
+          navigation={{}}
+        />
+      )
+    );
+
+    const carouselContainer = tree.root
+      .findAllByType(View)
+      .find((item) => item.props.importantForAccessibility === 'auto');
+
+    expect(carouselContainer?.props.accessibilityElementsHidden).toBe(false);
   });
 
   it('adds button semantics to the media carousel pause control', () => {

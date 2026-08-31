@@ -99,16 +99,25 @@ const getThemedHtmlStyles = (colors) => ({
 const HtmlImageRenderer = (props) => {
   const imgProps = useIMGElementProps(props);
   const altText = imgProps.alt?.trim?.();
-  const accessibilityLabel = altText || consts.a11yLabel.image;
+  const isDecorative = typeof imgProps.alt === 'string' && !altText;
+  const accessibilityProps = isDecorative
+    ? {
+        accessible: false,
+        accessibilityElementsHidden: true,
+        importantForAccessibility: 'no-hide-descendants'
+      }
+    : {
+        accessible: true,
+        accessibilityLabel: altText || consts.a11yLabel.image,
+        accessibilityRole: 'image'
+      };
 
   return (
     <IMGElement
       {...imgProps}
       containerProps={{
         ...imgProps.containerProps,
-        accessible: true,
-        accessibilityRole: 'image',
-        accessibilityLabel
+        ...accessibilityProps
       }}
     />
   );

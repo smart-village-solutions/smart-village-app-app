@@ -24,11 +24,13 @@ const addQueryParam = (url, param) => {
 const NO_IMAGE = { uri: 'NO_IMAGE' };
 
 type AppImageSource = ImageSource & {
+  accessibilityLabel?: string;
   captionText?: string;
   copyright?: string;
 };
 
 type ImageProps = {
+  accessible?: boolean;
   aspectRatio?: { width: number; height: number };
   borderRadius?: number;
   button?: TImageButton;
@@ -56,6 +58,7 @@ type ImageLoadState = {
 
 /* eslint-disable complexity */
 export const Image = ({
+  accessible,
   aspectRatio,
   borderRadius = 0,
   button,
@@ -134,6 +137,17 @@ export const Image = ({
   const { hasError, loading } = currentLoadState;
 
   const sourceMetadata = typeof sourceProp === 'number' ? undefined : sourceProp;
+  const configuredAccessibilityLabel =
+    typeof sourceMetadata?.accessibilityLabel === 'string'
+      ? sourceMetadata.accessibilityLabel.trim()
+      : sourceMetadata?.captionText?.trim();
+  const isImageAccessible = accessible ?? !!configuredAccessibilityLabel;
+  const accessibilityLabel =
+    isImageAccessible && configuredAccessibilityLabel
+      ? `${configuredAccessibilityLabel}${
+          device.platform === 'ios' ? ` ${consts.a11yLabel.image}` : ''
+        }`
+      : undefined;
   const showImageRights = !!globalSettings?.showImageRights && !!sourceMetadata?.copyright;
   const additionalButtons = buttons.filter(
     (item) => !button || item.routeName !== button.routeName || item.title !== button.title
@@ -161,10 +175,11 @@ export const Image = ({
       style={imageStyle}
       contentFit={resizeMode}
       contentPosition={contentPosition}
-      accessible={!!sourceMetadata?.captionText}
-      accessibilityLabel={`${sourceMetadata?.captionText ? sourceMetadata.captionText : ''} ${
-        device.platform === 'ios' ? consts.a11yLabel.image : ''
-      }`}
+      accessible={isImageAccessible}
+      accessibilityElementsHidden={!isImageAccessible}
+      accessibilityLabel={accessibilityLabel}
+      accessibilityRole={isImageAccessible ? 'image' : undefined}
+      importantForAccessibility={isImageAccessible ? 'yes' : 'no'}
       onLoadStart={() => {
         setLoadState({ hasError: false, key: sourceKey, loading: true });
       }}

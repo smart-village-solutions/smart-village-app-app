@@ -278,6 +278,7 @@ The JSON uses the existing `ImagesCarousel` item format:
     "id": "participation-project-carousel-1",
     "picture": {
       "uri": "https://example.org/images/participation-project.jpg",
+      "accessibilityLabel": "Beteiligungsportal öffnen",
       "captionText": "Participation project teaser",
       "routeName": "Index",
       "params": {
@@ -297,6 +298,20 @@ The JSON uses the existing `ImagesCarousel` item format:
 
 If no carousel JSON exists or the array is empty, the carousel renders nothing.
 
+### Carousel image accessibility
+
+- Use `picture.accessibilityLabel` for the screen-reader name.
+- For linked images, describe the destination or action, for example
+  `"accessibilityLabel": "Karriereportal öffnen"`. Do not use an empty label for an image that
+  navigates somewhere.
+- For informative, non-interactive images, describe the essential information in the image.
+- For purely decorative, non-interactive images, explicitly set `"accessibilityLabel": ""`.
+  If every carousel item is explicitly decorative, the complete carousel, including its visual
+  controls, is hidden from assistive technologies.
+- `captionText` remains a fallback for existing content when `accessibilityLabel` is omitted.
+- Wordmarks and logos are informative unless the same organization name is already available next
+  to them. Use the organization name as the label when they are informative.
+
 ## Static Content: Home Intro HTML
 
 If `showIntro` is `true`, create an HTML static content entry whose name matches
@@ -313,9 +328,12 @@ Example HTML:
 ```html
 <h2>Participation projects</h2>
 <p>Find current participation projects and open a category to see all projects.</p>
+<img src="partner-logo.svg" alt="Logo Stadt Magdeburg" />
+<img src="decorative-shape.svg" alt="" />
 ```
 
-The intro block is also registered for read-aloud support.
+Use meaningful `alt` values for informative images and `alt=""` for decorative images. Do not omit
+`alt` on image elements.
 
 ## Navigation: Drawer
 

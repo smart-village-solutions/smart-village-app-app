@@ -227,6 +227,20 @@ describe('HtmlView accessibility', () => {
     expect(image.props.accessibilityLabel).toBe('(Bild)');
   });
 
+  it('hides images with an explicitly empty alt text from assistive technologies', () => {
+    const tree = renderWithAct(
+      <HtmlView html={'<img src="https://example.com/decorative.png" alt="">'} />
+    );
+
+    const image = tree.root.findByType('mock-img-element');
+
+    expect(image.props.accessible).toBe(false);
+    expect(image.props.accessibilityElementsHidden).toBe(true);
+    expect(image.props.importantForAccessibility).toBe('no-hide-descendants');
+    expect(image.props.accessibilityRole).toBeUndefined();
+    expect(image.props.accessibilityLabel).toBeUndefined();
+  });
+
   it('uses the complete available width only for full-width images', () => {
     const regularTree = renderWithAct(
       <HtmlView html={'<img src="https://example.com/regular.png">'} />

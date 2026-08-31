@@ -28,13 +28,17 @@ export const ImagesCarouselItem = memo(
     style
   }) => {
     const { routeName: name, params, targetTabIndex } = source;
+    const accessibilityLabel =
+      source.accessibilityLabel?.trim?.() ||
+      source.captionText?.trim?.() ||
+      consts.a11yLabel.imageCarousel;
 
     if (name && params) {
       return (
         <TouchableOpacity
-          accessibilityLabel={`${
-            source.captionText ? source.captionText : consts.a11yLabel.imageCarousel
-          } ${consts.a11yLabel.button}`}
+          accessible
+          accessibilityLabel={`${accessibilityLabel} ${consts.a11yLabel.button}`}
+          accessibilityRole="button"
           onPress={() =>
             navigateToRoute({
               navigation,
@@ -47,6 +51,7 @@ export const ImagesCarouselItem = memo(
         >
           <Image
             {...{
+              accessible: false,
               button,
               source,
               message,
