@@ -2,7 +2,7 @@ import {
   createEventInCalendarAsync,
   getDefaultCalendarAsync,
   requestCalendarPermissionsAsync
-} from 'expo-calendar';
+} from 'expo-calendar/legacy';
 import moment from 'moment';
 import { Alert, Linking, Platform } from 'react-native';
 
