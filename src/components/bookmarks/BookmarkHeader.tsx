@@ -81,6 +81,7 @@ export const BookmarkHeader = ({
       <ConfiguredBookmarkIcon
         color={iconColor}
         selected={isBookmarked}
+        strokeWidth={1}
         size={HEADER_RIGHT_ICON_SIZE}
         style={style}
       />

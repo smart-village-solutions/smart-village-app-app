@@ -26,8 +26,8 @@ import { useTheme } from '../hooks/useTheme';
 const { MATOMO_TRACKING, EMAIL_REGEX } = consts;
 const DEFAULT_FEEDBACK_CONTENT_NAME = 'feedbackContent';
 
-const getFeedbackContentName = (settings) =>
-  settings.htmlContentName || DEFAULT_FEEDBACK_CONTENT_NAME;
+const getFeedbackContentName = (htmlContentName) =>
+  htmlContentName || DEFAULT_FEEDBACK_CONTENT_NAME;
 
 const FeedbackContent = ({ name }) => {
   const { data } = useStaticContent({ name, type: 'html' });
@@ -104,7 +104,10 @@ export const FeedbackScreen = ({ route }) => {
   const [loading, setLoading] = useState(false);
   const { globalSettings } = useContext(SettingsContext);
   const feedbackSettings = globalSettings?.settings?.feedback || {};
-  const feedbackContentName = getFeedbackContentName(feedbackSettings);
+  const htmlContentName = route?.params?.htmlContentName;
+  const feedbackContentName = getFeedbackContentName(
+    htmlContentName || feedbackSettings.htmlContentName
+  );
   const hasDiagnosticInformation = hasEnabledDiagnosticSetting(feedbackSettings);
   const {
     link,

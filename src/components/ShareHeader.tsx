@@ -38,7 +38,6 @@ export const ShareHeader = ({ buttonStyle, label, shareContent, style }: Props) 
           size={HEADER_RIGHT_ICON_SIZE}
           style={style}
           hasNoHitSlop
-          strokeWidth={HEADER_RIGHT_ICON_STROKE_WIDTH}
         />
         {!!label && <RegularText primary>{label}</RegularText>}
       </HeaderIconButton>
