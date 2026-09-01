@@ -1137,7 +1137,7 @@ export const texts = {
     filterByOpeningTime: 'Nur aktuell geöffnete anzeigen',
     loadMoreVouchers: 'Mehr anzeigen',
     location: 'Karte',
-    navigationWithoutAddress: 'Navigation anzeigen',
+    navigationWithoutAddress: 'Route planen',
     noAvailableVehicles: 'Im Moment ist kein Fahrzeug verfügbar',
     openingTime: 'Öffnungszeiten',
     operatingCompany: 'Anbieter',

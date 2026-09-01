@@ -8,6 +8,8 @@ import { Icon, normalize, texts } from '../../config';
 import {
   formatAddress,
   formatAddressSingleLine,
+  hasConcretePostalAddress,
+  isValidGeoLocation,
   locationLink,
   locationString,
   openLink
@@ -77,20 +79,29 @@ export const AddressSection = ({ address, addresses, openWebScreen, title }: Pro
   return (
     <>
       {filteredAddresses.map((item, index) => {
-        const filteredAddress = formatAddress(item);
-        const hasGeoCoordinates =
-          item.geoLocation?.latitude != null && item.geoLocation?.longitude != null;
-        const addressText =
-          filteredAddress ||
-          (hasGeoCoordinates ? texts.pointOfInterest.navigationWithoutAddress : '');
-        const isNavigationPressable = !!filteredAddress?.length || hasGeoCoordinates;
+        const formattedAddress = formatAddress(item);
+        const hasPostalAddress = hasConcretePostalAddress(item);
+        const hasGeoCoordinates = isValidGeoLocation(item.geoLocation);
+        const addressText = hasPostalAddress
+          ? formattedAddress || ''
+          : hasGeoCoordinates
+          ? texts.pointOfInterest.navigationWithoutAddress
+          : '';
 
         if (!addressText.length) return null;
+
+        const accessibilityLabel = hasPostalAddress
+          ? `${a11yText.address} (${addressText}) ${a11yText.button} ${a11yText.mapHint}`
+          : `${addressText} ${a11yText.button} ${a11yText.mapHint}`;
 
         const innerComponent = (
           <WrapperVertical>
             <WrapperRow centerVertical style={styles.wrap}>
-              <Icon.Flag style={styles.margin} />
+              {hasPostalAddress ? (
+                <Icon.Flag style={styles.margin} />
+              ) : (
+                <Icon.RoutePlanner color={colors.primary} style={styles.margin} />
+              )}
               <RegularText primary>{addressText}</RegularText>
             </WrapperRow>
           </WrapperVertical>
@@ -99,42 +110,45 @@ export const AddressSection = ({ address, addresses, openWebScreen, title }: Pro
         return (
           <View key={index}>
             <TouchableOpacity
-              accessibilityLabel={`${texts.accessibilityLabels.actions.openAddress}: ${addressText}`}
+              accessible
+              accessibilityLabel={accessibilityLabel}
               accessibilityRole="button"
-              accessibilityState={{ disabled: !isNavigationPressable }}
-              disabled={!isNavigationPressable}
-              onPress={() => addressOnPress(filteredAddress, item.geoLocation, title)}
+              focusable
+              onPress={() =>
+                addressOnPress(
+                  hasPostalAddress ? formattedAddress : undefined,
+                  item.geoLocation,
+                  title
+                )
+              }
             >
               {innerComponent}
             </TouchableOpacity>
 
             <Divider style={styles.divider} />
 
-            {!!openWebScreen &&
-              bbNaviBaseUrl?.length &&
-              item.geoLocation?.latitude &&
-              item.geoLocation?.longitude && (
-                <>
-                  <WrapperVertical>
-                    <WrapperRow centerVertical style={styles.wrap}>
-                      <Icon.RoutePlanner color={colors.primary} style={styles.margin} />
-                      <TouchableOpacity
-                        accessibilityLabel={texts.accessibilityLabels.actions.openRoutePlanner}
-                        accessibilityRole="button"
-                        onPress={() =>
-                          openWebScreen(
-                            getBBNaviUrl(bbNaviBaseUrl, item, position ?? lastKnownPosition),
-                            texts.screenTitles.routePlanner
-                          )
-                        }
-                      >
-                        <RegularText primary>{texts.pointOfInterest.routePlanner}</RegularText>
-                      </TouchableOpacity>
-                    </WrapperRow>
-                  </WrapperVertical>
-                  <Divider style={styles.divider} />
-                </>
-              )}
+            {!!openWebScreen && bbNaviBaseUrl?.length && hasGeoCoordinates && (
+              <>
+                <WrapperVertical>
+                  <WrapperRow centerVertical style={styles.wrap}>
+                    <Icon.RoutePlanner color={colors.primary} style={styles.margin} />
+                    <TouchableOpacity
+                      accessibilityLabel={texts.pointOfInterest.routePlanner}
+                      accessibilityRole="button"
+                      onPress={() =>
+                        openWebScreen(
+                          getBBNaviUrl(bbNaviBaseUrl, item, position ?? lastKnownPosition),
+                          texts.screenTitles.routePlanner
+                        )
+                      }
+                    >
+                      <RegularText primary>{texts.pointOfInterest.routePlanner}</RegularText>
+                    </TouchableOpacity>
+                  </WrapperRow>
+                </WrapperVertical>
+                <Divider style={styles.divider} />
+              </>
+            )}
           </View>
         );
       })}

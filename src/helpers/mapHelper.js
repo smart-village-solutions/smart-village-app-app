@@ -7,6 +7,27 @@ export function locationString(address) {
 }
 
 /**
+ * Checks whether a location can safely be passed to map and navigation integrations.
+ * Zero is a valid coordinate, while non-finite and out-of-range values are not.
+ *
+ * @param {{ latitude: number; longitude: number } | undefined } geoLocation
+ * @returns {boolean}
+ */
+export function isValidGeoLocation(geoLocation) {
+  const latitude = geoLocation?.latitude;
+  const longitude = geoLocation?.longitude;
+
+  return (
+    Number.isFinite(latitude) &&
+    Number.isFinite(longitude) &&
+    latitude >= -90 &&
+    latitude <= 90 &&
+    longitude >= -180 &&
+    longitude <= 180
+  );
+}
+
+/**
  * a maps link is different between the platforms
  * @param {string} mapsString
  * @param {{
@@ -16,7 +37,9 @@ export function locationString(address) {
  * @returns
  */
 export function locationLink(mapsString, geoLocation) {
-  const coords = geoLocation ? `${geoLocation.latitude},${geoLocation.longitude}` : undefined;
+  const coords = isValidGeoLocation(geoLocation)
+    ? `${geoLocation.latitude},${geoLocation.longitude}`
+    : undefined;
   const query = mapsString || coords;
 
   switch (device.platform) {

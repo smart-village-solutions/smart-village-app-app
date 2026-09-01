@@ -14,6 +14,15 @@ export const formatAddress = (address) => {
     .join(' ');
 };
 
+const hasText = (value) => typeof value === 'string' && value.trim().length > 0;
+
+/**
+ * A concrete postal address needs a street and a locality that can identify the destination.
+ * Descriptive additions, a city, or a postal code on their own are not a concrete address.
+ */
+export const hasConcretePostalAddress = (address) =>
+  hasText(address?.street) && (hasText(address?.city) || hasText(address?.zip));
+
 export const formatAddressSingleLine = (address) => {
   if (!address) return;
 

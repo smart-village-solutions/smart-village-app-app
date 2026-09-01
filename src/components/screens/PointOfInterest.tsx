@@ -7,7 +7,7 @@ import { useProfileContext } from '../../ProfileProvider';
 import { SettingsContext } from '../../SettingsProvider';
 import { Icon, consts, normalize, texts } from '../../config';
 import { AUTH_MODE_USER, getApolloAuthContext } from '../../graphqlAuth';
-import { matomoTrackingString, parseListItemsFromQuery } from '../../helpers';
+import { isValidGeoLocation, matomoTrackingString, parseListItemsFromQuery } from '../../helpers';
 import { useDetailRefresh, useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
 import { useTheme } from '../../hooks/useTheme';
 import { QUERY_TYPES } from '../../queries';
@@ -92,8 +92,10 @@ export const PointOfInterest = ({
     webUrls
   } = data;
 
-  const latitude = addresses?.[0]?.geoLocation?.latitude;
-  const longitude = addresses?.[0]?.geoLocation?.longitude;
+  const geoLocation = addresses?.[0]?.geoLocation;
+  const hasGeoCoordinates = isValidGeoLocation(geoLocation);
+  const latitude = geoLocation?.latitude;
+  const longitude = geoLocation?.longitude;
 
   // action to open source urls
   const openWebScreen = useOpenWebScreen('Ort', undefined, route.params?.rootRouteName);
@@ -366,7 +368,7 @@ export const PointOfInterest = ({
        * we can also not check for isMainserverUp here, but then we would only verify that we are
        * connected to a network with no information of internet connectivity.
        */}
-      {!hideMap && !!latitude && !!longitude && isConnected && isMainserverUp && (
+      {!hideMap && hasGeoCoordinates && isConnected && isMainserverUp && (
         <WrapperVertical>
           <SectionHeader title={texts.pointOfInterest.location} />
           <MapLibre
