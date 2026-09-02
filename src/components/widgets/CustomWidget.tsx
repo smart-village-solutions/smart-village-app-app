@@ -21,6 +21,7 @@ export const CustomWidget = ({ text, additionalProps, widgetStyle }: WidgetProps
       accessibilityLabel={accessibilityLabel}
       image={additionalProps?.image}
       onPress={() => navigation.navigate(additionalProps.routeName, additionalProps.params)}
+      svg={additionalProps?.svg}
       text={baseText}
       widgetStyle={widgetStyle}
     />

@@ -29,6 +29,7 @@ export const WaterTemperatureWidget = ({ text, additionalProps, widgetStyle }: W
       Icon={(props) => <Icon.NamedIcon {...props} name={additionalProps?.iconName} />}
       image={additionalProps?.image}
       onPress={onPress}
+      svg={additionalProps?.svg}
       text={text ?? texts.widgets.water}
       widgetStyle={widgetStyle}
     />

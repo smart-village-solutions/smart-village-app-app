@@ -3,10 +3,22 @@ import React from 'react';
 import { Text } from 'react-native';
 
 import { IconUrl, colorizeSvg } from '../../src/config/icons/IconUrl';
+import { lightColors } from '../../src/config/colors';
 import { SettingsContext, initialContext } from '../../src/SettingsProvider';
+import { ThemeContext } from '../../src/ThemeContext';
 
-const renderIconUrl = (component: React.ReactNode, svgFolderUrl?: string) =>
-  render(
+const iconUrlTree = (
+  component: React.ReactNode,
+  svgFolderUrl?: string,
+  primary = lightColors.primary
+) => (
+  <ThemeContext.Provider
+    value={{
+      colors: { ...lightColors, primary },
+      isDark: primary !== lightColors.primary,
+      mode: primary === lightColors.primary ? 'light' : 'dark'
+    }}
+  >
     <SettingsContext.Provider
       value={{
         ...initialContext,
@@ -20,7 +32,11 @@ const renderIconUrl = (component: React.ReactNode, svgFolderUrl?: string) =>
     >
       {component}
     </SettingsContext.Provider>
-  );
+  </ThemeContext.Provider>
+);
+
+const renderIconUrl = (component: React.ReactNode, svgFolderUrl?: string, primary?: string) =>
+  render(iconUrlTree(component, svgFolderUrl, primary));
 
 describe('IconUrl', () => {
   afterEach(() => {
@@ -33,6 +49,19 @@ describe('IconUrl', () => {
 
     expect(colorizeSvg(svg, '#123456', '#654321')).toBe(
       '<svg><path fill="#123456" stroke="#654321"/><style>.accent{stroke:#654321;fill:#f00}</style></svg>'
+    );
+  });
+
+  it('replaces arbitrary solid fill and stroke colors for monochrome SVGs', () => {
+    const svg =
+      '<svg><path fill="#d6492a" stroke="rgb(214, 73, 42)"/><path fill="none" stroke="url(#gradient)"/><style>.accent{fill:red;stroke:transparent}</style></svg>';
+
+    expect(
+      colorizeSvg(svg, '#123456', '#654321', {
+        replaceAllColors: true
+      })
+    ).toBe(
+      '<svg><path fill="#123456" stroke="#654321"/><path fill="none" stroke="url(#gradient)"/><style>.accent{fill:#123456;stroke:transparent}</style></svg>'
     );
   });
 
@@ -69,6 +98,25 @@ describe('IconUrl', () => {
     );
 
     await waitFor(() => expect(JSON.stringify(toJSON())).toContain('#123456'));
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('recolors a loaded SVG when the theme primary color changes without refetching it', async () => {
+    const svgFolderUrl = 'https://example.com/icons';
+    const fetchMock = jest.spyOn(global, 'fetch').mockResolvedValue({
+      ok: true,
+      status: 200,
+      text: async () =>
+        '<svg viewBox="0 0 24 24"><path fill="#d6492a" stroke="#d6492a" d="M0 0h24v24H0z"/></svg>'
+    } as Response);
+    const component = <IconUrl iconName="sample" isMonochrome />;
+    const { rerender, toJSON } = renderIconUrl(component, svgFolderUrl, '#000000');
+
+    await waitFor(() => expect(JSON.stringify(toJSON())).toContain('#000000'));
+
+    rerender(iconUrlTree(component, svgFolderUrl, '#FFFFFF'));
+
+    await waitFor(() => expect(JSON.stringify(toJSON())).toContain('#FFFFFF'));
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 });

@@ -42,6 +42,7 @@ export const LunchWidget = ({ text, additionalProps, widgetStyle }: WidgetProps)
       Icon={Icon.Lunch}
       image={additionalProps?.image}
       onPress={onPress}
+      svg={additionalProps?.svg}
       text={text ?? texts.widgets.lunch}
       widgetStyle={widgetStyle}
     />

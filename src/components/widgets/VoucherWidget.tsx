@@ -13,7 +13,7 @@ import { DefaultWidget } from './DefaultWidget';
 
 const { REFRESH_INTERVALS } = consts;
 
-export const VoucherWidget = ({ text, widgetStyle }: WidgetProps) => {
+export const VoucherWidget = ({ text, additionalProps, widgetStyle }: WidgetProps) => {
   const navigation = useNavigation();
   const refreshTime = useRefreshTime('voucher-widget', REFRESH_INTERVALS.ONCE_A_DAY);
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
@@ -39,6 +39,7 @@ export const VoucherWidget = ({ text, widgetStyle }: WidgetProps) => {
       count={loading ? undefined : count}
       Icon={Icon.Voucher}
       onPress={onPress}
+      svg={additionalProps?.svg}
       text={text ?? texts.widgets.vouchers}
       widgetStyle={widgetStyle}
     />

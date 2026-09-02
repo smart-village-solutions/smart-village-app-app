@@ -46,6 +46,7 @@ export const WebWidget = ({ text = '', additionalProps, widgetStyle }: WidgetPro
       )}
       image={additionalProps?.image}
       onPress={onPress}
+      svg={additionalProps?.svg}
       text={text}
       widgetStyle={widgetStyle}
     />

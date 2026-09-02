@@ -41,6 +41,7 @@ export const SurveyWidget = ({ text, additionalProps, widgetStyle }: WidgetProps
       Icon={Icon.Surveys}
       image={additionalProps?.image}
       onPress={onPress}
+      svg={additionalProps?.svg}
       text={text ?? texts.widgets.surveys}
       widgetStyle={widgetStyle}
     />

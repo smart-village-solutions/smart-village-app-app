@@ -27,6 +27,7 @@ export const ConstructionSiteWidget = ({ text, additionalProps, widgetStyle }: W
       Icon={Icon.ConstructionSite}
       image={additionalProps?.image}
       onPress={onPress}
+      svg={additionalProps?.svg}
       text={text ?? texts.widgets.constructionSites}
       widgetStyle={widgetStyle}
     />

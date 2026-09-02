@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 
-import { consts, IconProps, normalize } from '../../config';
+import { consts, IconProps, IconUrl, normalize } from '../../config';
 import { Image } from '../Image';
 import { BoldText } from '../Text';
 import { WrapperRow } from '../Wrapper';
@@ -22,6 +22,7 @@ type Props = {
     width?: number;
   };
   onPress: () => void;
+  svg?: string;
   text: string;
   widgetStyle?: {
     fontStyle?: unknown;
@@ -30,33 +31,52 @@ type Props = {
   };
 };
 
-type WidgetVisualProps = Pick<Props, 'Icon' | 'count' | 'image'> & {
+type WidgetVisualProps = Pick<Props, 'Icon' | 'count' | 'image' | 'svg'> & {
   iconStyle: IconProps['style'];
 };
 
-const WidgetVisual = ({ Icon, count, iconStyle, image }: WidgetVisualProps) => (
-  <WrapperRow center>
-    {image?.uri ? (
-      <Image
-        source={image}
-        style={{
-          height: normalize(image?.height ?? 24),
-          width: normalize(image?.width ?? 30)
-        }}
-      />
-    ) : (
-      <Icon
-        size={normalize(WIDGET_ICON_SIZE)}
-        style={[!!count?.toString() && styles.iconWithCount, iconStyle]}
-      />
-    )}
-    {count !== undefined && (
-      <BoldText primary big>
-        {count}
-      </BoldText>
-    )}
-  </WrapperRow>
-);
+type WidgetIconStyle = {
+  color?: string;
+  fillColor?: string;
+  strokeColor?: string;
+  strokeWidth?: number;
+};
+
+const WidgetVisual = ({ Icon, count, iconStyle, image, svg }: WidgetVisualProps) => {
+  const { color, fillColor, strokeColor, strokeWidth } = (iconStyle || {}) as WidgetIconStyle;
+  const themedIconProps = { color, fillColor, strokeColor, strokeWidth };
+  const visualStyle = [!!count?.toString() && styles.iconWithCount, iconStyle];
+  const iconSize = normalize(WIDGET_ICON_SIZE);
+
+  return (
+    <WrapperRow center>
+      {image?.uri ? (
+        <Image
+          source={image}
+          style={{
+            height: normalize(image?.height ?? 24),
+            width: normalize(image?.width ?? 30)
+          }}
+        />
+      ) : svg ? (
+        <IconUrl
+          iconName={svg}
+          isMonochrome
+          size={iconSize}
+          style={visualStyle}
+          {...themedIconProps}
+        />
+      ) : (
+        <Icon size={iconSize} style={visualStyle} {...themedIconProps} />
+      )}
+      {count !== undefined && (
+        <BoldText primary big>
+          {count}
+        </BoldText>
+      )}
+    </WrapperRow>
+  );
+};
 
 export const DefaultWidget = ({
   accessibilityLabel,
@@ -65,6 +85,7 @@ export const DefaultWidget = ({
   onPress,
   text,
   image,
+  svg,
   widgetStyle
 }: Props) => {
   const { fontStyle, iconStyle, widgetStyle: customWidgetStyle } = widgetStyle || {};
@@ -88,7 +109,13 @@ export const DefaultWidget = ({
         label={text}
         labelStyle={normalizedFontStyle}
         visual={
-          <WidgetVisual Icon={Icon} count={count} iconStyle={normalizedIconStyle} image={image} />
+          <WidgetVisual
+            Icon={Icon}
+            count={count}
+            iconStyle={normalizedIconStyle}
+            image={image}
+            svg={svg}
+          />
         }
       />
     </TouchableOpacity>

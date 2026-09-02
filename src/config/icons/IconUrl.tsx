@@ -19,6 +19,12 @@ const BLACK_SVG_STROKE_PATTERN = new RegExp(
   String.raw`(stroke\s*(?:=\s*["']|:\s*))${BLACK_SVG_COLOR}`,
   'gi'
 );
+const SVG_PAINT_VALUE = String.raw`(?:#[\da-f]{3,8}\b|[a-z][\w-]*\([^)]*\)|[a-z][\w-]*)`;
+const SVG_PAINT_PATTERN = new RegExp(
+  String.raw`((fill|stroke)\s*(?:=\s*["']?\s*|:\s*))(${SVG_PAINT_VALUE})`,
+  'gi'
+);
+const PRESERVED_SVG_PAINT_VALUES = new Set(['none', 'transparent']);
 
 type SvgLoadState = {
   status: 'error' | 'loading' | 'success';
@@ -26,10 +32,37 @@ type SvgLoadState = {
   uri?: string;
 };
 
-export const colorizeSvg = (svg: string, fillColor: string, strokeColor = fillColor) =>
-  svg
-    .replace(BLACK_SVG_FILL_PATTERN, (_match, prefix) => `${prefix}${fillColor}`)
-    .replace(BLACK_SVG_STROKE_PATTERN, (_match, prefix) => `${prefix}${strokeColor}`);
+type ColorizeSvgOptions = {
+  replaceAllColors?: boolean;
+};
+
+const colorizeMonochromeSvg = (svg: string, fillColor: string, strokeColor: string) =>
+  svg.replace(
+    SVG_PAINT_PATTERN,
+    (match, prefix: string, paintProperty: string, paintValue: string) => {
+      const normalizedPaintValue = paintValue.toLowerCase();
+      const shouldPreservePaint =
+        PRESERVED_SVG_PAINT_VALUES.has(normalizedPaintValue) ||
+        normalizedPaintValue.startsWith('url(') ||
+        normalizedPaintValue.startsWith('var(');
+
+      if (shouldPreservePaint) return match;
+
+      return `${prefix}${paintProperty.toLowerCase() === 'fill' ? fillColor : strokeColor}`;
+    }
+  );
+
+export const colorizeSvg = (
+  svg: string,
+  fillColor: string,
+  strokeColor = fillColor,
+  { replaceAllColors = false }: ColorizeSvgOptions = {}
+) =>
+  replaceAllColors
+    ? colorizeMonochromeSvg(svg, fillColor, strokeColor)
+    : svg
+        .replace(BLACK_SVG_FILL_PATTERN, (_match, prefix) => `${prefix}${fillColor}`)
+        .replace(BLACK_SVG_STROKE_PATTERN, (_match, prefix) => `${prefix}${strokeColor}`);
 
 const getIconUri = (iconName: string, svgFolderUrl?: string) => {
   if (!iconName) return;
@@ -45,10 +78,11 @@ export const IconUrl = ({
   fillColor: fillColorProp,
   iconName,
   iconStyle,
+  isMonochrome = false,
   size = normalize(24),
   strokeColor: strokeColorProp,
   style
-}: IconProps & { fallback?: ReactNode; iconName: string }) => {
+}: IconProps & { fallback?: ReactNode; iconName: string; isMonochrome?: boolean }) => {
   const { colors } = useTheme();
   const color = colorProp || colors.primary;
   const fillColor = fillColorProp ?? color;
@@ -116,8 +150,11 @@ export const IconUrl = ({
   }, [uri]);
 
   const colorizedSvg = useMemo(
-    () => colorizeSvg(loadState.svg, fillColor, strokeColor),
-    [fillColor, loadState.svg, strokeColor]
+    () =>
+      colorizeSvg(loadState.svg, fillColor, strokeColor, {
+        replaceAllColors: isMonochrome
+      }),
+    [fillColor, isMonochrome, loadState.svg, strokeColor]
   );
   const isSvgWithStyle = /<style(?:\s|>)/i.test(colorizedSvg);
   const fallback =

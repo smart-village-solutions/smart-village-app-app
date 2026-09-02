@@ -38,6 +38,39 @@ This document explains the integration and configuration of the HomeScreen in th
 
 All `type`-based entries support an optional `publicJsonFile` field to override the default JSON file name.
 
+### Theme-aware widget SVG icons
+
+All widgets that use `DefaultWidget` support an optional `additionalProps.svg` value. The weather
+widget keeps its dedicated OpenWeather image rendering and does not use this option.
+
+The value can be either a complete HTTP(S) URL or an icon name. Icon names are resolved against
+`settings.icons.svgFolderUrl` and receive the `.svg` extension automatically.
+
+```json
+{
+  "widgetName": "custom",
+  "text": "Beteiligung",
+  "additionalProps": {
+    "routeName": "Web",
+    "svg": "participation"
+  }
+}
+```
+
+Existing widget configurations remain compatible. Visuals use the following priority:
+
+1. `additionalProps.image`
+2. `additionalProps.svg`
+3. The widget's existing named or built-in icon
+
+SVG icons use the active theme's `primary` color by default. The widget `iconStyle` can override
+`color`, `fillColor`, `strokeColor`, and `strokeWidth`; nested `dark` values in the remote
+`appDesignSystem` are resolved before rendering.
+
+Widget SVG files should include a `viewBox` and be designed as monochrome icons. Explicit solid
+`fill` and `stroke` colors are replaced with the configured widget color. `none`, `transparent`,
+CSS variables, and gradient references are preserved.
+
 ## Example Configuration
 
 The following example shows a full `homeScreenConfig` that controls the complete HomeScreen layout:

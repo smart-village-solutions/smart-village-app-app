@@ -99,6 +99,7 @@ export const EventWidget = ({ text, additionalProps, widgetStyle }: WidgetProps)
       Icon={Icon.Calendar}
       image={additionalProps?.image}
       onPress={onPress}
+      svg={additionalProps?.svg}
       text={text ?? texts.widgets.events}
       widgetStyle={widgetStyle}
     />

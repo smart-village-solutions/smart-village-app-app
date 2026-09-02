@@ -2,7 +2,7 @@ import { useNavigation } from 'expo-router/react-navigation';
 import React from 'react';
 import { render } from '@testing-library/react-native';
 import { useQuery } from 'react-apollo';
-import { TouchableOpacity } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 
 import { CustomWidget } from '../../src/components/widgets/CustomWidget';
 import { DefaultWidget } from '../../src/components/widgets/DefaultWidget';
@@ -30,6 +30,11 @@ jest.mock('../../src/config', () => ({
     NamedIcon: () => null,
     Url: () => null
   },
+  IconUrl: (props: Record<string, unknown>) => {
+    const MockView = jest.requireActual('react-native').View;
+
+    return <MockView {...props} testID="widget-svg" />;
+  },
   normalize: (value: number) => value,
   texts: {
     screenTitles: {
@@ -43,7 +48,11 @@ jest.mock('../../src/config', () => ({
 }));
 
 jest.mock('../../src/components/Image', () => ({
-  Image: () => null
+  Image: (props: Record<string, unknown>) => {
+    const MockView = jest.requireActual('react-native').View;
+
+    return <MockView {...props} testID="widget-image" />;
+  }
 }));
 
 jest.mock('../../src/components/Text', () => ({
@@ -66,7 +75,7 @@ jest.mock('../../src/hooks', () => ({
 }));
 
 jest.mock('../../src/NetworkProvider', () => ({
-  NetworkContext: require('react').createContext({
+  NetworkContext: jest.requireActual('react').createContext({
     isConnected: true,
     isMainserverUp: true
   })
@@ -89,7 +98,9 @@ describe('Widget accessibility labels', () => {
   });
 
   it('uses the widget title when no explicit accessibility label is provided', () => {
-    const { UNSAFE_getByType } = render(<DefaultWidget Icon={() => null} onPress={() => {}} text="Wetter" />);
+    const { UNSAFE_getByType } = render(
+      <DefaultWidget Icon={() => null} onPress={() => {}} text="Wetter" />
+    );
 
     expect(UNSAFE_getByType(TouchableOpacity).props.accessibilityLabel).toBe('Wetter (Taste)');
   });
@@ -107,6 +118,55 @@ describe('Widget accessibility labels', () => {
     expect(UNSAFE_getByType(TouchableOpacity).props.accessibilityLabel).toBe(
       'Gehe zu Wetter (Taste)'
     );
+  });
+
+  it('renders a configured SVG with theme-aware icon style properties', () => {
+    const { getByTestId, queryByTestId } = render(
+      <DefaultWidget
+        Icon={() => <View testID="default-widget-icon" />}
+        onPress={() => {}}
+        svg="https://example.com/widget.svg"
+        text="SVG widget"
+        widgetStyle={{
+          iconStyle: {
+            color: '#123456',
+            fillColor: '#234567',
+            strokeColor: '#345678',
+            strokeWidth: 2
+          }
+        }}
+      />
+    );
+
+    expect(getByTestId('widget-svg').props).toEqual(
+      expect.objectContaining({
+        color: '#123456',
+        fillColor: '#234567',
+        iconName: 'https://example.com/widget.svg',
+        isMonochrome: true,
+        strokeColor: '#345678',
+        strokeWidth: 2
+      })
+    );
+    expect(queryByTestId('default-widget-icon')).toBeNull();
+  });
+
+  it('keeps an existing image configuration ahead of the optional SVG', () => {
+    const { getByTestId, queryByTestId } = render(
+      <DefaultWidget
+        Icon={() => <View testID="default-widget-icon" />}
+        image={{ uri: 'https://example.com/widget.png' }}
+        onPress={() => {}}
+        svg="https://example.com/widget.svg"
+        text="Image widget"
+      />
+    );
+
+    expect(getByTestId('widget-image').props.source).toEqual({
+      uri: 'https://example.com/widget.png'
+    });
+    expect(queryByTestId('widget-svg')).toBeNull();
+    expect(queryByTestId('default-widget-icon')).toBeNull();
   });
 
   it('describes external web widgets with their target host', () => {

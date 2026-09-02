@@ -19,12 +19,13 @@ export type WidgetProps = {
     noFilterByDailyEvents?: boolean;
     params?: {
       query: string;
-      queryVariables: {};
+      queryVariables: Record<string, unknown>;
       title: string;
     };
     routeName?: string;
     staticContentName?: string;
     staticContentTitle?: string;
+    svg?: string;
     webUrl?: string;
   };
   text?: string;
