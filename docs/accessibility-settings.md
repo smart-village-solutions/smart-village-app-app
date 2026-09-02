@@ -583,6 +583,16 @@ to every tab. A custom tab object can override it with its own
 `tabBarIconFillOnFocus: true` or `tabBarIconFillOnFocus: false` value, so mixed icon sets do
 not require app-specific navigation code.
 
+Custom tab objects can use `iconName` / `activeIconName`, `svg` / `activeSvg`, or
+`icon` / `activeIcon`. Named and SVG icons follow the resolved theme tint; tab SVGs are treated as
+monochrome so their solid fill and stroke colors can adapt to light and dark mode. Raster images
+keep their original colors. A custom tab can therefore define `themeImages.light` and
+`themeImages.dark`, each with optional `icon` and `activeIcon` values. If a mode-specific `icon` is
+present without an `activeIcon`, the same image is used for both focus states in that mode. The icon
+visual is hidden from screen readers because the parent tab button already exposes its label, tab
+role, position, and selected state. See [Tab Navigation Icons](./TAB_NAVIGATION_ICONS.md) for source
+priority and configuration examples.
+
 ## Read Aloud Coverage (Screen-by-Screen)
 
 When `enabledFeatures.readAloud` is `true`, TTS controls are available on the following screens when

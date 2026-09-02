@@ -1,13 +1,19 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import { StyleSheet, View, ViewStyle } from 'react-native';
+import type { ColorValue } from 'react-native';
 
-import { OrientationAwareIcon } from '../../components';
+import { OrientationAwareIcon, TabBarIcon } from '../../components';
 import { resolveTabIconColors } from '../../helpers/tabNavigationHelper';
-import { IconLibrary } from '../../IconProvider';
-import { ScreenName, TabConfig, TabNavigatorConfig, ThemeColorPalette } from '../../types';
+import {
+  CustomTab,
+  ScreenName,
+  ResolvedThemeMode,
+  TabConfig,
+  TabNavigatorConfig,
+  ThemeColorPalette
+} from '../../types';
 import { lightColors } from '../colors';
-import { Icon, IconProps } from '../icons';
+import { Icon } from '../icons';
 import { normalize } from '../normalize';
 import { texts } from '../texts';
 
@@ -15,23 +21,12 @@ import { defaultStackConfig } from './defaultStackConfig';
 
 type TabBarIconProps = {
   focused: boolean;
-  color: string;
+  color: ColorValue;
   size: number;
 };
 
-const dynamicTabStyles = StyleSheet.create({
-  highlightedIconWrapper: {
-    alignItems: 'center',
-    borderRadius: normalize(28),
-    height: normalize(56),
-    justifyContent: 'center',
-    marginTop: -normalize(14),
-    width: normalize(56)
-  }
-});
-
-const getDefaultTabIconProps = (color: string, focused: boolean, fillOnFocus: boolean) =>
-  resolveTabIconColors(focused, color, fillOnFocus);
+const getDefaultTabIconProps = (color: ColorValue, focused: boolean, fillOnFocus: boolean) =>
+  resolveTabIconColors(focused, color as string, fillOnFocus);
 
 const homeTabConfig = (fillOnFocus: boolean): TabConfig => ({
   stackConfig: defaultStackConfig({
@@ -166,29 +161,40 @@ export const createDefaultTabNavigatorConfig = (
   ]
 });
 
-export const createDynamicTabConfig = (
-  accessibilityLabel: string,
-  iconName: keyof typeof Icon,
-  iconSize: number = 24,
-  index: number,
-  label: string,
-  totalCount: number,
-  screen: ScreenName,
-  activeIconName?: keyof typeof Icon,
-  iconLandscapeStyle?: ViewStyle,
-  iconSet?: IconLibrary,
-  iconStyle?: ViewStyle,
-  initialParams?: Record<string, any>,
-  isHighlightedTab?: boolean,
-  strokeColor?: string,
-  strokeWidth?: number,
-  tabBarLabelStyle?: ViewStyle,
-  tilesScreenParams?: Record<string, any>,
-  tabBarIconFillOnFocus: boolean = false,
-  colors: ThemeColorPalette = lightColors
-): TabConfig => ({
+export const createDynamicTabConfig = ({
+  accessibilityLabel,
+  activeIcon,
+  activeIconName,
+  activeSvg,
+  colors = lightColors,
+  icon,
+  iconLandscapeStyle,
+  iconName,
+  iconSet,
+  iconSize = 24,
+  iconStyle,
+  index,
+  isHighlightedTab,
+  label,
+  params,
+  screen,
+  strokeColor,
+  strokeWidth,
+  svg,
+  tabBarIconFillOnFocus = false,
+  tabBarLabelStyle,
+  themeImages,
+  themeMode = 'light',
+  tilesScreenParams,
+  totalCount
+}: CustomTab & {
+  colors?: ThemeColorPalette;
+  index: number;
+  themeMode?: ResolvedThemeMode;
+  totalCount: number;
+}): TabConfig => ({
   stackConfig: defaultStackConfig({
-    initialParams,
+    initialParams: params,
     initialRouteName: screen,
     isDrawer: false,
     tilesScreenParams
@@ -197,37 +203,28 @@ export const createDynamicTabConfig = (
     tabBarAccessibilityLabel: `${accessibilityLabel || label} (Tab ${index + 1} von ${totalCount})`,
     tabBarLabel: label,
     tabBarLabelStyle,
-    tabBarIcon: ({ color, focused }: TabBarIconProps) => {
-      // Highlight the center tab in dynamic tab lists.
-      const selectedIconName = !!activeIconName && focused ? activeIconName : iconName;
-      const iconColors = resolveTabIconColors(focused, color, tabBarIconFillOnFocus, strokeColor);
-      const SelectedIcon = Icon[selectedIconName] as (props: IconProps) => React.JSX.Element;
-      const iconComponent = (
-        <OrientationAwareIcon
-          {...(isHighlightedTab
-            ? { color: colors.surface, fillColor: colors.surface, strokeColor: colors.surface }
-            : iconColors)}
-          Icon={SelectedIcon}
-          iconName={selectedIconName}
-          iconSet={iconSet}
-          landscapeStyle={iconLandscapeStyle}
-          size={normalize(isHighlightedTab ? 28 : iconSize)}
-          strokeWidth={strokeWidth}
-          style={iconStyle}
-        />
-      );
-
-      if (!isHighlightedTab) {
-        return iconComponent;
-      }
-
-      return (
-        <View
-          style={[dynamicTabStyles.highlightedIconWrapper, { backgroundColor: colors.primary }]}
-        >
-          {iconComponent}
-        </View>
-      );
-    }
+    tabBarIcon: ({ color, focused }: TabBarIconProps) => (
+      <TabBarIcon
+        activeIcon={activeIcon}
+        activeIconName={activeIconName}
+        activeSvg={activeSvg}
+        color={color}
+        focused={focused}
+        icon={icon}
+        iconLandscapeStyle={iconLandscapeStyle}
+        iconName={iconName}
+        iconSet={iconSet}
+        iconSize={iconSize}
+        iconStyle={iconStyle}
+        isHighlightedTab={isHighlightedTab}
+        strokeColor={strokeColor}
+        strokeWidth={strokeWidth}
+        svg={svg}
+        tabBarIconFillOnFocus={tabBarIconFillOnFocus}
+        themeColors={colors}
+        themeImages={themeImages}
+        themeMode={themeMode}
+      />
+    )
   }
 });

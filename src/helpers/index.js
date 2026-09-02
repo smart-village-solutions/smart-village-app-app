@@ -61,6 +61,7 @@ export * from './shareHelper';
 export * from './storageHelper';
 export * from './sueHelper';
 export * from './surveyHelper';
+export * from './tabIconHelper';
 export * from './textHelper';
 export * from './themeHelper';
 export * from './umlautSwitcher';

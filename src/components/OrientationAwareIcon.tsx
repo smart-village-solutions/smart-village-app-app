@@ -5,8 +5,8 @@ import { consts, device, Icon as IconComponent, IconProps, normalize } from '../
 import { OrientationContext } from '../OrientationProvider';
 
 type Props = IconProps & {
-  Icon: (props: IconProps) => JSX.Element;
-  iconName: keyof typeof IconComponent;
+  Icon: (props: IconProps) => React.JSX.Element;
+  iconName?: string;
   landscapeIconStyle?: StyleProp<ViewStyle>;
   landscapeStyle?: StyleProp<ViewStyle>;
   size?: number;

@@ -4,7 +4,6 @@ import { StackNavigationOptions } from 'expo-router/js-stack';
 import { ComponentType } from 'react';
 import { ViewStyle } from 'react-native';
 
-import { Icon } from '../config';
 import { IconLibrary } from '../IconProvider';
 
 import type { ResolvedThemeMode } from './Theme';
@@ -159,11 +158,22 @@ export type StackConfig = {
   screenConfigs: ScreenConfig[];
 };
 
-export type CustomTab = {
+export type TabImageConfiguration = {
+  activeIcon?: string;
+  icon?: string;
+};
+
+export type TabIconConfiguration = TabImageConfiguration & {
+  activeIconName?: string;
+  activeSvg?: string;
+  iconName?: string;
+  svg?: string;
+  themeImages?: Partial<Record<ResolvedThemeMode, TabImageConfiguration>>;
+};
+
+export type CustomTab = TabIconConfiguration & {
   accessibilityLabel: string;
-  activeIconName?: keyof typeof Icon;
   iconLandscapeStyle?: ViewStyle;
-  iconName: keyof typeof Icon;
   iconSet?: IconLibrary;
   iconSize?: number;
   iconStyle?: ViewStyle;

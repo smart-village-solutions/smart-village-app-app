@@ -112,6 +112,7 @@ export * from './SettingsToggle';
 export * from './ShareHeader';
 export * from './StorySection';
 export * from './Switch';
+export * from './TabBarIcon';
 export * from './Text';
 export * from './TextListItem';
 export * from './Title';

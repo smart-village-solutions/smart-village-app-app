@@ -101,6 +101,24 @@ describe('IconUrl', () => {
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 
+  it('loads a complete SVG URL without requiring an SVG folder setting', async () => {
+    const iconUrl = 'https://example.org/service.svg';
+    const fetchMock = jest.spyOn(global, 'fetch').mockResolvedValue({
+      ok: true,
+      status: 200,
+      text: async () => '<svg viewBox="0 0 24 24"><path fill="currentColor" /></svg>'
+    } as Response);
+
+    const { toJSON } = renderIconUrl(<IconUrl color="#123456" iconName={iconUrl} />);
+
+    await waitFor(() => expect(JSON.stringify(toJSON())).toContain('#123456'));
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(fetchMock).toHaveBeenCalledWith(
+      iconUrl,
+      expect.objectContaining({ signal: expect.anything() })
+    );
+  });
+
   it('recolors a loaded SVG when the theme primary color changes without refetching it', async () => {
     const svgFolderUrl = 'https://example.com/icons';
     const fetchMock = jest.spyOn(global, 'fetch').mockResolvedValue({

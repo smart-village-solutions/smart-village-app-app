@@ -57,27 +57,14 @@ export const useTabRoutes = () => {
         } else if ('stackConfig' in tabConfig) {
           return tabConfig;
         } else {
-          return createDynamicTabConfig(
-            tabConfig.accessibilityLabel,
-            tabConfig.iconName,
-            tabConfig.iconSize,
+          return createDynamicTabConfig({
+            ...tabConfig,
+            colors,
             index,
-            tabConfig.label,
-            tabConfigs.length,
-            tabConfig.screen,
-            tabConfig.activeIconName,
-            tabConfig.iconLandscapeStyle,
-            tabConfig.iconSet,
-            tabConfig.iconStyle,
-            tabConfig.params,
-            tabConfig.isHighlightedTab,
-            tabConfig.strokeColor,
-            tabConfig.strokeWidth,
-            tabConfig.tabBarLabelStyle,
-            tabConfig.tilesScreenParams,
-            tabConfig.tabBarIconFillOnFocus ?? defaultIconFillOnFocus,
-            colors
-          );
+            tabBarIconFillOnFocus: tabConfig.tabBarIconFillOnFocus ?? defaultIconFillOnFocus,
+            themeMode: mode,
+            totalCount: tabConfigs.length
+          });
         }
       }
     );
