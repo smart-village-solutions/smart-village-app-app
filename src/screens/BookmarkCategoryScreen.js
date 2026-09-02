@@ -17,7 +17,7 @@ import { useTheme } from '../hooks/useTheme';
 import { getQuery, QUERY_TYPES } from '../queries';
 import { ReactQueryClient } from '../ReactQueryClient';
 
-const { LIST_TYPES, MATOMO_TRACKING } = consts;
+const { MATOMO_TRACKING } = consts;
 
 /* eslint-disable complexity */
 export const BookmarkCategoryScreen = ({ navigation, route }) => {
@@ -29,8 +29,6 @@ export const BookmarkCategoryScreen = ({ navigation, route }) => {
   const suffix = route.params?.suffix ?? '';
   const categoryTitleDetail = route.params?.categoryTitleDetail ?? '';
   const bookmarks = useBookmarks(query, suffix);
-  const listType = route.params?.listType ?? LIST_TYPES.TEXT_LIST;
-
   const variables = useMemo(
     () => ({ ...(route.params?.queryVariables ?? {}), ids: bookmarks }),
     [bookmarks, route.params?.queryVariables]
@@ -93,13 +91,7 @@ export const BookmarkCategoryScreen = ({ navigation, route }) => {
 
   return (
     <SafeAreaViewFlex>
-      <ListComponent
-        navigation={navigation}
-        data={listItems}
-        horizontal={false}
-        query={query}
-        listType={listType}
-      />
+      <ListComponent navigation={navigation} data={listItems} horizontal={false} query={query} />
     </SafeAreaViewFlex>
   );
 };

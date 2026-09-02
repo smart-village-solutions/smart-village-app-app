@@ -14,7 +14,7 @@ import { QUERY_TYPES } from '../queries';
 import { GenericType } from '../types';
 import { useTheme } from '../hooks/useTheme';
 
-const { LIST_TYPES, MATOMO_TRACKING } = consts;
+const { MATOMO_TRACKING } = consts;
 
 const getInitialConnectionState = (categoriesNews) => {
   let initialState = {};
@@ -79,7 +79,6 @@ export const BookmarkScreen = ({ navigation, route }) => {
           categoryTitleDetail={categoryTitleDetail}
           ids={bookmarks[bookmarkKey]}
           key={bookmarkKey}
-          listType={LIST_TYPES.TEXT_LIST}
           navigation={navigation}
           query={itemType}
           sectionTitle={categoryTitle}

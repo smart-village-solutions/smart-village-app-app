@@ -16,7 +16,6 @@ type Props = {
   ids: string[];
   bookmarkKey: string;
   navigation: StackNavigationProp<Record<string, object | undefined>>;
-  listType: string;
   query: string;
   sectionTitle?: string;
   setConnectionState: React.Dispatch<React.SetStateAction<{ [key: string]: boolean }>>;
@@ -33,7 +32,6 @@ export const BookmarkSection = ({
   ids,
   bookmarkKey,
   navigation,
-  listType,
   query,
   sectionTitle,
   setConnectionState
@@ -72,10 +70,9 @@ export const BookmarkSection = ({
         query,
         queryVariables: variables,
         title: sectionTitle,
-        categoryTitleDetail,
-        listType
+        categoryTitleDetail
       }),
-    [categoryTitleDetail, listType, navigation, query, sectionTitle, suffix, variables]
+    [categoryTitleDetail, navigation, query, sectionTitle, suffix, variables]
   );
 
   useEffect(() => {
@@ -103,7 +100,6 @@ export const BookmarkSection = ({
       <DataListSection
         buttonTitle={texts.bookmarks.showAll}
         limit={variables?.ids.length}
-        listType={listType}
         loading={loading}
         navigate={onPressShowMore}
         navigateButton={onPressShowMore}
