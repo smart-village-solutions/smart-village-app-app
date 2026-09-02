@@ -4,7 +4,7 @@ import React, { useContext } from 'react';
 import { TouchableOpacity, View } from 'react-native';
 import { Divider } from 'react-native-elements';
 
-import { Icon, normalize, texts } from '../../config';
+import { consts, Icon, normalize, texts } from '../../config';
 import {
   formatAddress,
   formatAddressSingleLine,
@@ -61,6 +61,7 @@ export const AddressSection = ({ address, addresses, openWebScreen, title }: Pro
   const { colors } = useTheme();
 
   const styles = useThemeStyles(createStyles);
+  const a11yText = consts.a11yLabel;
   // @ts-expect-error global settings are not properly typed
   const bbNaviBaseUrl = useContext(SettingsContext).globalSettings?.settings?.['bbnavi'];
   const isAddress = address || addresses?.length;
