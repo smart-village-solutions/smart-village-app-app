@@ -1,11 +1,17 @@
 /* eslint-disable @typescript-eslint/no-var-requires, react/prop-types */
 import React from 'react';
-import { render } from '@testing-library/react-native';
+import { fireEvent, render } from '@testing-library/react-native';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { ParticipationProjectDetail } from '../../src/components/screens/ParticipationProjectDetail';
 
 const mockOpeningTimesCard = jest.fn(() => null);
+const mockOpenWebScreen = jest.fn();
+const mockNavigate = jest.fn();
+
+jest.mock('expo-router/react-navigation', () => ({
+  useNavigation: jest.fn(() => ({ navigate: mockNavigate }))
+}));
 
 jest.mock('../../src/config', () => ({
   colors: {
@@ -79,10 +85,15 @@ jest.mock('../../src/helpers/createCalendarEvent', () => ({
 
 jest.mock('../../src/hooks', () => ({
   useMatomoTrackScreenView: jest.fn(),
-  useOpenWebScreen: jest.fn(() => jest.fn())
+  useOpenWebScreen: jest.fn(() => mockOpenWebScreen)
 }));
 
-jest.mock('../../src/components/Button', () => ({ Button: () => null }));
+jest.mock('../../src/components/Button', () => {
+  const React = require('react');
+  const { Text } = require('react-native');
+
+  return { Button: ({ onPress, title }) => <Text onPress={onPress}>{title}</Text> };
+});
 jest.mock('../../src/components/DataProviderButton', () => ({ DataProviderButton: () => null }));
 jest.mock('../../src/components/DataProviderNotice', () => ({ DataProviderNotice: () => null }));
 jest.mock('../../src/components/ImageSection', () => ({ ImageSection: () => null }));
@@ -123,6 +134,40 @@ jest.mock('../../src/components/screens/OperatingCompany', () => ({
 describe('ParticipationProjectDetail status', () => {
   beforeEach(() => {
     mockOpeningTimesCard.mockClear();
+    mockOpenWebScreen.mockClear();
+    mockNavigate.mockClear();
+  });
+
+  it('opens the participation portal in the modal browser', () => {
+    const screen = render(
+      <ParticipationProjectDetail
+        data={
+          {
+            categories: [],
+            contentBlocks: [],
+            dates: [],
+            id: 'participation-project-link',
+            mediaContents: [],
+            payload: {},
+            title: 'Beteiligung mit Portal',
+            webUrls: [{ url: 'https://beteiligung.example.org/project' }]
+          } as never
+        }
+        route={{ params: { title: 'Beteiligung' } }}
+      />
+    );
+
+    fireEvent.press(screen.getByText('Beteiligung öffnen'));
+
+    expect(mockNavigate).toHaveBeenCalledWith(
+      'Web',
+      {
+        inModalBrowser: true,
+        rootRouteName: '',
+        title: 'Beteiligung',
+        webUrl: 'https://beteiligung.example.org/project'
+      }
+    );
   });
 
   it('renders detail actions at the end of the overview section', () => {

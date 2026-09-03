@@ -1,3 +1,4 @@
+import { useNavigation } from 'expo-router/react-navigation';
 import React from 'react';
 import { TouchableOpacity, View } from 'react-native';
 import { Divider } from 'react-native-elements';
@@ -21,7 +22,7 @@ import {
 import { createCalendarEvent } from '../../helpers/createCalendarEvent';
 import { useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
 import { useThemeStyles } from '../../hooks/useThemeStyles';
-import { GenericType } from '../../types';
+import { GenericType, ScreenName } from '../../types';
 import { Button } from '../Button';
 import { DataProviderButton } from '../DataProviderButton';
 import { DataProviderNotice } from '../DataProviderNotice';
@@ -155,20 +156,31 @@ const ParticipationProjectContent = ({
 
 const ParticipationProjectLink = ({
   description,
+  headerTitle,
   link,
-  openWebScreen
+  rootRouteName
 }: {
   description?: string;
+  headerTitle: string;
   link?: string;
-  openWebScreen: (url?: string) => void;
+  rootRouteName: string;
 }) => {
+  const navigation = useNavigation();
+
   if (!link) return null;
 
   return (
     <Wrapper noPaddingBottom>
       <Button
         title={description || texts.participationProject.openProject}
-        onPress={() => openWebScreen(link)}
+        onPress={() =>
+          navigation.navigate(ScreenName.Web, {
+            inModalBrowser: true,
+            rootRouteName,
+            title: headerTitle,
+            webUrl: link
+          })
+        }
       />
     </Wrapper>
   );
@@ -290,8 +302,9 @@ export const ParticipationProjectDetail = ({ data, readAloudControls, route }: P
       )}
       <ParticipationProjectLink
         description={webUrls?.[0]?.description}
+        headerTitle={headerTitle}
         link={link}
-        openWebScreen={openWebScreen}
+        rootRouteName={rootRouteName}
       />
 
       {!hasParticipationProjectContent(data) && (
