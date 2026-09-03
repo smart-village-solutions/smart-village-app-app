@@ -2,7 +2,14 @@ import { LocationObjectCoords } from 'expo-location';
 
 import { consts, texts } from '../config';
 import { QUERY_TYPES } from '../queries';
-import { GenericItem, GenericType, OpeningHour, ScreenName, SVA_Date } from '../types';
+import {
+  FilterTypesProps,
+  GenericItem,
+  GenericType,
+  OpeningHour,
+  ScreenName,
+  SVA_Date
+} from '../types';
 
 import { formatAddress } from './addressHelper';
 import { removeHtml, trimNewLines } from './htmlViewHelper';
@@ -50,6 +57,7 @@ export const PARTICIPATION_PROJECT_STATUS = {
 
 export const PARTICIPATION_PROJECT_STATUS_FILTER = 'participationStatus';
 export const PARTICIPATION_PROJECT_STATUS_POSITION_PARAM = 'participationStatusPosition';
+export const PARTICIPATION_PROJECT_FILTER_CHANGED_EVENT = 'participationProjectFilterChanged';
 export const PARTICIPATION_PROJECT_STATUS_POSITION = {
   BELOW_TEASER: 'belowTeaser',
   REPLACE_TEASER: 'replaceTeaser'
@@ -59,6 +67,7 @@ export type ParticipationProjectStatusPosition =
 export const PARTICIPATION_PROJECT_DEFAULT_STATUSES: string[] = [
   PARTICIPATION_PROJECT_STATUS.ACTIVE
 ];
+export const PARTICIPATION_PROJECT_RADIUS_OPTIONS = [1, 5, 10, 15, 20, 25, 50, 100];
 export const PARTICIPATION_PROJECT_COMPLETED_STATUSES: string[] = [
   PARTICIPATION_PROJECT_STATUS.COMPLETED,
   PARTICIPATION_PROJECT_STATUS.ENDED,
@@ -76,6 +85,18 @@ export type ParticipationProject = GenericItem<ParticipationProjectPayload> & {
   teaser?: string;
   updatedAt?: string;
 };
+
+export const getParticipationProjectRadiusFilter = (): FilterTypesProps => ({
+  currentPosition: {
+    label: 'Umkreis',
+    placeholder: 'Aktuelle Position nutzen'
+  },
+  data: PARTICIPATION_PROJECT_RADIUS_OPTIONS,
+  label: 'Entfernung (km)',
+  name: 'radiusSearch',
+  placeholder: 'Entfernung wählen',
+  type: consts.FILTER_TYPES.SLIDER
+});
 
 type ParticipationProjectPreviewItem = {
   accessibilityLabel: string;

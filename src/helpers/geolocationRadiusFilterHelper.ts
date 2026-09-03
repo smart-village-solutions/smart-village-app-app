@@ -23,8 +23,16 @@ export const filterLocationsWithinRadius = (
   radiusInKm: number
 ) =>
   listItem?.filter((location: any) => {
-    const latitude = location.addresses?.[0]?.geoLocation?.latitude;
-    const longitude = location.addresses?.[0]?.geoLocation?.longitude;
+    const details = location.params?.details;
+    const locations = location.locations || details?.locations;
+    const addresses = location.addresses || details?.addresses;
+    const geoLocation =
+      locations?.find(({ geoLocation }: { geoLocation?: LocationObject['coords'] }) => geoLocation)
+        ?.geoLocation ||
+      addresses?.find(({ geoLocation }: { geoLocation?: LocationObject['coords'] }) => geoLocation)
+        ?.geoLocation;
+    const latitude = geoLocation?.latitude;
+    const longitude = geoLocation?.longitude;
 
     if (latitude == null || longitude == null) {
       return false;

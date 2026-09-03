@@ -6,6 +6,7 @@ import { normalize } from '../../config';
 import { Label } from '../Label';
 import { RegularText } from '../Text';
 import { WrapperRow } from '../Wrapper';
+import { useTheme } from '../../hooks/useTheme';
 import { useThemeStyles } from '../../hooks/useThemeStyles';
 
 type Props = {
@@ -30,6 +31,7 @@ export const SliderFilter = ({
   values = [],
   ...props
 }: Props) => {
+  const { colors } = useTheme();
   const styles = useThemeStyles(createStyles);
   const minimumSliderValue: number = values?.length ? 0 : minimumValue;
   const maximumSliderValue: number = values?.length - 1 || maximumValue;
@@ -46,7 +48,9 @@ export const SliderFilter = ({
         <RegularText>{values?.length ? Math.min(...values) : minimumValue}</RegularText>
         <Slider
           onSlidingComplete={onSlidingComplete}
+          maximumTrackTintColor={colors.gray40}
           maximumValue={maximumSliderValue}
+          minimumTrackTintColor={colors.primary}
           minimumValue={minimumSliderValue}
           onValueChange={(index) => {
             const value = values[index] || index;
