@@ -208,6 +208,7 @@ describe('ParticipationProjectMapScreen', () => {
           })
         ],
         initialBounds: [11.575, 52.075, 11.675, 52.175],
+        isMyLocationButtonVisible: true,
         onMapReady: expect.any(Function),
         selectedMarker: undefined
       })

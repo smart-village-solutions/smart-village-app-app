@@ -149,7 +149,7 @@ export const ParticipationProjectMapScreen = ({
       {!!markers.length && (
         <MapLibre
           initialBounds={initialBounds}
-          isMyLocationButtonVisible={false}
+          isMyLocationButtonVisible
           locations={markers}
           mapStyle={styles.map}
           onMapReady={() => setIsMapReady(true)}
