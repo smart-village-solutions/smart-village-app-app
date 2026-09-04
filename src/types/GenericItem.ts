@@ -44,6 +44,7 @@ export type GenericItem<T = unknown> = {
   teaser?: string;
   title?: string;
   updatedAt?: string;
+  visible?: boolean;
   webUrls: WebUrl[];
 };
 
