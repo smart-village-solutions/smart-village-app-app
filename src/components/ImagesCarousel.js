@@ -93,11 +93,11 @@ export const ImagesCarousel = ({
     () => ({
       type: 'timing',
       config: {
-        duration: 850,
+        duration: isReduceMotionEnabled ? 0 : 850,
         easing: Easing.inOut(Easing.cubic)
       }
     }),
-    []
+    [isReduceMotionEnabled]
   );
 
   const renderItem = useCallback(

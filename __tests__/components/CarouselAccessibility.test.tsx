@@ -132,7 +132,8 @@ const wrapWithContexts = (
   settings: CarouselSettings = {
     sliderPauseButton: { show: true },
     sliderSettings: { showNavigationButtons: true }
-  }
+  },
+  isReduceMotionEnabled = false
 ) => (
   <AccessibilityContext.Provider
     value={{
@@ -161,7 +162,7 @@ const wrapWithContexts = (
       isHighContrastEnabled: false,
       isInvertColorsEnabled: false,
       isReadAloudEnabled: false,
-      isReduceMotionEnabled: false,
+      isReduceMotionEnabled,
       isReduceTransparencyEnabled: false,
       isScreenReaderEnabled: false,
       preferences: {
@@ -207,6 +208,25 @@ const wrapWithContexts = (
 );
 
 describe('Carousel accessibility', () => {
+  it('updates image transitions when reduced motion changes and preserves pagination', () => {
+    const carousel = (
+      <ImagesCarousel
+        data={[{ picture: { url: 'https://example.com/1.jpg' } }, { picture: { url: 'x' } }]}
+        navigation={{}}
+      />
+    );
+    const settings = { sliderSettings: { showNavigationButtons: true, showPagination: true } };
+    const tree = renderWithAct(wrapWithContexts(carousel, settings));
+
+    expect(tree.root.findByType('mock-carousel').props.withAnimation.config.duration).toBe(850);
+    renderer.act(() => tree.update(wrapWithContexts(carousel, settings, true)));
+    expect(tree.root.findByType('mock-carousel').props.withAnimation.config.duration).toBe(0);
+    expect(tree.root.findByType('mock-carousel').props.autoPlay).toBe(false);
+    expect(tree.root.findAllByProps({ accessibilityLabel: 'Bild 1 von 2' }).length).toBeGreaterThan(
+      0
+    );
+  });
+
   beforeEach(() => {
     mockNext.mockClear();
     mockPrev.mockClear();
