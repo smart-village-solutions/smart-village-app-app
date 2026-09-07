@@ -69,6 +69,8 @@ jest.mock('../../src/components/FeedbackFooter', () => ({
 
 jest.mock('../../src/hooks', () => ({
   useKeyboardHeight: jest.fn(() => 0),
+  useWasteStreetRehydration: jest.fn(),
+  useWasteStreetEditRequest: jest.fn(),
   useRenderSuggestions: jest.fn(() => mockRenderSuggestions),
   useTriggerExport: jest.fn(() => ({
     triggerExport: jest.fn()
@@ -133,10 +135,7 @@ jest.mock('../../src/config', () => {
 });
 
 import { SettingsContext } from '../../src/SettingsProvider';
-import {
-  createStyles,
-  WasteCollectionScreen
-} from '../../src/screens/WasteCollectionScreen';
+import { createStyles, WasteCollectionScreen } from '../../src/screens/WasteCollectionScreen';
 
 describe('WasteCollectionScreen header', () => {
   it('uses the active theme surface for the calendar day overlay', () => {

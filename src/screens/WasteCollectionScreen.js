@@ -91,7 +91,7 @@ const renderWasteHeaderRight = ({
   }
 
   return (
-    <WrapperRow itemsCenter>
+    <WrapperRow itemsCenter style={styles.headerRight}>
       <HeaderLeft
         onPress={goToReminder}
         backImage={({ tintColor }) => (
@@ -103,6 +103,7 @@ const renderWasteHeaderRight = ({
           />
         )}
       />
+      <AccessibilityHeader style={styles.icon} />
       {navigationType === 'drawer' && (
         <DrawerHeader navigation={navigation} style={[styles.icon, styles.noPaddingLeft]} />
       )}
