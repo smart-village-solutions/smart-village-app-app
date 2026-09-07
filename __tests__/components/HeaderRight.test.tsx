@@ -88,6 +88,7 @@ jest.mock('../../src/config', () => {
   };
 });
 
+import { ScreenName } from '../../src/types';
 import { SettingsContext } from '../../src/SettingsProvider';
 import { AccessibilityHeader } from '../../src/components/AccessibilityHeader';
 import { DrawerHeader } from '../../src/components/DrawerHeader';
@@ -109,6 +110,24 @@ const renderWithSettings = (element: React.ReactElement) => {
 };
 
 describe('HeaderRight', () => {
+  it.each([
+    ['regular screen', 'Details', undefined, 1],
+    ['search screen', ScreenName.Search, undefined, 0],
+    ['explicitly disabled search', 'Details', false, 0]
+  ])('respects the search default on %s', (_, name, withSearch, expected) => {
+    const tree = renderWithSettings(
+      <HeaderRight
+        navigation={{} as never}
+        route={{ key: 'test', name } as never}
+        withSearch={withSearch as boolean | undefined}
+        withProfile
+      />
+    );
+
+    expect(tree.root.findAllByType('mock-search-header')).toHaveLength(expected);
+    expect(tree.root.findAllByType('mock-login-header')).toHaveLength(1);
+  });
+
   it('renders accessibility immediately before the drawer icon', () => {
     const tree = renderWithSettings(
       <HeaderRight
