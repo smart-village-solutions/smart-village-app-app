@@ -10,6 +10,7 @@ const mockSlider = jest.fn();
 
 jest.mock('react-native-elements', () => ({
   Slider: (props) => {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const { View } = require('react-native');
 
     mockSlider(props);

@@ -1,3 +1,12 @@
+jest.mock('../../src/queries', () => ({
+  QUERY_TYPES: {
+    GENERIC_ITEM: 'genericItem',
+    VOLUNTEER: { CALENDAR: 'volunteerCalendar', GROUP: 'volunteerGroup' }
+  }
+}));
+
+jest.mock('../../src/components', () => ({ locationServiceEnabledAlert: jest.fn() }));
+
 import { filterLocationsWithinRadius } from '../../src/helpers/geolocationRadiusFilterHelper';
 import { getParticipationProjectGeoLocation } from '../../src/helpers/participationProjectHelper';
 

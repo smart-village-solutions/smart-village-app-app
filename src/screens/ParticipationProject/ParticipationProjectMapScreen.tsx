@@ -67,6 +67,15 @@ type ParticipationProjectItemsResponse = {
 const INITIAL_BOUNDS_EXPANSION_FACTOR = 2;
 const { MAP } = consts;
 
+const resolveMapFilterTypes = (filterTypes?: FilterTypesProps[]) =>
+  filterTypes?.length ? filterTypes : [getParticipationProjectRadiusFilter()];
+
+const createInitialMapFilters = (queryVariables: Record<string, unknown>): FilterProps => ({
+  ...queryVariables,
+  [PARTICIPATION_PROJECT_STATUS_FILTER]:
+    queryVariables[PARTICIPATION_PROJECT_STATUS_FILTER] || PARTICIPATION_PROJECT_DEFAULT_STATUSES
+});
+
 export const ParticipationProjectMapScreen = ({
   navigation,
   route
@@ -79,12 +88,9 @@ export const ParticipationProjectMapScreen = ({
   const systemPermission = useSystemPermission();
   const initialQueryVariables = route.params?.initialQueryVariables || {};
   const currentQueryVariables = route.params?.queryVariables || initialQueryVariables;
-  const [queryVariables, setQueryVariables] = useState<FilterProps>(() => ({
-    ...currentQueryVariables,
-    [PARTICIPATION_PROJECT_STATUS_FILTER]:
-      currentQueryVariables[PARTICIPATION_PROJECT_STATUS_FILTER] ||
-      PARTICIPATION_PROJECT_DEFAULT_STATUSES
-  }));
+  const [queryVariables, setQueryVariables] = useState<FilterProps>(() =>
+    createInitialMapFilters(currentQueryVariables)
+  );
 
   useEffect(() => {
     if (!route.params?.sourceRouteKey) return;
@@ -94,9 +100,7 @@ export const ParticipationProjectMapScreen = ({
       sourceRouteKey: route.params.sourceRouteKey
     });
   }, [queryVariables, route.params?.sourceRouteKey]);
-  const filterTypes = route.params?.filterTypes?.length
-    ? route.params.filterTypes
-    : [getParticipationProjectRadiusFilter()];
+  const filterTypes = resolveMapFilterTypes(route.params?.filterTypes);
   const radiusSearch = queryVariables.radiusSearch as
     | { currentPosition?: boolean; distance?: number; index?: number }
     | undefined;
