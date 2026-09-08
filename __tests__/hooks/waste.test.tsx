@@ -1,7 +1,7 @@
 import React from 'react';
 import renderer, { act } from 'react-test-renderer';
 
-import { useWasteTypes, useWasteUsedTypes } from '../../src/hooks/waste';
+import { useFilterStreets, useWasteTypes, useWasteUsedTypes } from '../../src/hooks/waste';
 import { useStaticContent } from '../../src/hooks/staticContent';
 
 jest.mock('../../src/components', () => ({
@@ -60,6 +60,38 @@ const TestWasteTypes = () => {
 
   return null;
 };
+
+describe('useFilterStreets', () => {
+  const TestStreets = ({ addresses, onResult }) => {
+    const { filterStreets } = useFilterStreets('', false);
+    onResult(filterStreets('', addresses));
+    return null;
+  };
+
+  it.each([undefined, null])(
+    'returns no suggestions before addresses are available (%s)',
+    (addresses) => {
+      const onResult = jest.fn();
+      let tree: renderer.ReactTestRenderer;
+
+      act(() => {
+        tree = renderer.create(<TestStreets addresses={addresses} onResult={onResult} />);
+      });
+
+      expect(onResult).toHaveBeenLastCalledWith([]);
+
+      const loadedAddresses = Array.from({ length: 6 }, (_, index) => ({
+        street: `Street ${index}`
+      }));
+      act(() => {
+        tree.update(<TestStreets addresses={loadedAddresses} onResult={onResult} />);
+      });
+      expect(onResult).toHaveBeenLastCalledWith(loadedAddresses.slice(0, 5));
+
+      act(() => tree.unmount());
+    }
+  );
+});
 
 const TestWasteUsedTypes = ({ onResult, streetData, typesData }) => {
   const usedTypes = useWasteUsedTypes({ streetData, typesData });

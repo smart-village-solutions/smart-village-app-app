@@ -220,7 +220,7 @@ export const useFilterStreets = (inputValueCity: string, isStreetInputFocused: b
         return streets || [];
       }
 
-      return streets.slice(0, wasteAddressesStreetCount) || [];
+      return streets?.slice(0, wasteAddressesStreetCount) || [];
     },
     [getStreetString, inputValueCity, isStreetInputFocused]
   );

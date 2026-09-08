@@ -14,7 +14,8 @@ export const createWasteInputStyles = (colors: ThemeColorPalette) => ({
     borderColor: colors.border,
     borderRadius: normalize(8),
     borderWidth: normalize(1),
-    height: normalize(42)
+    height: normalize(42),
+    overflow: 'hidden' as const
   },
 
   autoCompleteInput: {
@@ -25,7 +26,7 @@ export const createWasteInputStyles = (colors: ThemeColorPalette) => ({
     paddingVertical: device.platform === 'ios' ? normalize(10) : normalize(8),
     fontFamily: 'regular',
     fontSize: normalize(14),
-    height: normalize(42),
+    height: '100%' as const,
     lineHeight: normalize(20)
   },
 
