@@ -207,65 +207,67 @@ export const TextListItem: NamedExoticComponent<Props> & {
           accessibilityLabel || itemAccessibilityLabel || defaultAccessibilityLabel
         }
       >
-        {leftIcon ||
-          (leftImage && !!picture?.url ? (
-            <Image
-              source={{ uri: picture.url }}
-              contentPosition={imageContentPosition}
-              style={[styles.smallImage, imageStyle, withCard && styles.withBigCardStyle]}
-              borderRadius={normalize(8)}
-              containerStyle={[styles.smallImageContainer, imageContainerStyle]}
-            />
-          ) : undefined)}
+        <WrapperRow style={styles.listItemContent}>
+          {leftIcon ||
+            (leftImage && !!picture?.url ? (
+              <Image
+                source={{ uri: picture.url }}
+                contentPosition={imageContentPosition}
+                style={[styles.smallImage, imageStyle, withCard && styles.withBigCardStyle]}
+                borderRadius={normalize(8)}
+                containerStyle={[styles.smallImageContainer, imageContainerStyle]}
+              />
+            ) : undefined)}
 
-        {withCard ? (
-          <ListItem.Content>
-            {!!overtitle && (
-              <HeadlineText smallest uppercase style={styles.overtitleMarginBottom}>
-                {trimNewLines(overtitle)}
-              </HeadlineText>
-            )}
-            {titleText}
-            {statusIndicator}
-            {showSubtitle && (
-              <RegularText small style={styles.subtitle} numberOfLines={subtitleNumberOfLines}>
-                {subtitle}
-              </RegularText>
-            )}
-          </ListItem.Content>
-        ) : (
-          <ListItem.Content style={listItemStyle}>
-            {!noOvertitle && !!overtitle && (
-              <HeadlineText smallest uppercase style={styles.overtitleMarginBottom}>
-                {trimNewLines(overtitle)}
-              </HeadlineText>
-            )}
-            {titleText}
-            {statusIndicator}
-            {showSubtitle && (
-              <RegularText small style={styles.subtitle} numberOfLines={subtitleNumberOfLines}>
-                {subtitle}
-              </RegularText>
-            )}
-            {!!status && <RegularText>{status}</RegularText>}
-          </ListItem.Content>
-        )}
+          {withCard ? (
+            <ListItem.Content>
+              {!!overtitle && (
+                <HeadlineText smallest uppercase style={styles.overtitleMarginBottom}>
+                  {trimNewLines(overtitle)}
+                </HeadlineText>
+              )}
+              {titleText}
+              {statusIndicator}
+              {showSubtitle && (
+                <RegularText small style={styles.subtitle} numberOfLines={subtitleNumberOfLines}>
+                  {subtitle}
+                </RegularText>
+              )}
+            </ListItem.Content>
+          ) : (
+            <ListItem.Content style={listItemStyle}>
+              {!noOvertitle && !!overtitle && (
+                <HeadlineText smallest uppercase style={styles.overtitleMarginBottom}>
+                  {trimNewLines(overtitle)}
+                </HeadlineText>
+              )}
+              {titleText}
+              {statusIndicator}
+              {showSubtitle && (
+                <RegularText small style={styles.subtitle} numberOfLines={subtitleNumberOfLines}>
+                  {subtitle}
+                </RegularText>
+              )}
+              {!!status && <RegularText>{status}</RegularText>}
+            </ListItem.Content>
+          )}
 
-        {rightIcon ||
-          (rightImage && !!picture?.url ? (
-            <Image
-              source={{ uri: picture.url }}
-              style={[styles.smallImage, withCard && styles.withBigCardStyle]}
-              borderRadius={withCard ? normalize(8) : undefined}
-              containerStyle={styles.smallImageContainer}
-            />
-          ) : undefined)}
+          {rightIcon ||
+            (rightImage && !!picture?.url ? (
+              <Image
+                source={{ uri: picture.url }}
+                style={[styles.smallImage, withCard && styles.withBigCardStyle]}
+                borderRadius={withCard ? normalize(8) : undefined}
+                containerStyle={styles.smallImageContainer}
+              />
+            ) : undefined)}
 
-        {count !== undefined && count !== null && <BoldText>{count}</BoldText>}
+          {count !== undefined && count !== null && <BoldText>{count}</BoldText>}
 
-        {!listsWithoutArrows && !!navigation && !withCard && (
-          <Icon.ArrowRight color={colors.text} size={normalize(18)} />
-        )}
+          {!listsWithoutArrows && !!navigation && !withCard && (
+            <Icon.ArrowRight color={colors.text} size={normalize(18)} />
+          )}
+        </WrapperRow>
       </ListItem>
     );
   }
@@ -286,6 +288,11 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors']) =>
       backgroundColor: colors.transparent,
       paddingHorizontal: 0,
       paddingVertical: normalize(16)
+    },
+    listItemContent: {
+      alignItems: 'center',
+      columnGap: 16,
+      flex: 1
     },
     overtitleMarginBottom: {
       marginBottom: normalize(4)
