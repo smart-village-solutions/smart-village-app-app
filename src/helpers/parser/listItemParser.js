@@ -133,7 +133,14 @@ const parseEventRecords = (data, skipLastDivider, withDate, withTime) => {
   }));
 };
 
-const parseGenericItems = (data, skipLastDivider, queryVariables, subQuery, filterTypes) => {
+const parseGenericItems = (
+  data,
+  skipLastDivider,
+  queryVariables,
+  subQuery,
+  filterTypes,
+  authMode
+) => {
   // this likely needs a rework in the future, but for now this is the place to filter items.
   const filteredData = data?.filter((item) =>
     filterGenericItems(item, queryVariables, filterTypes)
@@ -171,6 +178,7 @@ const parseGenericItems = (data, skipLastDivider, queryVariables, subQuery, filt
       },
       routeName: ScreenName.Detail,
       params: {
+        authMode,
         title: getGenericItemDetailTitle(
           genericItem.genericType,
           queryVariables,
@@ -393,6 +401,7 @@ const parseConversations = (data) =>
  * @param {string | undefined} titleDetail
  * @param {{
  *     appDesignSystem?: any;
+ *     authMode?: import('../../graphqlAuth').GraphqlAuthMode;
  *     bookmarkable?: boolean;
  *     dateTimeFormat?: string;
  *     filterTypes?: any;
@@ -411,6 +420,7 @@ export const parseListItemsFromQuery = (query, data, titleDetail = '', options =
 
   const {
     appDesignSystem,
+    authMode,
     bookmarkable = true,
     dateTimeFormat,
     filterTypes,
@@ -427,7 +437,14 @@ export const parseListItemsFromQuery = (query, data, titleDetail = '', options =
     case QUERY_TYPES.EVENT_RECORDS:
       return parseEventRecords(data[query], skipLastDivider, withDate, withTime);
     case QUERY_TYPES.GENERIC_ITEMS:
-      return parseGenericItems(data[query], skipLastDivider, queryVariables, subQuery, filterTypes);
+      return parseGenericItems(
+        data[query],
+        skipLastDivider,
+        queryVariables,
+        subQuery,
+        filterTypes,
+        authMode
+      );
     case QUERY_TYPES.NEWS_ITEMS:
       return parseNewsItems(
         data[query],

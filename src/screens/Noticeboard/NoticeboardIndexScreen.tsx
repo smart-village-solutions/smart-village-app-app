@@ -132,6 +132,7 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
   }, [data]);
 
   const listItems = parseListItemsFromQuery(query, data, '', {
+    authMode,
     queryVariables,
     subQuery,
     filterTypes

@@ -14,6 +14,7 @@ import {
   Wrapper
 } from '../../components';
 import { texts } from '../../config';
+import { AUTH_MODE_PUBLIC, AUTH_MODE_USER } from '../../graphqlAuth';
 import { parseListItemsFromQuery } from '../../helpers';
 import { createQuery, QUERY_TYPES } from '../../queries';
 
@@ -26,6 +27,7 @@ export const NoticeboardMemberIndexScreen = ({ navigation, route }: StackScreenP
 
   const { data, isCurrentUser, memberId, memberEmail, memberName, query } = route.params;
   const listItems = parseListItemsFromQuery(query, data, '', {
+    authMode: isCurrentUser ? AUTH_MODE_USER : AUTH_MODE_PUBLIC,
     queryVariables: { isCurrentUser },
     subQuery
   });

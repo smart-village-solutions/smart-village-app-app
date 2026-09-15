@@ -19,6 +19,7 @@ import {
 } from '../components';
 import { FeedbackFooter } from '../components/FeedbackFooter';
 import { consts, texts } from '../config';
+import { AUTH_MODE_PUBLIC } from '../graphqlAuth';
 import { graphqlFetchPolicy } from '../helpers';
 import { getDetailSpeechItems } from '../helpers/accessibility/detailSpeechParser';
 import { useRefreshTime } from '../hooks';
@@ -106,6 +107,7 @@ export const DetailScreen = ({ navigation, route }) => {
   const query = route.params?.query ?? '';
   const id = route.params?.id;
   const queryVariables = route.params?.queryVariables || (id ? { id } : {});
+  const authMode = route.params?.authMode ?? AUTH_MODE_PUBLIC;
   const details = route.params?.details ?? {};
   const hasValidDetailParams = !!query && !!queryVariables?.id;
   const isSueDetail = query === QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID;
@@ -147,10 +149,10 @@ export const DetailScreen = ({ navigation, route }) => {
     isRefetching,
     refetch
   } = useQuery(
-    [query, { id: queryVariables.id }, refreshTime],
+    [query, { id: queryVariables.id }, authMode, refreshTime],
     async () => {
       const client = await ReactQueryClient();
-      return await client.request(getQuery(query), { id: queryVariables.id });
+      return await client.request(getQuery(query), { id: queryVariables.id }, { authMode });
     },
     {
       enabled: !!refreshTime && hasValidDetailParams && !isSueDetail
