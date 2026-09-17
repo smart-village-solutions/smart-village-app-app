@@ -15,7 +15,8 @@ import {
   filterTypesHelper,
   geoLocationFilteredListItem,
   openLink,
-  parseListItemsFromQuery
+  parseListItemsFromQuery,
+  volunteerEventOverlapsDate
 } from '../../helpers';
 import { updateResourceFiltersStateHelper } from '../../helpers/updateResourceFiltersStateHelper';
 import {
@@ -144,7 +145,7 @@ export const EventRecords = ({ navigation, route }) => {
   const { data: dataVolunteerEvents, refetch: refetchVolunteerEvents } = useVolunteerData({
     query: QUERY_TYPES.VOLUNTEER.CALENDAR_ALL,
     queryVariables: route.params?.queryVariables,
-    queryOptions: { enabled: showVolunteerEvents && !isLoading },
+    queryOptions: { enabled: showVolunteerEvents && !isLoading && !showCalendar },
     isCalendar: true,
     isSectioned: true
   });
@@ -204,8 +205,10 @@ export const EventRecords = ({ navigation, route }) => {
 
       if (hasDailyFilterSelection) {
         // filter additionalData on given or current day
+        const selectedDate = queryVariables.dateRange?.[0] ?? today;
+
         filteredAdditionalData = additionalData.filter(
-          (item) => item.listDate === (queryVariables.dateRange?.[0] ?? today)
+          (item) => volunteerEventOverlapsDate(item, selectedDate) || item.listDate === selectedDate
         );
       }
 
@@ -242,9 +245,12 @@ export const EventRecords = ({ navigation, route }) => {
   const refresh = useCallback(async () => {
     setRefreshing(true);
     if (isConnected) {
-      showCalendar && DeviceEventEmitter.emit(REFRESH_CALENDAR);
-      await refetch();
-      showVolunteerEvents && refetchVolunteerEvents();
+      if (showCalendar) {
+        DeviceEventEmitter.emit(REFRESH_CALENDAR);
+      } else {
+        await refetch();
+      }
+      showVolunteerEvents && !showCalendar && refetchVolunteerEvents();
       genericItemEventSources.length && refetchGenericItemEvents();
     }
     setRefreshing(false);
@@ -369,8 +375,11 @@ export const EventRecords = ({ navigation, route }) => {
             </LoadingContainer>
           ) : showCalendar ? (
             <Calendar
-              additionalData={additionalData}
+              additionalData={hasNativeFilterSelection ? [] : genericItemEvents}
               eventListIntro={eventListIntro}
+              includeVolunteerEvents={
+                showVolunteerEvents && !hideVolunteerEvents && !hasNativeFilterSelection
+              }
               navigation={navigation}
               query={query}
               queryVariables={queryVariables}

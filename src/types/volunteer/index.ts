@@ -10,6 +10,9 @@ export * from './user';
 
 export type VolunteerQuery = (typeof QUERY_TYPES.VOLUNTEER)[keyof typeof QUERY_TYPES.VOLUNTEER];
 
+export type VolunteerCalendarDateRange = [start: string, end: string];
+export type VolunteerDateRange = [date: string] | VolunteerCalendarDateRange;
+
 export enum VolunteerModulesType {
   CALENDAR = 'calendar'
 }

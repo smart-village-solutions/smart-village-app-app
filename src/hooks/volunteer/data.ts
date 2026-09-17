@@ -1,15 +1,17 @@
 import _orderBy from 'lodash/orderBy';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useQuery } from 'react-query';
 
 import {
   isAttending,
-  isUpcomingDate,
   parseListItemsFromQuery,
+  volunteerEventIsUpcoming,
+  volunteerEventOverlapsDate,
   volunteerUserData
 } from '../../helpers';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { MEMBER_STATUS_TYPES, VolunteerQuery } from '../../types';
+import type { VolunteerDateRange } from '../../types';
 
 export const VOLUNTEER_FILTER_BY = {
   ARCHIVED: 'archived',
@@ -42,8 +44,8 @@ export const useVolunteerData = ({
   isSectioned?: boolean;
   onlyUpcoming?: boolean;
   query: VolunteerQuery;
-  queryOptions?: { refetchInterval?: number; enabled?: boolean };
-  queryVariables?: { dateRange?: string[]; contentContainerId?: number; id?: number };
+  queryOptions?: { refetchInterval?: number; enabled?: boolean; keepPreviousData?: boolean };
+  queryVariables?: { dateRange?: VolunteerDateRange; contentContainerId?: number; id?: number };
   titleDetail?: string;
 }): {
   data: any[];
@@ -61,9 +63,15 @@ export const useVolunteerData = ({
   const [isProcessing, setIsProcessing] = useState(true);
   const [userGuid, setUserGuid] = useState<string | null>();
   const [volunteerData, setVolunteerData] = useState<any[]>([]);
+  const processingGeneration = useRef(0);
 
   const processVolunteerData = useCallback(async () => {
+    const generation = ++processingGeneration.current;
+    setIsProcessing(true);
     const { currentUserId, currentUserGuid } = await volunteerUserData();
+
+    if (generation !== processingGeneration.current) return;
+
     setUserGuid(currentUserGuid);
     let processedVolunteerData = data?.results as any[];
 
@@ -134,18 +142,25 @@ export const useVolunteerData = ({
       }
     });
 
-    setIsProcessing(true);
-
     if (isCalendar) {
-      if (queryVariables?.dateRange?.length) {
+      const selectedStart = queryVariables?.dateRange?.[0];
+      const selectedEnd = queryVariables?.dateRange?.[1] || selectedStart;
+
+      if (selectedStart && selectedStart === selectedEnd) {
         // show only selected day appointments for calendar list view
         processedVolunteerData = processedVolunteerData?.filter(
-          (item: { listDate: string }) => item.listDate == queryVariables.dateRange?.[0]
+          (item: { all_day?: number; end_datetime?: string; start_datetime?: string }) =>
+            volunteerEventOverlapsDate(item, selectedStart)
         );
       } else if (onlyUpcoming) {
         // show only upcoming dates for calendar views
-        processedVolunteerData = processedVolunteerData?.filter((item: { listDate: string }) =>
-          isUpcomingDate(item.listDate)
+        processedVolunteerData = processedVolunteerData?.filter(
+          (item: {
+            all_day?: number;
+            end_datetime?: string;
+            start_datetime?: string;
+            time_zone?: string;
+          }) => volunteerEventIsUpcoming(item)
         );
       }
 
@@ -214,6 +229,10 @@ export const useVolunteerData = ({
 
   useEffect(() => {
     processVolunteerData();
+
+    return () => {
+      processingGeneration.current += 1;
+    };
   }, [processVolunteerData]);
 
   return {

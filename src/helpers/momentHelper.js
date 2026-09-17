@@ -41,6 +41,27 @@ export const isUpcomingDate = (date) => {
   return !moment(date).isBefore(moment(), 'day');
 };
 
+export const currentDateTimeInTimeZone = (timeZone) => {
+  if (!timeZone) return momentFormat(Date.now(), 'YYYY-MM-DD HH:mm:ss', 'x');
+
+  const dateParts = new Intl.DateTimeFormat('en', {
+    day: '2-digit',
+    hour: '2-digit',
+    hourCycle: 'h23',
+    minute: '2-digit',
+    month: '2-digit',
+    second: '2-digit',
+    timeZone,
+    year: 'numeric'
+  })
+    .formatToParts(new Date())
+    .reduce((parts, { type, value }) => ({ ...parts, [type]: value }), {});
+
+  return `${dateParts.year}-${dateParts.month}-${dateParts.day} ${dateParts.hour}:${dateParts.minute}:${dateParts.second}`;
+};
+
+export const currentDateInTimeZone = (timeZone) => currentDateTimeInTimeZone(timeZone).slice(0, 10);
+
 /**
  *
  * Check date/time periods for being active compared to now.

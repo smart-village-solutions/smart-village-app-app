@@ -2,8 +2,9 @@
 import React from 'react';
 import { act, fireEvent, render } from '@testing-library/react-native';
 import moment from 'moment';
+import { DeviceEventEmitter } from 'react-native';
 
-import { Calendar } from '../../src/components/Calendar';
+import { Calendar, REFRESH_CALENDAR } from '../../src/components/Calendar';
 import { HomeSection } from '../../src/components/HomeSection';
 import { EventRecords } from '../../src/components/screens/EventRecords';
 import { EventWidget } from '../../src/components/widgets/EventWidget';
@@ -11,6 +12,7 @@ import { NetworkContext } from '../../src/NetworkProvider';
 import { SettingsContext } from '../../src/SettingsProvider';
 
 const mockUseGenericItemEvents = jest.fn();
+const mockUseVolunteerData = jest.fn();
 const mockUseHomeRefresh = jest.fn();
 let mockDataListProps: Record<string, any>;
 let mockWidgetProps: Record<string, any>;
@@ -18,8 +20,12 @@ let mockListProps: Record<string, any>;
 let mockNativeCalendarProps: Record<string, any>;
 let mockQueryResult: Record<string, any>;
 let mockInfiniteResult: Record<string, any>;
+let mockSubListInfiniteResult: Record<string, any>;
+let mockFocusEffect: (() => void) | undefined;
 const mockMainRefetch = jest.fn(async () => undefined);
+const mockSubListRefetch = jest.fn(async () => undefined);
 const mockGenericRefetch = jest.fn(async () => undefined);
+const mockVolunteerRefetch = jest.fn(async () => undefined);
 
 jest.mock('../../src/NetworkProvider', () => {
   const ReactInMock = require('react');
@@ -29,7 +35,9 @@ jest.mock('../../src/NetworkProvider', () => {
 });
 
 jest.mock('expo-router/react-navigation', () => ({
-  useFocusEffect: jest.fn(),
+  useFocusEffect: (callback: () => void) => {
+    mockFocusEffect = callback;
+  },
   useNavigation: jest.fn(() => ({ navigate: jest.fn() }))
 }));
 jest.mock('react-native-calendars', () => ({
@@ -44,7 +52,9 @@ jest.mock('react-apollo', () => ({
 
 jest.mock('react-query', () => ({
   useQuery: jest.fn(() => mockQueryResult),
-  useInfiniteQuery: jest.fn(() => mockInfiniteResult)
+  useInfiniteQuery: jest.fn(([_, variables]) =>
+    variables?.dateRange ? mockSubListInfiniteResult : mockInfiniteResult
+  )
 }));
 jest.mock('../../src/hooks', () => ({
   useGenericItemEvents: (options: unknown) => mockUseGenericItemEvents(options),
@@ -59,7 +69,7 @@ jest.mock('../../src/hooks', () => ({
     colors: { calendarSelected: '#456', primary: '#123', refreshControl: '#000' }
   })),
   useThemeStyles: jest.fn((factory) => factory()),
-  useVolunteerData: jest.fn(() => ({ data: [], isLoading: false, refetch: jest.fn() }))
+  useVolunteerData: (options: unknown) => mockUseVolunteerData(options)
 }));
 jest.mock('../../src/helpers', () => ({
   filterTypesHelper: jest.fn(() => []),
@@ -67,7 +77,9 @@ jest.mock('../../src/helpers', () => ({
   openLink: jest.fn(),
   parseListItemsFromQuery: jest.fn((query, data) =>
     (data?.[query] || []).map((item: Record<string, any>) => ({ ...item }))
-  )
+  ),
+  volunteerEventDates: jest.fn((item) => item.eventDates || []),
+  volunteerEventOverlapsDate: jest.fn((item, date) => item.eventDates?.includes(date) || false)
 }));
 jest.mock('../../src/helpers/calendarHelper', () => ({
   getCalendarTheme: jest.fn(() => ({})),
@@ -171,10 +183,13 @@ const settingsValue = {
 } as any;
 const occurrence = { id: 'event', listDate: '2030-01-01', startTime: '10:00', title: 'Event' };
 
-const renderEventRecords = (queryVariables: Record<string, unknown> = {}) =>
+const renderEventRecords = (
+  queryVariables: Record<string, unknown> = {},
+  settings: Record<string, any> = settingsValue
+) =>
   render(
     <NetworkContext.Provider value={{ isConnected: true, isMainserverUp: true }}>
-      <SettingsContext.Provider value={settingsValue}>
+      <SettingsContext.Provider value={settings}>
         <EventRecords
           navigation={{ navigate: jest.fn() }}
           route={{
@@ -198,6 +213,12 @@ describe('Generic Item event consumers', () => {
       isRefetching: false,
       refetch: mockGenericRefetch
     });
+    mockUseVolunteerData.mockReturnValue({
+      data: [],
+      isLoading: false,
+      isRefetching: false,
+      refetch: mockVolunteerRefetch
+    });
     mockQueryResult = {
       data: { eventRecords: [] },
       isLoading: false,
@@ -213,8 +234,18 @@ describe('Generic Item event consumers', () => {
       isRefetching: false,
       refetch: mockMainRefetch
     };
+    mockSubListInfiniteResult = {
+      data: { pages: [{ eventRecords: [] }] },
+      fetchNextPage: jest.fn(),
+      hasNextPage: false,
+      isFetchingNextPage: false,
+      isLoading: false,
+      isRefetching: false,
+      refetch: mockSubListRefetch
+    };
     mockListProps = undefined as any;
     mockNativeCalendarProps = undefined as any;
+    mockFocusEffect = undefined;
   });
 
   it('merges Generic Item occurrences into EventRecords list data and refreshes them', async () => {
@@ -231,6 +262,33 @@ describe('Generic Item event consumers', () => {
   it('suppresses Generic Item occurrences for native category filters', () => {
     renderEventRecords({ categoryId: 'native-category' });
     expect(mockListProps.data).toEqual([]);
+  });
+
+  it('keeps multi-day Volunteer events in the navigated daily event view', () => {
+    const volunteerEvent = {
+      eventDates: ['2030-01-01', '2030-01-02', '2030-01-03'],
+      id: 'volunteer-event',
+      listDate: '2030-01-01',
+      title: 'Volunteer event'
+    };
+    mockUseVolunteerData.mockReturnValue({
+      data: [volunteerEvent],
+      isLoading: false,
+      isRefetching: false,
+      refetch: mockVolunteerRefetch
+    });
+
+    renderEventRecords(
+      { dateRange: ['2030-01-02', '2030-01-02'] },
+      {
+        globalSettings: {
+          ...settingsValue.globalSettings,
+          hdvt: { events: true }
+        }
+      }
+    );
+
+    expect(mockListProps.data).toContainEqual(volunteerEvent);
   });
 
   it('includes Generic Item loading in the EventRecords empty loading state', () => {
@@ -266,6 +324,270 @@ describe('Generic Item event consumers', () => {
     );
     fireEvent.press(view.getByText('toggle'));
     expect(mockNativeCalendarProps.markedDates['2030-01-01'].dots).toHaveLength(1);
+  });
+
+  it('updates the Volunteer query range when the combined calendar month changes', () => {
+    const calendarSettings = {
+      globalSettings: {
+        hdvt: { events: true },
+        settings: { calendarToggle: true, eventCalendar: {} }
+      }
+    } as any;
+    const view = render(
+      <NetworkContext.Provider value={{ isConnected: true, isMainserverUp: true }}>
+        <SettingsContext.Provider value={calendarSettings}>
+          <EventRecords
+            navigation={{ navigate: jest.fn() }}
+            route={{ params: { query: 'eventRecords', queryVariables: { limit: 15 } } }}
+          />
+        </SettingsContext.Provider>
+      </NetworkContext.Provider>
+    );
+    fireEvent.press(view.getByText('toggle'));
+
+    expect(
+      mockUseVolunteerData.mock.calls.some(
+        ([options]) =>
+          options.queryOptions.enabled === false && options.queryVariables?.limit === 15
+      )
+    ).toBe(true);
+
+    act(() => mockNativeCalendarProps.onMonthChange({ dateString: '2030-02-01' }));
+
+    expect(mockUseVolunteerData).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        queryOptions: { enabled: true, keepPreviousData: true },
+        queryVariables: expect.objectContaining({ dateRange: ['2030-01-25', '2030-03-07'] })
+      })
+    );
+  });
+
+  it('keeps the Volunteer range query disabled for native filters', () => {
+    const calendarSettings = {
+      globalSettings: {
+        hdvt: { events: true },
+        settings: { calendarToggle: true, eventCalendar: {} }
+      }
+    } as any;
+    const view = render(
+      <NetworkContext.Provider value={{ isConnected: true, isMainserverUp: true }}>
+        <SettingsContext.Provider value={calendarSettings}>
+          <EventRecords
+            navigation={{ navigate: jest.fn() }}
+            route={{
+              params: {
+                query: 'eventRecords',
+                queryVariables: { categoryId: 'native-category', limit: 15 }
+              }
+            }}
+          />
+        </SettingsContext.Provider>
+      </NetworkContext.Provider>
+    );
+    fireEvent.press(view.getByText('toggle'));
+
+    expect(mockUseVolunteerData).toHaveBeenLastCalledWith(
+      expect.objectContaining({ queryOptions: { enabled: false, keepPreviousData: true } })
+    );
+  });
+
+  it('lists a multi-day Volunteer event on an intermediate selected day', () => {
+    const volunteerEvent = {
+      eventDates: ['2030-01-01', '2030-01-02', '2030-01-03'],
+      id: 'volunteer-event',
+      listDate: '2030-01-01',
+      title: 'Volunteer event'
+    };
+    mockUseVolunteerData.mockReturnValue({
+      data: [volunteerEvent],
+      isLoading: false,
+      isRefetching: false,
+      refetch: mockVolunteerRefetch
+    });
+    const calendarSettings = {
+      globalSettings: { hdvt: {}, settings: { eventCalendar: { subList: true } } }
+    } as any;
+    render(
+      <NetworkContext.Provider value={{ isConnected: true, isMainserverUp: true }}>
+        <SettingsContext.Provider value={calendarSettings}>
+          <Calendar
+            includeVolunteerEvents
+            isListRefreshing={false}
+            navigation={{ push: jest.fn() } as any}
+            query="eventRecords"
+            queryVariables={{}}
+          />
+        </SettingsContext.Provider>
+      </NetworkContext.Provider>
+    );
+
+    act(() => mockNativeCalendarProps.onDayPress({ dateString: '2030-01-02' }));
+
+    expect(mockListProps.data).toContainEqual(volunteerEvent);
+  });
+
+  it('refreshes native and Volunteer data in the combined calendar', async () => {
+    const calendarSettings = {
+      globalSettings: { hdvt: {}, settings: { eventCalendar: { subList: true } } }
+    } as any;
+    render(
+      <NetworkContext.Provider value={{ isConnected: true, isMainserverUp: true }}>
+        <SettingsContext.Provider value={calendarSettings}>
+          <Calendar
+            includeVolunteerEvents
+            isListRefreshing={false}
+            navigation={{ push: jest.fn() } as any}
+            query="eventRecords"
+            queryVariables={{}}
+          />
+        </SettingsContext.Provider>
+      </NetworkContext.Provider>
+    );
+
+    await act(async () => DeviceEventEmitter.emit(REFRESH_CALENDAR));
+
+    expect(mockMainRefetch).toHaveBeenCalledTimes(1);
+    expect(mockSubListRefetch).toHaveBeenCalledTimes(1);
+    expect(mockVolunteerRefetch).toHaveBeenCalledTimes(1);
+  });
+
+  it('lets the calendar own refresh requests while the combined calendar is active', async () => {
+    const calendarSettings = {
+      globalSettings: {
+        hdvt: { events: true },
+        settings: { calendarToggle: true, eventCalendar: {} }
+      }
+    } as any;
+    const view = render(
+      <NetworkContext.Provider value={{ isConnected: true, isMainserverUp: true }}>
+        <SettingsContext.Provider value={calendarSettings}>
+          <EventRecords
+            navigation={{ navigate: jest.fn() }}
+            route={{ params: { query: 'eventRecords', queryVariables: { limit: 15 } } }}
+          />
+        </SettingsContext.Provider>
+      </NetworkContext.Provider>
+    );
+    fireEvent.press(view.getByText('toggle'));
+    mockMainRefetch.mockClear();
+    mockSubListRefetch.mockClear();
+    mockVolunteerRefetch.mockClear();
+
+    await act(async () => fireEvent.press(view.getByText('list')));
+
+    expect(mockMainRefetch).toHaveBeenCalledTimes(1);
+    expect(mockSubListRefetch).not.toHaveBeenCalled();
+    expect(mockVolunteerRefetch).toHaveBeenCalledTimes(1);
+  });
+
+  it('relies on the sublist query key instead of manually refetching after selection', () => {
+    const calendarSettings = {
+      globalSettings: { hdvt: {}, settings: { eventCalendar: { subList: true } } }
+    } as any;
+    render(
+      <NetworkContext.Provider value={{ isConnected: true, isMainserverUp: true }}>
+        <SettingsContext.Provider value={calendarSettings}>
+          <Calendar
+            isListRefreshing={false}
+            navigation={{ push: jest.fn() } as any}
+            query="eventRecords"
+            queryVariables={{}}
+          />
+        </SettingsContext.Provider>
+      </NetworkContext.Provider>
+    );
+    mockSubListRefetch.mockClear();
+
+    act(() => mockNativeCalendarProps.onDayPress({ dateString: '2030-01-02' }));
+
+    expect(mockSubListRefetch).not.toHaveBeenCalled();
+  });
+
+  it('does not refetch the calendar on its initial focus', () => {
+    render(
+      <NetworkContext.Provider value={{ isConnected: true, isMainserverUp: true }}>
+        <SettingsContext.Provider value={settingsValue}>
+          <Calendar
+            includeVolunteerEvents
+            isListRefreshing={false}
+            navigation={{ push: jest.fn() } as any}
+            query="eventRecords"
+            queryVariables={{}}
+          />
+        </SettingsContext.Provider>
+      </NetworkContext.Provider>
+    );
+
+    mockFocusEffect?.();
+
+    expect(mockMainRefetch).not.toHaveBeenCalled();
+    expect(mockVolunteerRefetch).not.toHaveBeenCalled();
+
+    mockFocusEffect?.();
+
+    expect(mockMainRefetch).toHaveBeenCalledTimes(1);
+    expect(mockVolunteerRefetch).toHaveBeenCalledTimes(1);
+  });
+
+  it('reuses parent data without starting another query in pure Volunteer calendars', () => {
+    const onDateRangeChange = jest.fn();
+    const volunteerEvent = {
+      eventDates: ['2030-01-01'],
+      id: 'volunteer-event',
+      listDate: '2030-01-01',
+      title: 'Volunteer event'
+    };
+    render(
+      <NetworkContext.Provider value={{ isConnected: true, isMainserverUp: true }}>
+        <SettingsContext.Provider value={settingsValue}>
+          <Calendar
+            additionalData={[volunteerEvent]}
+            isListRefreshing={false}
+            navigation={{ push: jest.fn() } as any}
+            onDateRangeChange={onDateRangeChange}
+            query="volunteerCalendar"
+            queryVariables={{}}
+          />
+        </SettingsContext.Provider>
+      </NetworkContext.Provider>
+    );
+
+    expect(mockUseVolunteerData).toHaveBeenLastCalledWith(
+      expect.objectContaining({ queryOptions: { enabled: false, keepPreviousData: true } })
+    );
+    expect(mockNativeCalendarProps.markedDates['2030-01-01']).toEqual(
+      expect.objectContaining({ marked: true })
+    );
+
+    act(() => mockNativeCalendarProps.onMonthChange({ dateString: '2031-02-01' }));
+
+    expect(onDateRangeChange).toHaveBeenCalledWith(['2031-01-25', '2031-03-07']);
+
+    mockFocusEffect?.();
+    mockFocusEffect?.();
+
+    expect(mockVolunteerRefetch).not.toHaveBeenCalled();
+  });
+
+  it('keeps the calendar visible while its parent range is refreshing', () => {
+    render(
+      <NetworkContext.Provider value={{ isConnected: true, isMainserverUp: true }}>
+        <SettingsContext.Provider value={settingsValue}>
+          <Calendar
+            additionalData={[occurrence]}
+            isListRefreshing
+            navigation={{ push: jest.fn() } as any}
+            query="volunteerCalendar"
+            queryVariables={{}}
+          />
+        </SettingsContext.Provider>
+      </NetworkContext.Provider>
+    );
+
+    expect(mockNativeCalendarProps.displayLoadingIndicator).toBe(true);
+    expect(mockNativeCalendarProps.markedDates['2030-01-01']).toEqual(
+      expect.objectContaining({ marked: true })
+    );
   });
 
   it('does not mutate cached main records while marking and listing additional events', () => {

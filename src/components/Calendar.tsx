@@ -2,7 +2,7 @@ import { useFocusEffect } from 'expo-router/react-navigation';
 import { StackNavigationProp } from 'expo-router/js-stack';
 import moment from 'moment';
 import 'moment/locale/de';
-import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, DeviceEventEmitter, StyleProp, View, ViewStyle } from 'react-native';
 import { CalendarProps, Calendar as RNCalendar } from 'react-native-calendars';
 import { DateData, Direction } from 'react-native-calendars/src/types';
@@ -12,10 +12,16 @@ import { NetworkContext } from '../NetworkProvider';
 import { ReactQueryClient } from '../ReactQueryClient';
 import { SettingsContext } from '../SettingsProvider';
 import { consts, normalize, texts } from '../config';
-import { parseListItemsFromQuery } from '../helpers';
+import {
+  parseListItemsFromQuery,
+  volunteerEventDates,
+  volunteerEventOverlapsDate
+} from '../helpers';
 import { getCalendarTheme, setupLocales } from '../helpers/calendarHelper';
+import { useVolunteerData } from '../hooks';
 import { QUERY_TYPES, getQuery } from '../queries';
-import { ScreenName } from '../types';
+import { ScreenName, VolunteerQuery } from '../types';
+import type { VolunteerCalendarDateRange, VolunteerDateRange } from '../types';
 import { useThemeStyles } from '../hooks/useThemeStyles';
 import { useTheme } from '../hooks/useTheme';
 
@@ -35,9 +41,11 @@ type Props = {
   additionalData?: any;
   eventListIntro?: { buttonType: string };
   isListRefreshing: boolean;
+  includeVolunteerEvents?: boolean;
   navigation: StackNavigationProp<any>;
+  onDateRangeChange?: (dateRange: VolunteerCalendarDateRange) => void;
   query: string;
-  queryVariables: { contentContainerId?: number; dateRange?: string[]; limit?: number };
+  queryVariables: { contentContainerId?: number; dateRange?: VolunteerDateRange; limit?: number };
   subListContainerStyle?: StyleProp<ViewStyle>;
 };
 
@@ -49,7 +57,10 @@ const endOfMonth = moment().endOf('month').add(7, 'days').format('YYYY-MM-DD');
 export const Calendar = ({
   additionalData,
   eventListIntro,
+  includeVolunteerEvents = false,
+  isListRefreshing,
   navigation,
+  onDateRangeChange,
   query,
   queryVariables,
   subListContainerStyle
@@ -74,6 +85,9 @@ export const Calendar = ({
     }
   );
   const contentContainerId = queryVariables.contentContainerId;
+  const loadVolunteerCalendar = query === QUERY_TYPES.EVENT_RECORDS && includeVolunteerEvents;
+  const isInitialFocus = useRef(true);
+  const focusRefresh = useRef<() => void>(() => undefined);
 
   const {
     data,
@@ -92,6 +106,22 @@ export const Calendar = ({
       keepPreviousData: true
     }
   );
+  const {
+    data: volunteerCalendarData,
+    isLoading: loadingVolunteerCalendar,
+    isRefetching: isRefetchingVolunteerCalendar,
+    refetch: refetchVolunteerCalendar
+  } = useVolunteerData({
+    query:
+      query === QUERY_TYPES.EVENT_RECORDS
+        ? QUERY_TYPES.VOLUNTEER.CALENDAR_ALL
+        : (query as VolunteerQuery),
+    queryVariables: queryVariablesWithDateRange,
+    queryOptions: { enabled: loadVolunteerCalendar, keepPreviousData: true },
+    isCalendar: true,
+    isSectioned: true,
+    onlyUpcoming: false
+  });
 
   const {
     data: dataSubList,
@@ -156,18 +186,21 @@ export const Calendar = ({
     (month: DateData) => {
       const isCurrentMonth = moment(month.dateString).isSame(moment(), 'month');
 
+      const dateRange: VolunteerCalendarDateRange = [
+        isCurrentMonth
+          ? today
+          : moment(month.dateString).startOf('month').subtract(7, 'days').format('YYYY-MM-DD'),
+        moment(month.dateString).endOf('month').add(7, 'days').format('YYYY-MM-DD')
+      ];
+
       setQueryVariablesWithDateRange({
         ...queryVariablesWithDateRange,
-        dateRange: [
-          isCurrentMonth
-            ? today
-            : moment(month.dateString).startOf('month').subtract(7, 'days').format('YYYY-MM-DD'),
-          moment(month.dateString).endOf('month').add(7, 'days').format('YYYY-MM-DD')
-        ],
+        dateRange,
         limit: undefined
       });
+      onDateRangeChange?.(dateRange);
     },
-    [queryVariablesWithDateRange]
+    [onDateRangeChange, queryVariablesWithDateRange]
   );
 
   const selectedDay = useMemo(() => {
@@ -180,21 +213,39 @@ export const Calendar = ({
 
   const markedDates = useMemo(() => {
     const dates: CalendarProps['markedDates'] = {};
-    const eventRecords = [...(data?.[query] || []), ...(additionalData || [])];
+    const eventRecords =
+      query === QUERY_TYPES.EVENT_RECORDS
+        ? [
+            ...(data?.[query] || []),
+            ...(additionalData || []),
+            ...(includeVolunteerEvents ? volunteerCalendarData || [] : [])
+          ]
+        : additionalData;
 
     if (eventRecords?.length) {
-      eventRecords.forEach((item: { listDate: string; color: string }) => {
-        if (item.listDate) {
-          const dots = dates[item.listDate]?.dots || [];
+      eventRecords.forEach(
+        (item: {
+          all_day?: number;
+          color: string;
+          end_datetime?: string;
+          listDate: string;
+          start_datetime?: string;
+        }) => {
+          const eventDates = volunteerEventDates(item);
+          const datesToMark = eventDates.length ? eventDates : [item.listDate].filter(Boolean);
 
-          if (!dots.length || dots.length < dotCount) {
-            dates[item.listDate] = {
-              marked: true,
-              dots: [...dots, { color: item.color || colors.primary }]
-            };
-          }
+          datesToMark.forEach((date) => {
+            const dots = dates[date]?.dots || [];
+
+            if (!dots.length || dots.length < dotCount) {
+              dates[date] = {
+                marked: true,
+                dots: [...dots, { color: item.color || colors.primary }]
+              };
+            }
+          });
         }
-      });
+      );
     }
 
     // highlight selected day
@@ -205,7 +256,17 @@ export const Calendar = ({
     };
 
     return dates;
-  }, [additionalData, colors.calendarSelected, colors.primary, data, dotCount, query, selectedDay]);
+  }, [
+    additionalData,
+    colors.calendarSelected,
+    colors.primary,
+    data,
+    dotCount,
+    includeVolunteerEvents,
+    query,
+    selectedDay,
+    volunteerCalendarData
+  ]);
 
   const listItems = useMemo(() => {
     if (!subList) return [];
@@ -223,25 +284,49 @@ export const Calendar = ({
         }
       ) || [];
 
-    if (additionalData?.length) {
-      const filteredAdditionalData = additionalData.filter((item) => item.listDate === selectedDay);
+    const calendarAdditionalData = [
+      ...(additionalData || []),
+      ...(includeVolunteerEvents ? volunteerCalendarData || [] : [])
+    ];
+
+    if (calendarAdditionalData.length) {
+      const filteredAdditionalData = calendarAdditionalData.filter(
+        (item) => volunteerEventOverlapsDate(item, selectedDay) || item.listDate === selectedDay
+      );
 
       parsedListItems.push(...filteredAdditionalData);
     }
 
     return parsedListItems;
-  }, [additionalData, dataSubList, query, selectedDay, subList]);
+  }, [
+    additionalData,
+    dataSubList,
+    includeVolunteerEvents,
+    query,
+    selectedDay,
+    subList,
+    volunteerCalendarData
+  ]);
 
   const refresh = useCallback(async () => {
     if (isConnected) {
-      await refetch();
-      await refetchSubList();
+      if (query === QUERY_TYPES.EVENT_RECORDS) {
+        await refetch();
+        if (includeVolunteerEvents) await refetchVolunteerCalendar();
+      }
+      if (query === QUERY_TYPES.EVENT_RECORDS && subList) {
+        await refetchSubList();
+      }
     }
-  }, [isConnected, refetch, refetchSubList]);
-
-  useEffect(() => {
-    refetchSubList();
-  }, [selectedDay]);
+  }, [
+    includeVolunteerEvents,
+    isConnected,
+    query,
+    refetch,
+    refetchSubList,
+    refetchVolunteerCalendar,
+    subList
+  ]);
 
   useEffect(() => {
     setQueryVariablesWithDateRange({
@@ -257,10 +342,23 @@ export const Calendar = ({
       });
   }, [queryVariables]);
 
+  focusRefresh.current = () => {
+    if (query === QUERY_TYPES.EVENT_RECORDS) {
+      refetch();
+      if (includeVolunteerEvents) refetchVolunteerCalendar();
+    }
+  };
+
   useFocusEffect(
     useCallback(() => {
-      refetch();
-    }, [refetch])
+      if (isInitialFocus.current) {
+        isInitialFocus.current = false;
+
+        return;
+      }
+
+      focusRefresh.current();
+    }, [])
   );
 
   useEffect(() => {
@@ -275,7 +373,7 @@ export const Calendar = ({
     }
 
     return { data: { [query]: [] } };
-  }, [dataSubList, fetchNextPageSubList, hasNextPageSubList]);
+  }, [dataSubList, fetchNextPageSubList, hasNextPageSubList, query]);
 
   const disableArrowLeft =
     moment().endOf('month').add(7, 'days').format('YYYY-MM-DD') ===
@@ -286,7 +384,14 @@ export const Calendar = ({
       <RNCalendar
         dayComponent={DayComponent}
         disableArrowLeft={disableArrowLeft}
-        displayLoadingIndicator={loading || isRefetching || isRefetchingSubList}
+        displayLoadingIndicator={
+          isListRefreshing ||
+          loading ||
+          (loadVolunteerCalendar && loadingVolunteerCalendar) ||
+          isRefetching ||
+          isRefetchingSubList ||
+          (loadVolunteerCalendar && isRefetchingVolunteerCalendar)
+        }
         firstDay={1}
         markedDates={markedDates}
         markingType="multi-dot"
