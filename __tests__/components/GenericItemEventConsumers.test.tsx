@@ -426,6 +426,58 @@ describe('Generic Item event consumers', () => {
     expect(mockListProps.data).toContainEqual(volunteerEvent);
   });
 
+  it('sorts native and Volunteer events together for the selected calendar day', () => {
+    const nativeNoon = {
+      id: 'native-noon',
+      listDate: '2030-01-02',
+      startTime: '12:00',
+      title: 'Native noon'
+    };
+    const nativeAfternoon = {
+      id: 'native-afternoon',
+      listDate: '2030-01-02',
+      startTime: '16:00',
+      title: 'Native afternoon'
+    };
+    const volunteerNoon = {
+      eventDates: ['2030-01-02'],
+      id: 'volunteer-noon',
+      listDate: '2030-01-02',
+      startTime: '12:00',
+      title: 'Volunteer noon'
+    };
+    mockSubListInfiniteResult.data = {
+      pages: [{ eventRecords: [nativeNoon, nativeAfternoon] }]
+    };
+    mockUseVolunteerData.mockReturnValue({
+      data: [volunteerNoon],
+      isLoading: false,
+      isRefetching: false,
+      refetch: mockVolunteerRefetch
+    });
+    const calendarSettings = {
+      globalSettings: { hdvt: {}, settings: { eventCalendar: { subList: true } } }
+    } as any;
+
+    render(
+      <NetworkContext.Provider value={{ isConnected: true, isMainserverUp: true }}>
+        <SettingsContext.Provider value={calendarSettings}>
+          <Calendar
+            includeVolunteerEvents
+            isListRefreshing={false}
+            navigation={{ push: jest.fn() } as any}
+            query="eventRecords"
+            queryVariables={{}}
+          />
+        </SettingsContext.Provider>
+      </NetworkContext.Provider>
+    );
+
+    act(() => mockNativeCalendarProps.onDayPress({ dateString: '2030-01-02' }));
+
+    expect(mockListProps.data).toEqual([nativeNoon, volunteerNoon, nativeAfternoon]);
+  });
+
   it('refreshes native and Volunteer data in the combined calendar', async () => {
     const calendarSettings = {
       globalSettings: { hdvt: {}, settings: { eventCalendar: { subList: true } } }

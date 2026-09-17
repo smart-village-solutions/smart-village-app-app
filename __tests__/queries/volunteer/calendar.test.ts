@@ -135,10 +135,81 @@ describe('calendarAll', () => {
     );
   });
 
-  it('does not hide recurring endpoint errors', async () => {
+  it('loads bookmarked calendar entries directly by id', async () => {
+    (globalThis.fetch as jest.Mock)
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ id: 42, title: 'First bookmark' })
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ id: 84, title: 'Second bookmark' })
+      });
+
+    await expect(calendarAll({ ids: ['42', '84'] })).resolves.toEqual({
+      results: [
+        { id: 42, title: 'First bookmark' },
+        { id: 84, title: 'Second bookmark' }
+      ]
+    });
+    expect(globalThis.fetch).toHaveBeenNthCalledWith(
+      1,
+      'https://example.test/api/v2/calendar/entry/42',
+      expect.any(Object)
+    );
+    expect(globalThis.fetch).toHaveBeenNthCalledWith(
+      2,
+      'https://example.test/api/v2/calendar/entry/84',
+      expect.any(Object)
+    );
+  });
+
+  it('ignores bookmarked calendar entries that no longer exist', async () => {
+    (globalThis.fetch as jest.Mock)
+      .mockResolvedValueOnce({ ok: false, status: 404 })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ id: 84, title: 'Existing bookmark' })
+      });
+
+    await expect(calendarAll({ ids: ['42', '84'] })).resolves.toEqual({
+      results: [{ id: 84, title: 'Existing bookmark' }]
+    });
+  });
+
+  it('does not hide unexpected bookmarked entry errors', async () => {
+    (globalThis.fetch as jest.Mock).mockResolvedValueOnce({ ok: false, status: 500 });
+
+    await expect(calendarAll({ ids: ['42'] })).rejects.toThrow(
+      'Volunteer calendar request failed with status 500'
+    );
+  });
+
+  it('treats the recurring endpoint empty-range response as an empty result', async () => {
     (globalThis.fetch as jest.Mock)
       .mockResolvedValueOnce({ json: async () => ({ pages: 1, results: [] }) })
-      .mockResolvedValueOnce({ ok: false, status: 404 });
+      .mockResolvedValueOnce({
+        ok: false,
+        status: 404,
+        json: async () => ({
+          code: 404,
+          message: 'No recurring events are present between the requested dates'
+        })
+      });
+
+    await expect(calendarAll({ dateRange: ['2026-06-01', '2026-06-30'] })).resolves.toEqual({
+      results: []
+    });
+  });
+
+  it('does not hide unexpected recurring endpoint errors', async () => {
+    (globalThis.fetch as jest.Mock)
+      .mockResolvedValueOnce({ json: async () => ({ pages: 1, results: [] }) })
+      .mockResolvedValueOnce({
+        ok: false,
+        status: 404,
+        json: async () => ({ code: 404, message: 'Route not found' })
+      });
 
     await expect(calendarAll({ dateRange: ['2026-06-01', '2026-06-30'] })).rejects.toThrow(
       'Volunteer calendar request failed with status 404'

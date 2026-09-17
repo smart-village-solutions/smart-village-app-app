@@ -1,5 +1,6 @@
 import { useFocusEffect } from 'expo-router/react-navigation';
 import { StackNavigationProp } from 'expo-router/js-stack';
+import _sortBy from 'lodash/sortBy';
 import moment from 'moment';
 import 'moment/locale/de';
 import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
@@ -297,7 +298,11 @@ export const Calendar = ({
       parsedListItems.push(...filteredAdditionalData);
     }
 
-    return parsedListItems;
+    return _sortBy(
+      parsedListItems,
+      (item) => item.listDate,
+      (item) => item.startTime || ''
+    );
   }, [
     additionalData,
     dataSubList,

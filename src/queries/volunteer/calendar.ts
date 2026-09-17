@@ -17,6 +17,7 @@ const MAX_CONCURRENT_PAGE_REQUESTS_PER_ENDPOINT = 3;
 export const calendarAll = async (queryVariables?: {
   dateRange?: VolunteerDateRange;
   contentContainerId?: number;
+  ids?: string[];
 }) => {
   const authToken = await volunteerAuthToken();
 
@@ -27,6 +28,24 @@ export const calendarAll = async (queryVariables?: {
       Authorization: authToken ? `Bearer ${authToken}` : ''
     }
   };
+
+  if (queryVariables?.ids?.length) {
+    const results = await Promise.all(
+      queryVariables.ids.map(async (id) => {
+        const response = await fetch(`${volunteerApiV2Url}calendar/entry/${id}`, fetchObj);
+
+        if (response.ok === false) {
+          if (response.status === 404) return undefined;
+
+          throw new Error(`Volunteer calendar request failed with status ${response.status}`);
+        }
+
+        return response.json();
+      })
+    );
+
+    return { results: results.filter(Boolean) };
+  }
 
   const id = queryVariables?.contentContainerId;
   const baseUrl =
@@ -56,6 +75,14 @@ export const calendarAll = async (queryVariables?: {
     const response = await fetch(`${url}?${searchParams.toString()}`, fetchObj);
 
     if (response.ok === false) {
+      if (response.status === 404 && url.endsWith('/recurring')) {
+        const error = await response.json();
+
+        if (error?.message?.startsWith('No recurring events are present')) {
+          return { pages: 1, results: [] };
+        }
+      }
+
       throw new Error(`Volunteer calendar request failed with status ${response.status}`);
     }
 

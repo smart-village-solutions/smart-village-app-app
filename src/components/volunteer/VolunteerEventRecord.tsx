@@ -14,6 +14,7 @@ import { calendarAttend } from '../../queries/volunteer';
 import { SettingsContext } from '../../SettingsProvider';
 import { PARTICIPANT_TYPE, ScreenName } from '../../types';
 import { Button } from '../Button';
+import { DetailActions } from '../detail/DetailActions';
 import { HeaderRight } from '../HeaderRight';
 import { HtmlView } from '../HtmlView';
 import { ImageSection } from '../ImageSection';
@@ -114,28 +115,25 @@ export const VolunteerEventRecord = ({
   }, [checkIfMe]);
 
   useLayoutEffect(() => {
-    if (isMy) {
-      navigation.setOptions({
-        headerRight: () => (
-          <HeaderRight
-            {...{
-              navigation,
-              onPress: () =>
-                navigation.navigate(ScreenName.VolunteerForm, {
-                  query: QUERY_TYPES.VOLUNTEER.CALENDAR,
-                  calendarData: { ...data, isPublic: content?.metadata?.visibility },
-                  groupId: content?.metadata?.contentcontainer_id
-                }),
-              route,
-              withDrawer: navigationType === 'drawer',
-              withEdit: true,
-              withShare: true
-            }}
-          />
-        )
-      });
-    }
-  }, [isMy, data]);
+    navigation.setOptions({
+      headerRight: () => (
+        <HeaderRight
+          {...{
+            navigation,
+            onPress: () =>
+              navigation.navigate(ScreenName.VolunteerForm, {
+                query: QUERY_TYPES.VOLUNTEER.CALENDAR,
+                calendarData: { ...data, isPublic: content?.metadata?.visibility },
+                groupId: content?.metadata?.contentcontainer_id
+              }),
+            route,
+            withDrawer: navigationType === 'drawer',
+            withEdit: !!isMy
+          }}
+        />
+      )
+    });
+  }, [content?.metadata, data, isMy, navigation, navigationType, route]);
 
   const checkIfAttending = useCallback(async () => {
     const { currentUserId } = await volunteerUserData();
@@ -178,6 +176,8 @@ export const VolunteerEventRecord = ({
           openWebScreen={openWebScreen}
         />
       </Wrapper>
+
+      <DetailActions data={data} route={route} />
 
       {!!appointments?.length && (
         <View>

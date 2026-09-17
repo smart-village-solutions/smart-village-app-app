@@ -58,7 +58,7 @@ describe('DataListSection', () => {
 
   it('removes the divider from the last visible mixed-source item', () => {
     const events = [
-      { id: 'main', listDate: '2030-01-01', title: 'Main Event' },
+      { id: 'main', bottomDivider: false, listDate: '2030-01-01', title: 'Main Event' },
       { id: 'generic', listDate: '2030-01-02', title: 'Generic Event' },
       { id: 'later', listDate: '2030-01-03', title: 'Later Event' }
     ];
@@ -74,6 +74,38 @@ describe('DataListSection', () => {
       />
     );
 
-    expect(mockListProps.data).toEqual([events[0], { ...events[1], bottomDivider: false }]);
+    expect(mockListProps.data).toEqual([
+      { ...events[0], bottomDivider: true },
+      { ...events[1], bottomDivider: false }
+    ]);
+  });
+
+  it('sorts mixed event sources by date and time before applying the limit', () => {
+    const nativeEvents = [
+      { id: 'previous-day', listDate: '2030-01-01', startTime: '10:30', title: 'Previous day' },
+      { id: 'native-noon', listDate: '2030-01-02', startTime: '12:00', title: 'Native noon' },
+      { id: 'native-afternoon', listDate: '2030-01-02', startTime: '16:00', title: 'Afternoon' }
+    ];
+    const volunteerEvent = {
+      id: 'volunteer-noon',
+      listDate: '2030-01-02',
+      startTime: '12:00',
+      title: 'Volunteer noon'
+    };
+
+    const { parseListItemsFromQuery } = jest.requireMock('../../src/helpers');
+    parseListItemsFromQuery.mockReturnValueOnce(nativeEvents);
+
+    render(
+      <DataListSection
+        additionalData={[volunteerEvent]}
+        limit={3}
+        navigation={{} as any}
+        query="eventRecords"
+        sectionData={nativeEvents}
+      />
+    );
+
+    expect(mockListProps.data).toEqual([nativeEvents[0], nativeEvents[1], volunteerEvent]);
   });
 });

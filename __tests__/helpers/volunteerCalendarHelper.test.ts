@@ -11,6 +11,7 @@ import {
   volunteerCalendarDateRangeForVisibleRange,
   volunteerEventDates,
   volunteerEventIsUpcoming,
+  volunteerEventOvertitle,
   volunteerEventOverlapsDate,
   volunteerListDate
 } from '../../src/helpers/volunteerHelper';
@@ -61,6 +62,26 @@ describe('volunteer calendar date helpers', () => {
     expect(volunteerEventDates(event)).toEqual(['2026-06-01', '2026-06-02', '2026-06-03']);
     expect(volunteerEventOverlapsDate(event, '2026-06-02')).toBe(true);
     expect(volunteerEventOverlapsDate(event, '2026-06-04')).toBe(false);
+  });
+
+  it('formats timed calendar events with time and location as overtitle', () => {
+    expect(
+      volunteerEventOvertitle({
+        all_day: 0,
+        start_datetime: '2026-06-01 10:30:00',
+        location: 'QA Staging Public'
+      })
+    ).toBe('10:30 Uhr | QA Staging Public');
+  });
+
+  it('formats all-day calendar events without a midnight time', () => {
+    expect(
+      volunteerEventOvertitle({
+        all_day: 1,
+        start_datetime: '2026-06-01 00:00:00',
+        location: 'QA Staging Public'
+      })
+    ).toBe('QA Staging Public');
   });
 
   it('does not mark the next day when a timed event ends at midnight', () => {

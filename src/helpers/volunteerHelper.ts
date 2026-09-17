@@ -201,6 +201,21 @@ export const volunteerEventIsUpcoming = (event: {
   return volunteerEventDates(event).some((date) => date >= today);
 };
 
+export const volunteerEventOvertitle = (
+  volunteer: {
+    all_day?: boolean | number;
+    location?: string;
+    start_datetime?: string;
+  },
+  withDate = false
+) => {
+  const start = volunteer.start_datetime ? moment(volunteer.start_datetime) : undefined;
+  const date = withDate && start?.isValid() ? eventDate(start.format('YYYY-MM-DD')) : undefined;
+  const time = !volunteer.all_day && start?.isValid() ? start.format('HH:mm') : undefined;
+
+  return subtitle(date, volunteer.location, time);
+};
+
 export const volunteerSubtitle = (
   volunteer: any,
   query: string,

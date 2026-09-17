@@ -396,6 +396,8 @@ export const EventRecords = ({ navigation, route }) => {
         query={query}
         queryVariables={queryVariables}
         fetchMoreData={fetchMoreData}
+        hasNextPage={hasNextPage}
+        isFetchingNextPage={isFetchingNextPage}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}

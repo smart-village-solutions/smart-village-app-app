@@ -1,24 +1,26 @@
 import { useFocusEffect } from 'expo-router/react-navigation';
 import { StackNavigationProp } from 'expo-router/js-stack';
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useQuery as RQuseQuery } from 'react-query';
 
-import { ReactQueryClient } from '../../ReactQueryClient';
+import { requestBookmarkData } from '../../BookmarkQueryClient';
 import { texts } from '../../config';
-import { QUERY_TYPES, getQuery } from '../../queries';
+import { parseListItemsFromQuery } from '../../helpers';
+import { QUERY_TYPES } from '../../queries';
 import { ScreenName } from '../../types';
 import { DataListSection } from '../DataListSection';
+import { RegularText } from '../Text';
 import { WrapperVertical } from '../Wrapper';
 
 type Props = {
+  additionalIds?: string[];
+  additionalQuery?: string;
   suffix?: number | string;
   categoryTitleDetail?: string;
   ids: string[];
-  bookmarkKey: string;
   navigation: StackNavigationProp<Record<string, object | undefined>>;
   query: string;
   sectionTitle?: string;
-  setConnectionState: React.Dispatch<React.SetStateAction<{ [key: string]: boolean }>>;
 };
 
 type BookmarkQueryVariables = {
@@ -26,42 +28,91 @@ type BookmarkQueryVariables = {
   onlyUniqEvents?: boolean;
 };
 
+const getPreviewIds = (ids: string[], includeAll: boolean) => (includeAll ? ids : ids.slice(0, 3));
+
+const getBookmarkQueryVariables = (
+  ids: string[],
+  query: string,
+  includeAll: boolean
+): BookmarkQueryVariables => {
+  const queryIds = getPreviewIds(ids, query === QUERY_TYPES.VOUCHERS || includeAll);
+
+  return query === QUERY_TYPES.EVENT_RECORDS
+    ? { ids: queryIds, onlyUniqEvents: true }
+    : { ids: queryIds };
+};
+
+const getBookmarkQueryData = (query: string, queryKey: string, data?: Record<string, unknown>) =>
+  query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL ? data?.results : data?.[queryKey];
+
+const parseAdditionalBookmarkData = (
+  additionalQuery: string | undefined,
+  additionalQueryData: Record<string, unknown> | undefined,
+  categoryTitleDetail: string | undefined
+) => {
+  if (!additionalQuery) return undefined;
+
+  const data =
+    additionalQuery === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL
+      ? additionalQueryData?.results
+      : additionalQueryData;
+
+  return parseListItemsFromQuery(additionalQuery, data, categoryTitleDetail, {
+    withDate: true,
+    isSectioned: additionalQuery === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL,
+    skipLastDivider: false
+  });
+};
+
 export const BookmarkSection = ({
+  additionalIds = [],
+  additionalQuery,
   suffix,
   categoryTitleDetail,
   ids,
-  bookmarkKey,
   navigation,
   query,
-  sectionTitle,
-  setConnectionState
+  sectionTitle
 }: Props) => {
-  // slice the first 3 entries off of the bookmark ids, to get the 3 most recently bookmarked items,
-  // skip that for vouchers
-  const variables: BookmarkQueryVariables = useMemo(() => {
-    const queryIds = query === QUERY_TYPES.VOUCHERS ? ids : ids.slice(0, 3);
-
-    return query === QUERY_TYPES.EVENT_RECORDS
-      ? { ids: queryIds, onlyUniqEvents: true }
-      : { ids: queryIds };
-  }, [ids, query]);
+  const isCombinedEventSection =
+    query === QUERY_TYPES.EVENT_RECORDS && additionalQuery === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL;
+  const variables = useMemo(
+    () => getBookmarkQueryVariables(ids, query, isCombinedEventSection),
+    [ids, isCombinedEventSection, query]
+  );
   const queryKey = query === QUERY_TYPES.VOUCHERS ? QUERY_TYPES.GENERIC_ITEMS : query;
+  const additionalVariables = useMemo(
+    () => ({ ids: getPreviewIds(additionalIds, isCombinedEventSection) }),
+    [additionalIds, isCombinedEventSection]
+  );
 
   const {
     data,
     isError,
-    isLoading: loading,
+    isLoading: primaryLoading,
     refetch
+  } = RQuseQuery([query, variables], () => requestBookmarkData(query, variables), {
+    enabled: !!variables.ids.length
+  });
+  const {
+    data: additionalQueryData,
+    isError: isAdditionalError,
+    isLoading: isAdditionalLoading,
+    refetch: refetchAdditional
   } = RQuseQuery(
-    [query, variables],
-    async () => {
-      const client = await ReactQueryClient();
-
-      return await client.request(getQuery(query), variables);
-    },
-    { enabled: !!variables.ids.length }
+    [additionalQuery, additionalVariables],
+    () => requestBookmarkData(additionalQuery ?? '', additionalVariables),
+    { enabled: !!additionalQuery && !!additionalVariables.ids.length }
   );
-  const listData = data?.[queryKey];
+  const isVolunteerCalendar = query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL;
+  const listData = getBookmarkQueryData(query, queryKey, data);
+  const additionalListData = parseAdditionalBookmarkData(
+    additionalQuery,
+    additionalQueryData,
+    categoryTitleDetail
+  );
+  const loading = primaryLoading || isAdditionalLoading;
+  const hasListData = !!listData?.length || !!additionalListData?.length;
 
   const onPressShowMore = useCallback(
     () =>
@@ -69,48 +120,60 @@ export const BookmarkSection = ({
         suffix,
         query,
         queryVariables: variables,
+        additionalQuery,
+        additionalQueryVariables: additionalVariables,
         title: sectionTitle,
         categoryTitleDetail
       }),
-    [categoryTitleDetail, navigation, query, sectionTitle, suffix, variables]
+    [
+      additionalQuery,
+      additionalVariables,
+      categoryTitleDetail,
+      navigation,
+      query,
+      sectionTitle,
+      suffix,
+      variables
+    ]
   );
-
-  useEffect(() => {
-    if (!loading) {
-      setConnectionState((state) => {
-        const newState = { ...state };
-        newState[bookmarkKey] = !isError && !!listData?.length;
-        return newState;
-      });
-    }
-  }, [bookmarkKey, isError, listData?.length, loading, setConnectionState]);
 
   useFocusEffect(
     useCallback(() => {
-      refetch();
-    }, [refetch])
+      variables.ids.length && refetch();
+      additionalQuery && additionalVariables.ids.length && refetchAdditional();
+    }, [additionalQuery, additionalVariables.ids.length, refetch, refetchAdditional, variables.ids])
   );
 
-  if (!loading && !listData?.length) {
+  if (!loading && (isError || isAdditionalError)) {
+    return (
+      <WrapperVertical>
+        <RegularText>{texts.errors.unexpected}</RegularText>
+      </WrapperVertical>
+    );
+  }
+
+  if (!loading && !hasListData) {
     return null;
   }
 
   return (
     <WrapperVertical>
       <DataListSection
+        additionalData={additionalListData}
         buttonTitle={texts.bookmarks.showAll}
-        limit={variables?.ids.length}
+        limit={Math.min(ids.length + additionalIds.length, 3)}
         loading={loading}
         navigate={onPressShowMore}
         navigateButton={onPressShowMore}
         navigation={navigation}
         query={query}
         queryVariables={variables}
-        sectionData={data}
+        sectionData={isVolunteerCalendar ? data?.results : data}
         sectionTitle={sectionTitle}
         sectionTitleDetail={categoryTitleDetail}
-        showButton={ids.length > 3}
+        showButton={ids.length + additionalIds.length > 3}
         showEventDateTime={query === QUERY_TYPES.EVENT_RECORDS}
+        skipLastDivider
       />
     </WrapperVertical>
   );

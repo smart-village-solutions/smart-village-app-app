@@ -118,6 +118,7 @@ const parseEventRecords = (data, skipLastDivider, withDate, withTime) => {
       url: mainImageOfMediaContents(eventRecord.mediaContents)
     },
     listDate: eventRecord.listDate,
+    startTime: eventRecord?.date?.timeFrom || eventRecord?.dates?.[0]?.timeFrom,
     routeName: ScreenName.Detail,
     params: {
       title: texts.detailTitles.eventRecord,

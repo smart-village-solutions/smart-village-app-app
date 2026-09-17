@@ -1,4 +1,4 @@
-import { QUERY_TYPES } from '../queries';
+import { QUERY_TYPES } from '../queries/types';
 
 import { addToStore, readFromStore } from './storageHelper';
 
@@ -20,6 +20,8 @@ export const getListQueryType = (singleItemType: string) => {
       return QUERY_TYPES.POINTS_OF_INTEREST;
     case QUERY_TYPES.GENERIC_ITEM:
       return QUERY_TYPES.GENERIC_ITEMS;
+    case QUERY_TYPES.VOLUNTEER.CALENDAR:
+      return QUERY_TYPES.VOLUNTEER.CALENDAR_ALL;
     default:
       return singleItemType;
   }
