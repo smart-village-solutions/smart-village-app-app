@@ -19,3 +19,17 @@ export const sectionEventData = (data = []) => {
 
   return Object.entries(groupedByDate).flatMap(([listDate, items]) => [listDate, ...items]);
 };
+
+export const visibleAdditionalEventData = ({ additionalData, hasNextPage, primaryData }) => {
+  if (!hasNextPage) return additionalData;
+
+  const lastLoadedDate = primaryData.reduce(
+    (latestDate, item) =>
+      item.listDate && item.listDate > latestDate ? item.listDate : latestDate,
+    ''
+  );
+
+  if (!lastLoadedDate) return [];
+
+  return additionalData.filter((item) => item.listDate && item.listDate <= lastLoadedDate);
+};

@@ -129,6 +129,7 @@ export const Calendar = ({
     isLoading: loadingSubList,
     refetch: refetchSubList,
     isRefetching: isRefetchingSubList,
+    isFetchingNextPage: isFetchingNextPageSubList,
     fetchNextPage: fetchNextPageSubList,
     hasNextPage: hasNextPageSubList
   } = useInfiniteQuery(
@@ -347,12 +348,14 @@ export const Calendar = ({
       });
   }, [queryVariables]);
 
-  focusRefresh.current = () => {
-    if (query === QUERY_TYPES.EVENT_RECORDS) {
-      refetch();
-      if (includeVolunteerEvents) refetchVolunteerCalendar();
-    }
-  };
+  useEffect(() => {
+    focusRefresh.current = () => {
+      if (query === QUERY_TYPES.EVENT_RECORDS) {
+        refetch();
+        if (includeVolunteerEvents) refetchVolunteerCalendar();
+      }
+    };
+  }, [includeVolunteerEvents, query, refetch, refetchVolunteerCalendar]);
 
   useFocusEffect(
     useCallback(() => {
@@ -378,7 +381,7 @@ export const Calendar = ({
     }
 
     return { data: { [query]: [] } };
-  }, [dataSubList, fetchNextPageSubList, hasNextPageSubList, query]);
+  }, [fetchNextPageSubList, hasNextPageSubList, query]);
 
   const disableArrowLeft =
     moment().endOf('month').add(7, 'days').format('YYYY-MM-DD') ===
@@ -427,6 +430,8 @@ export const Calendar = ({
           containerStyle={subListContainerStyle}
           data={listItems}
           fetchMoreData={fetchMoreData}
+          hasNextPage={hasNextPageSubList}
+          isFetchingNextPage={isFetchingNextPageSubList}
           ListFooterComponent={() => {
             if (loadingSubList || isRefetchingSubList) {
               return (

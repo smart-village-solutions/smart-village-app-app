@@ -135,6 +135,24 @@ describe('calendarAll', () => {
     );
   });
 
+  it('uses the following day as the exclusive end for a single-day range', async () => {
+    (globalThis.fetch as jest.Mock)
+      .mockResolvedValueOnce({ json: async () => ({ pages: 1, results: [] }) })
+      .mockResolvedValueOnce({ json: async () => ({ pages: 1, results: [] }) });
+
+    await calendarAll({
+      contentContainerId: 157,
+      dateRange: ['2026-06-17']
+    });
+
+    expect((globalThis.fetch as jest.Mock).mock.calls[0][0]).toBe(
+      'https://example.test/api/v2/calendar/container/157?start_date=2026-06-17&end_date=2026-06-18&pagination=1&limit=100'
+    );
+    expect((globalThis.fetch as jest.Mock).mock.calls[1][0]).toBe(
+      'https://example.test/api/v2/calendar/container/157/recurring?start_date=2026-06-17&end_date=2026-06-18&pagination=1&limit=100'
+    );
+  });
+
   it('loads bookmarked calendar entries directly by id', async () => {
     (globalThis.fetch as jest.Mock)
       .mockResolvedValueOnce({

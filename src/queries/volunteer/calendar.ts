@@ -54,10 +54,12 @@ export const calendarAll = async (queryVariables?: {
       : `${volunteerApiV2Url}calendar`;
   const requestedStart =
     queryVariables?.dateRange?.[0] || momentFormat(Date.now(), 'YYYY-MM-DD', 'x');
-  const requestedEnd =
-    queryVariables?.dateRange?.[1] ||
-    queryVariables?.dateRange?.[0] ||
-    moment(requestedStart).add(365, 'days').format('YYYY-MM-DD');
+  const selectedEnd = queryVariables?.dateRange?.[1];
+  const requestedEnd = queryVariables?.dateRange?.length
+    ? selectedEnd && selectedEnd !== requestedStart
+      ? selectedEnd
+      : moment(requestedStart).add(1, 'day').format('YYYY-MM-DD')
+    : moment(requestedStart).add(365, 'days').format('YYYY-MM-DD');
   const baseSearchParams = new URLSearchParams({
     start_date: requestedStart,
     end_date: requestedEnd,

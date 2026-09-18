@@ -1,6 +1,6 @@
 import { StackScreenProps } from 'expo-router/js-stack';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useCallback } from 'react';
 import { RefreshControl, ScrollView } from 'react-native';
 import { useQuery } from 'react-query';
 
@@ -15,6 +15,7 @@ import {
   VolunteerUser
 } from '../../components';
 import { texts } from '../../config';
+import { volunteerDetailData } from '../../helpers';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { VolunteerQuery } from '../../types';
 import { useTheme } from '../../hooks/useTheme';
@@ -45,6 +46,10 @@ export const VolunteerDetailScreen = ({ navigation, route }: StackScreenProps<an
     () => getQuery(query)(queryVariables),
     queryOptions
   );
+  const canRefetch = query !== QUERY_TYPES.VOLUNTEER.CALENDAR || queryVariables?.id != null;
+  const refetchDetails = useCallback(() => {
+    if (canRefetch) refetch();
+  }, [canRefetch, refetch]);
 
   if (isLoading) {
     return <LoadingSpinner loading />;
@@ -54,7 +59,7 @@ export const VolunteerDetailScreen = ({ navigation, route }: StackScreenProps<an
   // with index query as details
   // we can have `data` from the query or `details` from the previous list view.
   // if there is no cached `data` or network fetched `data` we fallback to the `details`.
-  const componentData = data?.code !== 403 ? data : details;
+  const componentData = volunteerDetailData(data, details);
 
   const Component = getComponent(query);
 
@@ -71,7 +76,7 @@ export const VolunteerDetailScreen = ({ navigation, route }: StackScreenProps<an
           refreshControl={
             <RefreshControl
               refreshing={isLoading}
-              onRefresh={refetch}
+              onRefresh={refetchDetails}
               colors={[colors.refreshControl]}
               tintColor={colors.refreshControl}
             />
@@ -80,7 +85,7 @@ export const VolunteerDetailScreen = ({ navigation, route }: StackScreenProps<an
         >
           <Component
             data={componentData}
-            refetch={refetch}
+            refetch={refetchDetails}
             isRefetching={isRefetching}
             navigation={navigation}
             route={route}

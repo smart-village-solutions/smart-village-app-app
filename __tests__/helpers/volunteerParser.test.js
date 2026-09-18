@@ -27,5 +27,40 @@ describe('volunteer list parser', () => {
         title: 'QA Guest – Single Day'
       })
     );
+    expect(item.params).toEqual(
+      expect.objectContaining({
+        query: QUERY_TYPES.VOLUNTEER.CALENDAR,
+        queryVariables: { id: '1' }
+      })
+    );
+  });
+
+  it('keeps recurring occurrence details without requesting a null entry id', () => {
+    const occurrence = {
+      id: null,
+      parent_id: 175,
+      start_datetime: '2026-10-17 16:00:00',
+      end_datetime: '2026-10-17 17:00:00',
+      location: 'Kirche Döberitz',
+      title: 'Offene Kirche mit Bibliothek'
+    };
+    const [item] = parseVolunteerData(
+      [occurrence],
+      QUERY_TYPES.VOLUNTEER.CALENDAR,
+      true,
+      true,
+      false
+    );
+
+    expect(item.params).toEqual(
+      expect.objectContaining({
+        details: occurrence,
+        queryOptions: { enabled: false },
+        queryVariables: { id: undefined }
+      })
+    );
+    expect(item.params.shareContent.message).toBe(
+      '17. Oktober 2026, 16:00 Uhr | Kirche Döberitz: Offene Kirche mit Bibliothek'
+    );
   });
 });

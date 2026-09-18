@@ -1,4 +1,4 @@
-import { sectionEventData } from '../../src/helpers/eventListHelper';
+import { sectionEventData, visibleAdditionalEventData } from '../../src/helpers/eventListHelper';
 
 describe('EventList helpers', () => {
   test('groups the received data synchronously by list date', () => {
@@ -24,5 +24,40 @@ describe('EventList helpers', () => {
       volunteerNoonEvent,
       afternoonEvent
     ]);
+  });
+
+  test('does not let future additional events hide unloaded regular event pages', () => {
+    const regularEvents = [
+      { id: 1, listDate: '2026-11-22' },
+      { id: 2, listDate: '2026-11-25' }
+    ];
+    const additionalEvents = [
+      { id: 'a1', listDate: '2026-11-24' },
+      { id: 'a2', listDate: '2026-11-26' },
+      { id: 'a3', listDate: '2026-12-05' }
+    ];
+
+    expect(
+      visibleAdditionalEventData({
+        additionalData: additionalEvents,
+        hasNextPage: true,
+        primaryData: regularEvents
+      })
+    ).toEqual([additionalEvents[0]]);
+  });
+
+  test('shows all additional events after regular event pagination is complete', () => {
+    const additionalEvents = [
+      { id: 'a1', listDate: '2026-11-26' },
+      { id: 'a2', listDate: '2026-12-05' }
+    ];
+
+    expect(
+      visibleAdditionalEventData({
+        additionalData: additionalEvents,
+        hasNextPage: false,
+        primaryData: [{ id: 1, listDate: '2026-11-25' }]
+      })
+    ).toBe(additionalEvents);
   });
 });

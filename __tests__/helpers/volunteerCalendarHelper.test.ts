@@ -13,6 +13,7 @@ import {
   volunteerEventIsUpcoming,
   volunteerEventOvertitle,
   volunteerEventOverlapsDate,
+  volunteerDetailData,
   volunteerListDate
 } from '../../src/helpers/volunteerHelper';
 
@@ -161,5 +162,23 @@ describe('volunteer calendar date helpers', () => {
         time_zone: 'America/Los_Angeles'
       })
     ).toBe(false);
+  });
+
+  it('falls back to occurrence details when no usable detail response exists', () => {
+    const occurrence = {
+      start_datetime: '2026-10-17 16:00:00',
+      end_datetime: '2026-10-17 17:00:00'
+    };
+
+    expect(volunteerDetailData(undefined, occurrence)).toBe(occurrence);
+    expect(volunteerDetailData({ status: 404 }, occurrence)).toBe(occurrence);
+    expect(volunteerDetailData({ code: 403 }, occurrence)).toBe(occurrence);
+    expect(volunteerDetailData({ code: 404 }, occurrence)).toBe(occurrence);
+  });
+
+  it('prefers a successful detail response over occurrence details', () => {
+    const response = { id: 42, title: 'Fresh detail' };
+
+    expect(volunteerDetailData(response, { id: 42, title: 'Cached detail' })).toBe(response);
   });
 });

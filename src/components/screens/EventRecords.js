@@ -18,6 +18,7 @@ import {
   parseListItemsFromQuery,
   volunteerEventOverlapsDate
 } from '../../helpers';
+import { visibleAdditionalEventData } from '../../helpers/eventListHelper';
 import { updateResourceFiltersStateHelper } from '../../helpers/updateResourceFiltersStateHelper';
 import {
   useGenericItemEvents,
@@ -210,9 +211,15 @@ export const EventRecords = ({ navigation, route }) => {
         filteredAdditionalData = additionalData.filter(
           (item) => volunteerEventOverlapsDate(item, selectedDate) || item.listDate === selectedDate
         );
+      } else {
+        filteredAdditionalData = visibleAdditionalEventData({
+          additionalData,
+          hasNextPage,
+          primaryData: parsedListItems
+        });
       }
 
-      parsedListItems.push(...(filteredAdditionalData ?? additionalData));
+      parsedListItems.push(...filteredAdditionalData);
       parsedListItems = _sortBy(parsedListItems, (item) => item.listDate);
     }
 
@@ -236,6 +243,7 @@ export const EventRecords = ({ navigation, route }) => {
     additionalData,
     queryVariables,
     hasDailyFilterSelection,
+    hasNextPage,
     currentPosition,
     isLocationAlertShow,
     locationSettings,

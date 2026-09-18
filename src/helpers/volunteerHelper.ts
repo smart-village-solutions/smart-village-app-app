@@ -17,6 +17,13 @@ const serverUrl = secrets[namespace]?.volunteer?.serverUrl;
 export const volunteerApiV1Url = serverUrl + secrets[namespace]?.volunteer?.v1;
 export const volunteerApiV2Url = serverUrl + secrets[namespace]?.volunteer?.v2;
 
+export const volunteerDetailData = <T>(data: T | undefined, details: T): T | undefined => {
+  const { code, status } = (data || {}) as { code?: number; status?: number };
+  const isUnavailable = [code, status].some((value) => value === 403 || value === 404);
+
+  return data && !isUnavailable ? data : details;
+};
+
 const VOLUNTEER_AUTH_TOKEN = 'VOLUNTEER_AUTH_TOKEN';
 const VOLUNTEER_CURRENT_USER_ID = 'VOLUNTEER_CURRENT_USER_ID';
 const VOLUNTEER_CURRENT_USER_GUID = 'VOLUNTEER_CURRENT_USER_GUID';

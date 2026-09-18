@@ -36,6 +36,16 @@ export const parseVolunteerData = (
       QUERY_TYPES.VOLUNTEER.CALENDAR_ALL,
       QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY
     ].includes(query);
+    const detailQuery = isCalendar ? QUERY_TYPES.VOLUNTEER.CALENDAR : query;
+    const hasCalendarDetailId = !isCalendar || volunteer.id != null;
+    const detailId = volunteer.user?.id ?? volunteer.id;
+    let queryOptions;
+
+    if (query === QUERY_TYPES.VOLUNTEER.CONVERSATION) {
+      queryOptions = { refetchInterval: 1000 };
+    } else if (!hasCalendarDetailId) {
+      queryOptions = { enabled: false };
+    }
 
     if (query === QUERY_TYPES.VOLUNTEER.USER) {
       if ((volunteer.user?.id || volunteer.id) == currentUserId) {
@@ -83,22 +93,20 @@ export const parseVolunteerData = (
       startTime: volunteer.startTime || volunteer.start_datetime?.slice(11, 16),
       status: volunteer.status,
       params: {
-        title: getTitleForQuery(query, volunteer),
-        query,
-        queryVariables: { id: volunteer.user?.id ? `${volunteer.user.id}` : `${volunteer.id}` },
-        queryOptions: query === QUERY_TYPES.VOLUNTEER.CONVERSATION && {
-          refetchInterval: 1000
-        },
+        title: getTitleForQuery(detailQuery, volunteer),
+        query: detailQuery,
+        queryVariables: { id: detailId != null ? `${detailId}` : undefined },
+        queryOptions,
         rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER,
         shareContent: query !== QUERY_TYPES.VOLUNTEER.CONVERSATION && {
           message: shareMessage(
             {
-              id: volunteer.user?.id ?? volunteer.id,
+              id: detailId,
               title: volunteer.title || volunteer.name,
               subtitle:
                 volunteer.subtitle || volunteerSubtitle(volunteer, query, withDate, isSectioned)
             },
-            query
+            detailQuery
           )
         },
         details: volunteer
