@@ -13,7 +13,8 @@ jest.mock('../../src/config', () => {
       volunteer: {
         report: {
           action: (label: string) => `${label} melden`,
-          actionHint: 'Öffnet den Dialog zum Melden'
+          actionHint: 'Öffnet den Dialog zum Melden',
+          label: 'Melden'
         }
       }
     }
@@ -67,5 +68,21 @@ describe('VolunteerReportAction', () => {
 
     expect(button.props.accessibilityLabel).toBe('Beitrag Test4 melden');
     expect(openReport).toHaveBeenCalledWith(target);
+  });
+
+  it('renders an inline report label with its separator', () => {
+    let tree: renderer.ReactTestRenderer;
+
+    renderer.act(() => {
+      tree = renderer.create(
+        <VolunteerReportContext.Provider value={{ enabled: true, openReport: jest.fn() }}>
+          <VolunteerReportAction target={target} variant="text" withSeparator />
+        </VolunteerReportContext.Provider>
+      );
+    });
+
+    expect(tree!.root.findByProps({ accessibilityRole: 'button' }).props.children).toBeTruthy();
+    expect(JSON.stringify(tree!.toJSON())).toContain('Melden');
+    expect(JSON.stringify(tree!.toJSON())).toContain(' • ');
   });
 });

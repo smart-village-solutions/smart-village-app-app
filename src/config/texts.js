@@ -2078,8 +2078,10 @@ export const texts = {
         invalid: 'Der gewählte Meldegrund ist für dieses Ziel nicht gültig.',
         network: 'Keine Verbindung zum Server. Bitte prüfen Sie Ihre Internetverbindung.',
         notFound: 'Der Inhalt ist nicht mehr verfügbar.',
-        unavailable: 'Die Meldefunktion ist vorübergehend nicht verfügbar. Bitte versuchen Sie es später erneut.'
+        unavailable:
+          'Die Meldefunktion ist vorübergehend nicht verfügbar. Bitte versuchen Sie es später erneut.'
       },
+      label: 'Melden',
       reasons: {
         misleading: 'Irreführend',
         offensive: 'Anstößig',

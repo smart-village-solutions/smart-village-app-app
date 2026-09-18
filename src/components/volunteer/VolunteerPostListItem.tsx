@@ -160,7 +160,7 @@ export const VolunteerPostListItem = ({
           </RegularText>
         </ListItem.Content>
 
-        {isUserAuthor ? (
+        {isUserAuthor && (
           <Badge
             badgeStyle={styles.badge}
             value={<Icon.Pen color={colors.darkText} size={normalize(16)} />}
@@ -168,10 +168,6 @@ export const VolunteerPostListItem = ({
               setPostForModal({ contentContainerId: contentcontainer_id, id, message, files });
               setIsPostModalCollapsed(false);
             }}
-          />
-        ) : (
-          <VolunteerReportAction
-            target={{ targetType: 'content', targetId: content.id, isInSpace, label: 'Beitrag' }}
           />
         )}
       </ListItem>
@@ -231,6 +227,13 @@ export const VolunteerPostListItem = ({
           />
           <RegularText small> • </RegularText>
           <VolunteerLike liked={liked} likeCount={likeCount} onToggleLike={toggleLike} />
+          {!isUserAuthor && (
+            <VolunteerReportAction
+              target={{ targetType: 'content', targetId: content.id, isInSpace, label: 'Beitrag' }}
+              variant="text"
+              withSeparator
+            />
+          )}
         </WrapperRow>
       </ListItem>
 
