@@ -83,8 +83,10 @@ export const shareMessage = (data, query) => {
   /* eslint-enable complexity */
 
   const buildSource = (query) => {
+    if (data.id == null) return '';
+
     return `Quelle: ${appJson.expo.scheme}://${HOST_NAMES.DETAIL}?query=${query}&id=${data.id}`;
   };
 
-  return `${buildMessage(query)}\n\n${buildSource(query)}`;
+  return [buildMessage(query), buildSource(query)].filter(Boolean).join('\n\n');
 };

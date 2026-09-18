@@ -93,6 +93,7 @@ export const parseVolunteerData = (
         shareContent: query !== QUERY_TYPES.VOLUNTEER.CONVERSATION && {
           message: shareMessage(
             {
+              id: volunteer.user?.id ?? volunteer.id,
               title: volunteer.title || volunteer.name,
               subtitle:
                 volunteer.subtitle || volunteerSubtitle(volunteer, query, withDate, isSectioned)
