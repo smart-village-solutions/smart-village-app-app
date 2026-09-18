@@ -53,6 +53,7 @@ export const Navigator = ({ navigationType }: { navigationType: NavigationType }
     <NavigationContainer
       ref={navigationRef}
       onReady={flushPendingNavigationActions}
+      onStateChange={flushPendingNavigationActions}
       theme={navigationTheme}
       linking={linkingConfig}
     >
