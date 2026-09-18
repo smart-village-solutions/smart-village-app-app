@@ -2069,6 +2069,7 @@ export const texts = {
     report: {
       action: (target) => `${target} melden`,
       actionHint: 'Öffnet die Auswahl für den Meldegrund',
+      cancelHint: 'Schließt den Dialog, ohne eine Meldung zu senden',
       duplicateMessage: 'Ihre bestehende Meldung wurde mit dem ausgewählten Grund aktualisiert.',
       errors: {
         authentication: 'Ihre Anmeldung ist abgelaufen. Bitte melden Sie sich erneut an.',
@@ -2090,6 +2091,7 @@ export const texts = {
       },
       sending: 'Wird gesendet…',
       submit: 'Meldung senden',
+      submitHint: 'Sendet die Meldung mit dem ausgewählten Grund',
       successMessage: 'Vielen Dank. Ihre Meldung wurde gesendet.',
       successTitle: 'Meldung erfolgreich',
       title: 'Inhalt melden'

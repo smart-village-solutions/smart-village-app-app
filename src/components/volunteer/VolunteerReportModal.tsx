@@ -63,14 +63,19 @@ export const VolunteerReportModal = ({
     >
       <View accessibilityViewIsModal importantForAccessibility="yes" style={styles.container}>
         <Wrapper>
-          <BoldText center>{texts.volunteer.report.title}</BoldText>
+          <BoldText accessibilityRole="header" center>
+            {texts.volunteer.report.title}
+          </BoldText>
           <RegularText small style={styles.reasonLabel}>
             {texts.volunteer.report.reasonLabel}
           </RegularText>
         </Wrapper>
 
         <ScrollView style={styles.options}>
-          <View accessibilityRole="radiogroup">
+          <View
+            accessibilityLabel={texts.volunteer.report.reasonLabel}
+            accessibilityRole="radiogroup"
+          >
             {target &&
               volunteerReportReasons(target).map((value) => (
                 <Radiobutton
@@ -83,14 +88,35 @@ export const VolunteerReportModal = ({
               ))}
           </View>
           {!!errorKey && (
-            <RegularText accessibilityRole="alert" center error small style={styles.error}>
+            <RegularText
+              accessibilityLiveRegion="assertive"
+              accessibilityRole="alert"
+              center
+              error
+              small
+              style={styles.error}
+            >
               {texts.volunteer.report.errors[errorKey] || texts.volunteer.report.errors.generic}
+            </RegularText>
+          )}
+          {isLoading && (
+            <RegularText
+              accessibilityLabel={texts.volunteer.report.sending}
+              accessibilityLiveRegion="polite"
+              accessibilityRole="progressbar"
+              accessibilityValue={{ text: texts.volunteer.report.sending }}
+              center
+              small
+              style={styles.status}
+            >
+              {texts.volunteer.report.sending}
             </RegularText>
           )}
         </ScrollView>
 
         <WrapperRow spaceAround>
           <Button
+            accessibilityHint={texts.volunteer.report.cancelHint}
             disabled={isLoading}
             invert
             notFullWidth
@@ -98,6 +124,7 @@ export const VolunteerReportModal = ({
             title={texts.volunteer.abort}
           />
           <Button
+            accessibilityHint={texts.volunteer.report.submitHint}
             disabled={reason === undefined || isLoading}
             notFullWidth
             onPress={submit}
@@ -117,6 +144,9 @@ const createStyles = (colors) => ({
   reasonLabel: {
     alignSelf: 'flex-start',
     marginTop: normalize(8)
+  },
+  status: {
+    marginTop: normalize(12)
   },
   error: {
     color: colors.error,
