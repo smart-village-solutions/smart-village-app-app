@@ -8,8 +8,8 @@ import { VolunteerReportModal } from './VolunteerReportModal';
 
 export const VolunteerReportProvider = ({ children }: { children: ReactNode }) => {
   const { globalSettings } = useContext(SettingsContext);
-  const settings = globalSettings?.settings as { volunteer?: { reporting?: boolean } } | undefined;
-  const enabled = settings?.volunteer?.reporting === true;
+  const settings = globalSettings?.settings as { hdvt?: { reporting?: boolean } } | undefined;
+  const enabled = settings?.hdvt?.reporting === true;
   const [target, setTarget] = useState<VolunteerReportTarget>();
   const openReport = useCallback((nextTarget: VolunteerReportTarget) => setTarget(nextTarget), []);
   const value = useMemo(() => ({ enabled, openReport }), [enabled, openReport]);
