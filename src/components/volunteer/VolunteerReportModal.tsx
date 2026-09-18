@@ -62,7 +62,7 @@ export const VolunteerReportModal = ({
       supportedOrientations={['portrait', 'landscape']}
     >
       <View accessibilityViewIsModal importantForAccessibility="yes" style={styles.container}>
-        <Wrapper>
+        <Wrapper noPaddingBottom>
           <BoldText accessibilityRole="header" center>
             {texts.volunteer.report.title}
           </BoldText>
@@ -71,7 +71,7 @@ export const VolunteerReportModal = ({
           </RegularText>
         </Wrapper>
 
-        <ScrollView style={styles.options}>
+        <ScrollView contentContainerStyle={styles.optionsContent} style={styles.options}>
           <View
             accessibilityLabel={texts.volunteer.report.reasonLabel}
             accessibilityRole="radiogroup"
@@ -154,6 +154,9 @@ const createStyles = (colors) => ({
   },
   options: {
     paddingHorizontal: normalize(16)
+  },
+  optionsContent: {
+    paddingBottom: normalize(16)
   },
   overlay: {
     backgroundColor: colors.surface,
