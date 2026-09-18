@@ -85,4 +85,19 @@ describe('VolunteerReportAction', () => {
     expect(JSON.stringify(tree!.toJSON())).toContain('Melden');
     expect(JSON.stringify(tree!.toJSON())).toContain(' • ');
   });
+
+  it('renders a labeled detail action for event screens', () => {
+    let tree: renderer.ReactTestRenderer;
+
+    renderer.act(() => {
+      tree = renderer.create(
+        <VolunteerReportContext.Provider value={{ enabled: true, openReport: jest.fn() }}>
+          <VolunteerReportAction target={{ ...target, label: 'Veranstaltung' }} variant="detail" />
+        </VolunteerReportContext.Provider>
+      );
+    });
+
+    expect(JSON.stringify(tree!.toJSON())).toContain('Veranstaltung melden');
+    expect(tree!.root.findAllByType('mock-flag-icon')).toHaveLength(1);
+  });
 });

@@ -28,6 +28,8 @@ import { useTheme } from '../../hooks/useTheme';
 
 import { VolunteerAppointmentsCard } from './VolunteerAppointmentsCard';
 import { VolunteerEventAttending } from './VolunteerEventAttending';
+import { VolunteerReportAction } from './VolunteerReportAction';
+import { useVolunteerReport } from './VolunteerReportContext';
 
 type File = {
   file_name: string;
@@ -63,6 +65,7 @@ export const VolunteerEventRecord = ({
     webUrls
   } = data;
   const { globalSettings } = useContext(SettingsContext);
+  const { enabled: reportingEnabled } = useVolunteerReport();
   const { navigation: navigationType } = globalSettings;
 
   const { files, topics } = content || {};
@@ -184,7 +187,23 @@ export const VolunteerEventRecord = ({
         />
       </Wrapper>
 
-      <DetailActions data={data} route={route} />
+      <DetailActions
+        additionalAction={
+          reportingEnabled && content?.id && isMy === false ? (
+            <VolunteerReportAction
+              target={{
+                targetType: 'content',
+                targetId: content.id,
+                isInSpace: route.params?.groupId != null,
+                label: 'Veranstaltung'
+              }}
+              variant="detail"
+            />
+          ) : undefined
+        }
+        data={data}
+        route={route}
+      />
 
       {!!appointments?.length && (
         <View>

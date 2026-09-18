@@ -14,7 +14,7 @@ export const VolunteerReportAction = ({
   withSeparator = false
 }: {
   target: VolunteerReportTarget;
-  variant?: 'icon' | 'text';
+  variant?: 'detail' | 'icon' | 'text';
   withSeparator?: boolean;
 }) => {
   const { colors } = useTheme();
@@ -22,6 +22,7 @@ export const VolunteerReportAction = ({
 
   if (!enabled) return null;
 
+  const actionStyle = variant === 'icon' ? styles.iconButton : styles.detailButton;
   const action = (
     <TouchableOpacity
       accessibilityHint={texts.volunteer.report.actionHint}
@@ -29,10 +30,18 @@ export const VolunteerReportAction = ({
       accessibilityRole="button"
       hitSlop={normalize(12)}
       onPress={() => openReport(target)}
-      style={variant === 'icon' ? styles.iconButton : undefined}
+      style={variant === 'text' ? undefined : actionStyle}
     >
-      {variant === 'icon' ? (
-        <Icon.Flag color={colors.darkText} size={normalize(20)} />
+      {variant === 'icon' || variant === 'detail' ? (
+        <>
+          <Icon.Flag
+            color={variant === 'detail' ? colors.primary : colors.darkText}
+            size={normalize(20)}
+          />
+          {variant === 'detail' && (
+            <RegularText primary>{texts.volunteer.report.action(target.label)}</RegularText>
+          )}
+        </>
       ) : (
         <RegularText small>{texts.volunteer.report.label}</RegularText>
       )}
@@ -50,6 +59,15 @@ export const VolunteerReportAction = ({
 };
 
 const styles = StyleSheet.create({
+  detailButton: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: normalize(12),
+    justifyContent: 'flex-start',
+    minHeight: normalize(48),
+    paddingVertical: normalize(16),
+    width: '100%'
+  },
   iconButton: {
     alignItems: 'center',
     justifyContent: 'center',
