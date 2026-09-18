@@ -64,8 +64,8 @@ export const VolunteerReportModal = ({
       <View accessibilityViewIsModal importantForAccessibility="yes" style={styles.container}>
         <Wrapper>
           <BoldText center>{texts.volunteer.report.title}</BoldText>
-          <RegularText center small style={styles.description}>
-            {texts.volunteer.report.description(target?.label || '')}
+          <RegularText small style={styles.reasonLabel}>
+            {texts.volunteer.report.reasonLabel}
           </RegularText>
         </Wrapper>
 
@@ -114,7 +114,8 @@ const createStyles = (colors) => ({
     maxHeight: '100%',
     minWidth: '100%'
   },
-  description: {
+  reasonLabel: {
+    alignSelf: 'flex-start',
     marginTop: normalize(8)
   },
   error: {

@@ -2069,7 +2069,6 @@ export const texts = {
     report: {
       action: (target) => `${target} melden`,
       actionHint: 'Öffnet die Auswahl für den Meldegrund',
-      description: (target) => `Warum möchten Sie ${target} melden?`,
       duplicateMessage: 'Ihre bestehende Meldung wurde mit dem ausgewählten Grund aktualisiert.',
       errors: {
         authentication: 'Ihre Anmeldung ist abgelaufen. Bitte melden Sie sich erneut an.',
@@ -2082,6 +2081,7 @@ export const texts = {
           'Die Meldefunktion ist vorübergehend nicht verfügbar. Bitte versuchen Sie es später erneut.'
       },
       label: 'Melden',
+      reasonLabel: 'Grund:',
       reasons: {
         misleading: 'Irreführend',
         offensive: 'Anstößig',
