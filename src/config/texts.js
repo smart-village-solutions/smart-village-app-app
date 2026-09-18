@@ -2066,6 +2066,32 @@ export const texts = {
     reject: 'Ablehnen',
     requestPending:
       'Ihre Beitrittsanfrage wird schnellstmöglich vom Gruppenadministrator bearbeitet',
+    report: {
+      action: (target) => `${target} melden`,
+      actionHint: 'Öffnet die Auswahl für den Meldegrund',
+      description: (target) => `Warum möchten Sie ${target} melden?`,
+      duplicateMessage: 'Ihre bestehende Meldung wurde mit dem ausgewählten Grund aktualisiert.',
+      errors: {
+        authentication: 'Ihre Anmeldung ist abgelaufen. Bitte melden Sie sich erneut an.',
+        forbidden: 'Dieses Ziel kann von Ihnen nicht gemeldet werden.',
+        generic: 'Die Meldung konnte nicht gesendet werden. Bitte versuchen Sie es erneut.',
+        invalid: 'Der gewählte Meldegrund ist für dieses Ziel nicht gültig.',
+        network: 'Keine Verbindung zum Server. Bitte prüfen Sie Ihre Internetverbindung.',
+        notFound: 'Der Inhalt ist nicht mehr verfügbar.',
+        unavailable: 'Die Meldefunktion ist vorübergehend nicht verfügbar. Bitte versuchen Sie es später erneut.'
+      },
+      reasons: {
+        misleading: 'Irreführend',
+        offensive: 'Anstößig',
+        spam: 'Spam',
+        wrongSpace: 'Falscher Space'
+      },
+      sending: 'Wird gesendet…',
+      submit: 'Meldung senden',
+      successMessage: 'Vielen Dank. Ihre Meldung wurde gesendet.',
+      successTitle: 'Meldung erfolgreich',
+      title: 'Inhalt melden'
+    },
     save: 'Speichern',
     search: 'Suche',
     send: 'Senden',

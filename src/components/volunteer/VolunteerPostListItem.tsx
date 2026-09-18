@@ -24,10 +24,12 @@ import { VolunteerAvatar } from './VolunteerAvatar';
 import { VolunteerComment } from './VolunteerComment';
 import { VolunteerComments } from './VolunteerComments';
 import { VolunteerLike } from './VolunteerLike';
+import { VolunteerReportAction } from './VolunteerReportAction';
 
 export const VolunteerPostListItem = ({
   authToken,
   bottomDivider = true,
+  isInSpace = false,
   openWebScreen,
   post: { id, message, content },
   setCommentForModal,
@@ -38,9 +40,11 @@ export const VolunteerPostListItem = ({
 }: {
   authToken: string | null;
   bottomDivider: boolean;
+  isInSpace?: boolean;
   openWebScreen: (webUrl: string, specificTitle?: string | undefined) => void;
   post: {
     content: {
+      id: number;
       comments: {
         latest: {
           created_at: string;
@@ -156,7 +160,7 @@ export const VolunteerPostListItem = ({
           </RegularText>
         </ListItem.Content>
 
-        {isUserAuthor && (
+        {isUserAuthor ? (
           <Badge
             badgeStyle={styles.badge}
             value={<Icon.Pen color={colors.darkText} size={normalize(16)} />}
@@ -164,6 +168,10 @@ export const VolunteerPostListItem = ({
               setPostForModal({ contentContainerId: contentcontainer_id, id, message, files });
               setIsPostModalCollapsed(false);
             }}
+          />
+        ) : (
+          <VolunteerReportAction
+            target={{ targetType: 'content', targetId: content.id, isInSpace, label: 'Beitrag' }}
           />
         )}
       </ListItem>
@@ -230,6 +238,7 @@ export const VolunteerPostListItem = ({
         <VolunteerComments
           authToken={authToken}
           commentsCount={comments?.total}
+          isInSpace={isInSpace}
           latestComments={comments?.latest || []}
           objectId={id}
           objectModel={VolunteerObjectModelType.POST}

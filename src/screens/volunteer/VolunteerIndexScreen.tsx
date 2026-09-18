@@ -309,6 +309,7 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
           query={query}
           queryVariables={{
             authToken,
+            isInSpace: isPosts && !!queryVariables?.contentContainerId,
             setCommentForModal,
             setIsCommentModalCollapsed,
             setIsPostModalCollapsed,

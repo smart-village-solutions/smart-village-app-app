@@ -14,12 +14,14 @@ import { useTheme } from '../../hooks/useTheme';
 import { VolunteerAvatar } from './VolunteerAvatar';
 import { VolunteerCommentAnswer } from './VolunteerCommentAnswer';
 import { VolunteerCommentFiles } from './VolunteerCommentFiles';
+import { VolunteerReportAction } from './VolunteerReportAction';
 
 export const VolunteerComments = ({
   authToken,
   commentsCount,
   commentId,
   isAnswer = false,
+  isInSpace = false,
   latestComments,
   objectId,
   objectModel,
@@ -32,6 +34,7 @@ export const VolunteerComments = ({
   commentsCount: number;
   commentId?: number;
   isAnswer?: boolean;
+  isInSpace?: boolean;
   latestComments: VolunteerComment[];
   objectId: number;
   objectModel: VolunteerObjectModelType;
@@ -104,7 +107,7 @@ export const VolunteerComments = ({
                 </RegularText>
               </ListItem.Content>
 
-              {isUserAuthor && (
+              {isUserAuthor ? (
                 <Badge
                   badgeStyle={styles.badge}
                   value={<Icon.Pen color={colors.darkText} size={normalize(16)} />}
@@ -117,6 +120,10 @@ export const VolunteerComments = ({
                     });
                     setIsCommentModalCollapsed(false);
                   }}
+                />
+              ) : (
+                <VolunteerReportAction
+                  target={{ targetType: 'comment', targetId: id, isInSpace, label: 'Kommentar' }}
                 />
               )}
             </ListItem>
@@ -155,6 +162,7 @@ export const VolunteerComments = ({
                   commentsCount={childCommentsCount}
                   commentId={id}
                   isAnswer
+                  isInSpace={isInSpace}
                   latestComments={childComments || []}
                   objectId={objectId}
                   objectModel={VolunteerObjectModelType.COMMENT}

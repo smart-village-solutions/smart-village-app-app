@@ -262,6 +262,7 @@ export const useRenderItem = (query, navigation, options = {}) => {
             <VolunteerPostListItem
               authToken={options.queryVariables?.authToken}
               bottomDivider={false}
+              isInSpace={options.queryVariables?.isInSpace}
               openWebScreen={options.openWebScreen}
               post={item}
               setCommentForModal={options.queryVariables?.setCommentForModal}
