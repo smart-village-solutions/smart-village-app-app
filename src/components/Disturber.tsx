@@ -1,9 +1,15 @@
 import { DrawerNavigationProp } from 'expo-router/drawer';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { TouchableOpacity, View } from 'react-native';
 
 import { Icon, normalize, texts } from '../config';
-import { addToStore, findClosestItem, isActive, readFromStore } from '../helpers';
+import {
+  addToStore,
+  findClosestItem,
+  isActive,
+  readFromStore,
+  resolveThemeOverrides
+} from '../helpers';
 import { useHomeRefresh, useStaticContent } from '../hooks';
 import { useThemeStyles } from '../hooks/useThemeStyles';
 import { useTheme } from '../hooks/useTheme';
@@ -23,7 +29,16 @@ interface DateRange {
   dateStart: string;
 }
 
+interface DisturberPicture {
+  aspectRatio?: { HEIGHT: number; WIDTH: number };
+  dark?: Partial<DisturberPicture>;
+  params?: { title?: string; [key: string]: unknown };
+  routeName?: string;
+  uri: string;
+}
+
 interface DataItem {
+  dark?: Partial<DataItem>;
   aspectRatio?: { HEIGHT: number; WIDTH: number };
   autoplayInterval?: number;
   backgroundColor?: string;
@@ -37,9 +52,8 @@ interface DataItem {
   description: string;
   id: number;
   pictures?: {
-    navigationTo: string;
-    params: { title?: string; webUrl: string };
-    uri: string;
+    dark?: { picture?: Partial<DisturberPicture> };
+    picture: DisturberPicture;
   }[];
   showButtonToClose?: boolean;
   title: string;
@@ -47,7 +61,7 @@ interface DataItem {
 
 // eslint-disable-next-line complexity
 export const Disturber = ({ navigation, publicJsonFile }: Props) => {
-  const { colors: colors } = useTheme();
+  const { colors, mode } = useTheme();
 
   const styles = useThemeStyles(createStyles);
   const [isVisible, setIsVisible] = useState(false);
@@ -64,6 +78,8 @@ export const Disturber = ({ navigation, publicJsonFile }: Props) => {
   const closestItem: DataItem | null = findClosestItem(
     data?.filter((item) => item && isActive(item)) || []
   );
+
+  const themedItem = useMemo(() => resolveThemeOverrides(closestItem, mode), [closestItem, mode]);
 
   const setDisturberComplete = () => {
     setIsVisible(false);
@@ -88,7 +104,7 @@ export const Disturber = ({ navigation, publicJsonFile }: Props) => {
     disturberStatus();
   }, [closestItem]);
 
-  if (!isVisible || !closestItem) return null;
+  if (!isVisible || !themedItem) return null;
 
   const {
     aspectRatio,
@@ -100,7 +116,7 @@ export const Disturber = ({ navigation, publicJsonFile }: Props) => {
     pictures,
     showButtonToClose = true,
     title
-  } = closestItem;
+  } = themedItem;
 
   const showButton = !!button && !!button.title && !!button.navigationTo && !!button.params;
   const showContent = !!headline || !!title || !!description || showButton;
@@ -116,7 +132,7 @@ export const Disturber = ({ navigation, publicJsonFile }: Props) => {
                 onPress={setDisturberComplete}
                 style={styles.closeButton}
               >
-                <Icon.Close color={colors.lighterPrimary} size={normalize(16)} />
+                <Icon.Close color={colors.text} size={normalize(16)} />
               </TouchableOpacity>
             )}
 
@@ -206,11 +222,10 @@ const createStyles = (colors) => ({
   },
   closeButton: {
     alignItems: 'center',
-    backgroundColor: colors.darkText,
+    backgroundColor: colors.surface,
     borderRadius: 25,
     height: normalize(32),
     justifyContent: 'center',
-    opacity: 0.64,
     position: 'absolute',
     right: normalize(16),
     top: normalize(16),
