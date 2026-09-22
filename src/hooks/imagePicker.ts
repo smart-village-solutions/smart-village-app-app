@@ -1,4 +1,5 @@
 import {
+  ImagePickerAsset,
   launchCameraAsync,
   launchImageLibraryAsync,
   PermissionStatus,
@@ -18,6 +19,7 @@ import { Alert, Linking } from 'react-native';
 
 import appJson from '../../app.json';
 import { device, texts } from '../config';
+import { normalizeSelectedImage } from '../helpers/normalizeSelectedImage';
 
 type TMediaTypeOptions = 'images' | 'videos' | Array<'images' | 'videos'>;
 
@@ -25,6 +27,16 @@ export const MediaTypeOptions: Record<'Images' | 'Videos' | 'All', TMediaTypeOpt
   Images: 'images',
   Videos: 'videos',
   All: ['images', 'videos']
+};
+
+// Unsupported native decoders must not publish the original HEIC as an uploadable image.
+const prepareImage = async (asset: ImagePickerAsset) => {
+  try {
+    return await normalizeSelectedImage(asset, device.platform);
+  } catch {
+    Alert.alert(texts.errors.image.title, texts.errors.image.processingBody);
+    return undefined;
+  }
 };
 
 const saveImageToGallery = async (uri: string) => {
@@ -117,10 +129,12 @@ export const useSelectImage = ({
     });
 
     if (!result.canceled) {
-      const uri = result.assets[0].uri;
+      const asset = await prepareImage(result.assets[0]);
+      if (!asset) return;
+      const uri = asset.uri;
       onChange ? onChange(setImageUri)(uri) : setImageUri(uri);
 
-      return result.assets[0];
+      return asset;
     }
   }, [allowsEditing, aspect, exif, mediaTypes, onChange, quality]);
 
@@ -170,7 +184,9 @@ export const useCaptureImage = ({
     });
 
     if (!result.canceled) {
-      const uri = result.assets[0].uri;
+      const asset = await prepareImage(result.assets[0]);
+      if (!asset) return;
+      const uri = asset.uri;
       onChange ? onChange(setImageUri)(uri) : setImageUri(uri);
 
       // Run gallery save flow without blocking the image selection result.
@@ -201,7 +217,7 @@ export const useCaptureImage = ({
         }
       }
 
-      return result.assets[0];
+      return asset;
     }
   }, [allowsEditing, aspect, exif, mediaTypes, onChange, quality, saveImage]);
 

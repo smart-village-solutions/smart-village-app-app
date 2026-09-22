@@ -7,6 +7,7 @@ import { calendarDeleteFile } from '../../queries/volunteer';
 import { errorTextGenerator } from '../consul';
 import { deleteArrayItem } from '../deleteArrayItem';
 import { getFileSize } from '../fileSystem';
+import { imageUploadMetadata } from '../imageUploadMetadata';
 
 const { IMAGE_FROM, IMAGE_TYPE_REGEX, URL_REGEX, IMAGE_SELECTOR_TYPES } = consts;
 
@@ -142,7 +143,7 @@ export const onImageSelect = async ({
   setImagesAttributes: (imagesAttributes: any[]) => void;
   setInfoAndErrorText: (infoAndErrorText: string) => void;
 }) => {
-  const { uri, type, exif } = (await imageFunction()) || {};
+  const { uri, exif, mimeType: assetMimeType } = (await imageFunction()) || {};
 
   if (!uri) return;
 
@@ -167,13 +168,14 @@ export const onImageSelect = async ({
   const { areaServiceData = {}, errorMessage = '', setValue = () => {} } = coordinateCheck || {};
 
   /* used to specify the mimeType when uploading to the server */
-  const imageType = IMAGE_TYPE_REGEX.exec(uri)?.[1];
-  const mimeType = `${type}/${imageType}`;
+  const imageType = IMAGE_TYPE_REGEX.exec(uri)?.[1]?.toLowerCase();
+  const { mimeType } = imageUploadMetadata(uri, assetMimeType);
   const uriSplitForImageName = uri.split('/');
   const imageName = uriSplitForImageName[uriSplitForImageName.length - 1];
 
   if (selectorType === IMAGE_SELECTOR_TYPES.SUE) {
-    const extension = mimeType.split('/')[1];
+    // Attachment configuration lists file extensions; JPEG MIME uses 'jpeg' even for .jpg.
+    const extension = imageType || mimeType.split('/')[1];
     const allowedAttachmentTypes = configuration?.limitation?.allowedAttachmentTypes?.value || '';
 
     if (!allowedAttachmentTypes.includes(extension)) {

@@ -20,6 +20,7 @@ import { QuickReplies } from 'react-native-gifted-chat/lib/QuickReplies';
 
 import { consts, device, Icon, normalize, texts } from '../config';
 import { deleteArrayItem, getFileSize, momentFormat, openLink } from '../helpers';
+import { imageUploadMetadata } from '../helpers/imageUploadMetadata';
 import { MediaTypeOptions, useSelectDocument, useSelectImage } from '../hooks';
 import { useTheme } from '../hooks/useTheme';
 import { useThemeStyles } from '../hooks/useThemeStyles';
@@ -47,7 +48,7 @@ MessageVideo.propTypes = {
   uri: PropTypes.string.isRequired
 };
 
-const { IMAGE_TYPE_REGEX, MB_TO_BYTES, VIDEO_TYPE_REGEX } = consts;
+const { MB_TO_BYTES, VIDEO_TYPE_REGEX } = consts;
 
 /**
  * it is the component used to realise the chat function
@@ -205,8 +206,13 @@ export const Chat = ({
           {
             title: 'Foto wählen',
             action: async () => {
-              const { uri, type } = await selectImage();
-              const mediaType = (IMAGE_TYPE_REGEX.exec(uri) || VIDEO_TYPE_REGEX.exec(uri))[1];
+              const asset = await selectImage();
+              if (!asset) return;
+              const { uri, type } = asset;
+              const mimeType =
+                type === 'video'
+                  ? asset.mimeType || `video/${VIDEO_TYPE_REGEX.exec(uri)?.[1]}`
+                  : imageUploadMetadata(uri, asset.mimeType).mimeType;
 
               try {
                 await errorHandler(uri);
@@ -215,7 +221,7 @@ export const Chat = ({
                 return;
               }
 
-              setMedias((prev) => [...prev, { mimeType: `${type}/${mediaType}`, type, uri }]);
+              setMedias((prev) => [...prev, { mimeType, type, uri }]);
             }
           },
           {

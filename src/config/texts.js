@@ -550,6 +550,8 @@ export const texts = {
   },
   errors: {
     image: {
+      processingBody:
+        'Das Bild konnte nicht verarbeitet werden. Bitte wählen Sie ein anderes Bild.',
       body: 'Es fehlt die Berechtigung Bilder aus der Medienbibliothek auszuwählen.',
       cameraBody: 'Es fehlt die Berechtigung, die Kamera zu nutzen.',
       cancel: 'Abbrechen',

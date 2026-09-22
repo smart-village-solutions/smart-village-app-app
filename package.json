@@ -90,6 +90,7 @@
     "expo-file-system": "~57.0.4",
     "expo-font": "~57.0.1",
     "expo-image": "~57.0.3",
+    "expo-image-manipulator": "~57.0.11",
     "expo-image-picker": "~57.0.11",
     "expo-in-app-updates": "^0.9.0",
     "expo-linear-gradient": "~57.0.1",
