@@ -17,8 +17,8 @@ all-records button.
 For this module, server-side categories should represent the participation type
 (`Beteiligungsart`), for example `Veranstaltung`, `Umfrage`, `Dialog`,
 `Bauleitplan` or `Terminvereinbarung`. Selecting a category opens `IndexScreen`,
-which fetches and renders the projects in that category sorted by a payload field
-configured through `indexOrder` (default: `itemIndex`).
+which fetches and renders the projects in that category sorted by `indexOrder`
+(default: `itemIndex`). Featured rows have their own `featuredOrder` setting.
 
 ## Required App Version
 
@@ -165,6 +165,7 @@ Default values:
   "categoryTitle": "Kategorien",
   "fallbackCategoryTitle": "Beteiligungsprojekte",
   "featuredLimit": 3,
+  "featuredOrder": "itemIndex",
   "featuredTitle": "Besonders interessant",
   "hiddenCategoryIds": [],
   "indexLimit": 15,
@@ -190,6 +191,7 @@ Example configuration for testing:
   "isCarouselImageFullWidth": true,
   "showFeatured": true,
   "featuredLimit": 3,
+  "featuredOrder": "itemIndex",
   "featuredTitle": "Besonders interessant",
   "showAllButton": true,
   "allButtonTitle": "Alle Beteiligungen ansehen",
@@ -228,9 +230,10 @@ Example configuration for testing:
 | `categoryTitle`            | `string`  | Section title above the category list.                                                                                                                   |
 | `fallbackCategoryTitle`    | `string`  | Category title used when an item has no category.                                                                                                        |
 | `featuredLimit`            | `number`  | Number of records shown in the `Besonders interessant` section.                                                                                          |
+| `featuredOrder`           | `string`  | Featured row sorting, independent of `indexOrder`; defaults to `itemIndex`. Supports `_ASC` / `_DESC` and the fields described below. |
 | `featuredTitle`            | `string`  | Section title for the featured records.                                                                                                                  |
 | `indexLimit`               | `number`  | Number of records requested by the opened `IndexScreen`.                                                                                                 |
-| `indexOrder`               | `string`  | Payload field key used for client-side sorting in `IndexScreen` and featured rows (forwarded as `participationOrder`); defaults to `itemIndex`.          |
+| `indexOrder`               | `string`  | All-project and category list sorting (forwarded as `participationOrder`); defaults to `itemIndex`. Supports `_ASC` / `_DESC`.          |
 | `introHtmlName`            | `string`  | Static HTML content name used for the optional intro block.                                                                                              |
 | `isCarouselImageFullWidth` | `boolean` | Enables full-width carousel images.                                                                                                                      |
 | `showAllButton`            | `boolean` | Enables or disables the all-records navigation row.                                                                                                      |
@@ -611,7 +614,7 @@ the correct base ref.
 10. Verify category names and item counts.
 11. Open a category and verify that `IndexScreen` lists only that category.
 12. Verify that `Alle Beteiligungen ansehen` opens `IndexScreen` without a category filter.
-13. Verify that the list is sorted by `payload[indexOrder]` (default: numeric `itemIndex`, ascending).
+13. Verify that the list uses `indexOrder` and featured rows use `featuredOrder`, including `publicationDate_DESC` and missing dates.
 14. Open a project detail and verify overview, tags, teaser, content block description,
     web URL and data provider notice.
 15. Verify the map section appears when coordinates exist.
@@ -620,12 +623,42 @@ the correct base ref.
 18. Bookmark a project and verify that it appears in the bookmark screen.
 19. Run the accessibility workflow and verify that there are no findings and coverage does not drop.
 
+## Remote Sorting
+
+In the `participationProjectHome` JSON static content, configure the preview and
+all-project/category lists independently. To show the newest publications first:
+
+```json
+{
+  "featuredOrder": "publicationDate_DESC",
+  "indexOrder": "publicationDate_DESC"
+}
+```
+
+Merge these keys into the existing configuration. Both default to `itemIndex`
+(ascending) when omitted, so existing configurations remain valid. A bare field
+or `_ASC` sorts ascending; `_DESC` sorts descending. Suffixes are case-sensitive.
+
+- `publicationDate`, `createdAt`, and `updatedAt` read the corresponding top-level
+  record dates and compare timestamps, including time-zone offsets.
+- Other names read a payload field, e.g. `itemIndex_ASC` or `priority_DESC`.
+  Numeric values (including numeric strings) sort numerically; text sorts without
+  case sensitivity. Numbers precede text in mixed fields.
+- Missing/empty values and invalid dates remain last in either direction. Equal
+  values retain their incoming order. An unknown field preserves incoming order.
+- Sorting does not change status or type filters. The featured section still
+  includes only active projects; events are not excluded by these settings.
+
+The app must include this sorting implementation before using the new settings.
+After saving static content, pull to refresh the participation home and reopen
+an all-project/category list to apply the new configuration.
+
 ## Known First-Version Limitations
 
 - Filter UI is intentionally not enabled for this module.
 - Server-side resource filter configuration for `ParticipationProject` is not required.
-- Featured project rows are sorted by `payload[indexOrder]` (default: `itemIndex`) and limited to `featuredLimit`.
-- `indexOrder` currently performs client-side sorting against `payload[indexOrder]` (forwarded as `participationOrder`), not GraphQL `genericItems(order: ...)` sorting.
+- Featured project rows are sorted by `featuredOrder` (default: `itemIndex`) before applying `featuredLimit`.
+- Both order settings sort on the client; `indexOrder` is forwarded as `participationOrder`, not GraphQL `genericItems(order: ...)`.
 - For predictable ordering, provide a numeric payload field such as `payload.itemIndex`; non-numeric values fall back to deterministic text sorting.
 
 ## Related Source Files

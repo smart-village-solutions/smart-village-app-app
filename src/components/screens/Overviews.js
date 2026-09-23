@@ -33,6 +33,7 @@ import {
   PARTICIPATION_PROJECT_STATUS_POSITION_PARAM,
   sortPOIsByDistanceFromPosition
 } from '../../helpers';
+import { compareParticipationProjects } from '../../helpers/participationProjectSortHelper';
 import { updateResourceFiltersStateHelper } from '../../helpers/updateResourceFiltersStateHelper';
 import {
   useLastKnownPosition,
@@ -134,24 +135,6 @@ const getAdditionalQueryVariables = (
   }
 
   return additionalQueryVariables;
-};
-
-const toFiniteNumber = (value) => {
-  if (typeof value === 'number' && Number.isFinite(value)) {
-    return value;
-  }
-
-  if (typeof value === 'string') {
-    const trimmedValue = value.trim();
-    if (!trimmedValue) {
-      return null;
-    }
-
-    const parsedValue = Number(trimmedValue);
-    return Number.isFinite(parsedValue) ? parsedValue : null;
-  }
-
-  return null;
 };
 
 const getSelectedParticipationProjectStatuses = (selectedStatuses) => {
@@ -422,40 +405,13 @@ export const Overviews = ({ navigation, route }) => {
       queryVariables?.genericType === GenericType.ParticipationProject &&
       !!queryVariables.participationOrder
     ) {
-      // Keep ordering numeric when possible and deterministic for mixed/non-numeric values.
-      parsedListItems = [...parsedListItems].sort((leftEntry, rightEntry) => {
-        const leftRawValue =
-          leftEntry.params?.details?.payload?.[queryVariables.participationOrder];
-        const rightRawValue =
-          rightEntry.params?.details?.payload?.[queryVariables.participationOrder];
-
-        const leftNumericValue = toFiniteNumber(leftRawValue);
-        const rightNumericValue = toFiniteNumber(rightRawValue);
-        const leftIsNumeric = leftNumericValue !== null;
-        const rightIsNumeric = rightNumericValue !== null;
-
-        if (leftIsNumeric && rightIsNumeric && leftNumericValue !== rightNumericValue) {
-          return leftNumericValue - rightNumericValue;
-        }
-
-        if (leftIsNumeric !== rightIsNumeric) {
-          return leftIsNumeric ? -1 : 1;
-        }
-
-        const leftText = leftRawValue == null ? '' : String(leftRawValue);
-        const rightText = rightRawValue == null ? '' : String(rightRawValue);
-        const textComparison = leftText.localeCompare(rightText, undefined, {
-          sensitivity: 'base'
-        });
-
-        if (textComparison !== 0) {
-          return textComparison;
-        }
-
-        const leftFallback = String(leftEntry.id ?? leftEntry.params?.details?.id ?? '');
-        const rightFallback = String(rightEntry.id ?? rightEntry.params?.details?.id ?? '');
-        return leftFallback.localeCompare(rightFallback, undefined, { sensitivity: 'base' });
-      });
+      parsedListItems = [...parsedListItems].sort((leftEntry, rightEntry) =>
+        compareParticipationProjects(
+          leftEntry.params?.details,
+          rightEntry.params?.details,
+          queryVariables.participationOrder
+        )
+      );
     }
 
     return parsedListItems;

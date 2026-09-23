@@ -256,11 +256,13 @@ const { useQuery } = jest.requireMock('react-apollo') as {
 const renderScreen = ({
   genericItems,
   genericType = GenericType.ParticipationProject,
-  participationStatus
+  participationStatus,
+  participationOrder
 }: {
   genericItems: Array<Record<string, unknown>>;
   genericType?: GenericType | string;
   participationStatus?: string[];
+  participationOrder?: string;
 }) => {
   const navigation = {
     goBack: jest.fn(),
@@ -273,7 +275,8 @@ const renderScreen = ({
       query: 'genericItems',
       queryVariables: {
         genericType,
-        ...(participationStatus && { participationStatus })
+        ...(participationStatus && { participationStatus }),
+        ...(participationOrder && { participationOrder })
       },
       rootRouteName: 'participation-projects',
       title: 'Beteiligungsprojekte'
@@ -325,6 +328,35 @@ const renderScreen = ({
 describe('ParticipationProjectIndexMapButton', () => {
   beforeEach(() => {
     useQuery.mockReset();
+  });
+
+  it('sorts the participation list by publication date using the configured direction', () => {
+    const { screen } = renderScreen({
+      participationOrder: 'publicationDate_DESC',
+      genericItems: [
+        {
+          id: 'old',
+          title: 'Project old',
+          publicationDate: '2026-01-01',
+          payload: { status: 'active' }
+        },
+        { id: 'missing', title: 'Project missing', payload: { status: 'active' } },
+        {
+          id: 'new',
+          title: 'Project new',
+          publicationDate: '2026-03-01',
+          payload: { status: 'active' }
+        }
+      ]
+    });
+
+    expect(screen.getAllByText(/^Project /).map((node) => node.props.children)).toEqual([
+      'Project new',
+      'Project old',
+      'Project missing'
+    ]);
+    expect(useQuery.mock.calls[0][1].variables).not.toHaveProperty('participationOrder');
+    expect(useQuery.mock.calls[0][1].variables.limit).toBeUndefined();
   });
 
   it('shows the floating button for active geocoded Participation items and forwards the current context', () => {

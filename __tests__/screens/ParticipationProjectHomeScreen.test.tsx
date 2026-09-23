@@ -172,6 +172,63 @@ describe('ParticipationProjectHomeScreen', () => {
     });
   });
 
+  it('sorts featured projects before limiting them and forwards independent list ordering', () => {
+    useStaticContent.mockImplementation(({ type }) => ({
+      data:
+        type === 'json'
+          ? {
+              featuredOrder: 'publicationDate_DESC',
+              featuredLimit: 2,
+              indexOrder: 'itemIndex_DESC'
+            }
+          : '',
+      loading: false,
+      refetch: jest.fn()
+    }));
+    useQuery.mockReturnValue({
+      data: {
+        genericItems: [
+          { id: 'old', publicationDate: '2026-01-01', payload: { itemIndex: 1, status: 'active' } },
+          {
+            id: 'middle',
+            publicationDate: '2026-02-01',
+            payload: { itemIndex: 2, status: 'active' }
+          },
+          { id: 'new', publicationDate: '2026-03-01', payload: { itemIndex: 3, status: 'active' } },
+          { id: 'inactive', publicationDate: '2026-04-01', payload: { status: 'completed' } }
+        ].map((item) => ({
+          ...item,
+          title: item.id,
+          categories: [{ id: 'dialog', name: 'Dialog' }]
+        }))
+      },
+      isLoading: false,
+      refetch: jest.fn()
+    });
+    const navigation = { navigate: jest.fn() };
+    const screen = render(<ParticipationProjectHomeScreen navigation={navigation as never} />);
+
+    expect(
+      screen.getAllByTestId(/list-item-(new|middle)/).map((node) => node.props.testID)
+    ).toEqual(['list-item-new', 'list-item-middle']);
+    expect(screen.queryByTestId('list-item-old')).toBeNull();
+    expect(screen.queryByTestId('list-item-inactive')).toBeNull();
+    fireEvent.press(screen.getByText('Alle Beteiligungen ansehen'));
+    expect(navigation.navigate).toHaveBeenLastCalledWith(
+      expect.anything(),
+      expect.objectContaining({
+        queryVariables: expect.objectContaining({ participationOrder: 'itemIndex_DESC' })
+      })
+    );
+    fireEvent.press(screen.getByTestId('list-item-dialog'));
+    expect(navigation.navigate).toHaveBeenLastCalledWith(
+      expect.anything(),
+      expect.objectContaining({
+        queryVariables: expect.objectContaining({ participationOrder: 'itemIndex_DESC' })
+      })
+    );
+  });
+
   it('renders intro content without read aloud controls on the overview page', () => {
     const { getByText, queryByTestId } = render(
       <ParticipationProjectHomeScreen navigation={{ navigate: jest.fn() } as never} />

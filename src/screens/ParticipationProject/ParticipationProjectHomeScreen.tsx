@@ -30,6 +30,7 @@ import {
   ParticipationProject,
   ParticipationProjectStatusPosition
 } from '../../helpers/participationProjectHelper';
+import { compareParticipationProjects } from '../../helpers/participationProjectSortHelper';
 import { shareMessage } from '../../helpers/shareHelper';
 import { subtitle as formatSubtitle } from '../../helpers/textHelper';
 import { HOME_REFRESH_EVENT, useMatomoTrackScreenView, useStaticContent } from '../../hooks';
@@ -52,6 +53,7 @@ type ParticipationProjectHomeConfig = {
   categoryTitle: string;
   fallbackCategoryTitle: string;
   featuredLimit: number;
+  featuredOrder: string;
   featuredTitle: string;
   hiddenCategoryIds: Array<string | number>;
   indexLimit: number;
@@ -91,6 +93,7 @@ const DEFAULT_HOME_CONFIG: ParticipationProjectHomeConfig = {
   categoryTitle: texts.participationProject.categories,
   fallbackCategoryTitle: texts.participationProject.participationProjects,
   featuredLimit: 3,
+  featuredOrder: 'itemIndex',
   featuredTitle: texts.participationProject.featuredProjects,
   hiddenCategoryIds: [],
   indexLimit: 15,
@@ -130,31 +133,6 @@ const getCategoryOrderEntry = (
 
 const sortByTitle = (items: CategoryGroup[]) =>
   [...items].sort((first, second) => first.title.localeCompare(second.title));
-
-const getProjectItemIndex = (item: GenericItem) => {
-  const payload = item.payload as ParticipationProjectPayload | undefined;
-  const itemIndex = Number(payload?.itemIndex);
-
-  return Number.isFinite(itemIndex) ? itemIndex : undefined;
-};
-
-const sortProjectsByItemIndex = (items: GenericItem[]) =>
-  items
-    .map((item, index) => ({ index, item, itemIndex: getProjectItemIndex(item) }))
-    .sort((first, second) => {
-      const firstHasItemIndex = first.itemIndex !== undefined;
-      const secondHasItemIndex = second.itemIndex !== undefined;
-
-      if (firstHasItemIndex && secondHasItemIndex) {
-        return Number(first.itemIndex) - Number(second.itemIndex);
-      }
-
-      if (firstHasItemIndex) return -1;
-      if (secondHasItemIndex) return 1;
-
-      return first.index - second.index;
-    })
-    .map(({ item }) => item);
 
 const getPayloadCategoryName = (payload: unknown) => {
   if (!payload || typeof payload !== 'object') return;
@@ -413,14 +391,22 @@ export const ParticipationProjectHomeScreen = ({
   const featuredItems = useMemo(() => {
     if (!homeConfig.showFeatured) return [];
 
-    return sortProjectsByItemIndex(
-      genericItems.filter((item) => isParticipationProjectActive(item as ParticipationProject))
-    )
+    return genericItems
+      .filter((item) => isParticipationProjectActive(item as ParticipationProject))
+      .sort((first, second) =>
+        compareParticipationProjects(first, second, homeConfig.featuredOrder)
+      )
       .slice(0, homeConfig.featuredLimit)
       .map((item, index, items) =>
         buildProjectListItem(item, homeConfig.statusPosition, index !== items.length - 1)
       );
-  }, [genericItems, homeConfig.featuredLimit, homeConfig.showFeatured, homeConfig.statusPosition]);
+  }, [
+    genericItems,
+    homeConfig.featuredLimit,
+    homeConfig.featuredOrder,
+    homeConfig.showFeatured,
+    homeConfig.statusPosition
+  ]);
 
   const refreshHome = useCallback(async () => {
     setRefreshing(true);
