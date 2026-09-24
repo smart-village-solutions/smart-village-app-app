@@ -1,3 +1,5 @@
+import { File } from 'expo-file-system';
+
 import { uploadMultipartFile } from '../../src/helpers';
 import { createUserAsync, updateUserAsync } from '../../src/encounterApi/user';
 import { uploadAttachment } from '../../src/queries/consul/uploads/upload';
@@ -22,6 +24,7 @@ let appendSpy: jest.SpyInstance;
 beforeEach(() => {
   jest.clearAllMocks();
   appendSpy = jest.spyOn(FormData.prototype, 'append').mockImplementation(() => {});
+  jest.spyOn(File.prototype, 'bytes').mockResolvedValue(new Uint8Array([65, 66, 67]));
   jest.spyOn(global, 'fetch').mockResolvedValue({
     ok: true,
     status: 201,
@@ -38,11 +41,16 @@ it.each([
   'sends noticeboard/defect report %s with matching MIME and filename',
   async (extension, mimeType) => {
     await uploadMediaContent({ uri: `file:///photo.${extension}` }, 'image');
-    expect(appendSpy).toHaveBeenCalledWith('media_content[attachment]', {
-      uri: `file:///photo.${extension}`,
+    const attachment = appendSpy.mock.calls.find(
+      ([name]) => name === 'media_content[attachment]'
+    )?.[1];
+    expect(attachment).toEqual({
+      name: `image.${extension}`,
       type: mimeType,
-      name: `image.${extension}`
+      bytes: expect.any(Function)
     });
+    expect(await attachment.bytes()).toEqual(new Uint8Array([65, 66, 67]));
+    expect(File.prototype.bytes).toHaveBeenCalledTimes(1);
   }
 );
 
@@ -53,11 +61,53 @@ it('keeps PDF attachments as PDFs', async () => {
     'document',
     'pdf'
   );
-  expect(appendSpy).toHaveBeenCalledWith('media_content[attachment]', {
-    uri: 'file:///document.pdf',
+  const attachment = appendSpy.mock.calls.find(
+    ([name]) => name === 'media_content[attachment]'
+  )?.[1];
+  expect(attachment).toEqual({
+    name: 'document.pdf',
     type: 'application/pdf',
-    name: 'document.pdf'
+    bytes: expect.any(Function)
   });
+  expect(await attachment.bytes()).toEqual(new Uint8Array([65, 66, 67]));
+});
+
+it('reports the HTTP status when a media upload is rejected', async () => {
+  jest.spyOn(global, 'fetch').mockResolvedValue({
+    ok: false,
+    status: 422,
+    json: async () => ({ errors: { attachment: ['invalid'] } })
+  } as Response);
+
+  await expect(uploadMediaContent({ uri: 'file:///photo.jpg' }, 'image')).rejects.toThrow(
+    'Media upload HTTP 422'
+  );
+});
+
+it('rejects a successful response without a media URL', async () => {
+  jest.spyOn(global, 'fetch').mockResolvedValue({
+    ok: true,
+    status: 201,
+    json: async () => ({})
+  } as Response);
+
+  await expect(uploadMediaContent({ uri: 'file:///photo.jpg' }, 'image')).rejects.toThrow(
+    'Media upload response missing service_url'
+  );
+});
+
+it('reports the HTTP status when the upload response is not JSON', async () => {
+  jest.spyOn(global, 'fetch').mockResolvedValue({
+    ok: false,
+    status: 502,
+    json: async () => {
+      throw new SyntaxError('Unexpected token');
+    }
+  } as Response);
+
+  await expect(uploadMediaContent({ uri: 'file:///photo.jpg' }, 'image')).rejects.toThrow(
+    'Media upload HTTP 502: invalid JSON response'
+  );
 });
 
 it.each([createUserAsync, updateUserAsync])(
