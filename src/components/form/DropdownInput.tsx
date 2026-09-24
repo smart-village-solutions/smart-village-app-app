@@ -35,6 +35,8 @@ export type DropdownInputProps = {
   placeholder: string;
   control: Control<FieldValues>;
   showSearch?: boolean;
+  inlineSearch?: boolean;
+  onDropdownHeightChange?: (height: number) => void;
 };
 
 export const DropdownInput = ({
@@ -50,7 +52,9 @@ export const DropdownInput = ({
   label,
   placeholder,
   control,
-  showSearch = true
+  showSearch = true,
+  inlineSearch = false,
+  onDropdownHeightChange
 }: DropdownInputProps) => {
   const styles = useThemeStyles(createStyles);
   const isPlaceholderValue = (inputValue: unknown) => inputValue === '' || inputValue === -1;
@@ -205,7 +209,10 @@ export const DropdownInput = ({
         label={label}
         labelWrapperStyle={styles.labelWrapper}
         placeholder={placeholder}
+        hidePlaceholderOption={required && !multipleSelect}
         showSearch={showSearch}
+        inlineSearch={inlineSearch}
+        onDropdownHeightChange={onDropdownHeightChange}
         searchInputStyle={styles.searchInput}
         searchPlaceholder={texts.volunteer.search}
         errorMessage={errors[name] && `${label} muss ausgewählt werden`}

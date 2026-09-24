@@ -13,14 +13,38 @@ jest.mock('react-apollo', () => ({
   useQuery: (...args) => mockUseQuery(...args)
 }));
 
+jest.mock('react-native-keyboard-controller', () => {
+  const { ScrollView } = require('react-native');
+  return {
+    KeyboardProvider: ({ children }) => children,
+    KeyboardAwareScrollView: ScrollView
+  };
+});
+
 jest.mock('../../src/components/index.js', () => {
-  const { View } = require('react-native');
+  const { View, Button } = require('react-native');
 
   return {
     DefaultKeyboardAvoidingView: ({ children }) => <View>{children}</View>,
     DefectReportCreateForm: () => <View />,
-    DefectReportLocationForm: ({ withoutLocation }) => (
-      <View testID={`location-form-${withoutLocation}`} />
+    DefectReportLocationForm: ({
+      withoutLocation,
+      showMap,
+      setShowMap,
+      setSelectedPosition,
+      selectedPosition
+    }) => (
+      <View testID={`location-form-${withoutLocation}`}>
+        <Button title="Open map" onPress={() => setShowMap(true)} />
+        {showMap && (
+          <View testID="map" selectedPosition={selectedPosition}>
+            <Button
+              title="Set pin"
+              onPress={() => setSelectedPosition({ latitude: 54.78, longitude: 9.43 })}
+            />
+          </View>
+        )}
+      </View>
     ),
     HtmlView: () => <View />,
     LoadingContainer: ({ children }) => <View>{children}</View>,
@@ -47,6 +71,38 @@ describe('DefectReportFormScreen', () => {
       data: undefined,
       loading: true,
       refetch: jest.fn()
+    });
+  });
+
+  it('preserves the open map and selected pin when loading temporarily remounts the location form', async () => {
+    mockUseStaticContent.mockReturnValue({ loading: false });
+    mockUseQuery.mockReturnValue({ loading: false });
+    let component;
+    const screen = () => <DefectReportFormScreen navigation={navigation} route={route} />;
+
+    await act(async () => {
+      component = renderer.create(screen());
+    });
+    await act(async () => {
+      component.root.findByProps({ title: 'Open map' }).props.onPress();
+    });
+    await act(async () => {
+      component.root.findByProps({ title: 'Set pin' }).props.onPress();
+    });
+
+    mockUseQuery.mockReturnValue({ loading: true });
+    await act(async () => {
+      component.update(screen());
+    });
+    expect(component.root.findAllByProps({ testID: 'map' })).toHaveLength(0);
+
+    mockUseQuery.mockReturnValue({ loading: false });
+    await act(async () => {
+      component.update(screen());
+    });
+    expect(component.root.findByProps({ testID: 'map' }).props.selectedPosition).toEqual({
+      latitude: 54.78,
+      longitude: 9.43
     });
   });
 
