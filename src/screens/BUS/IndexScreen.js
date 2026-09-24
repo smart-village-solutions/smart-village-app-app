@@ -10,9 +10,13 @@ import {
 } from '../../components';
 import { ServiceList } from '../../components/BUS/ServiceList';
 import { consts, texts } from '../../config';
-import { runAsyncTasksSafely, spaceNewLines } from '../../helpers';
+import { runAsyncTasksSafely } from '../../helpers';
 import { shareMessage } from '../../helpers/BUS/shareHelper';
-import { mapBusServicesToListItems, resolveBusCategoryServices } from '../../helpers/busListHelper';
+import {
+  formatBusCategoryDescription,
+  mapBusServicesToListItems,
+  resolveBusCategoryServices
+} from '../../helpers/busListHelper';
 import {
   useBusCategoryChildren,
   useBusInitialArea,
@@ -115,7 +119,7 @@ const getLifeSituationsItems = (areaId, category, childCategories = [], services
       });
     },
     picture: childCategory?.image?.url ? { url: childCategory.image.url } : undefined,
-    subtitle: spaceNewLines(childCategory.description),
+    subtitle: formatBusCategoryDescription(childCategory.description),
     title: childCategory.name,
     routeName: 'BusCategory',
     params: {

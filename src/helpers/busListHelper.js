@@ -4,6 +4,19 @@ import { Keyboard } from 'react-native';
 import { ScreenName } from '../types';
 
 import { shareMessage } from './BUS/shareHelper';
+import { removeHtml, spaceNewLines } from './htmlViewHelper';
+
+export const formatBusCategoryDescription = (description) => {
+  if (!description) return;
+
+  // Keep words separated when paragraphs, list items or line breaks become plain text.
+  const spacedDescription = description.replace(
+    /<\/?(?:p|div|br|li|ul|ol|h[1-6]|blockquote|hr)\b[^>]*>/gi,
+    ' '
+  );
+
+  return (removeHtml(spaceNewLines(spacedDescription)) ?? '').replace(/\s+/g, ' ').trim();
+};
 
 const normalizeName = (value) => `${value ?? ''}`.trim().toLowerCase();
 

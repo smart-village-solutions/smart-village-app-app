@@ -2,6 +2,8 @@ import React from 'react';
 import { Text } from 'react-native';
 import renderer, { act } from 'react-test-renderer';
 
+import { LifeSituationListItem } from '../../src/components/BUS/LifeSituationListItem';
+
 jest.mock('../../src/config', () => ({
   colors: {
     darkText: '#222222',
@@ -63,8 +65,26 @@ jest.mock('react-native-elements', () => {
 });
 
 describe('LifeSituationListItem', () => {
+  it('renders HTML descriptions as readable text without joining paragraphs', () => {
+    let component: renderer.ReactTestRenderer;
+
+    act(() => {
+      component = renderer.create(
+        <LifeSituationListItem
+          onPress={jest.fn()}
+          title="Geburt"
+          subtitle={'<p>Eltern &amp; <strong>Kinder</strong></p><p>Weitere<br/>Informationen</p>'}
+        />
+      );
+    });
+
+    expect(component!.root.findAllByType(Text).map((node) => node.props.children)).toEqual([
+      'Geburt',
+      'Eltern & Kinder Weitere Informationen'
+    ]);
+  });
+
   it('uses the sanitized title for the rendered label and accessibility label', () => {
-    const { LifeSituationListItem } = require('../../src/components/BUS/LifeSituationListItem');
     let component: renderer.ReactTestRenderer;
 
     act(() => {

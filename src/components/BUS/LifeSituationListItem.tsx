@@ -3,7 +3,8 @@ import { StyleSheet } from 'react-native';
 import { ListItem } from 'react-native-elements';
 
 import { colors, consts, Icon, normalize } from '../../config';
-import { spaceNewLines, trimNewLines } from '../../helpers';
+import { trimNewLines } from '../../helpers';
+import { formatBusCategoryDescription } from '../../helpers/busListHelper';
 import { Image } from '../Image';
 import { HeadlineText, RegularText } from '../Text';
 import { Touchable } from '../Touchable';
@@ -24,6 +25,7 @@ export const LifeSituationListItem = ({
   title
 }: LifeSituationListItemProps) => {
   const sanitizedTitle = trimNewLines(title) ?? '';
+  const plainSubtitle = formatBusCategoryDescription(subtitle);
 
   return (
     <ListItem
@@ -45,9 +47,9 @@ export const LifeSituationListItem = ({
 
       <ListItem.Content>
         <HeadlineText small>{sanitizedTitle}</HeadlineText>
-        {!!subtitle && (
+        {!!plainSubtitle && (
           <RegularText small style={styles.subtitle}>
-            {spaceNewLines(subtitle)}
+            {plainSubtitle}
           </RegularText>
         )}
       </ListItem.Content>
