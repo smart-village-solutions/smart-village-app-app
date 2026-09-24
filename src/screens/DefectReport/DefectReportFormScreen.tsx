@@ -1,9 +1,10 @@
 import { StackNavigationProp } from 'expo-router/js-stack';
 import * as Location from 'expo-location';
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { useQuery } from 'react-apollo';
-import { ActivityIndicator, RefreshControl } from 'react-native';
+import { ActivityIndicator, Keyboard, RefreshControl } from 'react-native';
 import { KeyboardAwareScrollView, KeyboardProvider } from 'react-native-keyboard-controller';
+import type { KeyboardAwareScrollViewRef } from 'react-native-keyboard-controller';
 
 import {
   DefectReportCreateForm,
@@ -39,6 +40,34 @@ export const DefectReportFormScreen = ({
   const [isLocationSelect, setIsLocationSelect] = useState(true);
   const [showMap, setShowMap] = useState(false);
   const [selectedPosition, setSelectedPosition] = useState<Location.LocationObjectCoords>();
+  const [isCategorySearchFocused, setIsCategorySearchFocused] = useState(false);
+  const scrollViewRef = useRef<KeyboardAwareScrollViewRef>(null);
+  const categoryTop = useRef<number | null>(null);
+
+  const scrollCategoryBelowHeader = useCallback(() => {
+    if (categoryTop.current !== null) {
+      scrollViewRef.current?.scrollTo({ y: Math.max(0, categoryTop.current - 8), animated: true });
+    }
+  }, []);
+
+  useEffect(() => {
+    const subscription = Keyboard.addListener('keyboardDidShow', scrollCategoryBelowHeader);
+    return () => subscription.remove();
+  }, [scrollCategoryBelowHeader]);
+
+  const onCategorySearchFocus = useCallback(
+    (y: number) => {
+      categoryTop.current = y;
+      setIsCategorySearchFocused(true);
+      scrollCategoryBelowHeader();
+    },
+    [scrollCategoryBelowHeader]
+  );
+
+  const onCategorySearchBlur = useCallback(() => {
+    categoryTop.current = null;
+    setIsCategorySearchFocused(false);
+  }, []);
 
   const name = isLocationSelect ? 'defectReportLocationForm' : 'defectReportCreateForm';
   const categoryId = globalSettings?.settings?.defectReports?.categoryId;
@@ -91,7 +120,8 @@ export const DefectReportFormScreen = ({
     <SafeAreaViewFlex>
       <KeyboardProvider>
         <KeyboardAwareScrollView
-          bottomOffset={120}
+          ref={scrollViewRef}
+          bottomOffset={isCategorySearchFocused ? 8 : 120}
           contentContainerStyle={scrollContentContainerStyle}
           keyboardShouldPersistTaps="handled"
           refreshControl={
@@ -121,7 +151,9 @@ export const DefectReportFormScreen = ({
               showMap,
               setShowMap,
               withoutLocation,
-              categoryNameDropdownData
+              categoryNameDropdownData,
+              onCategorySearchBlur,
+              onCategorySearchFocus
             }}
           />
         </KeyboardAwareScrollView>

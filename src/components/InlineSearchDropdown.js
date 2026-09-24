@@ -16,6 +16,8 @@ export const InlineSearchDropdown = ({
   labelWrapperStyle,
   onSelect,
   onDropdownHeightChange,
+  onSearchBlur,
+  onSearchFocus,
   options,
   placeholder,
   renderRow,
@@ -33,6 +35,7 @@ export const InlineSearchDropdown = ({
 
   const close = () => {
     Keyboard.dismiss();
+    onSearchBlur?.();
     setOpen(false);
     onDropdownHeightChange?.(0);
     setSearch('');
@@ -71,6 +74,8 @@ export const InlineSearchDropdown = ({
                 placeholder={searchPlaceholder}
                 placeholderTextColor={colors.placeholder}
                 onChangeText={setSearch}
+                onBlur={onSearchBlur}
+                onFocus={onSearchFocus}
                 style={searchInputStyle}
                 value={search}
               />
@@ -104,6 +109,8 @@ InlineSearchDropdown.propTypes = {
   labelWrapperStyle: PropTypes.oneOfType([PropTypes.number, PropTypes.object, PropTypes.array]),
   onSelect: PropTypes.func.isRequired,
   onDropdownHeightChange: PropTypes.func,
+  onSearchBlur: PropTypes.func,
+  onSearchFocus: PropTypes.func,
   options: PropTypes.array.isRequired,
   placeholder: PropTypes.string,
   renderRow: PropTypes.func.isRequired,

@@ -8,16 +8,21 @@ import { SettingsContext, initialContext } from '../../src/SettingsProvider';
 
 const mockUseQuery = jest.fn();
 const mockUseStaticContent = jest.fn();
+const mockScrollTo = jest.fn();
 
 jest.mock('react-apollo', () => ({
   useQuery: (...args) => mockUseQuery(...args)
 }));
 
 jest.mock('react-native-keyboard-controller', () => {
+  const React = require('react');
   const { ScrollView } = require('react-native');
   return {
     KeyboardProvider: ({ children }) => children,
-    KeyboardAwareScrollView: ScrollView
+    KeyboardAwareScrollView: React.forwardRef((props, ref) => {
+      React.useImperativeHandle(ref, () => ({ scrollTo: mockScrollTo }));
+      return <ScrollView testID="aware-scroll" {...props} />;
+    })
   };
 });
 
@@ -26,8 +31,15 @@ jest.mock('../../src/components/index.js', () => {
 
   return {
     DefaultKeyboardAvoidingView: ({ children }) => <View>{children}</View>,
-    DefectReportCreateForm: () => <View />,
+    DefectReportCreateForm: ({ onCategorySearchBlur, onCategorySearchFocus }) => (
+      <View
+        testID="category-search"
+        onBlur={onCategorySearchBlur}
+        onFocus={onCategorySearchFocus}
+      />
+    ),
     DefectReportLocationForm: ({
+      setIsLocationSelect,
       withoutLocation,
       showMap,
       setShowMap,
@@ -35,6 +47,7 @@ jest.mock('../../src/components/index.js', () => {
       selectedPosition
     }) => (
       <View testID={`location-form-${withoutLocation}`}>
+        <Button title="Continue" onPress={() => setIsLocationSelect(false)} />
         <Button title="Open map" onPress={() => setShowMap(true)} />
         {showMap && (
           <View testID="map" selectedPosition={selectedPosition}>
@@ -62,6 +75,7 @@ describe('DefectReportFormScreen', () => {
   const route = {};
 
   beforeEach(() => {
+    mockScrollTo.mockClear();
     mockUseStaticContent.mockReturnValue({
       data: undefined,
       loading: true,
@@ -72,6 +86,30 @@ describe('DefectReportFormScreen', () => {
       loading: true,
       refetch: jest.fn()
     });
+  });
+
+  it('scrolls the category search below the header while the keyboard is focused', async () => {
+    mockUseStaticContent.mockReturnValue({ loading: false });
+    mockUseQuery.mockReturnValue({ loading: false });
+    let component;
+
+    await act(async () => {
+      component = renderer.create(<DefectReportFormScreen navigation={navigation} route={route} />);
+    });
+    await act(async () => {
+      component.root.findByProps({ title: 'Continue' }).props.onPress();
+    });
+    await act(async () => {
+      component.root.findByProps({ testID: 'category-search' }).props.onFocus(600);
+    });
+
+    expect(mockScrollTo).toHaveBeenCalledWith({ y: 592, animated: true });
+    expect(component.root.findByProps({ testID: 'aware-scroll' }).props.bottomOffset).toBe(8);
+
+    await act(async () => {
+      component.root.findByProps({ testID: 'category-search' }).props.onBlur();
+    });
+    expect(component.root.findByProps({ testID: 'aware-scroll' }).props.bottomOffset).toBe(120);
   });
 
   it('preserves the open map and selected pin when loading temporarily remounts the location form', async () => {

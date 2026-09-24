@@ -119,6 +119,8 @@ jest.mock('../../src/config', () => {
 describe('DropdownSelect multiselect checkboxes', () => {
   it('searches within the page and closes after selecting a filtered category', () => {
     const setData = jest.fn();
+    const onSearchFocus = jest.fn();
+    const onSearchBlur = jest.fn();
     const screen = render(
       <DropdownSelect
         data={[
@@ -131,12 +133,16 @@ describe('DropdownSelect multiselect checkboxes', () => {
         label="Kategorie"
         placeholder="Kategorie"
         searchPlaceholder="Suche"
+        onSearchBlur={onSearchBlur}
+        onSearchFocus={onSearchFocus}
         setData={setData}
       />
     );
 
     fireEvent.press(screen.getByRole('button', { name: /Kategorie/ }));
     expect(screen.queryByTestId('modal-dropdown')).toBeNull();
+    fireEvent(screen.getByPlaceholderText('Suche'), 'focus');
+    expect(onSearchFocus).toHaveBeenCalledTimes(1);
     fireEvent.changeText(screen.getByPlaceholderText('Suche'), 'str');
     expect(screen.queryByRole('button', { name: /Müll/ })).toBeNull();
     fireEvent.press(screen.getByRole('button', { name: /Straßen/ }));
@@ -146,6 +152,7 @@ describe('DropdownSelect multiselect checkboxes', () => {
       expect.objectContaining({ value: 'Müll', selected: false })
     ]);
     expect(screen.queryByPlaceholderText('Suche')).toBeNull();
+    expect(onSearchBlur).toHaveBeenCalled();
   });
 
   it('omits the required-field placeholder while selecting the first real option correctly', () => {
