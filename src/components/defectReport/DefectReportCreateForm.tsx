@@ -51,6 +51,7 @@ export const DefectReportCreateForm = ({
 
   const styles = useThemeStyles(createStyles);
   const consentForDataProcessingText = route?.params?.consentForDataProcessingText ?? '';
+  const [categoryDropdownHeight, setCategoryDropdownHeight] = React.useState(0);
   const [isLoading, setIsLoading] = React.useState(false);
 
   const {
@@ -143,11 +144,13 @@ export const DefectReportCreateForm = ({
 
   return (
     <>
-      <Wrapper noPaddingTop>
+      <Wrapper noPaddingTop style={{ zIndex: 1, marginBottom: -categoryDropdownHeight }}>
         <Controller
           name="categoryName"
           render={({ field: { name, onChange, value } }) => (
             <DropdownInput
+              inlineSearch
+              onDropdownHeightChange={setCategoryDropdownHeight}
               {...{
                 errors,
                 data: categoryNameDropdownData,

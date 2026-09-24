@@ -1,5 +1,5 @@
 diff --git a/node_modules/react-native-modal-dropdown/components/ModalDropdown.js b/node_modules/react-native-modal-dropdown/components/ModalDropdown.js
-index 1a10990..05d49b6 100644
+index 1a10990..fb369cd 100644
 --- a/node_modules/react-native-modal-dropdown/components/ModalDropdown.js
 +++ b/node_modules/react-native-modal-dropdown/components/ModalDropdown.js
 @@ -1,20 +1,19 @@
@@ -34,7 +34,23 @@ index 1a10990..05d49b6 100644
  
  const TOUCHABLE_ELEMENTS = [
    'TouchableHighlight',
-@@ -434,13 +433,17 @@ export default class ModalDropdown extends Component {
+@@ -46,6 +45,7 @@ export default class ModalDropdown extends Component {
+       PropTypes.array,
+     ]),
+     searchPlaceholder: PropTypes.string,
++    searchPlaceholderTextColor: PropTypes.string,
+     style: PropTypes.oneOfType([
+       PropTypes.number,
+       PropTypes.object,
+@@ -398,6 +398,7 @@ export default class ModalDropdown extends Component {
+         }}
+         value={searchValue}
+         placeholder={searchPlaceholder}
++        placeholderTextColor={this.props.searchPlaceholderTextColor}
+       />
+     );
+   };
+@@ -434,13 +435,17 @@ export default class ModalDropdown extends Component {
      );
  
      const touchableProps = {

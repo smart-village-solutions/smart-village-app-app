@@ -21,11 +21,15 @@ export const DefectReportLocationForm = ({
   setIsLocationSelect,
   selectedPosition,
   setSelectedPosition,
+  showMap,
+  setShowMap,
   withoutLocation = false
 }: {
   setIsLocationSelect: (isLocationSelect: boolean) => void;
   selectedPosition: Location.LocationObjectCoords | undefined;
   setSelectedPosition: (position: Location.LocationObjectCoords | undefined) => void;
+  showMap: boolean;
+  setShowMap: (showMap: boolean) => void;
   withoutLocation?: boolean;
 }) => {
   const { locationSettings } = useLocationSettings();
@@ -34,7 +38,6 @@ export const DefectReportLocationForm = ({
   const { alternativePosition, defaultAlternativePosition } = locationSettings || {};
 
   const [shouldGetPosition, setShouldGetPosition] = useState(false);
-  const [showMap, setShowMap] = useState(false);
   const { loading: loadingPosition, position } = usePosition(!shouldGetPosition);
   const { loading: loadingLastKnownPosition, position: lastKnownPosition } =
     useLastKnownPosition(shouldGetPosition);

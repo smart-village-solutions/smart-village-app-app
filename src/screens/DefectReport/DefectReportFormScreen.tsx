@@ -2,10 +2,10 @@ import { StackNavigationProp } from 'expo-router/js-stack';
 import * as Location from 'expo-location';
 import React, { useCallback, useContext, useState } from 'react';
 import { useQuery } from 'react-apollo';
-import { ActivityIndicator, RefreshControl, ScrollView } from 'react-native';
+import { ActivityIndicator, RefreshControl } from 'react-native';
+import { KeyboardAwareScrollView, KeyboardProvider } from 'react-native-keyboard-controller';
 
 import {
-  DefaultKeyboardAvoidingView,
   DefectReportCreateForm,
   DefectReportLocationForm,
   HtmlView,
@@ -37,6 +37,7 @@ export const DefectReportFormScreen = ({
   const scrollContentContainerStyle = useReadAloudScrollContentContainerStyle();
   const [refreshing, setRefreshing] = useState(false);
   const [isLocationSelect, setIsLocationSelect] = useState(true);
+  const [showMap, setShowMap] = useState(false);
   const [selectedPosition, setSelectedPosition] = useState<Location.LocationObjectCoords>();
 
   const name = isLocationSelect ? 'defectReportLocationForm' : 'defectReportCreateForm';
@@ -88,8 +89,9 @@ export const DefectReportFormScreen = ({
 
   return (
     <SafeAreaViewFlex>
-      <DefaultKeyboardAvoidingView>
-        <ScrollView
+      <KeyboardProvider>
+        <KeyboardAwareScrollView
+          bottomOffset={120}
           contentContainerStyle={scrollContentContainerStyle}
           keyboardShouldPersistTaps="handled"
           refreshControl={
@@ -116,12 +118,14 @@ export const DefectReportFormScreen = ({
               setIsLocationSelect,
               selectedPosition,
               setSelectedPosition,
+              showMap,
+              setShowMap,
               withoutLocation,
               categoryNameDropdownData
             }}
           />
-        </ScrollView>
-      </DefaultKeyboardAvoidingView>
+        </KeyboardAwareScrollView>
+      </KeyboardProvider>
     </SafeAreaViewFlex>
   );
 };
