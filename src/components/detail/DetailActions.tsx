@@ -1,5 +1,5 @@
 import { RouteProp } from 'expo-router/react-navigation';
-import React, { useMemo } from 'react';
+import React, { type ReactNode, useMemo } from 'react';
 import { ShareContent, ViewStyle } from 'react-native';
 import { Divider } from 'react-native-elements';
 
@@ -24,6 +24,7 @@ type DetailRouteParams = {
 };
 
 type Props = {
+  additionalAction?: ReactNode;
   data?: Record<string, unknown>;
   route: RouteProp<Record<string, DetailRouteParams | undefined>, string>;
   shareContent?: ShareContent;
@@ -56,7 +57,7 @@ const resolveDetailTitle = (
   return participationType || routeTitle?.trim();
 };
 
-export const DetailActions = ({ data, route, shareContent, suffix }: Props) => {
+export const DetailActions = ({ additionalAction, data, route, shareContent, suffix }: Props) => {
   const { colors } = useTheme();
   const styles = useMemo(() => createStyles(colors), [colors]);
 
@@ -70,6 +71,7 @@ export const DetailActions = ({ data, route, shareContent, suffix }: Props) => {
   );
   const showBookmark = route.params?.bookmarkable !== false && !!query && id !== undefined;
   const showShare = !!resolvedShareContent;
+  const showAdditionalAction = !!additionalAction;
   const detailTitle = resolveDetailTitle(data, route.params?.title, suffix);
   const bookmarkLabel = detailTitle
     ? texts.detailActions.remember.replace('{{title}}', detailTitle)
@@ -78,7 +80,7 @@ export const DetailActions = ({ data, route, shareContent, suffix }: Props) => {
     ? texts.detailActions.share.replace('{{title}}', detailTitle)
     : texts.detailActions.shareFallback;
 
-  if (!showBookmark && !showShare) return null;
+  if (!showBookmark && !showShare && !showAdditionalAction) return null;
 
   return (
     <WrapperHorizontal accessibilityRole="toolbar" style={styles.container}>
@@ -92,7 +94,7 @@ export const DetailActions = ({ data, route, shareContent, suffix }: Props) => {
         />
       )}
 
-      {showBookmark && showShare && <Divider style={styles.divider} />}
+      {showBookmark && (showShare || showAdditionalAction) && <Divider style={styles.divider} />}
 
       {showShare && (
         <ShareHeader
@@ -102,6 +104,10 @@ export const DetailActions = ({ data, route, shareContent, suffix }: Props) => {
           style={styles.actionIcon}
         />
       )}
+
+      {showShare && showAdditionalAction && <Divider style={styles.divider} />}
+
+      {additionalAction}
     </WrapperHorizontal>
   );
 };

@@ -67,6 +67,7 @@ export * from './themeHelper';
 export * from './umlautSwitcher';
 export * from './updateResourceFiltersStateHelper';
 export * from './volunteerHelper';
+export * from './volunteerReportHelper';
 export * from './voucherHelper';
 export * from './wasteReminderSaveHelper';
 export * from './widgetLayout';

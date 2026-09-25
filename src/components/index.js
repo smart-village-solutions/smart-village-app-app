@@ -103,6 +103,7 @@ export * from './OrientationAwareIcon';
 export * from './PreviewSection';
 export * from './Radiobutton';
 export * from './ReadAloudContent';
+export * from './ReportHeader';
 export * from './Results';
 export * from './SafeAreaViewFlex';
 export * from './SearchHeader';

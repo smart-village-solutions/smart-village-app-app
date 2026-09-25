@@ -126,6 +126,7 @@ export const VolunteerPosts = ({
               id: number;
               message: string;
               content: {
+                id: number;
                 files: { guid: string; id: number; mime_type: string }[];
                 metadata: {
                   created_by: { guid: string; display_name: string };
@@ -137,6 +138,7 @@ export const VolunteerPosts = ({
                 key={`post-${post.id}`}
                 authToken={authToken}
                 bottomDivider={false}
+                isInSpace
                 openWebScreen={openWebScreen}
                 post={post}
                 setCommentForModal={setCommentForModal}

@@ -20,6 +20,7 @@ export const VolunteerComments = ({
   commentsCount,
   commentId,
   isAnswer = false,
+  isInSpace = false,
   latestComments,
   objectId,
   objectModel,
@@ -32,6 +33,7 @@ export const VolunteerComments = ({
   commentsCount: number;
   commentId?: number;
   isAnswer?: boolean;
+  isInSpace?: boolean;
   latestComments: VolunteerComment[];
   objectId: number;
   objectModel: VolunteerObjectModelType;
@@ -144,6 +146,16 @@ export const VolunteerComments = ({
                   });
                   setIsCommentModalCollapsed(false);
                 }}
+                reportTarget={
+                  isUserAuthor
+                    ? undefined
+                    : {
+                        targetType: 'comment',
+                        targetId: id,
+                        isInSpace,
+                        label: texts.volunteer.report.targets.comment
+                      }
+                }
                 userGuid={userGuid}
               />
             </ListItem>
@@ -155,6 +167,7 @@ export const VolunteerComments = ({
                   commentsCount={childCommentsCount}
                   commentId={id}
                   isAnswer
+                  isInSpace={isInSpace}
                   latestComments={childComments || []}
                   objectId={objectId}
                   objectModel={VolunteerObjectModelType.COMMENT}

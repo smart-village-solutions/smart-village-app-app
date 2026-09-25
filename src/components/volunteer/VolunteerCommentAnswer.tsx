@@ -3,11 +3,12 @@ import { TouchableOpacity } from 'react-native';
 
 import { texts } from '../../config';
 import { useLike } from '../../hooks';
-import { VolunteerObjectModelType } from '../../types';
+import { VolunteerObjectModelType, VolunteerReportTarget } from '../../types';
 import { RegularText } from '../Text';
 import { WrapperRow } from '../Wrapper';
 
 import { VolunteerLike } from './VolunteerLike';
+import { VolunteerReportAction } from './VolunteerReportAction';
 
 export const VolunteerCommentAnswer = ({
   commentsCount,
@@ -15,6 +16,7 @@ export const VolunteerCommentAnswer = ({
   objectId,
   objectModel,
   onPress,
+  reportTarget,
   userGuid
 }: {
   commentsCount: number;
@@ -22,6 +24,7 @@ export const VolunteerCommentAnswer = ({
   objectId: number;
   objectModel: VolunteerObjectModelType;
   onPress: () => void;
+  reportTarget?: VolunteerReportTarget;
   userGuid?: string | null;
 }) => {
   const { liked, likeCount, toggleLike } = useLike({
@@ -47,6 +50,9 @@ export const VolunteerCommentAnswer = ({
         </TouchableOpacity>
         <RegularText small> • </RegularText>
         <VolunteerLike liked={liked} likeCount={likeCount} onToggleLike={toggleLike} />
+        {reportTarget && (
+          <VolunteerReportAction target={reportTarget} variant="text" withSeparator />
+        )}
       </WrapperRow>
     </>
   );

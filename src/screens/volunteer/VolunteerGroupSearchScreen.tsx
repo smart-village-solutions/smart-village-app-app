@@ -222,12 +222,18 @@ export const VolunteerGroupSearchScreen = ({ route }: StackScreenProps<any>) => 
             <VolunteerPostListItem
               authToken={authToken}
               bottomDivider={false}
+              isInSpace
               openWebScreen={openWebScreen}
               post={{
                 ...post,
                 content: {
+                  ...post.content,
                   files: post.files,
-                  metadata: { created_at: post.created_at, created_by: post.author }
+                  metadata: {
+                    ...post.content?.metadata,
+                    created_at: post.created_at,
+                    created_by: post.author
+                  }
                 }
               }}
               setCommentForModal={setCommentForModal}
