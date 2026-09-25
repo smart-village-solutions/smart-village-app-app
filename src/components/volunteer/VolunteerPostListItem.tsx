@@ -4,7 +4,7 @@ import { Badge, ListItem } from 'react-native-elements';
 import Lightbox from 'react-native-lightbox-v2';
 import Markdown from 'react-native-markdown-display';
 
-import { styles as configStyles, device, Icon, normalize } from '../../config';
+import { styles as configStyles, device, Icon, normalize, texts } from '../../config';
 import {
   imageWidth,
   momentFormat,
@@ -24,10 +24,12 @@ import { VolunteerAvatar } from './VolunteerAvatar';
 import { VolunteerComment } from './VolunteerComment';
 import { VolunteerComments } from './VolunteerComments';
 import { VolunteerLike } from './VolunteerLike';
+import { VolunteerReportAction } from './VolunteerReportAction';
 
 export const VolunteerPostListItem = ({
   authToken,
   bottomDivider = true,
+  isInSpace = false,
   openWebScreen,
   post: { id, message, content },
   setCommentForModal,
@@ -38,9 +40,11 @@ export const VolunteerPostListItem = ({
 }: {
   authToken: string | null;
   bottomDivider: boolean;
+  isInSpace?: boolean;
   openWebScreen: (webUrl: string, specificTitle?: string | undefined) => void;
   post: {
     content: {
+      id: number;
       comments: {
         latest: {
           created_at: string;
@@ -223,6 +227,18 @@ export const VolunteerPostListItem = ({
           />
           <RegularText small> • </RegularText>
           <VolunteerLike liked={liked} likeCount={likeCount} onToggleLike={toggleLike} />
+          {!isUserAuthor && (
+            <VolunteerReportAction
+              target={{
+                targetType: 'content',
+                targetId: content.id,
+                isInSpace,
+                label: texts.volunteer.report.targets.post
+              }}
+              variant="text"
+              withSeparator
+            />
+          )}
         </WrapperRow>
       </ListItem>
 
@@ -230,6 +246,7 @@ export const VolunteerPostListItem = ({
         <VolunteerComments
           authToken={authToken}
           commentsCount={comments?.total}
+          isInSpace={isInSpace}
           latestComments={comments?.latest || []}
           objectId={id}
           objectModel={VolunteerObjectModelType.POST}

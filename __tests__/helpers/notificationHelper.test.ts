@@ -68,9 +68,21 @@ describe('getPushNotificationNavigationData', () => {
     });
   });
 
-  it('rejects payloads without a destination', () => {
+  it('keeps an id-less destination from an Android cold-start body', () => {
+    const response = createResponse({
+      body: JSON.stringify({ query_type: 'Home', title: 'Volunteer' })
+    });
+
+    expect(getPushNotificationNavigationData(response)).toEqual({
+      data: { query_type: 'Home', title: 'Volunteer' },
+      queryType: 'Home',
+      title: 'Volunteer'
+    });
+  });
+
+  it('rejects payloads without a query type', () => {
     expect(
-      getPushNotificationNavigationData(createResponse({ data: { query_type: 'NewsItem' } }))
+      getPushNotificationNavigationData(createResponse({ data: { id: 'news-1' } }))
     ).toBeUndefined();
   });
 });

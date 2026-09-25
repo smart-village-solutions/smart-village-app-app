@@ -1,17 +1,23 @@
 import _isNumber from 'lodash/isNumber';
+import moment from 'moment';
 
 import { colors } from '../../config';
 import { formatTime } from '../../helpers/formatHelper';
+import { momentFormat } from '../../helpers/momentHelper';
 import {
   volunteerApiV1Url,
   volunteerApiV2Url,
   volunteerAuthToken
 } from '../../helpers/volunteerHelper';
 import { Calendar, PARTICIPANT_TYPE } from '../../types';
+import type { VolunteerDateRange } from '../../types';
+
+const MAX_CONCURRENT_PAGE_REQUESTS_PER_ENDPOINT = 3;
 
 export const calendarAll = async (queryVariables?: {
-  dateRange?: string[];
+  dateRange?: VolunteerDateRange;
   contentContainerId?: number;
+  ids?: string[];
 }) => {
   const authToken = await volunteerAuthToken();
 
@@ -23,42 +29,116 @@ export const calendarAll = async (queryVariables?: {
     }
   };
 
+  if (queryVariables?.ids?.length) {
+    const results = await Promise.all(
+      queryVariables.ids.map(async (id) => {
+        const response = await fetch(`${volunteerApiV2Url}calendar/entry/${id}`, fetchObj);
+
+        if (response.ok === false) {
+          if (response.status === 404) return undefined;
+
+          throw new Error(`Volunteer calendar request failed with status ${response.status}`);
+        }
+
+        return response.json();
+      })
+    );
+
+    return { results: results.filter(Boolean) };
+  }
+
   const id = queryVariables?.contentContainerId;
   const baseUrl =
     id && _isNumber(id)
       ? `${volunteerApiV2Url}calendar/container/${id}`
       : `${volunteerApiV2Url}calendar`;
+  const requestedStart =
+    queryVariables?.dateRange?.[0] || momentFormat(Date.now(), 'YYYY-MM-DD', 'x');
+  const selectedEnd = queryVariables?.dateRange?.[1];
+  const requestedEnd = queryVariables?.dateRange?.length
+    ? selectedEnd && selectedEnd !== requestedStart
+      ? selectedEnd
+      : moment(requestedStart).add(1, 'day').format('YYYY-MM-DD')
+    : moment(requestedStart).add(365, 'days').format('YYYY-MM-DD');
+  const baseSearchParams = new URLSearchParams({
+    start_date: requestedStart,
+    end_date: requestedEnd,
+    pagination: '1',
+    limit: '100'
+  });
 
-  const fetchPage = async (page?: number) => {
-    const searchParams = new URLSearchParams();
+  const fetchPage = async (url: string, page?: number) => {
+    const searchParams = new URLSearchParams(baseSearchParams.toString());
 
     if (page && page > 1) {
-      searchParams.append('page', String(page));
+      searchParams.set('page', String(page));
     }
 
-    const queryString = searchParams.toString();
-    const requestUrl = queryString ? `${baseUrl}?${queryString}` : baseUrl;
+    const response = await fetch(`${url}?${searchParams.toString()}`, fetchObj);
 
-    return (await fetch(requestUrl, fetchObj)).json();
+    if (response.ok === false) {
+      if (response.status === 404 && url.endsWith('/recurring')) {
+        const error = await response.json();
+
+        if (error?.message?.startsWith('No recurring events are present')) {
+          return { pages: 1, results: [] };
+        }
+      }
+
+      throw new Error(`Volunteer calendar request failed with status ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    return Array.isArray(data) ? { pages: 1, results: data } : data;
   };
 
-  const firstPage = await fetchPage();
-  const totalPages = Number(firstPage?.pages) || 1;
+  const fetchAllPages = async (url: string) => {
+    const firstPage = await fetchPage(url);
+    const totalPages = Number(firstPage?.pages) || 1;
 
-  if (totalPages <= 1) {
-    return firstPage;
-  }
+    if (totalPages <= 1) {
+      return firstPage?.results || [];
+    }
 
-  const additionalPages = await Promise.all(
-    Array.from({ length: totalPages - 1 }, (_, index) => fetchPage(index + 2))
-  );
+    const additionalPages = [];
 
-  return {
-    ...firstPage,
-    results: [
+    for (let page = 2; page <= totalPages; page += MAX_CONCURRENT_PAGE_REQUESTS_PER_ENDPOINT) {
+      const pageBatch = Array.from(
+        {
+          length: Math.min(MAX_CONCURRENT_PAGE_REQUESTS_PER_ENDPOINT, totalPages - page + 1)
+        },
+        (_, index) => fetchPage(url, page + index)
+      );
+
+      additionalPages.push(...(await Promise.all(pageBatch)));
+    }
+
+    return [
       ...(firstPage?.results || []),
       ...additionalPages.flatMap((page) => page?.results || [])
-    ]
+    ];
+  };
+
+  const [regularEvents, recurringEvents] = await Promise.all([
+    fetchAllPages(baseUrl),
+    fetchAllPages(`${baseUrl}/recurring`)
+  ]);
+  const eventsByOccurrence = new Map();
+
+  [...regularEvents, ...recurringEvents].forEach((event) => {
+    const occurrenceKey = [
+      event.id,
+      event.start_datetime,
+      event.end_datetime,
+      event.time_zone
+    ].join('|');
+
+    eventsByOccurrence.set(occurrenceKey, event);
+  });
+
+  return {
+    results: Array.from(eventsByOccurrence.values())
   };
 };
 

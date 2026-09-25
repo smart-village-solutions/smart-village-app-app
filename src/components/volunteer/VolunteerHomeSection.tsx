@@ -6,9 +6,10 @@ import { View } from 'react-native';
 import { SettingsContext } from '../../SettingsProvider';
 import { normalize } from '../../config';
 import { isUpcomingDate } from '../../helpers';
-import { useVolunteerData, useVolunteerRefresh } from '../../hooks';
+import { useVolunteerCalendarRange, useVolunteerData, useVolunteerRefresh } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
 import { VolunteerQuery } from '../../types';
+import type { VolunteerDateRange } from '../../types';
 import { Calendar } from '../Calendar';
 import { CalendarListToggle } from '../CalendarListToggle';
 import { DataListSection } from '../DataListSection';
@@ -27,7 +28,7 @@ type Props = {
   query: VolunteerQuery;
   queryVariables: {
     contentContainerId?: number;
-    dateRange?: string[];
+    dateRange?: VolunteerDateRange;
     limit: number;
     page: number;
   };
@@ -61,13 +62,18 @@ export const VolunteerHomeSection = ({
   const isCalendar =
     query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL || query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY;
   const [showCalendar, setShowCalendar] = useState(isCalendar);
+  const { calendarQueryVariables, updateCalendarDateRange } = useVolunteerCalendarRange(
+    queryVariables,
+    isCalendar
+  );
   const {
     data: sectionData,
     isLoading,
     refetch
   } = useVolunteerData({
     query,
-    queryVariables,
+    queryVariables: calendarQueryVariables,
+    queryOptions: { keepPreviousData: isCalendar },
     isCalendar,
     isSectioned: false,
     onlyUpcoming: !showCalendar
@@ -106,8 +112,9 @@ export const VolunteerHomeSection = ({
             additionalData={sectionData}
             isListRefreshing={isLoading}
             navigation={navigation}
+            onDateRangeChange={updateCalendarDateRange}
             query={query}
-            queryVariables={queryVariables}
+            queryVariables={calendarQueryVariables}
           />
         ) : (
           <DataListSection

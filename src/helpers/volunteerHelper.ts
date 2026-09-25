@@ -6,8 +6,10 @@ import * as appJson from '../../app.json';
 import { secrets } from '../config';
 import { QUERY_TYPES } from '../queries/types';
 import { VolunteerOwner, VolunteerUser } from '../types';
+import type { VolunteerCalendarDateRange } from '../types';
 
 import { eventDate } from './dateTimeHelper';
+import { currentDateInTimeZone, currentDateTimeInTimeZone } from './momentHelper';
 import { subtitle } from './textHelper';
 
 const namespace = appJson.expo.slug as keyof typeof secrets;
@@ -15,10 +17,36 @@ const serverUrl = secrets[namespace]?.volunteer?.serverUrl;
 export const volunteerApiV1Url = serverUrl + secrets[namespace]?.volunteer?.v1;
 export const volunteerApiV2Url = serverUrl + secrets[namespace]?.volunteer?.v2;
 
+export const volunteerDetailData = <T>(data: T | undefined, details: T): T | undefined => {
+  const { code, status } = (data || {}) as { code?: number; status?: number };
+  const isUnavailable = [code, status].some((value) => value === 403 || value === 404);
+
+  return data && !isUnavailable ? data : details;
+};
+
 const VOLUNTEER_AUTH_TOKEN = 'VOLUNTEER_AUTH_TOKEN';
 const VOLUNTEER_CURRENT_USER_ID = 'VOLUNTEER_CURRENT_USER_ID';
 const VOLUNTEER_CURRENT_USER_GUID = 'VOLUNTEER_CURRENT_USER_GUID';
 const VOLUNTEER_CURRENT_USER_CONTENT_CONTAINER_ID = 'VOLUNTEER_CURRENT_USER_CONTENT_CONTAINER_ID';
+
+export const defaultVolunteerCalendarDateRange = (): VolunteerCalendarDateRange => {
+  const start = moment().format('YYYY-MM-DD');
+
+  return [start, moment(start).add(365, 'days').format('YYYY-MM-DD')];
+};
+
+export const volunteerCalendarDateRangeForVisibleRange = (
+  currentRange: VolunteerCalendarDateRange,
+  visibleRange: VolunteerCalendarDateRange
+): VolunteerCalendarDateRange => {
+  const [visibleStart, visibleEnd] = visibleRange;
+
+  if (visibleStart >= currentRange[0] && visibleEnd <= currentRange[1]) return currentRange;
+
+  const windowEnd = moment(visibleStart).add(365, 'days').format('YYYY-MM-DD');
+
+  return [visibleStart, visibleEnd > windowEnd ? visibleEnd : windowEnd];
+};
 
 export const storeVolunteerAuthToken = (authToken?: string) => {
   if (authToken) {
@@ -91,13 +119,21 @@ export const volunteerUserData = async (): Promise<{
 
 export const volunteerListDate = (
   data: {
+    all_day?: boolean | number;
     end_datetime: string;
     start_datetime: string;
+    time_zone?: string;
     updated_at?: string;
   },
   withTime = false
 ) => {
-  const { end_datetime: endDatetime, start_datetime: startDatetime, updated_at: updatedAt } = data;
+  const {
+    all_day: allDay,
+    end_datetime: endDatetime,
+    start_datetime: startDatetime,
+    time_zone: timeZone,
+    updated_at: updatedAt
+  } = data;
 
   if (updatedAt) {
     // summer time
@@ -109,13 +145,82 @@ export const volunteerListDate = (
     return moment.utc(updatedAt).local().format('YYYY-MM-DD HH:mm:ss');
   }
 
-  if (startDatetime && endDatetime && moment().isBetween(startDatetime, endDatetime)) {
-    return moment().format('YYYY-MM-DD');
+  const currentDateTime = currentDateTimeInTimeZone(allDay ? undefined : timeZone);
+
+  if (
+    startDatetime &&
+    endDatetime &&
+    currentDateTime >= startDatetime.slice(0, 19) &&
+    currentDateTime < endDatetime.slice(0, 19)
+  ) {
+    return currentDateTime.slice(0, 10);
   }
 
   if (startDatetime) {
     return moment(startDatetime).format(withTime ? 'YYYY-MM-DD HH:mm:ss' : 'YYYY-MM-DD');
   }
+};
+
+export const volunteerEventDates = ({
+  all_day: allDay,
+  end_datetime: endDatetime,
+  start_datetime: startDatetime
+}: {
+  all_day?: boolean | number;
+  end_datetime?: string;
+  start_datetime?: string;
+  time_zone?: string;
+}) => {
+  if (!startDatetime) return [];
+
+  const startDate = startDatetime.slice(0, 10);
+  let inclusiveEndDate = endDatetime?.slice(0, 10) || startDate;
+
+  if (endDatetime && (allDay || endDatetime.slice(11, 19) === '00:00:00')) {
+    inclusiveEndDate = moment(inclusiveEndDate).subtract(1, 'day').format('YYYY-MM-DD');
+  }
+
+  if (inclusiveEndDate < startDate) return [startDate];
+
+  const dates = [];
+  const end = moment(inclusiveEndDate);
+
+  for (const date = moment(startDate); !date.isAfter(end, 'day'); date.add(1, 'day')) {
+    dates.push(date.format('YYYY-MM-DD'));
+  }
+
+  return dates;
+};
+
+export const volunteerEventOverlapsDate = (
+  event: { all_day?: boolean | number; end_datetime?: string; start_datetime?: string },
+  date: string
+) => volunteerEventDates(event).includes(date);
+
+export const volunteerEventIsUpcoming = (event: {
+  all_day?: boolean | number;
+  end_datetime?: string;
+  start_datetime?: string;
+  time_zone?: string;
+}) => {
+  const today = currentDateInTimeZone(event.all_day ? undefined : event.time_zone);
+
+  return volunteerEventDates(event).some((date) => date >= today);
+};
+
+export const volunteerEventOvertitle = (
+  volunteer: {
+    all_day?: boolean | number;
+    location?: string;
+    start_datetime?: string;
+  },
+  withDate = false
+) => {
+  const start = volunteer.start_datetime ? moment(volunteer.start_datetime) : undefined;
+  const date = withDate && start?.isValid() ? eventDate(start.format('YYYY-MM-DD')) : undefined;
+  const time = !volunteer.all_day && start?.isValid() ? start.format('HH:mm') : undefined;
+
+  return subtitle(date, volunteer.location, time);
 };
 
 export const volunteerSubtitle = (

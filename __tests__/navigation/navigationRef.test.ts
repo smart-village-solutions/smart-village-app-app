@@ -58,4 +58,46 @@ describe('navigationRef queue', () => {
 
     consoleErrorSpy.mockRestore();
   });
+
+  it('replaces an older pending action with the same key', () => {
+    /* eslint-disable @typescript-eslint/no-var-requires */
+    const {
+      flushPendingNavigationActions,
+      runWhenNavigationReady
+    } = require('../../src/navigation/navigationRef');
+    /* eslint-enable @typescript-eslint/no-var-requires */
+    const olderAction = jest.fn();
+    const newerAction = jest.fn();
+
+    runWhenNavigationReady(olderAction, undefined, 'notification');
+    runWhenNavigationReady(newerAction, undefined, 'notification');
+
+    mockNavigationRef.isReady.mockReturnValue(true);
+    flushPendingNavigationActions();
+
+    expect(olderAction).not.toHaveBeenCalled();
+    expect(newerAction).toHaveBeenCalledTimes(1);
+  });
+
+  it('removes an older keyed action when its replacement can run immediately', () => {
+    /* eslint-disable @typescript-eslint/no-var-requires */
+    const {
+      flushPendingNavigationActions,
+      runWhenNavigationReady
+    } = require('../../src/navigation/navigationRef');
+    /* eslint-enable @typescript-eslint/no-var-requires */
+    const olderAction = jest.fn();
+    const newerAction = jest.fn();
+    const olderTargetReady = jest.fn(() => false);
+
+    runWhenNavigationReady(olderAction, olderTargetReady, 'notification');
+
+    mockNavigationRef.isReady.mockReturnValue(true);
+    runWhenNavigationReady(newerAction, () => true, 'notification');
+    olderTargetReady.mockReturnValue(true);
+    flushPendingNavigationActions();
+
+    expect(olderAction).not.toHaveBeenCalled();
+    expect(newerAction).toHaveBeenCalledTimes(1);
+  });
 });

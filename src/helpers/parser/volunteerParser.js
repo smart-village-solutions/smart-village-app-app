@@ -8,7 +8,7 @@ import { QUERY_TYPES } from '../../queries';
 import { ScreenName } from '../../types';
 import { getTitleForQuery } from '../queryHelper';
 import { shareMessage } from '../shareHelper';
-import { volunteerListDate, volunteerSubtitle } from '../volunteerHelper';
+import { volunteerEventOvertitle, volunteerListDate, volunteerSubtitle } from '../volunteerHelper';
 
 const { ROOT_ROUTE_NAMES } = consts;
 
@@ -31,6 +31,21 @@ export const parseVolunteerData = (
 ) => {
   return data?.map((volunteer, index) => {
     let badge, leftIcon, statustitle, statustitleIcon, teaserTitle;
+    const isCalendar = [
+      QUERY_TYPES.VOLUNTEER.CALENDAR,
+      QUERY_TYPES.VOLUNTEER.CALENDAR_ALL,
+      QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY
+    ].includes(query);
+    const detailQuery = isCalendar ? QUERY_TYPES.VOLUNTEER.CALENDAR : query;
+    const hasCalendarDetailId = !isCalendar || volunteer.id != null;
+    const detailId = volunteer.user?.id ?? volunteer.id;
+    let queryOptions;
+
+    if (query === QUERY_TYPES.VOLUNTEER.CONVERSATION) {
+      queryOptions = { refetchInterval: 1000 };
+    } else if (!hasCalendarDetailId) {
+      queryOptions = { enabled: false };
+    }
 
     if (query === QUERY_TYPES.VOLUNTEER.USER) {
       if ((volunteer.user?.id || volunteer.id) == currentUserId) {
@@ -60,7 +75,12 @@ export const parseVolunteerData = (
       id: volunteer.id || volunteer.user?.id,
       title:
         volunteer.title || volunteer.name || volunteer.display_name || volunteer.user?.display_name,
-      subtitle: volunteer.subtitle || volunteerSubtitle(volunteer, query, withDate, isSectioned),
+      overtitle:
+        volunteer.overtitle ||
+        (isCalendar ? volunteerEventOvertitle(volunteer, withDate) : undefined),
+      subtitle: isCalendar
+        ? undefined
+        : volunteer.subtitle || volunteerSubtitle(volunteer, query, withDate, isSectioned),
       badge: volunteer.badge || badge,
       statustitle: volunteer.statustitle || statustitle,
       statustitleIcon: volunteer.statustitleIcon || statustitleIcon,
@@ -70,23 +90,23 @@ export const parseVolunteerData = (
       routeName: ScreenName.VolunteerDetail,
       onPress: volunteer.onPress,
       listDate: volunteer.listDate || volunteerListDate(volunteer),
+      startTime: volunteer.startTime || volunteer.start_datetime?.slice(11, 16),
       status: volunteer.status,
       params: {
-        title: getTitleForQuery(query, volunteer),
-        query,
-        queryVariables: { id: volunteer.user?.id ? `${volunteer.user.id}` : `${volunteer.id}` },
-        queryOptions: query === QUERY_TYPES.VOLUNTEER.CONVERSATION && {
-          refetchInterval: 1000
-        },
+        title: getTitleForQuery(detailQuery, volunteer),
+        query: detailQuery,
+        queryVariables: { id: detailId != null ? `${detailId}` : undefined },
+        queryOptions,
         rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER,
         shareContent: query !== QUERY_TYPES.VOLUNTEER.CONVERSATION && {
           message: shareMessage(
             {
+              id: detailId,
               title: volunteer.title || volunteer.name,
               subtitle:
                 volunteer.subtitle || volunteerSubtitle(volunteer, query, withDate, isSectioned)
             },
-            query
+            detailQuery
           )
         },
         details: volunteer

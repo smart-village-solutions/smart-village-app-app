@@ -172,28 +172,30 @@ export const VolunteerGroup = ({
   }, [id]);
 
   useLayoutEffect(() => {
-    if (isGroupOwner) {
-      navigation.setOptions({
-        headerRight: () => (
-          <HeaderRight
-            {...{
-              navigation,
-              onPress: () =>
-                navigation.navigate(ScreenName.VolunteerForm, {
-                  query: QUERY_TYPES.VOLUNTEER.GROUP,
-                  groupData: data,
-                  groupId: data.id
-                }),
-              route,
-              withDrawer: navigationType === 'drawer',
-              withEdit: true,
-              withShare: true
-            }}
-          />
-        )
-      });
-    }
-  }, [isGroupOwner, data]);
+    navigation.setOptions({
+      headerRight: () => (
+        <HeaderRight
+          navigation={navigation}
+          onPress={() =>
+            navigation.navigate(ScreenName.VolunteerForm, {
+              query: QUERY_TYPES.VOLUNTEER.GROUP,
+              groupData: data,
+              groupId: data.id
+            })
+          }
+          reportTarget={{
+            targetType: 'space',
+            targetId: Number(id),
+            label: texts.volunteer.report.targets.group
+          }}
+          route={route}
+          withDrawer={navigationType === 'drawer'}
+          withEdit={isGroupOwner}
+          withShare
+        />
+      )
+    });
+  }, [isGroupOwner, data, id, navigation, navigationType, route]);
 
   useFocusEffect(refreshGroup);
 

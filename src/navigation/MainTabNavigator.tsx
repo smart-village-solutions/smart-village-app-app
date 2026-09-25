@@ -13,7 +13,7 @@ import { useStaticContent, useTheme } from '../hooks';
 import { OrientationContext } from '../OrientationProvider';
 import { CustomTab, TabConfig, TabNavigationStaticContent } from '../types';
 
-import { getStackNavigator } from './AppStackNavigator';
+import { createStackNavigatorResolver } from './AppStackNavigator';
 import { renderThemeAwareBottomTabBar } from './ThemeAwareBottomTabBar';
 
 const { REFRESH_INTERVALS } = consts;
@@ -81,6 +81,7 @@ export const useTabRoutes = () => {
 const Tab = createBottomTabNavigator();
 
 export const MainTabNavigator = () => {
+  const resolveStackNavigator = useMemo(() => createStackNavigatorResolver(), []);
   const { defaultTabRoutes, loading, tabRoutes } = useTabRoutes();
   const { orientation } = useContext(OrientationContext);
   const isPortrait = orientation === 'portrait';
@@ -108,11 +109,13 @@ export const MainTabNavigator = () => {
       }}
     >
       {tabConfigs?.map((tabConfig, index) => {
+        const stackName = `Stack${index}`;
+
         return (
           <Tab.Screen
-            key={`Stack${index}`}
-            name={`Stack${index}`}
-            component={getStackNavigator(tabConfig.stackConfig)}
+            key={stackName}
+            name={stackName}
+            component={resolveStackNavigator(stackName, tabConfig.stackConfig)}
             options={tabConfig.tabOptions}
           />
         );

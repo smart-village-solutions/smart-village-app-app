@@ -106,6 +106,15 @@ describe('DetailActions', () => {
     expect(tree.root.findAllByType('mock-share-action')).toHaveLength(0);
   });
 
+  it('renders an additional action after sharing with a divider', () => {
+    const tree = renderDetailActions({ additionalAction: <mock-report-action /> });
+    const children = tree.root.findByType('mock-wrapper-horizontal').children;
+
+    expect(tree.root.findAllByType('mock-divider')).toHaveLength(2);
+    expect(tree.root.findAllByType('mock-report-action')).toHaveLength(1);
+    expect(children.at(-1).type).toBe('mock-report-action');
+  });
+
   it('derives missing share content and the bookmark category from loaded detail data', () => {
     const routeWithoutActionMetadata = {
       ...route,

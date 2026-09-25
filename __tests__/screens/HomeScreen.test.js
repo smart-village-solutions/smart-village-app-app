@@ -8,7 +8,8 @@ jest.mock('../../src/config', () => ({
       CONVERSATIONS: 'Conversations',
       EVENT_RECORDS: 'EventRecords',
       NEWS_ITEMS: 'NewsItems',
-      POINTS_OF_INTEREST_AND_TOURS: 'PointsOfInterestAndTours'
+      POINTS_OF_INTEREST_AND_TOURS: 'PointsOfInterestAndTours',
+      VOLUNTEER: 'Volunteer'
     }
   },
   texts: {
@@ -97,6 +98,50 @@ describe('HomeScreen', () => {
 
   it('does not build regular detail push navigation without an id', () => {
     expect(getNotificationNavigationTarget({ query_type: 'NewsItem' })).toBeUndefined();
+  });
+
+  it.each([
+    ['Calendar', ScreenName.VolunteerDetail, 'calendar'],
+    ['Group', ScreenName.VolunteerDetail, 'group'],
+    ['Conversation', ScreenName.VolunteerDetail, 'conversation'],
+    ['VolunteerUser', ScreenName.VolunteerDetail, 'volunteerUser']
+  ])('maps HumHub detail query type %s to its volunteer detail', (queryType, name, query) => {
+    expect(
+      getNotificationNavigationTarget({ id: '42', query_type: queryType, title: 'Push title' })
+    ).toMatchObject({
+      name,
+      params: {
+        query,
+        queryVariables: { id: '42' },
+        rootRouteName: 'Volunteer',
+        title: 'Push title'
+      }
+    });
+  });
+
+  it.each([
+    ['Home', ScreenName.VolunteerHome, 'home'],
+    ['Stream', ScreenName.VolunteerStream, 'stream'],
+    ['Groups', ScreenName.VolunteerIndex, 'groups'],
+    ['GroupsMy', ScreenName.VolunteerIndex, 'groupsMy'],
+    ['CalendarAll', ScreenName.VolunteerIndex, 'calendarAll'],
+    ['CalendarAllMy', ScreenName.VolunteerIndex, 'calendarAllMy'],
+    ['Conversations', ScreenName.VolunteerIndex, 'conversations'],
+    ['Me', ScreenName.VolunteerMe, 'me'],
+    ['Profile', ScreenName.VolunteerMe, 'profile'],
+    ['Personal', ScreenName.VolunteerPersonal, 'personal'],
+    ['UserNotificationSettings', ScreenName.VolunteerSettings, 'userNotificationSettings']
+  ])('maps HumHub destination query type %s without requiring an id', (queryType, name, query) => {
+    expect(
+      getNotificationNavigationTarget({ query_type: queryType, title: 'Push title' })
+    ).toMatchObject({
+      name,
+      params: {
+        query,
+        rootRouteName: 'Volunteer',
+        title: 'Push title'
+      }
+    });
   });
 
   it('builds stable keys for configured home sections', () => {

@@ -14,6 +14,7 @@ import { calendarAttend } from '../../queries/volunteer';
 import { SettingsContext } from '../../SettingsProvider';
 import { PARTICIPANT_TYPE, ScreenName } from '../../types';
 import { Button } from '../Button';
+import { DetailActions } from '../detail/DetailActions';
 import { HeaderRight } from '../HeaderRight';
 import { HtmlView } from '../HtmlView';
 import { ImageSection } from '../ImageSection';
@@ -27,6 +28,8 @@ import { useTheme } from '../../hooks/useTheme';
 
 import { VolunteerAppointmentsCard } from './VolunteerAppointmentsCard';
 import { VolunteerEventAttending } from './VolunteerEventAttending';
+import { VolunteerReportAction } from './VolunteerReportAction';
+import { useVolunteerReport } from './VolunteerReportContext';
 
 type File = {
   file_name: string;
@@ -62,6 +65,7 @@ export const VolunteerEventRecord = ({
     webUrls
   } = data;
   const { globalSettings } = useContext(SettingsContext);
+  const { enabled: reportingEnabled } = useVolunteerReport();
   const { navigation: navigationType } = globalSettings;
 
   const { files, topics } = content || {};
@@ -98,10 +102,17 @@ export const VolunteerEventRecord = ({
   const openWebScreen = useOpenWebScreen(headerTitle, undefined, rootRouteName);
 
   const { mutate, isSuccess, data: dataAttend } = useMutation(calendarAttend);
+  const hasEventId = id != null;
+
+  const refetchDetails = useCallback(() => {
+    if (hasEventId) refetch();
+  }, [hasEventId, refetch]);
 
   const attend = useCallback(() => {
+    if (!hasEventId) return;
+
     mutate({ id, type: isAttendingEvent ? PARTICIPANT_TYPE.REMOVE : PARTICIPANT_TYPE.ACCEPT });
-  }, [isAttendingEvent]);
+  }, [hasEventId, id, isAttendingEvent, mutate]);
 
   const checkIfMe = useCallback(async () => {
     const { currentUserId } = await volunteerUserData();
@@ -114,28 +125,25 @@ export const VolunteerEventRecord = ({
   }, [checkIfMe]);
 
   useLayoutEffect(() => {
-    if (isMy) {
-      navigation.setOptions({
-        headerRight: () => (
-          <HeaderRight
-            {...{
-              navigation,
-              onPress: () =>
-                navigation.navigate(ScreenName.VolunteerForm, {
-                  query: QUERY_TYPES.VOLUNTEER.CALENDAR,
-                  calendarData: { ...data, isPublic: content?.metadata?.visibility },
-                  groupId: content?.metadata?.contentcontainer_id
-                }),
-              route,
-              withDrawer: navigationType === 'drawer',
-              withEdit: true,
-              withShare: true
-            }}
-          />
-        )
-      });
-    }
-  }, [isMy, data]);
+    navigation.setOptions({
+      headerRight: () => (
+        <HeaderRight
+          {...{
+            navigation,
+            onPress: () =>
+              navigation.navigate(ScreenName.VolunteerForm, {
+                query: QUERY_TYPES.VOLUNTEER.CALENDAR,
+                calendarData: { ...data, isPublic: content?.metadata?.visibility },
+                groupId: content?.metadata?.contentcontainer_id
+              }),
+            route,
+            withDrawer: navigationType === 'drawer',
+            withEdit: hasEventId && !!isMy
+          }}
+        />
+      )
+    });
+  }, [content?.metadata, data, hasEventId, isMy, navigation, navigationType, route]);
 
   const checkIfAttending = useCallback(async () => {
     const { currentUserId } = await volunteerUserData();
@@ -148,20 +156,20 @@ export const VolunteerEventRecord = ({
   }, [checkIfAttending]);
 
   useEffect(() => {
-    isSuccess && dataAttend?.code == 200 && refetch();
-  }, [isSuccess, dataAttend]);
+    isSuccess && dataAttend?.code == 200 && refetchDetails();
+  }, [dataAttend, isSuccess, refetchDetails]);
 
   useFocusEffect(
     useCallback(() => {
-      refetch();
-    }, [])
+      refetchDetails();
+    }, [refetchDetails])
   );
 
   return (
     <View>
       <ImageSection mediaContents={mediaContents} />
       <SectionHeader title={title} />
-      {isAttendingEvent !== undefined && !!attending?.length && (
+      {hasEventId && isAttendingEvent !== undefined && !!attending?.length && (
         <VolunteerEventAttending
           calendarEntryId={id}
           data={attending}
@@ -178,6 +186,24 @@ export const VolunteerEventRecord = ({
           openWebScreen={openWebScreen}
         />
       </Wrapper>
+
+      <DetailActions
+        additionalAction={
+          reportingEnabled && content?.id && isMy === false ? (
+            <VolunteerReportAction
+              target={{
+                targetType: 'content',
+                targetId: content.id,
+                isInSpace: route.params?.groupId != null,
+                label: texts.volunteer.report.targets.event
+              }}
+              variant="detail"
+            />
+          ) : undefined
+        }
+        data={data}
+        route={route}
+      />
 
       {!!appointments?.length && (
         <View>
@@ -231,14 +257,16 @@ export const VolunteerEventRecord = ({
       )}
 
       <Wrapper>
-        {isAttendingEvent !== undefined && !isAttendingEvent && (
+        {hasEventId && isAttendingEvent !== undefined && !isAttendingEvent && (
           <RegularText small>{texts.volunteer.attendInfo}</RegularText>
         )}
-        <Button
-          title={isAttendingEvent ? texts.volunteer.notAttend : texts.volunteer.attend}
-          invert={isAttendingEvent}
-          onPress={attend}
-        />
+        {hasEventId && (
+          <Button
+            title={isAttendingEvent ? texts.volunteer.notAttend : texts.volunteer.attend}
+            invert={isAttendingEvent}
+            onPress={attend}
+          />
+        )}
         <TouchableOpacity
           accessibilityLabel={`${texts.volunteer.calendarExport} ${consts.a11yLabel.button}`}
           accessibilityRole="button"

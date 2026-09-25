@@ -44,7 +44,7 @@ describe('parseGenericItemEvents', () => {
     expect(result[0]).toMatchObject({
       id: 'ParticipationProject:42:a:2030-05-03',
       listDate: '2030-05-03',
-      overtitle: '10:00 Uhr',
+      overtitle: '10:00 Uhr | Magdeburg',
       routeName: 'Detail',
       params: { query: 'genericItem', queryVariables: { id: '42' } }
     });

@@ -108,6 +108,7 @@ export const parseGenericItemEvents = (
       const listDate = dateValue(date);
       if (!listDate || !isInRange(listDate, dateRange)) return [];
       const time = `${date.timeStart || date.timeFrom || ''}`.trim() || undefined;
+      const location = item.addresses?.[0]?.addition || item.addresses?.[0]?.city;
       const occurrenceId = `${source.genericType}:${item.id}:${date.id || index}:${listDate}`;
       return [
         {
@@ -115,7 +116,7 @@ export const parseGenericItemEvents = (
           color,
           id: occurrenceId,
           listDate,
-          overtitle: subtitle(undefined, undefined, time),
+          overtitle: subtitle(undefined, location, time),
           params: {
             title: getGenericItemDetailTitle(
               item.genericType as GenericType,

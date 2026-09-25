@@ -63,9 +63,7 @@ type Props = {
 
 const removeLastDivider = (data: unknown[]) =>
   data.map((item, index) =>
-    index === data.length - 1 && item && typeof item === 'object'
-      ? { ...item, bottomDivider: false }
-      : item
+    item && typeof item === 'object' ? { ...item, bottomDivider: index !== data.length - 1 } : item
   );
 
 /* eslint-disable complexity */
@@ -146,7 +144,11 @@ export const DataListSection = ({
   }
 
   if (additionalData?.length) {
-    listData = _sortBy([...(listData || []), ...additionalData], (item) => item.listDate);
+    listData = _sortBy(
+      [...(listData || []), ...additionalData],
+      (item) => item.listDate,
+      (item) => item.startTime || ''
+    );
   }
 
   if (listData?.length) {

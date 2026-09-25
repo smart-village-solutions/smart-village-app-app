@@ -56,9 +56,11 @@ export const ListComponent = ({
   data,
   estimatedItemSize,
   fetchMoreData,
+  hasNextPage,
   horizontal,
   isIndexStartingAt1,
   isLoading,
+  isFetchingNextPage,
   ListEmptyComponent,
   ListFooterComponent,
   ListFooterLoadingIndicator,
@@ -95,7 +97,9 @@ export const ListComponent = ({
       estimatedItemSize={estimatedItemSize}
       refetch={refetch}
       fetchMoreData={fetchMoreData}
+      hasNextPage={hasNextPage}
       isLoading={isLoading}
+      isFetchingNextPage={isFetchingNextPage}
       ListEmptyComponent={ListEmptyComponent}
       ListFooterComponent={ListFooterComponent}
       ListFooterLoadingIndicator={ListFooterLoadingIndicator}
@@ -121,9 +125,11 @@ ListComponent.propTypes = {
   data: PropTypes.array,
   estimatedItemSize: PropTypes.number,
   fetchMoreData: PropTypes.func,
+  hasNextPage: PropTypes.bool,
   horizontal: PropTypes.bool,
   isIndexStartingAt1: PropTypes.bool,
   isLoading: PropTypes.bool,
+  isFetchingNextPage: PropTypes.bool,
   ListEmptyComponent: PropTypes.object,
   ListFooterComponent: PropTypes.object,
   ListFooterLoadingIndicator: PropTypes.func,

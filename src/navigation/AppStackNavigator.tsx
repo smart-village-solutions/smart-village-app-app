@@ -9,7 +9,7 @@ import { StackConfig } from '../types';
 
 const Stack = createStackNavigator<Record<string, { title: string } | undefined>>();
 
-export const getStackNavigator = (stackConfig: StackConfig) => () => {
+const AppStackNavigator = ({ stackConfig }: { stackConfig: StackConfig }) => {
   const { isReduceMotionEnabled } = useContext(AccessibilityContext);
 
   return (
@@ -56,4 +56,34 @@ export const getStackNavigator = (stackConfig: StackConfig) => () => {
       ))}
     </Stack.Navigator>
   );
+};
+
+export const getStackNavigator = (stackConfig: StackConfig) => () =>
+  <AppStackNavigator stackConfig={stackConfig} />;
+
+export const createStackNavigatorResolver = () => {
+  const navigators = new Map<
+    string,
+    {
+      Component: React.ComponentType;
+      stackConfigRef: { current: StackConfig };
+    }
+  >();
+
+  return (key: string, stackConfig: StackConfig) => {
+    const cachedNavigator = navigators.get(key);
+
+    if (cachedNavigator) {
+      cachedNavigator.stackConfigRef.current = stackConfig;
+      return cachedNavigator.Component;
+    }
+
+    const stackConfigRef = { current: stackConfig };
+    const ResolvedStackNavigator = () => <AppStackNavigator stackConfig={stackConfigRef.current} />;
+
+    ResolvedStackNavigator.displayName = `StackNavigator(${key})`;
+    navigators.set(key, { Component: ResolvedStackNavigator, stackConfigRef });
+
+    return ResolvedStackNavigator;
+  };
 };

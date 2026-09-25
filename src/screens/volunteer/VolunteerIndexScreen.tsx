@@ -1,7 +1,7 @@
 import { useFocusEffect } from 'expo-router/react-navigation';
 import { StackScreenProps } from 'expo-router/js-stack';
 import * as ScreenOrientation from 'expo-screen-orientation';
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { RefreshControl } from 'react-native';
 
 import { SettingsContext } from '../../SettingsProvider';
@@ -34,6 +34,7 @@ import {
   useGroupsHeader,
   useOpenWebScreen,
   useStaticContent,
+  useVolunteerCalendarRange,
   useVolunteerData,
   VOLUNTEER_FILTER_BY,
   VOLUNTEER_SORT_BY
@@ -111,6 +112,9 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
   const { settings = {} } = globalSettings;
   const { calendarToggle = false } = settings;
   const initialQueryVariables = route.params?.queryVariables || {};
+  const query = route.params?.query ?? '';
+  const isCalendar =
+    query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL || query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY;
   const [queryVariables] = useState(initialQueryVariables);
   const [filterVariables, setFilterVariables] = useState(initialQueryVariables);
   const [showCalendar, setShowCalendar] = useState(false);
@@ -119,7 +123,6 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
   const [isCommentModalCollapsed, setIsCommentModalCollapsed] = useState(true);
   const [isPostModalCollapsed, setIsPostModalCollapsed] = useState(true);
   const [postForModal, setPostForModal] = useState();
-  const query = route.params?.query ?? '';
   const queryOptions = route.params?.queryOptions;
   const titleDetail = route.params?.titleDetail ?? '';
   const bookmarkable = route.params?.bookmarkable;
@@ -127,18 +130,26 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
   const headerTitle = route.params?.title ?? '';
   const isGroupMember = route.params?.isGroupMember ?? false;
   const isAttendingEvent = route.params?.isAttendingEvent ?? false;
-  const isCalendar =
-    query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL || query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY;
   const isPosts = query === QUERY_TYPES.VOLUNTEER.POSTS;
   const isGroups =
     query === QUERY_TYPES.VOLUNTEER.GROUPS || query === QUERY_TYPES.VOLUNTEER.GROUPS_MY;
   const isConversations = query === QUERY_TYPES.VOLUNTEER.CONVERSATIONS;
   const hasDailyFilterSelection = !!queryVariables.dateRange;
+  const { calendarQueryVariables, updateCalendarDateRange } = useVolunteerCalendarRange(
+    queryVariables,
+    isCalendar
+  );
+  const volunteerQueryOptions = {
+    ...queryOptions,
+    keepPreviousData: isCalendar
+  };
+  const isInitialFocus = useRef(true);
+  const focusRefresh = useRef<() => void>(() => undefined);
 
   const { data, isLoading, refetch, userGuid } = useVolunteerData({
     query,
-    queryVariables,
-    queryOptions,
+    queryVariables: calendarQueryVariables,
+    queryOptions: volunteerQueryOptions,
     isCalendar,
     titleDetail,
     bookmarkable,
@@ -164,10 +175,20 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
   useCalendarsHeader({ query, navigation, route });
   useGroupsHeader({ query, navigation, route });
 
+  focusRefresh.current = () => {
+    refetch();
+    isGroups && refetchGroupsIntroText();
+  };
+
   useFocusEffect(
     useCallback(() => {
-      refetch();
-      isGroups && refetchGroupsIntroText();
+      if (isInitialFocus.current) {
+        isInitialFocus.current = false;
+
+        return;
+      }
+
+      focusRefresh.current();
     }, [])
   );
 
@@ -189,7 +210,7 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
     fetchAuthToken();
   }, []);
 
-  if (isLoading || isLoadingGroupsIntroText) {
+  if ((isLoading && !showCalendar) || isLoadingGroupsIntroText) {
     return <LoadingSpinner loading />;
   }
 
@@ -273,8 +294,9 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
                 additionalData={data}
                 isListRefreshing={isLoading}
                 navigation={navigation}
+                onDateRangeChange={updateCalendarDateRange}
                 query={query}
-                queryVariables={queryVariables}
+                queryVariables={calendarQueryVariables}
                 subListContainerStyle={styles.noPaddingHorizontal}
               />
             ) : (
@@ -287,6 +309,7 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
           query={query}
           queryVariables={{
             authToken,
+            isInSpace: isPosts && !!queryVariables?.contentContainerId,
             setCommentForModal,
             setIsCommentModalCollapsed,
             setIsPostModalCollapsed,

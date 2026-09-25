@@ -1,6 +1,6 @@
 import { useFocusEffect } from 'expo-router/react-navigation';
 import PropTypes from 'prop-types';
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext } from 'react';
 import { RefreshControl, ScrollView } from 'react-native';
 
 import { useProfileContext } from '../ProfileProvider';
@@ -15,25 +15,6 @@ import { GenericType } from '../types';
 import { useTheme } from '../hooks/useTheme';
 
 const { MATOMO_TRACKING } = consts;
-
-const getInitialConnectionState = (categoriesNews) => {
-  let initialState = {};
-  categoriesNews.forEach(({ categoryId }) => {
-    initialState[getKeyFromTypeAndSuffix(QUERY_TYPES.NEWS_ITEMS, categoryId)] = true;
-  });
-  initialState[getKeyFromTypeAndSuffix(QUERY_TYPES.GENERIC_ITEMS, GenericType.Commercial)] = true;
-  initialState[getKeyFromTypeAndSuffix(QUERY_TYPES.GENERIC_ITEMS, GenericType.Deadline)] = true;
-  initialState[getKeyFromTypeAndSuffix(QUERY_TYPES.GENERIC_ITEMS, GenericType.Job)] = true;
-  initialState[getKeyFromTypeAndSuffix(QUERY_TYPES.GENERIC_ITEMS, GenericType.Noticeboard)] = true;
-  initialState[
-    getKeyFromTypeAndSuffix(QUERY_TYPES.GENERIC_ITEMS, GenericType.ParticipationProject)
-  ] = true;
-  initialState[QUERY_TYPES.POINTS_OF_INTEREST] = true;
-  initialState[QUERY_TYPES.TOURS] = true;
-  initialState[QUERY_TYPES.EVENT_RECORDS] = true;
-
-  return initialState;
-};
 
 const getBookmarkCount = (bookmarks, isLoggedIn) => {
   if (!bookmarks) return 0;
@@ -63,8 +44,9 @@ export const BookmarkScreen = ({ navigation, route }) => {
     bookmarkCategoryTitlesPointsOfInterest = texts.categoryTitles.pointsOfInterest,
     bookmarkCategoryTitlesTours = texts.categoryTitles.tours
   } = categoryTitles;
-  const [connectionState, setConnectionState] = useState(getInitialConnectionState(categoriesNews));
   const query = route.params?.query || '';
+  const eventBookmarkIds = bookmarks?.[QUERY_TYPES.EVENT_RECORDS] || [];
+  const volunteerEventBookmarkIds = bookmarks?.[QUERY_TYPES.VOLUNTEER.CALENDAR_ALL] || [];
 
   const getSection = useCallback(
     (itemType, categoryTitle, suffix, categoryTitleDetail, parentCategoryId) => {
@@ -74,7 +56,6 @@ export const BookmarkScreen = ({ navigation, route }) => {
 
       return (
         <BookmarkSection
-          bookmarkKey={bookmarkKey}
           suffix={parentCategoryId || suffix}
           categoryTitleDetail={categoryTitleDetail}
           ids={bookmarks[bookmarkKey]}
@@ -82,7 +63,6 @@ export const BookmarkScreen = ({ navigation, route }) => {
           navigation={navigation}
           query={itemType}
           sectionTitle={categoryTitle}
-          setConnectionState={setConnectionState}
         />
       );
       // if there are more than three of that category, show "show all" button
@@ -106,12 +86,6 @@ export const BookmarkScreen = ({ navigation, route }) => {
     );
   }
 
-  const connection = Object.keys(connectionState).reduce(
-    (previousValue, currentValue) =>
-      previousValue && (connectionState[currentValue] || !bookmarks[currentValue]?.length),
-    true
-  );
-
   return (
     <SafeAreaViewFlex>
       <ScrollView
@@ -124,11 +98,6 @@ export const BookmarkScreen = ({ navigation, route }) => {
           />
         }
       >
-        {!connection && (
-          <Wrapper>
-            <RegularText>{texts.errors.noData}</RegularText>
-          </Wrapper>
-        )}
         {categoriesNews?.map(
           ({ categoryId, categoryTitle, categoryTitleDetail, parentCategoryId }) =>
             getSection(
@@ -141,7 +110,19 @@ export const BookmarkScreen = ({ navigation, route }) => {
         )}
         {getSection(QUERY_TYPES.POINTS_OF_INTEREST, bookmarkCategoryTitlesPointsOfInterest)}
         {getSection(QUERY_TYPES.TOURS, bookmarkCategoryTitlesTours)}
-        {getSection(QUERY_TYPES.EVENT_RECORDS, texts.homeTitles.events)}
+        {!!(eventBookmarkIds.length || volunteerEventBookmarkIds.length) &&
+          (!query ||
+            [QUERY_TYPES.EVENT_RECORDS, QUERY_TYPES.VOLUNTEER.CALENDAR_ALL].includes(query)) && (
+            <BookmarkSection
+              additionalIds={volunteerEventBookmarkIds}
+              additionalQuery={QUERY_TYPES.VOLUNTEER.CALENDAR_ALL}
+              ids={eventBookmarkIds}
+              key={QUERY_TYPES.EVENT_RECORDS}
+              navigation={navigation}
+              query={QUERY_TYPES.EVENT_RECORDS}
+              sectionTitle={texts.screenTitles.events}
+            />
+          )}
         {getSection(QUERY_TYPES.VOUCHERS, '')}
         {getSection(
           QUERY_TYPES.GENERIC_ITEMS,

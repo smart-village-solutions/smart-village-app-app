@@ -83,32 +83,39 @@ export const VolunteerUser = ({
     checkIfMe();
   }, [checkIfMe]);
 
-  // remove share header for user detail screens
+  // configure actions for user detail screens
   useEffect(() => {
     if (route.name === QUERY_TYPES.VOLUNTEER.PROFILE) return;
+    if (isMe === undefined) return;
 
-    if (isMe) {
-      navigation.setOptions({
-        headerRight: () => (
-          <HeaderRight
-            {...{
-              navigation,
-              onPress: () =>
-                navigation.navigate(ScreenName.VolunteerForm, {
-                  query: QUERY_TYPES.VOLUNTEER.PROFILE,
-                  userData: data,
-                  title: data?.display_name
-                }),
-              route,
-              withDrawer: navigationType === 'drawer',
-              withEdit: true,
-              withShare: true
-            }}
-          />
-        )
-      });
-    }
-  }, [route, navigation, isMe, data]);
+    navigation.setOptions({
+      headerRight: () => (
+        <HeaderRight
+          navigation={navigation}
+          onPress={() =>
+            navigation.navigate(ScreenName.VolunteerForm, {
+              query: QUERY_TYPES.VOLUNTEER.PROFILE,
+              userData: data,
+              title: data?.display_name
+            })
+          }
+          reportTarget={
+            isMe
+              ? undefined
+              : {
+                  targetType: 'user',
+                  targetId: Number(data.id),
+                  label: texts.volunteer.report.targets.profile
+                }
+          }
+          route={route}
+          withDrawer={navigationType === 'drawer'}
+          withEdit={isMe}
+          withShare
+        />
+      )
+    });
+  }, [route, navigation, navigationType, isMe, data]);
 
   // action to open source urls
   const openWebScreen = useOpenWebScreen(
