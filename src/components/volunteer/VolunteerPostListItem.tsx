@@ -4,7 +4,7 @@ import { Badge, ListItem } from 'react-native-elements';
 import Lightbox from 'react-native-lightbox-v2';
 import Markdown from 'react-native-markdown-display';
 
-import { styles as configStyles, device, Icon, normalize } from '../../config';
+import { styles as configStyles, device, Icon, normalize, texts } from '../../config';
 import {
   imageWidth,
   momentFormat,
@@ -229,7 +229,12 @@ export const VolunteerPostListItem = ({
           <VolunteerLike liked={liked} likeCount={likeCount} onToggleLike={toggleLike} />
           {!isUserAuthor && (
             <VolunteerReportAction
-              target={{ targetType: 'content', targetId: content.id, isInSpace, label: 'Beitrag' }}
+              target={{
+                targetType: 'content',
+                targetId: content.id,
+                isInSpace,
+                label: texts.volunteer.report.targets.post
+              }}
               variant="text"
               withSeparator
             />

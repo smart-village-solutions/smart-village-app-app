@@ -195,7 +195,7 @@ export const VolunteerEventRecord = ({
                 targetType: 'content',
                 targetId: content.id,
                 isInSpace: route.params?.groupId != null,
-                label: 'Veranstaltung'
+                label: texts.volunteer.report.targets.event
               }}
               variant="detail"
             />

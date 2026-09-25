@@ -100,7 +100,13 @@ export const VolunteerUser = ({
             })
           }
           reportTarget={
-            isMe ? undefined : { targetType: 'user', targetId: Number(data.id), label: 'Profil' }
+            isMe
+              ? undefined
+              : {
+                  targetType: 'user',
+                  targetId: Number(data.id),
+                  label: texts.volunteer.report.targets.profile
+                }
           }
           route={route}
           withDrawer={navigationType === 'drawer'}

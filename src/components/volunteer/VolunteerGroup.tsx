@@ -183,7 +183,11 @@ export const VolunteerGroup = ({
               groupId: data.id
             })
           }
-          reportTarget={{ targetType: 'space', targetId: Number(id), label: 'Gruppe' }}
+          reportTarget={{
+            targetType: 'space',
+            targetId: Number(id),
+            label: texts.volunteer.report.targets.group
+          }}
           route={route}
           withDrawer={navigationType === 'drawer'}
           withEdit={isGroupOwner}

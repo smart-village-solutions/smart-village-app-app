@@ -149,7 +149,12 @@ export const VolunteerComments = ({
                 reportTarget={
                   isUserAuthor
                     ? undefined
-                    : { targetType: 'comment', targetId: id, isInSpace, label: 'Kommentar' }
+                    : {
+                        targetType: 'comment',
+                        targetId: id,
+                        isInSpace,
+                        label: texts.volunteer.report.targets.comment
+                      }
                 }
                 userGuid={userGuid}
               />

@@ -2094,6 +2094,13 @@ export const texts = {
       submitHint: 'Sendet die Meldung mit dem ausgewählten Grund',
       successMessage: 'Vielen Dank. Ihre Meldung wurde gesendet.',
       successTitle: 'Meldung erfolgreich',
+      targets: {
+        comment: 'Kommentar',
+        event: 'Veranstaltung',
+        group: 'Gruppe',
+        post: 'Beitrag',
+        profile: 'Profil'
+      },
       title: 'Inhalt melden'
     },
     save: 'Speichern',
