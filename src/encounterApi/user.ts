@@ -2,6 +2,7 @@ import { encounterApi } from '../config';
 import appJson from '../../app.json';
 import { CreateUserData, UpdateUserData, User } from '../types';
 import { parseUser } from '../jsonValidation';
+import { imageUploadMetadata } from '../helpers/imageUploadMetadata';
 
 const url = encounterApi.serverUrl + encounterApi.version + encounterApi.user;
 
@@ -15,11 +16,12 @@ export const createUserAsync = async (userData: CreateUserData): Promise<string 
   body.append('last_name', userData.lastName);
   body.append('phone', userData.phone);
 
+  const image = imageUploadMetadata(userData.imageUri);
   body.append('image', {
     // @ts-expect-error FormData types are not correct in our setting
     uri: userData.imageUri,
-    type: 'image/jpg',
-    name: 'image.jpg'
+    type: image.mimeType,
+    name: image.fileName
   });
 
   const response = await fetch(url, {
@@ -51,11 +53,12 @@ export const updateUserAsync = async (userData: UpdateUserData): Promise<string 
 
   // only update if we have a new image
   if (userData.imageUri) {
+    const image = imageUploadMetadata(userData.imageUri);
     body.append('image', {
       // @ts-expect-error FormData types are not correct in our setting
       uri: userData.imageUri,
-      type: 'image/jpg',
-      name: 'image.jpg'
+      type: image.mimeType,
+      name: image.fileName
     });
   }
 

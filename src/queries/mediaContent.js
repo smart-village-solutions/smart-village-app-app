@@ -1,6 +1,8 @@
 import * as SecureStore from 'expo-secure-store';
+import { File } from 'expo-file-system';
 
 import { consts, namespace, secrets } from '../config';
+import { imageUploadMetadata } from '../helpers/imageUploadMetadata';
 
 const { MEDIA_TYPES } = consts;
 
@@ -10,12 +12,18 @@ export const uploadMediaContent = async (
   contentName = 'image',
   type = 'jpg'
 ) => {
+  const uri = content.uri || content.cachedAttachment;
+  const image = imageUploadMetadata(uri, content.mimeType);
   const formData = new FormData();
   formData.append('media_content[content_type]', contentType);
+  const mimeType = type === MEDIA_TYPES.DOCUMENT ? 'application/pdf' : image.mimeType;
+  const fileName = type === MEDIA_TYPES.DOCUMENT ? `${contentName}.${type}` : image.fileName;
+  const file = new File(uri);
+  // Expo's fetch reads file parts through bytes(); URI parts and File.slice() fail on iOS.
   formData.append('media_content[attachment]', {
-    uri: content.uri || content.cachedAttachment,
-    type: type === MEDIA_TYPES.DOCUMENT ? 'application/pdf' : 'image/jpg',
-    name: `${contentName}.${type}`
+    name: fileName,
+    type: mimeType,
+    bytes: () => file.bytes()
   });
 
   // get the authentication token from local SecureStore if it exists
@@ -29,13 +37,22 @@ export const uploadMediaContent = async (
     body: formData
   });
 
-  const json = await response.json();
-
-  if (response.ok && response.status === 201 && typeof json?.service_url === 'string') {
-    return json.service_url;
+  let json;
+  try {
+    json = await response.json();
+  } catch {
+    throw new Error(`Media upload HTTP ${response.status}: invalid JSON response`);
   }
 
-  return;
+  if (!response.ok || response.status !== 201) {
+    throw new Error(`Media upload HTTP ${response.status}`);
+  }
+
+  if (typeof json?.service_url !== 'string') {
+    throw new Error('Media upload response missing service_url');
+  }
+
+  return json.service_url;
 };
 
 export const deleteMediaContent = async (mediaContentId) => {

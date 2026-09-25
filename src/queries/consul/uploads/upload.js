@@ -1,5 +1,6 @@
 import { namespace, secrets } from '../../../config';
 import { getConsulAuthToken, uploadMultipartFile } from '../../../helpers';
+import { imageUploadMetadata } from '../../../helpers/imageUploadMetadata';
 
 // https://docs.expo.io/versions/latest/sdk/filesystem/#filesystemuploadasyncurl-fileuri-options
 export const uploadAttachment = async (uri, resourceRelation, resourceType = 'Proposal') => {
@@ -13,7 +14,7 @@ export const uploadAttachment = async (uri, resourceRelation, resourceType = 'Pr
       client: token ? `${JSON.parse(token).client}` : '',
       uid: token ? `${JSON.parse(token).uid}` : ''
     },
-    mimeType: 'jpg', // consul server requires jpg currently
+    mimeType: resourceRelation === 'image' ? imageUploadMetadata(uri).mimeType : 'application/pdf',
     parameters: {
       'direct_upload[resource_relation]': resourceRelation, // 'image' or 'documents'
       'direct_upload[resource_type]': resourceType // 'Proposal'
