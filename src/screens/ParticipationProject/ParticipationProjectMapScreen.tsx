@@ -1,32 +1,59 @@
 /* eslint-disable react/prop-types */
 import { StackScreenProps } from 'expo-router/js-stack';
-import React, { useLayoutEffect, useMemo, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import * as Location from 'expo-location';
+import React, { useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import { DeviceEventEmitter, StyleSheet, View } from 'react-native';
 import { useQuery } from 'react-query';
 
 import { ReactQueryClient } from '../../ReactQueryClient';
-import { HeaderLeft, LoadingSpinner, MapLibre, RegularText, TextListItem } from '../../components';
+import {
+  EmptyMessage,
+  Filter,
+  HeaderLeft,
+  LoadingSpinner,
+  MapLibre,
+  TextListItem
+} from '../../components';
 import { expandMapBounds, getMarkerBounds } from '../../components/map/getMarkerBounds';
-import { consts, normalize } from '../../config';
+import { consts, normalize, texts } from '../../config';
+import { geoLocationFilteredListItem } from '../../helpers';
 import {
   buildParticipationProjectPreviewItem,
+  getParticipationProjectRadiusFilter,
   getParticipationProjectGeoLocation,
   isParticipationProjectMapEligible,
   isParticipationProjectStatus,
   normalizeParticipationProjectStatusPosition,
   PARTICIPATION_PROJECT_DEFAULT_STATUSES,
+  PARTICIPATION_PROJECT_FILTER_CHANGED_EVENT,
   PARTICIPATION_PROJECT_STATUS_FILTER,
   PARTICIPATION_PROJECT_STATUS_POSITION_PARAM,
   ParticipationProject
 } from '../../helpers/participationProjectHelper';
 import { useThemeStyles } from '../../hooks/useThemeStyles';
+import {
+  useLastKnownPosition,
+  useLocationSettings,
+  usePosition,
+  useSystemPermission
+} from '../../hooks';
 import { getQuery, QUERY_TYPES } from '../../queries';
-import { GenericType, MapMarker, ScreenName, ThemeColorPalette } from '../../types';
+import {
+  FilterProps,
+  FilterTypesProps,
+  GenericType,
+  MapMarker,
+  ScreenName,
+  ThemeColorPalette
+} from '../../types';
 
 type ParticipationProjectMapParamList = Record<string, object | undefined> & {
   [ScreenName.ParticipationProjectMap]: {
+    filterTypes?: FilterTypesProps[];
+    initialQueryVariables?: FilterProps;
     queryVariables?: Record<string, unknown>;
     rootRouteName?: string;
+    sourceRouteKey?: string;
     subtitleNumberOfLines?: number;
     title?: string;
     titleNumberOfLines?: number;
@@ -37,9 +64,17 @@ type ParticipationProjectItemsResponse = {
   [QUERY_TYPES.GENERIC_ITEMS]: ParticipationProject[];
 };
 
-const EMPTY_STATE_TEXT = 'Keine aktiven Beteiligungsprojekte mit Standort verfuegbar.';
 const INITIAL_BOUNDS_EXPANSION_FACTOR = 2;
 const { MAP } = consts;
+
+const resolveMapFilterTypes = (filterTypes?: FilterTypesProps[]) =>
+  filterTypes?.length ? filterTypes : [getParticipationProjectRadiusFilter()];
+
+const createInitialMapFilters = (queryVariables: Record<string, unknown>): FilterProps => ({
+  ...queryVariables,
+  [PARTICIPATION_PROJECT_STATUS_FILTER]:
+    queryVariables[PARTICIPATION_PROJECT_STATUS_FILTER] || PARTICIPATION_PROJECT_DEFAULT_STATUSES
+});
 
 export const ParticipationProjectMapScreen = ({
   navigation,
@@ -48,6 +83,32 @@ export const ParticipationProjectMapScreen = ({
   const styles = useThemeStyles(createStyles);
   const [selectedMarker, setSelectedMarker] = useState<string>();
   const [isMapReady, setIsMapReady] = useState(false);
+  const [isLocationAlertShow, setIsLocationAlertShow] = useState(false);
+  const { locationSettings = {} } = useLocationSettings();
+  const systemPermission = useSystemPermission();
+  const initialQueryVariables = route.params?.initialQueryVariables || {};
+  const currentQueryVariables = route.params?.queryVariables || initialQueryVariables;
+  const [queryVariables, setQueryVariables] = useState<FilterProps>(() =>
+    createInitialMapFilters(currentQueryVariables)
+  );
+
+  useEffect(() => {
+    if (!route.params?.sourceRouteKey) return;
+
+    DeviceEventEmitter.emit(PARTICIPATION_PROJECT_FILTER_CHANGED_EVENT, {
+      queryVariables,
+      sourceRouteKey: route.params.sourceRouteKey
+    });
+  }, [queryVariables, route.params?.sourceRouteKey]);
+  const filterTypes = resolveMapFilterTypes(route.params?.filterTypes);
+  const radiusSearch = queryVariables.radiusSearch as
+    | { currentPosition?: boolean; distance?: number; index?: number }
+    | undefined;
+  const skipPosition =
+    !radiusSearch?.distance || systemPermission?.status !== Location.PermissionStatus.GRANTED;
+  const { position } = usePosition(skipPosition);
+  const { position: lastKnownPosition } = useLastKnownPosition(skipPosition);
+  const currentPosition = position || lastKnownPosition;
   const titleNumberOfLines = route.params?.titleNumberOfLines;
   const subtitleNumberOfLines = route.params?.subtitleNumberOfLines;
   const rootRouteName = route.params?.rootRouteName;
@@ -55,7 +116,7 @@ export const ParticipationProjectMapScreen = ({
     route.params?.queryVariables?.[PARTICIPATION_PROJECT_STATUS_POSITION_PARAM]
   );
   const selectedMapStatuses = useMemo(() => {
-    const selectedStatuses = route.params?.queryVariables?.[PARTICIPATION_PROJECT_STATUS_FILTER];
+    const selectedStatuses = queryVariables[PARTICIPATION_PROJECT_STATUS_FILTER];
     const statuses = Array.isArray(selectedStatuses)
       ? selectedStatuses
       : typeof selectedStatuses === 'string'
@@ -63,21 +124,22 @@ export const ParticipationProjectMapScreen = ({
       : PARTICIPATION_PROJECT_DEFAULT_STATUSES;
 
     return statuses.filter((status): status is string => typeof status === 'string');
-  }, [route.params?.queryVariables]);
+  }, [queryVariables]);
   const mapQueryVariables = useMemo(() => {
-    const queryVariables = { ...(route.params?.queryVariables || {}) };
-    delete queryVariables[PARTICIPATION_PROJECT_STATUS_FILTER];
-    delete queryVariables[PARTICIPATION_PROJECT_STATUS_POSITION_PARAM];
-    delete queryVariables.participationOrder;
-    delete queryVariables.subtitleNumberOfLines;
-    delete queryVariables.titleNumberOfLines;
+    const networkQueryVariables = { ...queryVariables };
+    delete networkQueryVariables[PARTICIPATION_PROJECT_STATUS_FILTER];
+    delete networkQueryVariables[PARTICIPATION_PROJECT_STATUS_POSITION_PARAM];
+    delete networkQueryVariables.participationOrder;
+    delete networkQueryVariables.radiusSearch;
+    delete networkQueryVariables.subtitleNumberOfLines;
+    delete networkQueryVariables.titleNumberOfLines;
 
     return {
-      ...queryVariables,
+      ...networkQueryVariables,
       genericType: GenericType.ParticipationProject,
       limit: undefined
     };
-  }, [route.params?.queryVariables]);
+  }, [queryVariables]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -98,15 +160,33 @@ export const ParticipationProjectMapScreen = ({
     }
   );
 
-  const eligibleProjects = useMemo(
-    () =>
-      (data?.[QUERY_TYPES.GENERIC_ITEMS] || []).filter(
-        (item) =>
-          isParticipationProjectMapEligible(item) &&
-          selectedMapStatuses.some((status) => isParticipationProjectStatus(item, status))
-      ),
-    [data, selectedMapStatuses]
-  );
+  const eligibleProjects = useMemo(() => {
+    const projects = (data?.[QUERY_TYPES.GENERIC_ITEMS] || []).filter(
+      (item) =>
+        isParticipationProjectMapEligible(item) &&
+        selectedMapStatuses.some((status) => isParticipationProjectStatus(item, status))
+    );
+
+    if (!radiusSearch?.distance) return projects;
+
+    return geoLocationFilteredListItem({
+      currentPosition,
+      isLocationAlertShow,
+      listItem: projects,
+      locationSettings,
+      navigation,
+      queryVariables: { radiusSearch },
+      setIsLocationAlertShow
+    });
+  }, [
+    currentPosition,
+    data,
+    isLocationAlertShow,
+    locationSettings,
+    navigation,
+    radiusSearch,
+    selectedMapStatuses
+  ]);
 
   const markers = useMemo<MapMarker[]>(
     () =>
@@ -146,10 +226,20 @@ export const ParticipationProjectMapScreen = ({
 
   return (
     <View style={styles.container}>
+      <Filter
+        countInitialFilter={PARTICIPATION_PROJECT_STATUS_FILTER}
+        filterTypes={filterTypes}
+        initialQueryVariables={initialQueryVariables}
+        isOverlay
+        queryVariables={queryVariables}
+        setQueryVariables={setQueryVariables}
+      />
+
       {!!markers.length && (
         <MapLibre
+          currentPosition={currentPosition}
           initialBounds={initialBounds}
-          isMyLocationButtonVisible={false}
+          isMyLocationButtonVisible
           locations={markers}
           mapStyle={styles.map}
           onMapReady={() => setIsMapReady(true)}
@@ -165,8 +255,8 @@ export const ParticipationProjectMapScreen = ({
       )}
 
       {!markers.length && (
-        <View style={styles.emptyState}>
-          <RegularText>{EMPTY_STATE_TEXT}</RegularText>
+        <View style={styles.emptyState} testID="participation-map-empty-state">
+          <EmptyMessage title={texts.empty.list} showIcon />
         </View>
       )}
 
@@ -198,10 +288,8 @@ const createStyles = (colors: ThemeColorPalette) => ({
     width: '100%'
   },
   emptyState: {
-    alignItems: 'center',
     flex: 1,
-    justifyContent: 'center',
-    paddingHorizontal: normalize(24)
+    paddingHorizontal: normalize(16)
   },
   imageRadius: {
     alignSelf: 'stretch',
@@ -242,7 +330,7 @@ const createStyles = (colors: ThemeColorPalette) => ({
     zIndex: 1
   },
   map: {
-    height: '100%',
+    flex: 1,
     width: '100%'
   },
   textListItemContainer: {

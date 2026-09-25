@@ -9,7 +9,23 @@ import { ThemeContext } from '../../src/ThemeContext';
 import { ScreenName } from '../../src/types';
 
 const DETAIL_ROUTE_NAME = 'Detail';
+const mockFilter = jest.fn();
 const mockTextListItem = jest.fn();
+const mockGeoLocationFilteredListItem = jest.fn(({ listItem }) => listItem);
+const mockCurrentPosition = {
+  coords: { latitude: 52.1, longitude: 11.6 }
+};
+
+jest.mock('../../src/helpers', () => ({
+  geoLocationFilteredListItem: (args) => mockGeoLocationFilteredListItem(args)
+}));
+
+jest.mock('../../src/hooks', () => ({
+  useLastKnownPosition: jest.fn(() => ({ position: undefined })),
+  useLocationSettings: jest.fn(() => ({ locationSettings: { locationService: true } })),
+  usePosition: jest.fn(() => ({ position: mockCurrentPosition })),
+  useSystemPermission: jest.fn(() => ({ status: 'granted' }))
+}));
 
 jest.mock('react-query', () => ({
   useQuery: jest.fn()
@@ -28,6 +44,7 @@ jest.mock('../../src/queries', () => ({
 
 jest.mock('../../src/helpers/participationProjectHelper', () => ({
   PARTICIPATION_PROJECT_DEFAULT_STATUSES: ['active', 'announced'],
+  PARTICIPATION_PROJECT_FILTER_CHANGED_EVENT: 'participationProjectFilterChanged',
   PARTICIPATION_PROJECT_STATUS_FILTER: 'participationStatus',
   PARTICIPATION_PROJECT_STATUS_POSITION_PARAM: 'participationStatusPosition',
   buildParticipationProjectPreviewItem: jest.fn((item, options) => ({
@@ -45,6 +62,17 @@ jest.mock('../../src/helpers/participationProjectHelper', () => ({
     routeName: DETAIL_ROUTE_NAME,
     subtitle: 'Kurzbeschreibung',
     title: item.title
+  })),
+  getParticipationProjectRadiusFilter: jest.fn(() => ({
+    currentPosition: {
+      label: 'Umkreis',
+      placeholder: 'Aktuelle Position nutzen'
+    },
+    data: [1, 5, 10],
+    label: 'Entfernung (km)',
+    name: 'radiusSearch',
+    placeholder: 'Entfernung wählen',
+    type: 'slider'
   })),
   getParticipationProjectGeoLocation: jest.fn(
     (item) => item.locations?.[0]?.geoLocation || item.addresses?.[0]?.geoLocation
@@ -65,6 +93,18 @@ jest.mock('../../src/components', () => {
   const { Text, View } = require('react-native');
 
   return {
+    EmptyMessage: ({ showIcon, title }) => (
+      <View testID="empty-message">
+        {!!showIcon && <Text testID="empty-message-icon">icon</Text>}
+        <Text>{title}</Text>
+      </View>
+    ),
+    Filter: (props) => {
+      mockFilter(props);
+      const radiusFilter = props.filterTypes?.find(({ name }) => name === 'radiusSearch');
+
+      return radiusFilter ? <Text testID="map-radius-filter">{radiusFilter.label}</Text> : null;
+    },
     HeaderLeft: ({ backImage, onPress }) => (
       <Text testID="header-left" onPress={onPress}>
         {backImage ? 'custom' : 'back'}
@@ -77,7 +117,6 @@ jest.mock('../../src/components', () => {
 
       return <View testID="maplibre" />;
     },
-    RegularText: ({ children }) => <Text>{children}</Text>,
     TextListItem: (props) => {
       mockTextListItem(props);
 
@@ -111,6 +150,9 @@ jest.mock('../../src/config', () => ({
   },
   normalize: (value: number) => value,
   texts: {
+    empty: {
+      list: 'Schade, es wurden keine passenden Einträge gefunden.'
+    },
     locationOverview: {
       map: 'Kartenansicht'
     }
@@ -139,7 +181,10 @@ const buildItem = ({
 describe('ParticipationProjectMapScreen', () => {
   beforeEach(() => {
     mockMapLibre.mockReset();
+    mockFilter.mockReset();
     mockTextListItem.mockReset();
+    mockGeoLocationFilteredListItem.mockClear();
+    mockGeoLocationFilteredListItem.mockImplementation(({ listItem }) => listItem);
     useQuery.mockReset();
   });
 
@@ -193,6 +238,7 @@ describe('ParticipationProjectMapScreen', () => {
     );
 
     expect(screen.getByTestId('maplibre')).toBeTruthy();
+    expect(screen.getByTestId('map-radius-filter')).toHaveTextContent('Entfernung (km)');
     expect(mockMapLibre).toHaveBeenCalledWith(
       expect.objectContaining({
         locations: [
@@ -208,6 +254,7 @@ describe('ParticipationProjectMapScreen', () => {
           })
         ],
         initialBounds: [11.575, 52.075, 11.675, 52.175],
+        isMyLocationButtonVisible: true,
         onMapReady: expect.any(Function),
         selectedMarker: undefined
       })
@@ -313,9 +360,12 @@ describe('ParticipationProjectMapScreen', () => {
     const { getByTestId } = render(options.headerLeft());
 
     expect(options.title).toBe('Kartenansicht');
+    expect(screen.getByTestId('empty-message')).toBeTruthy();
+    expect(screen.getByTestId('empty-message-icon')).toBeTruthy();
+    expect(screen.getByText('Schade, es wurden keine passenden Einträge gefunden.')).toBeTruthy();
     expect(
-      screen.getByText('Keine aktiven Beteiligungsprojekte mit Standort verfuegbar.')
-    ).toBeTruthy();
+      StyleSheet.flatten(screen.getByTestId('participation-map-empty-state').props.style)
+    ).toEqual(expect.objectContaining({ paddingHorizontal: 16 }));
     expect(getByTestId('header-left')).toHaveTextContent('back');
 
     fireEvent.press(getByTestId('header-left'));
@@ -358,6 +408,79 @@ describe('ParticipationProjectMapScreen', () => {
     expect(mockMapLibre).toHaveBeenCalledWith(
       expect.objectContaining({
         locations: [expect.objectContaining({ id: 'completed-1' })]
+      })
+    );
+  });
+
+  it('applies the selected radius filter to participation project markers', () => {
+    const nearbyProject = buildItem({
+      id: 'nearby',
+      position: { latitude: 52.1, longitude: 11.6 },
+      status: 'active'
+    });
+    const distantProject = buildItem({
+      id: 'distant',
+      position: { latitude: 53.1, longitude: 12.6 },
+      status: 'active'
+    });
+
+    mockGeoLocationFilteredListItem.mockReturnValue([nearbyProject]);
+    useQuery.mockReturnValue({
+      data: { genericItems: [nearbyProject, distantProject] },
+      isLoading: false
+    });
+
+    const navigation = {
+      goBack: jest.fn(),
+      navigate: jest.fn(),
+      setOptions: jest.fn()
+    };
+
+    render(
+      <ParticipationProjectMapScreen
+        navigation={navigation as never}
+        route={
+          {
+            params: {
+              initialQueryVariables: {
+                genericType: 'ParticipationProject',
+                participationStatus: ['active']
+              },
+              queryVariables: {
+                participationStatus: ['active'],
+                radiusSearch: { currentPosition: true, distance: 1, index: 0 }
+              }
+            }
+          } as never
+        }
+      />
+    );
+
+    expect(mockGeoLocationFilteredListItem).toHaveBeenCalledWith(
+      expect.objectContaining({
+        currentPosition: mockCurrentPosition,
+        listItem: [nearbyProject, distantProject],
+        navigation,
+        queryVariables: {
+          radiusSearch: { currentPosition: true, distance: 1, index: 0 }
+        }
+      })
+    );
+    expect(mockFilter).toHaveBeenCalledWith(
+      expect.objectContaining({
+        initialQueryVariables: {
+          genericType: 'ParticipationProject',
+          participationStatus: ['active']
+        },
+        queryVariables: expect.objectContaining({
+          radiusSearch: { currentPosition: true, distance: 1, index: 0 }
+        })
+      })
+    );
+    expect(mockMapLibre).toHaveBeenCalledWith(
+      expect.objectContaining({
+        currentPosition: mockCurrentPosition,
+        locations: [expect.objectContaining({ id: 'nearby' })]
       })
     );
   });

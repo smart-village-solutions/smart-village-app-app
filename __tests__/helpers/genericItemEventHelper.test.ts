@@ -38,6 +38,13 @@ const item = (overrides: Record<string, unknown> = {}) => ({
 });
 
 describe('parseGenericItemEvents', () => {
+  it('excludes participation projects marked as invisible', () => {
+    expect(parseGenericItemEvents([item({ visible: false })], source, ['2030-05-03'])).toEqual([]);
+    expect(parseGenericItemEvents([item({ visible: true })], source, ['2030-05-03'])).toHaveLength(
+      1
+    );
+  });
+
   it('matches types from payload or any category and canonical statuses', () => {
     const result = parseGenericItemEvents([item()], source, ['2030-05-03']);
     expect(result).toHaveLength(1);

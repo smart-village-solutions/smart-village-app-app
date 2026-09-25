@@ -6,6 +6,7 @@ import { ShareContent, StyleSheet } from 'react-native';
 
 import { normalize } from '../config';
 import { VolunteerReportTarget } from '../types';
+import { ScreenName } from '../types';
 
 import { AccessibilityHeader } from './AccessibilityHeader';
 import { BookmarkHeader } from './bookmarks';
@@ -60,7 +61,7 @@ export const HeaderRight = ({
   withGroup = false,
   withInfo = false,
   withProfile = false,
-  withSearch = false,
+  withSearch = true,
   withShare = false
 }: Props) => (
   <WrapperRow style={styles.headerRight}>
@@ -72,7 +73,9 @@ export const HeaderRight = ({
     {withGroup && <GroupHeader navigation={navigation} style={styles.icon} />}
     {withInfo && <InfoHeader route={route} style={styles.icon} />}
     {withProfile && <LoginHeader style={styles.icon} />}
-    {withSearch && <SearchHeader navigation={navigation} style={styles.icon} />}
+    {withSearch && route.name !== ScreenName.Search && (
+      <SearchHeader navigation={navigation} style={styles.icon} />
+    )}
     {withShare && <ShareHeader shareContent={shareContent} style={styles.icon} />}
     {!!reportTarget && <ReportHeader target={reportTarget} style={styles.icon} />}
     {withAccessibility && <AccessibilityHeader style={styles.icon} />}

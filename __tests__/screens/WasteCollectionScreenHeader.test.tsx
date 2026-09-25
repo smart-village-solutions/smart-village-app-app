@@ -69,6 +69,8 @@ jest.mock('../../src/components/FeedbackFooter', () => ({
 
 jest.mock('../../src/hooks', () => ({
   useKeyboardHeight: jest.fn(() => 0),
+  useWasteStreetRehydration: jest.fn(),
+  useWasteStreetEditRequest: jest.fn(),
   useRenderSuggestions: jest.fn(() => mockRenderSuggestions),
   useTriggerExport: jest.fn(() => ({
     triggerExport: jest.fn()
@@ -133,9 +135,15 @@ jest.mock('../../src/config', () => {
 });
 
 import { SettingsContext } from '../../src/SettingsProvider';
-import { WasteCollectionScreen } from '../../src/screens/WasteCollectionScreen';
+import { createStyles, WasteCollectionScreen } from '../../src/screens/WasteCollectionScreen';
 
 describe('WasteCollectionScreen header', () => {
+  it('uses the active theme surface for the calendar day overlay', () => {
+    expect(createStyles({ surface: '#1E1E1E' }).overlay).toMatchObject({
+      backgroundColor: '#1E1E1E'
+    });
+  });
+
   it('renders settings before accessibility and keeps drawer at the far right', () => {
     const navigation = {
       goBack: jest.fn(),
@@ -176,8 +184,8 @@ describe('WasteCollectionScreen header', () => {
       headerTree = renderer.create(headerRightConfig.headerRight());
     });
 
-    const renderedOrder = headerTree!.root.findAll((node) =>
-      typeof node.type === 'string' && node.type.startsWith('mock-')
+    const renderedOrder = headerTree!.root.findAll(
+      (node) => typeof node.type === 'string' && node.type.startsWith('mock-')
     );
 
     expect(renderedOrder.map((node) => node.type)).toEqual([

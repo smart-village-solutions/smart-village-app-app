@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires, react/prop-types */
 import React from 'react';
-import { fireEvent, render } from '@testing-library/react-native';
+import { act, fireEvent, render } from '@testing-library/react-native';
+import { DeviceEventEmitter } from 'react-native';
 
 import { Overviews } from '../../src/components/screens/Overviews';
 import { ConfigurationsContext } from '../../src/ConfigurationsProvider';
@@ -10,6 +11,7 @@ import { SettingsContext } from '../../src/SettingsProvider';
 import { GenericType, ScreenName } from '../../src/types';
 
 const DETAIL_ROUTE_NAME = 'Detail';
+const mockFilterTypes = jest.fn();
 
 jest.mock('expo-location', () => ({
   PermissionStatus: {
@@ -73,6 +75,7 @@ jest.mock('../../src/helpers/updateResourceFiltersStateHelper', () => ({
 
 jest.mock('../../src/helpers', () => ({
   PARTICIPATION_PROJECT_DEFAULT_STATUSES: ['active'],
+  PARTICIPATION_PROJECT_FILTER_CHANGED_EVENT: 'participationProjectFilterChanged',
   PARTICIPATION_PROJECT_STATUS: {
     ACTIVE: 'active',
     ANNOUNCED: 'announced',
@@ -85,6 +88,17 @@ jest.mock('../../src/helpers', () => ({
   PARTICIPATION_PROJECT_STATUS_POSITION_PARAM: 'participationStatusPosition',
   filterTypesHelper: jest.fn(() => []),
   geoLocationFilteredListItem: jest.fn(({ listItem }) => listItem),
+  getParticipationProjectRadiusFilter: jest.fn(() => ({
+    currentPosition: {
+      label: 'Umkreis',
+      placeholder: 'Aktuelle Position nutzen'
+    },
+    data: [1, 5, 10],
+    label: 'Entfernung (km)',
+    name: 'radiusSearch',
+    placeholder: 'Entfernung wählen',
+    type: 'slider'
+  })),
   getParticipationProjectStatusCounts: jest.fn((items) => {
     const counts = items.reduce((result, item) => {
       const status = item.payload?.status?.trim().toLowerCase() || 'empty';
@@ -148,15 +162,19 @@ function mockLeafComponents() {
     Button: ({ onPress, title }) => <Text onPress={onPress}>{title}</Text>,
     CategoryList: () => <View />,
     EmptyMessage: ({ title }) => <Text>{title}</Text>,
-    Filter: ({ filterTypes, setQueryVariables }) =>
-      filterTypes?.length ? (
+    Filter: ({ filterTypes, setQueryVariables }) => {
+      mockFilterTypes(filterTypes);
+      const statusFilter = filterTypes?.find(({ name }) => name === 'participationStatus');
+      const radiusFilter = filterTypes?.find(({ name }) => name === 'radiusSearch');
+
+      return filterTypes?.length ? (
         <View>
-          <Text testID="participation-status-filter">
-            {filterTypes
-              ?.flatMap((filterType) => filterType.data || [])
-              .map((item) => item.value)
-              .join('|')}
-          </Text>
+          {!!statusFilter && (
+            <Text testID="participation-status-filter">
+              {statusFilter.data?.map((item) => item.value).join('|')}
+            </Text>
+          )}
+          {!!radiusFilter && <Text testID="participation-radius-filter">{radiusFilter.label}</Text>}
           <Text
             onPress={() =>
               setQueryVariables((previous) => ({
@@ -168,7 +186,8 @@ function mockLeafComponents() {
             Show completed
           </Text>
         </View>
-      ) : null,
+      ) : null;
+    },
     HeaderLeft: ({ onPress }) => <Text onPress={onPress}>Back</Text>,
     HtmlView: () => <View />,
     IndexFilterWrapperAndList: () => <View />,
@@ -271,6 +290,7 @@ const renderScreen = ({
   };
 
   const route = {
+    key: 'participation-index',
     params: {
       query: 'genericItems',
       queryVariables: {
@@ -327,6 +347,7 @@ const renderScreen = ({
 
 describe('ParticipationProjectIndexMapButton', () => {
   beforeEach(() => {
+    mockFilterTypes.mockReset();
     useQuery.mockReset();
   });
 
@@ -367,20 +388,74 @@ describe('ParticipationProjectIndexMapButton', () => {
           locations: [{ geoLocation: { latitude: 52.1, longitude: 11.6 } }],
           payload: { status: 'active' },
           title: 'Projekt A'
+        },
+        {
+          id: 'announced',
+          locations: [{ geoLocation: { latitude: 52.2, longitude: 11.7 } }],
+          payload: { status: 'announced' },
+          title: 'Projekt B'
         }
       ]
     });
 
+    expect(screen.getByTestId('participation-radius-filter')).toHaveTextContent('Entfernung (km)');
+    expect(mockFilterTypes).toHaveBeenLastCalledWith([
+      expect.objectContaining({ name: 'participationStatus' }),
+      expect.objectContaining({ name: 'radiusSearch' })
+    ]);
     fireEvent.press(screen.getByText('Kartenansicht'));
 
     expect(navigation.navigate).toHaveBeenCalledWith(ScreenName.ParticipationProjectMap, {
+      filterTypes: expect.arrayContaining([
+        expect.objectContaining({ name: 'radiusSearch', type: 'slider' })
+      ]),
+      initialQueryVariables: {
+        genericType: GenericType.ParticipationProject,
+        participationStatus: ['active']
+      },
       queryVariables: {
         genericType: GenericType.ParticipationProject,
         participationStatus: ['active']
       },
       rootRouteName: 'participation-projects',
+      sourceRouteKey: 'participation-index',
       title: 'Beteiligungsprojekte'
     });
+  });
+
+  it('keeps filters changed on the map when returning to the list', () => {
+    const { navigation, screen } = renderScreen({
+      genericItems: [
+        {
+          id: 'eligible',
+          locations: [{ geoLocation: { latitude: 52.1, longitude: 11.6 } }],
+          payload: { status: 'active' },
+          title: 'Projekt A'
+        }
+      ]
+    });
+
+    act(() => {
+      DeviceEventEmitter.emit('participationProjectFilterChanged', {
+        queryVariables: {
+          genericType: GenericType.ParticipationProject,
+          participationStatus: ['active'],
+          radiusSearch: { currentPosition: true, distance: 5, index: 1 }
+        },
+        sourceRouteKey: 'participation-index'
+      });
+    });
+
+    fireEvent.press(screen.getByText('Kartenansicht'));
+
+    expect(navigation.navigate).toHaveBeenCalledWith(
+      ScreenName.ParticipationProjectMap,
+      expect.objectContaining({
+        queryVariables: expect.objectContaining({
+          radiusSearch: { currentPosition: true, distance: 5, index: 1 }
+        })
+      })
+    );
   });
 
   it.each(['announced', 'completed'])(

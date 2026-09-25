@@ -355,7 +355,6 @@ export const defaultStackConfig = ({
       screenOptions: getScreenOptions({
         withDrawer: isDrawer,
         withFavorites: true,
-        withSearch: true,
         withProfile: false
       })
     },

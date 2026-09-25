@@ -87,6 +87,9 @@ export const parseGenericItemEvents = (
   const occurrences = records.flatMap((rawItem) => {
     if (!rawItem || typeof rawItem !== 'object') return [];
     const item = rawItem as GenericItem<Record<string, unknown>>;
+    if (item.genericType === GenericType.ParticipationProject && item.visible === false) {
+      return [];
+    }
     const payload = item.payload && typeof item.payload === 'object' ? item.payload : {};
     const types = [
       payload.type,

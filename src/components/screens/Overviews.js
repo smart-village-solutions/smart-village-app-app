@@ -12,7 +12,13 @@ import React, {
   useState
 } from 'react';
 import { useQuery } from 'react-apollo';
-import { ActivityIndicator, RefreshControl, StyleSheet, View } from 'react-native';
+import {
+  ActivityIndicator,
+  DeviceEventEmitter,
+  RefreshControl,
+  StyleSheet,
+  View
+} from 'react-native';
 import { Divider } from 'react-native-elements';
 
 import { consts, Icon, normalize, texts } from '../../config';
@@ -22,6 +28,7 @@ import {
   filterTypesHelper,
   geoLocationFilteredListItem,
   getParticipationProjectStatusCounts,
+  getParticipationProjectRadiusFilter,
   graphqlFetchPolicy,
   isOpen,
   isParticipationProjectMapEligible,
@@ -29,6 +36,7 @@ import {
   openLink,
   parseListItemsFromQuery,
   PARTICIPATION_PROJECT_DEFAULT_STATUSES,
+  PARTICIPATION_PROJECT_FILTER_CHANGED_EVENT,
   PARTICIPATION_PROJECT_STATUS_FILTER,
   PARTICIPATION_PROJECT_STATUS_POSITION_PARAM,
   sortPOIsByDistanceFromPosition
@@ -271,6 +279,21 @@ export const Overviews = ({ navigation, route }) => {
         participationInitialQueryVariables[PARTICIPATION_PROJECT_STATUS_FILTER]
     })
   }));
+
+  useEffect(() => {
+    if (!isParticipationProjectOverview) return;
+
+    const subscription = DeviceEventEmitter.addListener(
+      PARTICIPATION_PROJECT_FILTER_CHANGED_EVENT,
+      ({ queryVariables: updatedQueryVariables, sourceRouteKey }) => {
+        if (sourceRouteKey !== route.key) return;
+
+        setQueryVariables(updatedQueryVariables);
+      }
+    );
+
+    return () => subscription.remove();
+  }, [isParticipationProjectOverview, route.key]);
   const [refreshing, setRefreshing] = useState(false);
   const showMap = isMapSelected(query, filterType);
   const { excludeDataProviderIds, excludeMowasRegionalKeys } = usePermanentFilter();
@@ -482,10 +505,16 @@ export const Overviews = ({ navigation, route }) => {
       participationProjectStatusCounts,
       selectedParticipationProjectStatuses
     );
+    const participationRadiusFilter = getParticipationProjectRadiusFilter();
+    const participationFilterTypes = configuredFilterTypes.some(
+      ({ name }) => name === participationRadiusFilter.name
+    )
+      ? configuredFilterTypes
+      : [...configuredFilterTypes, participationRadiusFilter];
 
     return participationStatusFilter
-      ? [...configuredFilterTypes, participationStatusFilter]
-      : configuredFilterTypes;
+      ? [participationStatusFilter, ...participationFilterTypes]
+      : participationFilterTypes;
   }, [
     data,
     categories,
@@ -757,8 +786,11 @@ export const Overviews = ({ navigation, route }) => {
           navigationType={navigationType}
           onPress={() =>
             navigation.navigate(ScreenName.ParticipationProjectMap, {
+              filterTypes,
+              initialQueryVariables: participationInitialQueryVariables,
               queryVariables,
               rootRouteName: route.params?.rootRouteName,
+              sourceRouteKey: route.key,
               subtitleNumberOfLines: queryVariables?.subtitleNumberOfLines,
               title,
               titleNumberOfLines: queryVariables?.titleNumberOfLines

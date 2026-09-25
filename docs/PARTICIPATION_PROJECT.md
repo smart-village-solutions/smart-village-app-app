@@ -589,6 +589,15 @@ the other status options. The global search includes
 `generic_item` records and does not apply the list status filter, so terminal
 Participation Projects remain searchable.
 
+The list and map offer a distance filter with 1, 5, 10, 15, 20, 25, 50 and 100 km
+options. Filtering uses project location coordinates and the selected location settings;
+using the current position requires location permission. Filter changes on the map
+are synchronized back to the originating list. The map also offers a current-location
+control.
+
+The project portal button opens the linked page in the modal browser. Participation
+records with `visible: false` are excluded from derived event listings.
+
 After changing this module, run:
 
 ```bash
@@ -655,7 +664,7 @@ an all-project/category list to apply the new configuration.
 
 ## Known First-Version Limitations
 
-- Filter UI is intentionally not enabled for this module.
+- Status and distance filters are available in the project list and map.
 - Server-side resource filter configuration for `ParticipationProject` is not required.
 - Featured project rows are sorted by `featuredOrder` (default: `itemIndex`) before applying `featuredLimit`.
 - Both order settings sort on the client; `indexOrder` is forwarded as `participationOrder`, not GraphQL `genericItems(order: ...)`.
