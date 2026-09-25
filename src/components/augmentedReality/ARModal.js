@@ -53,6 +53,7 @@ export const ARModal = ({
     <Modal
       isListView={isListView}
       height={isListView && '85%'}
+      overlayStyle={styles.modalSurface}
       onModalVisible={() => {
         if (onModalVisible) {
           onModalVisible();
@@ -106,10 +107,14 @@ export const ARModal = ({
   );
 };
 
-const createStyles = () => ({
+const createStyles = (colors) => ({
   container: {
     marginBottom: normalize(20),
     width: '100%'
+  },
+
+  modalSurface: {
+    backgroundColor: colors.surface
   },
 
   iconAndByteText: {

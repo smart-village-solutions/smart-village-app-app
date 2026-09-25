@@ -270,7 +270,6 @@ export const AppIntroScreen = ({
   const styles = useThemeStyles(createStyles);
   const backgroundColor = backgroundColorProp || colors.surface;
   const { isReduceMotionEnabled } = useContext(AccessibilityContext);
-  const [showDoneButtonTermsAndConditions, setShowDoneButtonTermsAndConditions] = useState(true);
   const [hasAcceptedTerms, setHasAcceptedTerms] = useState(false);
   const [activeSlideIndex, setActiveSlideIndex] = useState(0);
   const sliderRef = useRef<AppIntroSlider>(null);
@@ -299,7 +298,6 @@ export const AppIntroScreen = ({
       hasAcceptedTerms,
       item,
       onTermsAcceptanceChange: (value) => {
-        setShowDoneButtonTermsAndConditions(value);
         setHasAcceptedTerms(value);
       },
       reduceMotion: isReduceMotionEnabled,
@@ -312,7 +310,6 @@ export const AppIntroScreen = ({
       const accepted = termsAndConditionsAccepted === 'accepted';
 
       setHasAcceptedTerms(accepted);
-      setShowDoneButtonTermsAndConditions(accepted);
     };
 
     hydrateTermsStatus();
@@ -328,8 +325,6 @@ export const AppIntroScreen = ({
     if (slides?.find((slide) => slide.onLeaveSlideName === Initializer.TermsAndConditions)) {
       addToStore(HAS_TERMS_AND_CONDITIONS_STORE_KEY, true);
     }
-
-    onlyTermsAndConditions && setShowDoneButtonTermsAndConditions(false);
   }, [error, loading, slides?.length]);
 
   if (error || loading || !slides?.length) {
@@ -367,7 +362,8 @@ export const AppIntroScreen = ({
   };
 
   const handleDone = () => {
-    if (isPrimaryActionDisabled) {
+    if (termsSlideIndex !== -1 && !hasAcceptedTerms) {
+      goToIntroSlide(sliderRef, termsSlideIndex, true, isReduceMotionEnabled);
       termsAndConditionsAlert();
       return;
     }
@@ -420,7 +416,7 @@ export const AppIntroScreen = ({
           />
         )}
         scrollEnabled={false}
-        showDoneButton={showDoneButtonTermsAndConditions && isLastSlide}
+        showDoneButton={isLastSlide}
         showNextButton={!isLastSlide}
         showSkipButton={!isLastSlide}
         style={device.platform === 'android' && { paddingTop: getStatusBarHeight() }}

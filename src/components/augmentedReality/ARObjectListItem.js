@@ -76,7 +76,8 @@ export const ARObjectListItem = ({ data, index, item, navigation, setData, showO
 
 const createStyles = (colors) => ({
   container: {
-    backgroundColor: colors.transparent,
+    backgroundColor: colors.surfaceElevated,
+    borderBottomColor: colors.border,
     paddingRight: normalize(18),
     paddingVertical: normalize(12)
   }

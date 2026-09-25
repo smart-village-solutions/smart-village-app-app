@@ -1,21 +1,19 @@
 import * as Location from 'expo-location';
-import React, { useCallback, useEffect, useState } from 'react';
-import { StyleSheet } from 'react-native';
+import React, { useCallback, useState } from 'react';
+import { Platform, StyleSheet } from 'react-native';
 import Collapsible from 'react-native-collapsible';
 
 import { device, normalize, texts } from '../../config';
-import {
-  useLastKnownPosition,
-  useLocationSettings,
-  usePosition,
-  useSystemPermission
-} from '../../hooks';
+import { useLocationSettings } from '../../hooks';
 import { Button } from '../Button';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { MapLibre } from '../map';
 import { RegularText } from '../Text';
 import { Touchable } from '../Touchable';
 import { WrapperHorizontal, WrapperVertical } from '../Wrapper';
+
+const CURRENT_POSITION_TIMEOUT = 15000;
+const LAST_KNOWN_POSITION_TIMEOUT = 3000;
 
 export const DefectReportLocationForm = ({
   setIsLocationSelect,
@@ -32,39 +30,77 @@ export const DefectReportLocationForm = ({
   setShowMap: (showMap: boolean) => void;
   withoutLocation?: boolean;
 }) => {
-  const { locationSettings } = useLocationSettings();
-  const systemPermission = useSystemPermission();
+  const { locationSettings, setAndSyncLocationSettings } = useLocationSettings();
 
   const { alternativePosition, defaultAlternativePosition } = locationSettings || {};
 
-  const [shouldGetPosition, setShouldGetPosition] = useState(false);
-  const { loading: loadingPosition, position } = usePosition(!shouldGetPosition);
-  const { loading: loadingLastKnownPosition, position: lastKnownPosition } =
-    useLastKnownPosition(shouldGetPosition);
+  const [loadingPosition, setLoadingPosition] = useState(false);
+  const [locationError, setLocationError] = useState(false);
 
   const onPressPosition = useCallback(async () => {
-    setShouldGetPosition(true);
-  }, []);
+    setLoadingPosition(true);
+    setLocationError(false);
 
-  useEffect(() => {
-    if (
-      shouldGetPosition &&
-      !loadingPosition &&
-      !loadingLastKnownPosition &&
-      (position || lastKnownPosition)
-    ) {
+    try {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      await setAndSyncLocationSettings({
+        locationService: status === Location.PermissionStatus.GRANTED
+      });
+
+      if (status !== Location.PermissionStatus.GRANTED) {
+        setLocationError(true);
+        return;
+      }
+
+      let position: Location.LocationObject | null | undefined;
+      try {
+        position = await withTimeout(
+          Location.getCurrentPositionAsync({
+            accuracy: Platform.select({
+              ios: Location.Accuracy.Balanced,
+              default: undefined
+            })
+          }),
+          CURRENT_POSITION_TIMEOUT
+        );
+      } catch (error) {
+        console.warn(error);
+      }
+
+      position =
+        position ??
+        (await withTimeout(
+          Location.getLastKnownPositionAsync({ maxAge: 60000 }),
+          LAST_KNOWN_POSITION_TIMEOUT
+        ));
+
+      if (!position) {
+        setLocationError(true);
+        return;
+      }
+
+      setSelectedPosition(position.coords);
       setIsLocationSelect(false);
-      setSelectedPosition((position || lastKnownPosition)?.coords);
+    } catch (error) {
+      console.warn(error);
+      setLocationError(true);
+    } finally {
+      setLoadingPosition(false);
     }
-  }, [lastKnownPosition, loadingPosition, loadingLastKnownPosition, position, shouldGetPosition]);
+  }, [setAndSyncLocationSettings, setIsLocationSelect, setSelectedPosition]);
 
-  if (!systemPermission || loadingPosition || loadingLastKnownPosition || shouldGetPosition) {
+  if (loadingPosition) {
     return <LoadingSpinner loading />;
   }
 
   return (
     <WrapperHorizontal>
-      {systemPermission.status !== Location.PermissionStatus.DENIED && !showMap && (
+      {locationError && (
+        <RegularText error center>
+          {texts.defectReport.locationUnavailable}
+        </RegularText>
+      )}
+      {!showMap && (
         <WrapperVertical noPaddingBottom>
           <Button onPress={onPressPosition} title={texts.defectReport.usePosition} />
         </WrapperVertical>
@@ -137,6 +173,24 @@ export const DefectReportLocationForm = ({
       )}
     </WrapperHorizontal>
   );
+};
+
+const withTimeout = async <T,>(
+  promise: Promise<T>,
+  milliseconds: number
+): Promise<T | undefined> => {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+
+  try {
+    return await Promise.race([
+      promise,
+      new Promise<undefined>((resolve) => {
+        timer = setTimeout(resolve, milliseconds);
+      })
+    ]);
+  } finally {
+    if (timer) clearTimeout(timer);
+  }
 };
 
 const styles = StyleSheet.create({

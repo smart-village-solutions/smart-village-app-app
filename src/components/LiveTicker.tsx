@@ -3,7 +3,9 @@ import React from 'react';
 import { StyleSheet, ViewStyle } from 'react-native';
 
 import { device } from '../config';
+import { resolveThemeOverrides } from '../helpers/appDesignSystemHelper';
 import { useHomeRefresh, useStaticContent } from '../hooks';
+import { useTheme } from '../hooks/useTheme';
 
 import { HtmlView } from './HtmlView';
 
@@ -12,6 +14,7 @@ type Props = {
 };
 
 type DataItem = {
+  dark?: Partial<DataItem>;
   liveTickerSettings: {
     direction?: 'horizontal' | 'vertical';
     reverse?: boolean;
@@ -23,6 +26,7 @@ type DataItem = {
 };
 
 export const LiveTicker = ({ publicJsonFile }: Props) => {
+  const { mode } = useTheme();
   const { data, refetch } = useStaticContent<DataItem>({
     refreshTimeKey: `publicJsonFile-${publicJsonFile}`,
     name: publicJsonFile,
@@ -31,12 +35,14 @@ export const LiveTicker = ({ publicJsonFile }: Props) => {
 
   useHomeRefresh(refetch);
 
-  if (!data?.text?.length) return null;
+  const themedData = resolveThemeOverrides(data, mode);
+
+  if (!themedData?.text?.length) return null;
 
   const {
     liveTickerSettings: { direction = '', reverse = false, spacing = 20, speed = 1, style },
     text
-  } = data;
+  } = themedData;
 
   return (
     <Marquee

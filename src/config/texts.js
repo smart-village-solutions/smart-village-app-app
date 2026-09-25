@@ -428,6 +428,8 @@ export const texts = {
   defectReport: {
     usePosition: 'Meine aktuelle Position verwenden',
     useMap: 'Auf der Karte auswählen',
+    locationUnavailable:
+      'Standort konnte nicht ermittelt werden. Bitte erneut versuchen oder auf der Karte auswählen.',
     continueWithoutLocation: 'Ohne Standortangabe fortfahren',
     abort: 'Abbrechen',
     alerts: {

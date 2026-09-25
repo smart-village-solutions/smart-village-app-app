@@ -1,6 +1,6 @@
 /* eslint-disable complexity */
 import { createBottomTabNavigator } from 'expo-router/js-tabs';
-import React, { useContext, useMemo } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 
 import { LoadingSpinner } from '../components';
 import { consts } from '../config';
@@ -11,7 +11,7 @@ import {
 import { resolveTabBarColors } from '../helpers/tabNavigationHelper';
 import { useStaticContent, useTheme } from '../hooks';
 import { OrientationContext } from '../OrientationProvider';
-import { CustomTab, TabConfig, TabNavigationStaticContent } from '../types';
+import { CustomTab, TabConfig, TabNavigationStaticContent, TabNavigatorConfig } from '../types';
 
 import { createStackNavigatorResolver } from './AppStackNavigator';
 import { renderThemeAwareBottomTabBar } from './ThemeAwareBottomTabBar';
@@ -26,15 +26,14 @@ const isTabConfig = (
 export const useTabRoutes = () => {
   const { colors, mode } = useTheme();
   const defaultTabRoutes = useMemo(() => createDefaultTabNavigatorConfig(colors), [colors]);
+  const [lastTabRoutes, setLastTabRoutes] = useState<TabNavigatorConfig>();
   const { data: tabRoutesData, loading } = useStaticContent<TabNavigationStaticContent>({
     name: 'tabNavigation',
     refreshInterval: REFRESH_INTERVALS.ONCE_PER_MINUTE,
     type: 'json'
   });
 
-  const tabRoutes = useMemo(() => {
-    if (loading) return;
-
+  const freshTabRoutes = useMemo(() => {
     const { tabConfigs } = tabRoutesData || defaultTabRoutes;
     const tabBarColors = resolveTabBarColors(defaultTabRoutes, tabRoutesData, mode);
     const defaultIconFillOnFocus = tabRoutesData?.tabBarIconFillOnFocus ?? false;
@@ -73,7 +72,15 @@ export const useTabRoutes = () => {
       ...tabBarColors,
       tabConfigs: dynamicTabs.filter(isTabConfig)
     };
-  }, [colors, defaultTabRoutes, loading, mode, tabRoutesData]);
+  }, [colors, defaultTabRoutes, mode, tabRoutesData]);
+
+  useEffect(() => {
+    // Keep the navigator mounted when a background tab configuration request starts.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (!loading) setLastTabRoutes(freshTabRoutes);
+  }, [freshTabRoutes, loading]);
+
+  const tabRoutes = loading ? lastTabRoutes : freshTabRoutes;
 
   return { defaultTabRoutes, loading, tabRoutes };
 };
@@ -82,13 +89,13 @@ const Tab = createBottomTabNavigator();
 
 export const MainTabNavigator = () => {
   const resolveStackNavigator = useMemo(() => createStackNavigatorResolver(), []);
-  const { defaultTabRoutes, loading, tabRoutes } = useTabRoutes();
+  const { defaultTabRoutes, tabRoutes } = useTabRoutes();
   const { orientation } = useContext(OrientationContext);
   const isPortrait = orientation === 'portrait';
 
   const tabConfigs = tabRoutes?.tabConfigs;
 
-  if (!tabConfigs || loading) return <LoadingSpinner loading />;
+  if (!tabConfigs) return <LoadingSpinner loading />;
 
   const { inactiveBackgroundColor: backgroundColor } = tabRoutes || defaultTabRoutes;
 

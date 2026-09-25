@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
-import { FlatList, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { FlatList, ScrollView, TouchableOpacity, View } from 'react-native';
 
 import { BoldText, RegularText } from '../../components';
-import { colors, Icon, normalize } from '../../config';
+import { Icon, normalize } from '../../config';
 import { iconMappings } from '../../config/icons/mappings';
+import { useTheme } from '../../hooks/useTheme';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
 import { IconLibrary } from '../../IconProvider';
+import type { ThemeColorPalette } from '../../types/Theme';
 
 type TIconItem = {
   iconName: string;
@@ -12,17 +15,21 @@ type TIconItem = {
   library: IconLibrary;
 };
 
-const IconItem = ({ iconName, mappedName, library }: TIconItem) => (
-  <View style={styles.iconContainer}>
-    <Icon.NamedIcon name={mappedName} iconSet={library} size={normalize(32)} />
-    <RegularText smallest style={styles.iconNameText}>
-      {iconName}
-    </RegularText>
-    <RegularText smallest style={styles.mappedNameText}>
-      → {mappedName}
-    </RegularText>
-  </View>
-);
+const IconItem = ({ iconName, mappedName, library }: TIconItem) => {
+  const styles = useThemeStyles(createStyles);
+
+  return (
+    <View style={styles.iconContainer}>
+      <Icon.NamedIcon name={mappedName} iconSet={library} size={normalize(32)} />
+      <RegularText smallest style={styles.iconNameText}>
+        {iconName}
+      </RegularText>
+      <RegularText smallest style={styles.mappedNameText}>
+        → {mappedName}
+      </RegularText>
+    </View>
+  );
+};
 
 type TIconSection = {
   library: IconLibrary;
@@ -31,6 +38,8 @@ type TIconSection = {
 };
 
 const IconSection = ({ library, isExpanded, onToggle }: TIconSection) => {
+  const { colors } = useTheme();
+  const styles = useThemeStyles(createStyles);
   const mapping = iconMappings[library];
   const iconCount = Object.keys(mapping).length;
 
@@ -54,7 +63,7 @@ const IconSection = ({ library, isExpanded, onToggle }: TIconSection) => {
         <Icon.NamedIcon
           name={isExpanded ? 'chevron-up' : 'chevron-down'}
           size={normalize(20)}
-          color={colors.lightestText}
+          color={colors.onPrimary}
         />
       </TouchableOpacity>
       {isExpanded && (
@@ -77,6 +86,7 @@ const IconSection = ({ library, isExpanded, onToggle }: TIconSection) => {
 };
 
 export const DocIconsScreen = () => {
+  const styles = useThemeStyles(createStyles);
   const [expandedSections, setExpandedSections] = useState<Set<IconLibrary>>(new Set(['tabler']));
 
   const toggleSection = (library: IconLibrary) => {
@@ -112,7 +122,7 @@ export const DocIconsScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColorPalette) => ({
   container: {
     backgroundColor: colors.surface,
     flex: 1
@@ -123,7 +133,7 @@ const styles = StyleSheet.create({
   sectionHeader: {
     alignItems: 'center',
     backgroundColor: colors.primary,
-    borderBottomColor: colors.gray20,
+    borderBottomColor: colors.border,
     borderBottomWidth: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',

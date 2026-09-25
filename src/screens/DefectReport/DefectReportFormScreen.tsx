@@ -2,7 +2,7 @@ import { StackNavigationProp } from 'expo-router/js-stack';
 import * as Location from 'expo-location';
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { useQuery } from 'react-apollo';
-import { ActivityIndicator, Keyboard, RefreshControl } from 'react-native';
+import { Keyboard, RefreshControl } from 'react-native';
 import { KeyboardAwareScrollView, KeyboardProvider } from 'react-native-keyboard-controller';
 import type { KeyboardAwareScrollViewRef } from 'react-native-keyboard-controller';
 
@@ -10,7 +10,6 @@ import {
   DefectReportCreateForm,
   DefectReportLocationForm,
   HtmlView,
-  LoadingContainer,
   ReadAloudContent,
   SafeAreaViewFlex,
   Wrapper
@@ -73,21 +72,13 @@ export const DefectReportFormScreen = ({
   const categoryId = globalSettings?.settings?.defectReports?.categoryId;
   const withoutLocation = globalSettings?.settings?.defectReports?.withoutLocation === true;
 
-  const {
-    data: html,
-    loading: loadingHtml,
-    refetch: refetchHtml
-  } = useStaticContent<string>({
+  const { data: html, refetch: refetchHtml } = useStaticContent<string>({
     name: name,
     type: 'html',
     skip: !name
   });
 
-  const {
-    data: dataCategories,
-    loading: loadingCategories,
-    refetch: refetchCategories
-  } = useQuery(GET_CATEGORIES, {
+  const { data: dataCategories, refetch: refetchCategories } = useQuery(GET_CATEGORIES, {
     variables: { ids: [categoryId] },
     fetchPolicy: graphqlFetchPolicy({ isConnected, isMainserverUp }),
     skip: !categoryId
@@ -101,14 +92,6 @@ export const DefectReportFormScreen = ({
     }
     setRefreshing(false);
   }, [isConnected, refetchCategories, refetchHtml]);
-
-  if (loadingHtml || loadingCategories) {
-    return (
-      <LoadingContainer>
-        <ActivityIndicator color={colors.refreshControl} />
-      </LoadingContainer>
-    );
-  }
 
   const Component = isLocationSelect ? DefectReportLocationForm : DefectReportCreateForm;
 

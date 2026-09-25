@@ -88,6 +88,18 @@ describe('DefectReportFormScreen', () => {
     });
   });
 
+  it('shows the location choices while the optional intro HTML is loading', async () => {
+    mockUseStaticContent.mockReturnValue({ loading: true });
+    mockUseQuery.mockReturnValue({ loading: false });
+    let component;
+
+    await act(async () => {
+      component = renderer.create(<DefectReportFormScreen navigation={navigation} route={route} />);
+    });
+
+    expect(component.root.findByProps({ testID: 'location-form-false' })).toBeTruthy();
+  });
+
   it('scrolls the category search below the header while the keyboard is focused', async () => {
     mockUseStaticContent.mockReturnValue({ loading: false });
     mockUseQuery.mockReturnValue({ loading: false });
@@ -112,7 +124,7 @@ describe('DefectReportFormScreen', () => {
     expect(component.root.findByProps({ testID: 'aware-scroll' }).props.bottomOffset).toBe(120);
   });
 
-  it('preserves the open map and selected pin when loading temporarily remounts the location form', async () => {
+  it('keeps the location form mounted while categories are loading', async () => {
     mockUseStaticContent.mockReturnValue({ loading: false });
     mockUseQuery.mockReturnValue({ loading: false });
     let component;
@@ -132,7 +144,10 @@ describe('DefectReportFormScreen', () => {
     await act(async () => {
       component.update(screen());
     });
-    expect(component.root.findAllByProps({ testID: 'map' })).toHaveLength(0);
+    expect(component.root.findByProps({ testID: 'map' }).props.selectedPosition).toEqual({
+      latitude: 54.78,
+      longitude: 9.43
+    });
 
     mockUseQuery.mockReturnValue({ loading: false });
     await act(async () => {
@@ -142,6 +157,21 @@ describe('DefectReportFormScreen', () => {
       latitude: 54.78,
       longitude: 9.43
     });
+  });
+
+  it('shows the create form after a position is selected even if categories are still loading', async () => {
+    mockUseStaticContent.mockReturnValue({ loading: false });
+    mockUseQuery.mockReturnValue({ loading: true });
+    let component;
+
+    await act(async () => {
+      component = renderer.create(<DefectReportFormScreen navigation={navigation} route={route} />);
+    });
+    await act(async () => {
+      component.root.findByProps({ title: 'Continue' }).props.onPress();
+    });
+
+    expect(component.root.findByProps({ testID: 'category-search' })).toBeTruthy();
   });
 
   it.each([
