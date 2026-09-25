@@ -155,25 +155,6 @@ export const DropdownInput = ({
 
   const [dropdownData, setDropdownData] = useState(buildDropdownData(value, data));
 
-  const getSelectedMultipleValues = useCallback(
-    () =>
-      dropdownData
-        ?.filter((entry) => entry.selected && !entry.isPlaceholder)
-        .map((entry) => getEntryValue(entry))
-        .filter((entry): entry is string | number => entry !== undefined) ?? [],
-    [dropdownData, getEntryValue]
-  );
-
-  const getSelectedValue = useCallback(() => {
-    const selectedData = dropdownData?.find((entry) => entry.selected);
-
-    if (!selectedData || selectedData.isPlaceholder) {
-      return '';
-    }
-
-    return getEntryValue(selectedData) ?? '';
-  }, [dropdownData, getEntryValue]);
-
   useEffect(() => {
     const nextDropdownData = buildDropdownData(value, data);
     setDropdownData((currentDropdownData) =>
@@ -183,9 +164,51 @@ export const DropdownInput = ({
     );
   }, [areDropdownEntriesEqual, buildDropdownData, data, value]);
 
+  const handleDropdownDataChange = useCallback(
+    (nextDropdownData: DropdownEntry[]) => {
+      setDropdownData(nextDropdownData);
+
+      if (!inlineSearch) {
+        return;
+      }
+
+      if (multipleSelect) {
+        const selectedMultipleValues = nextDropdownData
+          .filter((entry) => entry.selected && !entry.isPlaceholder)
+          .map((entry) => getEntryValue(entry))
+          .filter((entry): entry is string | number => entry !== undefined);
+
+        if (Array.isArray(value) && areValuesEqual(value, selectedMultipleValues)) {
+          return;
+        }
+
+        onChangeRef.current(selectedMultipleValues);
+      } else {
+        const selectedData = nextDropdownData.find((entry) => entry.selected);
+        const selectedValue =
+          selectedData && !selectedData.isPlaceholder ? getEntryValue(selectedData) ?? '' : '';
+
+        if (!Array.isArray(value) && areValuesEqual(value, selectedValue)) {
+          return;
+        }
+
+        onChangeRef.current(selectedValue);
+      }
+    },
+    [areValuesEqual, getEntryValue, inlineSearch, multipleSelect, value]
+  );
+
   useEffect(() => {
+    // Inline search writes to the form when an option is pressed; syncing it here loops on blur.
+    if (inlineSearch) {
+      return;
+    }
+
     if (multipleSelect) {
-      const selectedMultipleValues = getSelectedMultipleValues();
+      const selectedMultipleValues = dropdownData
+        .filter((entry) => entry.selected && !entry.isPlaceholder)
+        .map((entry) => getEntryValue(entry))
+        .filter((entry): entry is string | number => entry !== undefined);
 
       if (Array.isArray(value) && areValuesEqual(value, selectedMultipleValues)) {
         return;
@@ -193,22 +216,24 @@ export const DropdownInput = ({
 
       onChangeRef.current(selectedMultipleValues);
     } else {
-      const selectedValue = getSelectedValue();
+      const selectedData = dropdownData.find((entry) => entry.selected);
+      const selectedValue =
+        selectedData && !selectedData.isPlaceholder ? getEntryValue(selectedData) ?? '' : '';
 
-      if (!Array.isArray(value) && areValuesEqual(value, selectedValue ?? '')) {
+      if (!Array.isArray(value) && areValuesEqual(value, selectedValue)) {
         return;
       }
 
-      onChangeRef.current(selectedValue ?? '');
+      onChangeRef.current(selectedValue);
     }
-  }, [areValuesEqual, getSelectedMultipleValues, getSelectedValue, multipleSelect, value]);
+  }, [areValuesEqual, dropdownData, getEntryValue, inlineSearch, multipleSelect, value]);
 
   return (
     <>
       <DropdownSelect
         data={dropdownData}
         multipleSelect={multipleSelect}
-        setData={setDropdownData}
+        setData={handleDropdownDataChange}
         boldLabel={boldLabel}
         label={label}
         labelWrapperStyle={styles.labelWrapper}
