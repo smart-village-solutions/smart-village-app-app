@@ -14,9 +14,9 @@ Reference points used while preparing this guide:
 
 - Mobile starting tag: `v4.3.0` / `c14bbad7e708a34f3c931e87d7d26f98e288f37b`
   (4 May 2026)
-- Reviewed `master` snapshot: `4242583f4c8200b912338a3b12a5de3b16845b0e`
-  (28 August 2026)
-- Reviewed range: 509 commits and changes in 943 files
+- Reviewed `master` snapshot: `894a0f8582986670e9b2cda6718a116cd283c092`
+  (25 September 2026)
+- Reviewed range: 563 commits and changes in 1,012 files
 - Main-Server comparison baseline: `5b4ba192705c3e1c8cb269bdaf301ea1fc5c43f0`
   (4 May 2026)
 - Reviewed remote Main-Server `saas` head: `d3c803683d6b041421df656644c610ede61878c5`
@@ -65,9 +65,9 @@ The most important outcomes of the migration are:
    SUE internal-status presentation, feedback diagnostics, and flexible waste reminders are
    configuration-driven. Grayscale now covers the application root through an Android descendant
    filter and a local iOS compositor, so the iOS implementation requires a freshly built binary.
-7. Map start zoom, image-carousel pagination, and recurring POI opening-time grouping are new
-   presentation controls. They are opt-in or retain existing fallbacks, but their StaticContent
-   scope and limited screen coverage must be understood before enabling them tenant-wide.
+7. Map start zoom and image-carousel pagination are new presentation controls. Recurring POI
+   opening-time grouping is now enabled unless explicitly set to `false`. Their StaticContent scope
+   and limited screen coverage must be understood before rollout.
 8. Generic Item records can now become calendar events, and icon libraries can be selected globally
    or per configured tab/service tile. Both features depend on validated tenant configuration;
    Generic Item events additionally depend on complete, bounded datasets with usable dates.
@@ -79,6 +79,10 @@ The most important outcomes of the migration are:
 11. The highest merge-conflict risk is in `app.json`, `eas.json`, their template files,
     `package.json`, `yarn.lock`, the legacy `src/config/colors.js`, and tenant-specific navigation or
     static content.
+12. The newer master also supports remote tab and widget SVG/image assets, dark Disturber content,
+    Participation Project sorting and distance filtering, volunteer events in the shared event
+    views, and optional Volunteer content reporting. These need tenant content and external-service
+    checks even though they do not require another Main-Server schema migration.
 
 ## 3. Platform and dependency changes
 
@@ -184,6 +188,12 @@ Record the following for every tenant/release branch:
   policy;
 - Generic Item event sources and their expected type/status/date payloads;
 - the global icon-family priority and any per-tab or per-service-tile `iconSet` overrides;
+- dynamic tab `svg`/`icon` assets and focused/dark variants, widget `additionalProps.svg`, and
+  Disturber `dark` overrides;
+- Participation Project `featuredOrder`/`indexOrder`, project coordinates, and location-permission
+  behavior for distance filtering;
+- the `hdvt.events` and `hdvt.reporting` flags, Volunteer API version/capabilities, and any
+  Volunteer calendar data already shown in home, list, calendar, or widgets;
 - profile OAuth client registration, redirect URI, scopes, endpoint base URL, and staged test
   accounts;
 - `profileService`, `profileCreateContentServiceTop`, and
@@ -302,6 +312,11 @@ See [Legacy app color migration](./theme-color-migration.md),
   content.
 - Dynamic tabs and service tiles may set `iconSet` to force one supported icon family. Preserve
   tenant icon names and overrides together; an unresolved name renders a question-mark fallback.
+- Dynamic `tabNavigation` entries may also use `svg`/`activeSvg` or `icon`/`activeIcon`, with
+  optional `themeImages.light/dark` raster variants. Verify those assets and their focus states;
+  see [Tab Navigation Icons](./TAB_NAVIGATION_ICONS.md).
+- Shared regular headers now show global search by default, except on the Search screen. Review
+  tenant-specific header overrides for duplicate search actions and available space.
 - `getScreenOptions` can expose profile login/logout through `withProfile`, but the reviewed default
   stack does not currently enable it. Enabling the header action therefore requires an explicit
   navigation-code decision in addition to `settings.profile`.
@@ -557,6 +572,17 @@ Tab bar colors do not come from the `globalSettings` palette. They are resolved 
 `appDesignSystem` sections may add recursive `dark` overrides alongside shared/light values.
 Carousel button styles use the same `dark` override contract.
 
+Disturber JSON entries now also accept `dark` overrides, including a nested
+`pictures[].picture.dark.uri`. Existing entries keep their original colors and images in dark
+mode; prepare explicit variants where contrast or branding requires them. A dark array replaces
+the base array rather than merging its members. See
+[Disturber theme configuration](./disturber-theming.md).
+
+Remote images now use their supplied alternative text in more surfaces. Audit carousel
+`picture.accessibilityLabel` values and HTML `img alt` attributes: describe linked or informative
+images, and use an empty label only for decorative, non-interactive images. An entirely decorative
+carousel is hidden from screen readers. Reduced motion also removes carousel transition duration.
+
 ### 5.4. Participation Projects
 
 Adding a navigation entry alone is not sufficient. Prepare the following on Main-Server:
@@ -587,6 +613,20 @@ I18n support.
 share action labels. Keep it populated and localized; the first category and the route title are
 only fallbacks. The default status selection includes `active`, and the map shows projects that
 match any selected status and have valid coordinates.
+
+The `participationProjectHome` JSON may now set independent `featuredOrder` and `indexOrder` values.
+Both default to ascending `itemIndex`; use a bare field or `_ASC`/`_DESC` suffix. Top-level
+`publicationDate`, `createdAt`, and `updatedAt` can be sorted by timestamp, while other names read
+payload fields. Missing values remain last in either direction. Sorting runs on the client and
+requires the complete matching project dataset before the featured limit or list ordering is
+applied. Preserve existing category and status filters when adding it; see
+[Participation Project remote sorting](./PARTICIPATION_PROJECT.md#remote-sorting).
+
+Project list and map views now share a radius filter using the device's position, with distances
+of 1, 5, 10, 15, 20, 25, 50, or 100 km. The project map also exposes a current-location control.
+Provide valid `locations.geoLocation` or `addresses.geoLocation`, test granted and denied location
+permission, and verify that status and radius selections survive switching between list and map.
+Portal links open in the modal browser.
 
 ### 5.5. Configurable cache expiration
 
@@ -831,6 +871,12 @@ camera or save permissions only for the action that needs them. Test camera capt
 to gallery, existing-image selection, EXIF coordinates, draft restoration, reverse geocoding, and
 the no-permission path on supported Android versions.
 
+The latest image picker converts selected HEIC/HEIF images to JPEG on iOS and Android before upload.
+Main-Server media uploads now send Expo `File.bytes()` as the multipart attachment and require an
+HTTP 201 JSON response with `service_url`; image filenames and MIME types follow the resulting
+file. Consul image uploads use the same MIME detection. Test a converted HEIC image, ordinary JPEG,
+and failed conversion across SUE, Volunteer, profile content, and Consul flows used by the tenant.
+
 ### 5.9. Push notification navigation contract
 
 Push interaction handling moved from the Home screen to the stable app root. It now queues
@@ -855,13 +901,18 @@ contain a non-empty `id` and a recognized query type. Local waste notifications 
 
 Before rollout, test real provider payloads rather than only console notifications. Include Android
 terminated-app launches, taps while the app is backgrounded, repeated delivery of the same response,
-drawer and tab navigation roots, and every supported detail query type. Unsupported or incomplete
-payloads are intentionally ignored and logged as warnings.
+drawer and tab navigation roots, and every supported detail query type. Volunteer calendar,
+conversation, group, and user detail query types now route through `VolunteerDetail`; supported
+Volunteer collection and home query types route to their corresponding Volunteer screens. Use a
+real detail ID for detail payloads. Unsupported or incomplete payloads are intentionally ignored
+and logged as warnings.
 
 ### 5.10. Feedback content and granular diagnostics
 
 The feedback form loads optional HTML StaticContent at the bottom. Its default name is
-`feedbackContent`; override it with `settings.feedback.htmlContentName`.
+`feedbackContent`; override it globally with `settings.feedback.htmlContentName` or for one
+navigation entry with the `Feedback` route parameter `htmlContentName`. The route parameter takes
+precedence over the global setting. Verify that the named HTML record exists for each entry point.
 
 Diagnostic collection is opt-in per submission and can be enabled granularly:
 
@@ -888,21 +939,27 @@ any category.
 | News date format               | `settings.news.listDateFormat`, `detailDateFormat`                | No schema change; must match incoming timestamps                                |
 | Defect report without location | `settings.defectReports.withoutLocation`                          | When `true`, the mutation omits empty `addresses`; backend must accept it       |
 | Defect category order          | GraphQL `Category.position`                                       | Field already exists; populate it in CMS/import data                            |
-| Feedback diagnostics           | `settings.feedback.htmlContentName` and granular `include*` flags | Add optional HTML StaticContent; review opt-in, retention, and email processing |
+| Feedback content and diagnostics | `settings.feedback.htmlContentName`, route `htmlContentName`, granular `include*` flags | Prepare the selected HTML record; review opt-in, retention, and email processing |
 | WebView                        | `settings.webView.isIncognito`, `mobileUserAgent.ios/android`     | No Main-Server schema change                                                    |
 | Bot-controlled WebView         | Route parameter `hasBotControl`                                   | Update static navigation/widget parameters                                      |
 | POI/Tour direction             | `settings.showDistanceDirection.poi/tour`                         | Requires coordinates; no schema change                                          |
+| Coordinate-only POI route      | POI `locations.geoLocation` or `addresses.geoLocation`            | Route planning works without a postal address when coordinates are valid       |
 | Tour stop initial zoom         | `settings.locationService.tours.initialMapMinZoom`                | Valid range 0–18; invalid values fall back to 14                                |
 | Main map initial zoom          | `mapSettings.zoomLevel.initialZoom`                               | Separate JSON StaticContent; existing marker-specific zooms remain fallbacks    |
 | Image-carousel pagination      | `settings.sliderSettings.showPagination`                          | Opt-in; no schema change; does not affect Disturber or `MediaCarousel`          |
-| POI opening-time grouping      | `settings.openingTimes.groupByWeekday`                            | Strict boolean opt-in; backend order and recurring weekday data must be stable  |
+| POI opening-time grouping      | `settings.openingTimes.groupByWeekday`                            | Enabled by default; only `false` restores legacy layout                         |
 | Parking availability           | POI `payload.freeStatusUrl` and external feature payload          | Main-Server carries the URL/payload; verify the external endpoint               |
 | Bookmark icon                  | `settings.bookmarkIcon`                                           | No Main-Server schema change                                                    |
+| Bookmark list layout           | Existing configured list layout                                   | Bookmark screens now follow the tenant list layout instead of forcing text rows |
 | SUE version label              | `app.json.expo.extra.sueVersion`                                  | Build-time value, not server configuration                                      |
 | SUE pending status             | `settings.sue.showInternalPendingStatus`                          | No schema change; verify stored-report and API-status behavior                  |
 | Tab navigation refresh         | `tabNavigation` StaticContent                                     | v5 checks for updates once per minute while the app is active                   |
 | Generic Item events            | `settings.eventCalendar.genericItemEventSources`                  | Existing Generic Item query; validate complete dated datasets and result limits |
 | Icon-family priority           | `settings.iconFamilies`; per-item `iconSet`                       | No schema change; exact supported identifiers and icon names are required       |
+| Tab and widget image assets    | `tabNavigation` SVG/raster fields; widget `additionalProps.svg`   | Validate remote asset URLs and light/dark variants                              |
+| Disturber dark content         | Disturber JSON `dark` overrides                                   | Validate background/image contrast in both themes                              |
+| Participation Project order   | `participationProjectHome.featuredOrder/indexOrder`               | Complete Generic Item result and stable sort fields are needed                 |
+| Volunteer events and reporting | Top-level `hdvt.events` and `hdvt.reporting`                      | Verify Volunteer calendar and report API contracts                             |
 | Profile OAuth                  | `settings.profile`; navigation `withProfile`                      | Register redirect/client; `/member` must accept the OAuth bearer token          |
 | Profile content creation       | Three `profile*Service*` JSON records; profile routes and roles   | Requires member/user tokens, linked provider, roles, and ownership enforcement  |
 
@@ -993,6 +1050,18 @@ versioned static content must use exact supported family identifiers.
 The separate multi-icon reference currently shows the obsolete key `settings.icon`; the reviewed
 implementation reads `settings.iconFamilies`. Use `iconFamilies` for this snapshot and align the
 reference document or implementation before the v5 tag is created.
+
+Custom `tabNavigation` entries can now use a named icon, a remote SVG (`svg`/`activeSvg`), or a
+raster URL (`icon`/`activeIcon`). For the same focus state, the priority is `iconName`, then `svg`,
+then `icon`. SVG names resolve through `settings.icons.svgFolderUrl` and are recolored for the
+active theme; raster assets retain their colors and may use `themeImages.light/dark` variants.
+See [Tab Navigation Icons](./TAB_NAVIGATION_ICONS.md) for the exact fallback rules.
+
+Home widgets other than weather may set `additionalProps.svg` to a complete URL or a name from
+`settings.icons.svgFolderUrl`. Their visual priority is `additionalProps.image`, then SVG, then
+the existing built-in icon. SVG colors follow the active theme and optional `appDesignSystem`
+widget `iconStyle` overrides. See
+[Home Screen Section Configuration](./HOME_SCREEN_SECTION_CONFIGURATION.md#theme-aware-widget-svg-icons).
 
 ### 5.14. Profile OAuth and session migration
 
@@ -1248,11 +1317,11 @@ production.
 
 #### Recurring POI opening times
 
-Set `globalSettings.settings.openingTimes.groupByWeekday` to the boolean value `true` to group
-adjacent recurring PointOfInterest opening-hour windows under one weekday heading. Missing,
-`false`, or string values retain the legacy one-entry-per-heading presentation. This flag is
-currently passed only by the POI detail screen; EventRecord, Offer, and Participation Project
-opening-time cards retain their existing layout.
+Recurring PointOfInterest opening-hour windows are grouped under one weekday heading by default,
+including when `globalSettings.settings.openingTimes.groupByWeekday` is absent. Only the boolean
+value `false` restores the legacy one-entry-per-heading presentation; string values do not disable
+grouping. This setting is currently passed only by the POI detail screen; EventRecord, Offer, and
+Participation Project opening-time cards retain their existing layout.
 
 Grouping preserves backend order and combines only adjacent, open, date-free entries with the same
 raw weekday and description and at least one time value. Closed entries, special date/date-range
@@ -1260,6 +1329,35 @@ entries, different descriptions, and different weekdays stay separate. Numeric w
 and their string forms are displayed through the localized Monday-to-Sunday labels. No Main-Server
 schema change is required, but backend ordering and consistent weekday types determine whether the
 intended rows actually group.
+
+### 5.17. Volunteer events and content reporting
+
+When the existing top-level `globalSettings.hdvt.events` flag is `true`, Volunteer calendar events
+are now merged chronologically with Main-Server events in shared event lists, calendar views, the
+home event section, and the event widget. Volunteer events also support bookmarks, sharing, and
+calendar export. Native category/location filters do not filter Volunteer data, so selecting one
+suppresses those additional events in the affected list and calendar. Test both the enabled and
+disabled paths, recurring and multi-day events, month changes, pagination, bookmarks, and direct
+detail navigation. Profile-owned event lists can separately hide Volunteer events through the
+`hideVolunteerEvents` route parameter.
+
+The Volunteer API v2 calendar integration requests ordinary and recurring events with
+`start_date`, `end_date`, `pagination=1`, and `limit=100`; it follows the returned `pages` count and
+deduplicates occurrences. Confirm that the deployed API supports `/calendar` and
+`/calendar/recurring`, plus `/calendar/container/:id` and its `/recurring` variant when a space
+calendar is used. It must return event IDs, date/time and time-zone fields, content metadata,
+location, and participants expected by the Volunteer screens. A 404 from the recurring endpoint is
+treated as empty only for the known “No recurring events are present” response. Test a dataset
+larger than one page and a genuine API error, not only an empty calendar.
+
+Volunteer posts, comments, users, spaces, and events can now expose a report action when the
+top-level `globalSettings.hdvt.reporting` value is exactly `true`. The action is hidden for owned
+content. The client sends `POST <volunteerApiV2Url>reports` with bearer authentication and JSON
+`targetType`, `targetId`, and numeric `reason`. Content targets, including events, use the HumHub
+`content.id`, not the event or post ID. Valid target types are `content`, `comment`, `user`, and
+`space`; valid reasons are `1` (wrong space, offered for content/comments in a space), `2`
+(offensive), `3` (spam), and `4` (misleading). Before enabling the flag, verify authorization,
+duplicate-report responses, moderation handling, and the tenant's privacy and support process.
 
 ## 6. Main-Server migration decision
 
@@ -1469,7 +1567,7 @@ tenant policy, also verify that direct API calls with a missing type role are re
 
 ### 7.1. Known release blockers in the reviewed snapshot
 
-At the time of review on 28 August 2026:
+At the time of the updated mobile review on 25 September 2026:
 
 - `package.json.version` is still `4.3.0`;
 - `app.json.expo.version` is still `4.3.0`;
@@ -1545,22 +1643,20 @@ recovered from a normal source diff.
 
 ### 7.4. Quality-gate status of the reviewed snapshot
 
-The local review on 28 August 2026 found existing quality/infrastructure failures:
+The local documentation review on 25 September 2026 found existing quality failures:
 
-- `yarn lint` does not reach a result. It repeatedly reports parser errors where the outdated
-  `@typescript-eslint/parser` encounters Flow syntax in React Native, and the review run was stopped
-  after more than 60 seconds of repeated errors. Align the ESLint/parser/import-resolver toolchain with
-  TypeScript 6 and React Native 0.86, then resolve remaining project errors before release.
-- `yarn test` passes 125 of 166 suites and 660 of 669 tests. It fails 41 suites and 7 tests, with 2
-  skipped tests. Most suite failures are caused by the intentionally untracked
-  `src/config/secrets.js` file being unavailable; the remaining assertion failures include stale
-  waste/settings expectations. Provide a secret-free Jest module mock or safe test-time
-  provisioning in CI; never commit a real secret file.
-- A focused run covering opening-time grouping, carousel accessibility, the grayscale compositor,
-  widget layout, initial map zoom, and accessible inputs passes all 7 suites and 37 tests.
-- `npx expo-doctor@latest` cannot start its project checks because evaluating Expo config reaches
-  the same missing `src/config/secrets.js` dependency. Ensure CI can evaluate Expo config through
-  safe test-time provisioning.
+- `yarn lint` repeatedly reports that `@typescript-eslint/parser` cannot parse Flow syntax in
+  `node_modules/react-native/index.js`; the run was interrupted after the same message repeated
+  without reaching a result. Align the ESLint/parser/import-resolver toolchain with TypeScript 6
+  and React Native 0.86, then rerun the full gate before release.
+- `yarn test` completed with 187 of 196 suites passing, 1,189 of 1,210 tests passing, 13 failing,
+  and 8 skipped. The 9 failing suites include stale header/screen snapshots, waste/settings test
+  mocks and assertions, owner-auth helper mocks, and an `ImageButtonTheme` suite that fails while
+  loading secret-dependent Consul configuration. Fix these failures or provide secret-free
+  test-time mocks; never commit a real secret file.
+- The earlier Expo Doctor review could not evaluate Expo config because the untracked
+  `src/config/secrets.js` file was unavailable. Recheck Expo Doctor with safe test-time
+  provisioning for the release candidate.
 
 These results are not caused by this documentation change. The v5 release candidate must not be
 approved until the mandatory quality gates are fully green.
@@ -1603,6 +1699,12 @@ For the accessibility changes, also run:
   removing `singleMarker` or `multipleMarkers`;
 - pagination and POI opening-time grouping omitted, disabled, and enabled through versioned
   configuration;
+- existing tenant POI records with no `openingTimes.groupByWeekday` value, which now group by
+  default, and an explicit `false` value for tenants retaining the old layout;
+- enabled/disabled `hdvt.events` and `hdvt.reporting`, with Volunteer calendar pagination and
+  report authorization against the deployed API;
+- tab and widget remote SVG/raster assets in both themes, and Disturber entries with and without
+  dark overrides;
 - concurrent use by a v4.3.0 client and a v5 client against the same Main-Server deployment;
 - cold start in light, dark, and system theme modes;
 - grayscale toggled repeatedly in a clean v5 native build on both platforms, including WebView,
@@ -1615,24 +1717,25 @@ For the accessibility changes, also run:
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | BUS             | Area search, initial area, life situations, A–Z, text search, pagination, detail, and sharing work; every request contains the correct state header                                                                                                                      |
 | Main GraphQL    | News, events, POIs, tours, categories, and generic item queries complete without schema errors                                                                                                                                                                           |
-| Participation   | Home, category, featured/all sections, status filters, map/list, detail, bookmark, share, search, and add-to-calendar work                                                                                                                                               |
+| Participation   | Home, category, featured/all sections, remote sort order, status and radius filters, current-location map control, map/list state, portal links, detail, bookmark, share, search, and add-to-calendar work                                                                 |
 | Generic events  | Every configured Generic Item type/filter/date maps consistently into list, calendar, home, and widget; native filters suppress external data; refresh, loading, deduplication, and large/truncated datasets are verified                                                |
-| Icons           | Global family order, per-tab/tile overrides, unified mappings, custom SVG priority, missing-name fallback, fill/stroke, theme, and accessibility states render correctly                                                                                                 |
+| Icons           | Global family order, per-tab/tile overrides, named/SVG/raster tab sources and focused/dark variants, widget SVG/image priority, missing-name fallback, fill/stroke, theme, and accessibility states render correctly                                                         |
 | Profile OAuth   | Redirect, authorization-code exchange, PKCE, restore, refresh, transient outage, invalid/revoked token, logout, missing-member cleanup, and offline-to-online recovery work without exposing confidential secrets                                                        |
 | Profile content | Member/user token handoff, role-filtered tiles, owner lists, create/edit/hide for news/events/POIs/noticeboard, image and rich-text round trips, accessible rich-text controls/errors/touch targets, dark mode, cross-provider denial, and Keycloak role refresh work    |
 | Cache           | General, Apollo, Home, and SUE expiration values apply; invalid values fall back safely; legacy Apollo data receives metadata; expiration removes the expected scope only                                                                                                |
 | Waste           | Legacy and flexible UI modes work; per-type slots, 50-item limit, coverage reminders, permission/token/address resync, disruption registration, local tap navigation, and server fallback suppression are verified                                                       |
 | Floor Plan      | Remote and inline SVG floors render; floor/view switches, pins, linked content, invalid config, theme, scaling, gestures, and the screen-reader list alternative work                                                                                                    |
-| Theme           | App shell, tabs/drawer, modals, forms, maps, calendar, WebView loading, SUE, and static carousels are checked in both themes                                                                                                                                             |
+| Theme           | App shell, tabs/drawer, modals, forms, maps, calendar, WebView loading, SUE, Disturber dark images/backgrounds, and static carousels are checked in both themes                                                                                                            |
 | Accessibility   | Text scaling, bold text, Android root grayscale, iOS compositor coverage, native portal fallbacks, responsive 1–5-column widgets with a two-column large-text cap, high contrast, reduced motion/transparency, switch labels, and read aloud are tested on real devices  |
-| Upload          | Volunteer calendar/post/email, Consul attachments, wallet card sharing, and AR download/delete work                                                                                                                                                                      |
+| Upload          | Volunteer calendar/post/email, SUE and profile media, Consul attachments, wallet card sharing, and AR download/delete work; HEIC conversion, EXIF, MIME/filename pairing, and failed conversion are checked                                                                |
 | Chat/carousel   | GiftedChat messages, quick replies, attachments, links, carousel autoplay/pause, pagination disabled/enabled, zero active and 1/10/11 visible items, Disturber exclusion, reduced motion, and single-image height work                                                   |
-| Feedback        | Configured HTML renders; diagnostic checkbox defaults to off; each granular/legacy flag exposes only the intended category; nothing is sent without opt-in; expected email/payload is produced after opt-in                                                              |
+| Feedback        | Global and route-specific HTML records render; diagnostic checkbox defaults to off; each granular/legacy flag exposes only the intended category; nothing is sent without opt-in; expected email/payload is produced after opt-in                                   |
 | SUE/Defect      | Missing/partial/complete SUE configuration, paginated locations/requests, stored-report status refresh and provenance, hidden/shown internal pending status, camera/gallery draft and EXIF flows, reports with and without location, and category position ordering work |
 | WebView         | Incognito precedence, platform user agent, bot control, external browser, and modal browser behavior work                                                                                                                                                                |
-| Maps            | POI/Tour direction card, TourStop zoom/bounds, `mapSettings` initial-zoom override/fallback, embedded-map isolation, parking status, and invalid coordinates are handled                                                                                                 |
+| Maps            | POI/Tour direction card, coordinate-only POI route planning, TourStop zoom/bounds, `mapSettings` initial-zoom override/fallback, embedded-map isolation, parking status, and invalid coordinates are handled                                                               |
 | Opening times   | POI grouping disabled/enabled, adjacent windows, backend order, numeric/string weekdays, descriptions, closed entries, special dates, pagination boundary, and unaffected Event/Offer/Participation cards are verified                                                   |
 | Push            | Canonical and normalized payloads navigate once in foreground/background/cold start; queueing before navigator readiness, query type aliases, missing fields, local waste taps, deep links, and notification categories work                                             |
+| Volunteer       | Shared event list/calendar/home/widget include Volunteer events only with `hdvt.events`; pagination, recurring/multi-day dates, bookmarks, direct details, report targets/reasons, duplicate reports, and authorization work with the deployed API                          |
 
 ### 8.4. Pre-production monitoring
 
@@ -1657,6 +1760,8 @@ For the accessibility changes, also run:
 - monitor invalid `mapSettings.zoomLevel.initialZoom` values and unexpected main-map camera starts;
 - monitor image-carousel rendering/accessibility errors around pagination and changing active-item
   counts;
+- monitor remote tab/widget asset failures, Disturber dark-asset contrast, Participation Project
+  sort/radius results, and Volunteer calendar/report API errors after their flags are enabled;
 - monitor POI opening-hour payload order/type inconsistencies that prevent expected weekday groups;
 - monitor iOS grayscale-compositor warnings and verify grayscale state after scene/window,
   foreground, orientation, modal, WebView, and map transitions;
@@ -1691,8 +1796,9 @@ For the accessibility changes, also run:
     `mapSettings`; retain the tenant's `singleMarker`, `multipleMarkers`, bounds, center, and styling.
 12. To hide image-carousel pagination, remove `settings.sliderSettings.showPagination` or set it to
     `false`; preserve the rest of `sliderSettings` and `sliderPauseButton`.
-13. To restore the legacy POI opening-time presentation, remove
-    `settings.openingTimes.groupByWeekday` or set it to `false`. No backend data rollback is needed.
+13. To restore the legacy POI opening-time presentation, set
+    `settings.openingTimes.groupByWeekday` to the boolean `false`. Removing the key enables
+    grouping. No backend data rollback is needed.
 14. To disable Floor Plan, remove its navigation entry and StaticContent reference. No stored user
     data or server schema needs to be deleted.
 15. To disable flexible waste reminders, restore a `wasteTypes` payload without explicit push slots,
@@ -1702,6 +1808,9 @@ For the accessibility changes, also run:
     delete persisted data manually unless the rollback procedure explicitly requires it.
 17. Follow the Main-Server repository's backup and rollback procedure for server-side migrations.
     A mobile rollback does not authorize a backend schema downgrade.
+18. To stop Volunteer reporting, set top-level `hdvt.reporting` to `false`; retain the report API
+    data for moderation and audit needs. To stop merging Volunteer events into shared event views,
+    set top-level `hdvt.events` to `false`.
 
 Do not move the published `v5.0.0` tag during rollback. A corrected source release must use a new
 semantic version and a new immutable tag.
@@ -1721,8 +1830,10 @@ semantic version and a new immutable tag.
 - [ ] Cache expiration scopes are configured and legacy Apollo persistence was upgrade-tested.
 - [ ] If BUS is enabled, `settings.bus`, the proxy contract, and `federalState` are ready.
 - [ ] If Participation Projects are enabled, data/importer, static content, and navigation are ready.
+- [ ] Participation Project preview/list sorting, complete result sets, radius filtering, location permission, and map/list state are verified.
 - [ ] Every Generic Item event source has complete dates/filter payloads, bounded results, and matching list/calendar/home/widget behavior.
 - [ ] `iconFamilies`, tab/service-tile `iconSet` values, and every configured icon name are validated against the implementation.
+- [ ] Remote tab and widget assets, focused/theme variants, and Disturber dark overrides render with valid contrast and alternative text.
 - [ ] Profile OAuth uses an approved public client and PKCE, the redirect/endpoints are registered, and stored-session/member-sync upgrade cases pass.
 - [ ] `/member` returns the linked user, data provider, roles, refresh token, and member/user authentication tokens required by the selected login paths.
 - [ ] `profileService`, `profileCreateContentServiceTop`, and `profileCreateContentServiceBottom` contain valid routes, query values, form parameters, and icons.
@@ -1732,11 +1843,14 @@ semantic version and a new immutable tag.
 - [ ] Waste registration migrations and REST/token/fallback contracts are deployed before flexible reminders or disruptions are enabled.
 - [ ] Waste reminder slots use stable IDs, and legacy/flexible modes, local coverage, native inventory, token rotation, and selected-address migration are verified.
 - [ ] SUE pagination, stored-status refresh/provenance, internal pending-status configuration, and media permission/draft flows are verified.
+- [ ] Selected HEIC/HEIF, JPEG, and failed image conversions plus multipart upload response/MIME handling are verified for enabled upload flows.
 - [ ] Grayscale covers the complete Android root and iOS compositor surfaces in a clean native build, including maps, WebViews, portals, orientation, and app lifecycle transitions.
 - [ ] Responsive widgets are verified across both themes, device/container widths, orientations, standard text scales, and the two-column large-text cap.
 - [ ] Existing `mapSettings` values are preserved and `zoomLevel.initialZoom` plus its missing-value fallback are verified on both main map screens.
 - [ ] Carousel pagination is tested disabled/enabled with zero, 1, 10, and 11 active items, while Disturber and `MediaCarousel` remain unaffected.
 - [ ] POI weekday grouping is tested against production-ordered recurring, closed, described, and special-date opening-hour data; non-POI cards remain unchanged.
+- [ ] Omitted POI grouping configuration uses the grouped layout; explicit `false` restores the legacy layout.
+- [ ] If `hdvt.events` or `hdvt.reporting` is enabled, the Volunteer calendar and report endpoints, ownership rules, pagination, direct detail navigation, and moderation responses are verified.
 - [ ] Push producers emit a supported query type and ID, and foreground/background/cold-start navigation is verified.
 - [ ] Privacy and email processing are approved before feedback diagnostics are enabled.
 - [ ] Feedback HTML and every enabled granular diagnostic category are verified with and without user consent.
