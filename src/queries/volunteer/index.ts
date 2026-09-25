@@ -7,6 +7,7 @@ export * from './group';
 export * from './like';
 export * from './post';
 export * from './push';
+export * from './report';
 export * from './stream';
 export * from './upload';
 export * from './user';

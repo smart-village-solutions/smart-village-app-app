@@ -38,7 +38,7 @@ import { initialContext, SettingsContext, SettingsProvider } from './SettingsPro
 import { AppThemeProvider } from './ThemeProvider';
 import { UnreadMessagesProvider } from './UnreadMessagesProvider';
 import { WasteReminderRuntime } from './WasteReminderRuntime';
-import { OtaUpdateManager } from './components';
+import { OtaUpdateManager, VolunteerReportProvider } from './components';
 
 const { LIST_TYPES } = consts;
 
@@ -62,7 +62,9 @@ const MainAppWithSettings = () => {
                 <UnreadMessagesProvider>
                   <OtaUpdateManager />
                   <WasteReminderRuntime />
-                  <Navigator navigationType={globalSettings.navigation} />
+                  <VolunteerReportProvider>
+                    <Navigator navigationType={globalSettings.navigation} />
+                  </VolunteerReportProvider>
                 </UnreadMessagesProvider>
               </ProfileProvider>
             </OnboardingManager>

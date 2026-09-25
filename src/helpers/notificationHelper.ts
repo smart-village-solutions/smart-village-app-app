@@ -4,7 +4,7 @@ type NotificationData = Record<string, unknown>;
 
 export type PushNotificationNavigationData = {
   data: NotificationData;
-  id: string | number;
+  id?: string | number;
   queryType: string;
   title?: string;
 };
@@ -51,18 +51,15 @@ export const getPushNotificationNavigationData = (
   const id = data.id;
   const queryType = data.query_type ?? data.queryType;
 
-  if (
-    (typeof id !== 'string' && typeof id !== 'number') ||
-    String(id).trim().length === 0 ||
-    typeof queryType !== 'string' ||
-    queryType.trim().length === 0
-  ) {
+  if (typeof queryType !== 'string' || queryType.trim().length === 0) {
     return;
   }
 
   return {
     data,
-    id,
+    ...((typeof id === 'string' || typeof id === 'number') && String(id).trim().length > 0
+      ? { id }
+      : {}),
     queryType,
     title: typeof data.title === 'string' ? data.title : undefined
   };

@@ -5,6 +5,7 @@ import React from 'react';
 import { ShareContent, StyleSheet } from 'react-native';
 
 import { normalize } from '../config';
+import { VolunteerReportTarget } from '../types';
 
 import { AccessibilityHeader } from './AccessibilityHeader';
 import { BookmarkHeader } from './bookmarks';
@@ -16,6 +17,7 @@ import { EditHeader } from './EditHeader';
 import { GroupHeader } from './GroupHeader';
 import { InfoHeader } from './InfoHeader';
 import { LoginHeader } from './LoginHeader';
+import { ReportHeader } from './ReportHeader';
 import { SearchHeader } from './SearchHeader';
 import { ShareHeader } from './ShareHeader';
 import { WrapperRow } from './Wrapper';
@@ -25,6 +27,7 @@ type Props = {
     DrawerNavigationProp<Record<string, object | undefined>>;
   onPress?: () => void;
   route: RouteProp<Record<string, object | undefined>, string>;
+  reportTarget?: VolunteerReportTarget;
   shareContent?: ShareContent;
   withAccessibility?: boolean;
   withBookmark?: boolean;
@@ -45,6 +48,7 @@ export const HeaderRight = ({
   navigation,
   onPress,
   route,
+  reportTarget,
   shareContent = route.params?.shareContent,
   withAccessibility = true,
   withBookmark = false,
@@ -70,6 +74,7 @@ export const HeaderRight = ({
     {withProfile && <LoginHeader style={styles.icon} />}
     {withSearch && <SearchHeader navigation={navigation} style={styles.icon} />}
     {withShare && <ShareHeader shareContent={shareContent} style={styles.icon} />}
+    {!!reportTarget && <ReportHeader target={reportTarget} style={styles.icon} />}
     {withAccessibility && <AccessibilityHeader style={styles.icon} />}
     {withDrawer && <DrawerHeader navigation={navigation} style={styles.icon} />}
   </WrapperRow>
