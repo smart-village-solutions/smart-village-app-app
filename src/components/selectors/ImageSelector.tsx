@@ -118,7 +118,7 @@ export const ImageSelector = ({
       {values.length ? (
         <>
           <WrapperRow center spaceBetween>
-            <Image source={{ uri: values[0].uri }} containerStyle={styles.image} />
+            <Image source={{ uri: values[0].uri }} style={styles.image} />
 
             <TouchableOpacity
               accessibilityLabel={texts.accessibilityLabels.actions.deleteImage}

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import Dropdown from 'react-native-modal-dropdown';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -11,6 +11,7 @@ import { useTheme } from '../hooks/useTheme';
 import { useThemeStyles } from '../hooks/useThemeStyles';
 
 import { Label } from './Label';
+import { InlineSearchDropdown } from './InlineSearchDropdown';
 import { RegularText } from './Text';
 import { Wrapper, WrapperHorizontal, WrapperRow } from './Wrapper';
 
@@ -27,7 +28,12 @@ export const DropdownSelect = ({
   boldLabel = false,
   data,
   errorMessage,
+  hidePlaceholderOption = false,
   inlineDropdown = false,
+  inlineSearch = false,
+  onDropdownHeightChange,
+  onSearchBlur,
+  onSearchFocus,
   isOverlayFilter = false,
   label,
   labelWrapperStyle,
@@ -63,7 +69,11 @@ export const DropdownSelect = ({
   const [arrow, setArrow] = useState('down');
   const selectedData = data?.find((entry) => entry.selected);
   const selectedValue = selectedData?.value;
-  const selectedIndex = data?.findIndex((entry) => entry.selected) ?? -1;
+  const options = useMemo(
+    () => (hidePlaceholderOption ? data.filter((entry) => !entry.isPlaceholder) : data),
+    [data, hidePlaceholderOption]
+  );
+  const selectedIndex = options?.findIndex((entry) => entry.selected) ?? -1;
   const selectedMultipleData = data?.filter((entry) => entry.selected);
   const selectedMultipleValues = selectedMultipleData?.map((entry) => entry.value).join(', ');
 
@@ -170,6 +180,29 @@ export const DropdownSelect = ({
   };
   const showInlineDropdown = inlineDropdown && isOverlayFilter && multipleSelect;
 
+  if (inlineSearch) {
+    return (
+      <InlineSearchDropdown
+        {...{
+          boldLabel,
+          label,
+          labelWrapperStyle,
+          options,
+          onDropdownHeightChange,
+          onSearchBlur,
+          onSearchFocus,
+          placeholder,
+          renderRow,
+          searchInputStyle,
+          searchPlaceholder,
+          selectedValue,
+          styles
+        }}
+        onSelect={handleSelect}
+      />
+    );
+  }
+
   if (showInlineDropdown) {
     return (
       <View>
@@ -235,7 +268,7 @@ export const DropdownSelect = ({
       <Dropdown
         accessible={false}
         ref={dropdownRef}
-        options={data.map((entry) => entry.value)}
+        options={options.map((entry) => entry.value)}
         multipleSelect={multipleSelect}
         adjustFrame={adjustFrame}
         dropdownStyle={[
@@ -255,6 +288,7 @@ export const DropdownSelect = ({
         searchInputStyle={searchInputStyle}
         renderSearch={renderSearch}
         searchPlaceholder={searchPlaceholder}
+        searchPlaceholderTextColor={colors.placeholder}
         keyboardShouldPersistTaps="handled"
       >
         <WrapperRow
@@ -331,7 +365,12 @@ DropdownSelect.propTypes = {
   boldLabel: PropTypes.bool,
   data: PropTypes.array,
   errorMessage: PropTypes.string,
+  hidePlaceholderOption: PropTypes.bool,
   inlineDropdown: PropTypes.bool,
+  inlineSearch: PropTypes.bool,
+  onDropdownHeightChange: PropTypes.func,
+  onSearchBlur: PropTypes.func,
+  onSearchFocus: PropTypes.func,
   isOverlayFilter: PropTypes.bool,
   label: PropTypes.string,
   labelWrapperStyle: PropTypes.oneOfType([PropTypes.number, PropTypes.object, PropTypes.array]),

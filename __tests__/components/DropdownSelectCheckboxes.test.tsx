@@ -34,7 +34,7 @@ jest.mock('react-native-modal-dropdown', () => {
 });
 
 jest.mock('react-native-safe-area-context', () => ({
-  useSafeAreaInsets: () => ({ left: 0 })
+  useSafeAreaInsets: () => ({ left: 0, top: 47, bottom: 34 })
 }));
 
 jest.mock('../../src/OrientationProvider', () => {
@@ -117,6 +117,69 @@ jest.mock('../../src/config', () => {
 });
 
 describe('DropdownSelect multiselect checkboxes', () => {
+  it('searches within the page and closes after selecting a filtered category', () => {
+    const setData = jest.fn();
+    const onSearchFocus = jest.fn();
+    const onSearchBlur = jest.fn();
+    const screen = render(
+      <DropdownSelect
+        data={[
+          { id: -1, selected: true, isPlaceholder: true, value: 'Kategorie' },
+          { id: 12, selected: false, value: 'Straßen' },
+          { id: 13, selected: false, value: 'Müll' }
+        ]}
+        hidePlaceholderOption
+        inlineSearch
+        label="Kategorie"
+        placeholder="Kategorie"
+        searchPlaceholder="Suche"
+        onSearchBlur={onSearchBlur}
+        onSearchFocus={onSearchFocus}
+        setData={setData}
+      />
+    );
+
+    fireEvent.press(screen.getByRole('button', { name: /Kategorie/ }));
+    expect(screen.queryByTestId('modal-dropdown')).toBeNull();
+    fireEvent(screen.getByPlaceholderText('Suche'), 'focus');
+    expect(onSearchFocus).toHaveBeenCalledTimes(1);
+    fireEvent.changeText(screen.getByPlaceholderText('Suche'), 'str');
+    expect(screen.queryByRole('button', { name: /Müll/ })).toBeNull();
+    fireEvent.press(screen.getByRole('button', { name: /Straßen/ }));
+    expect(setData).toHaveBeenCalledWith([
+      expect.objectContaining({ isPlaceholder: true, selected: false }),
+      expect.objectContaining({ value: 'Straßen', selected: true }),
+      expect.objectContaining({ value: 'Müll', selected: false })
+    ]);
+    expect(screen.queryByPlaceholderText('Suche')).toBeNull();
+    expect(onSearchBlur).toHaveBeenCalled();
+  });
+
+  it('omits the required-field placeholder while selecting the first real option correctly', () => {
+    const setData = jest.fn();
+    const screen = render(
+      <DropdownSelect
+        data={[
+          { id: -1, selected: true, isPlaceholder: true, value: 'Kategorie' },
+          { id: 12, selected: false, value: 'Straßen' },
+          { id: 13, selected: false, value: 'Müll' }
+        ]}
+        hidePlaceholderOption
+        label="Kategorie"
+        placeholder="Kategorie"
+        setData={setData}
+      />
+    );
+
+    expect(screen.queryByLabelText('Kategorie (Auswahlmenüeintrag)')).toBeNull();
+    fireEvent.press(screen.getByTestId('select-0'));
+    expect(setData).toHaveBeenCalledWith([
+      expect.objectContaining({ isPlaceholder: true, selected: false }),
+      expect.objectContaining({ value: 'Straßen', selected: true }),
+      expect.objectContaining({ value: 'Müll', selected: false })
+    ]);
+  });
+
   it('shows an accessible checkbox for every status option', () => {
     const screen = render(
       <DropdownSelect

@@ -4,6 +4,7 @@ import React from 'react';
 import { useMutation } from 'react-apollo';
 import { Controller, useForm } from 'react-hook-form';
 import { Alert, Keyboard } from 'react-native';
+import type { LayoutChangeEvent } from 'react-native';
 
 import {
   Button,
@@ -40,17 +41,23 @@ export const DefectReportCreateForm = ({
   navigation,
   route,
   selectedPosition,
-  categoryNameDropdownData
+  categoryNameDropdownData,
+  onCategorySearchBlur,
+  onCategorySearchFocus
 }: {
   navigation: StackNavigationProp<any>;
   route: any;
   selectedPosition: Location.LocationObjectCoords | undefined;
   categoryNameDropdownData: { id: number; name: string; value: string }[];
+  onCategorySearchBlur?: () => void;
+  onCategorySearchFocus?: (y: number) => void;
 }) => {
   const { colors: colors } = useTheme();
 
   const styles = useThemeStyles(createStyles);
   const consentForDataProcessingText = route?.params?.consentForDataProcessingText ?? '';
+  const [categoryDropdownHeight, setCategoryDropdownHeight] = React.useState(0);
+  const categoryTop = React.useRef(0);
   const [isLoading, setIsLoading] = React.useState(false);
 
   const {
@@ -143,11 +150,21 @@ export const DefectReportCreateForm = ({
 
   return (
     <>
-      <Wrapper noPaddingTop>
+      <Wrapper
+        noPaddingTop
+        onLayout={({ nativeEvent }: LayoutChangeEvent) => {
+          categoryTop.current = nativeEvent.layout.y;
+        }}
+        style={{ zIndex: 1, marginBottom: -categoryDropdownHeight }}
+      >
         <Controller
           name="categoryName"
           render={({ field: { name, onChange, value } }) => (
             <DropdownInput
+              inlineSearch
+              onDropdownHeightChange={setCategoryDropdownHeight}
+              onSearchBlur={onCategorySearchBlur}
+              onSearchFocus={() => onCategorySearchFocus?.(categoryTop.current)}
               {...{
                 errors,
                 data: categoryNameDropdownData,
