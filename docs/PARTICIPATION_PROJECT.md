@@ -230,10 +230,10 @@ Example configuration for testing:
 | `categoryTitle`            | `string`  | Section title above the category list.                                                                                                                   |
 | `fallbackCategoryTitle`    | `string`  | Category title used when an item has no category.                                                                                                        |
 | `featuredLimit`            | `number`  | Number of records shown in the `Besonders interessant` section.                                                                                          |
-| `featuredOrder`           | `string`  | Featured row sorting, independent of `indexOrder`; defaults to `itemIndex`. Supports `_ASC` / `_DESC` and the fields described below. |
+| `featuredOrder`            | `string`  | Featured row sorting, independent of `indexOrder`; defaults to `itemIndex`. Supports `_ASC` / `_DESC` and the fields described below.                    |
 | `featuredTitle`            | `string`  | Section title for the featured records.                                                                                                                  |
 | `indexLimit`               | `number`  | Number of records requested by the opened `IndexScreen`.                                                                                                 |
-| `indexOrder`               | `string`  | All-project and category list sorting (forwarded as `participationOrder`); defaults to `itemIndex`. Supports `_ASC` / `_DESC`.          |
+| `indexOrder`               | `string`  | All-project and category list sorting (forwarded as `participationOrder`); defaults to `itemIndex`. Supports `_ASC` / `_DESC`.                           |
 | `introHtmlName`            | `string`  | Static HTML content name used for the optional intro block.                                                                                              |
 | `isCarouselImageFullWidth` | `boolean` | Enables full-width carousel images.                                                                                                                      |
 | `showAllButton`            | `boolean` | Enables or disables the all-records navigation row.                                                                                                      |
@@ -653,10 +653,11 @@ or `_ASC` sorts ascending; `_DESC` sorts descending. Suffixes are case-sensitive
 - Other names read a payload field, e.g. `itemIndex_ASC` or `priority_DESC`.
   Numeric values (including numeric strings) sort numerically; text sorts without
   case sensitivity. Numbers precede text in mixed fields.
-- Missing/empty values and invalid dates remain last in either direction. Equal
-  values retain their incoming order. An unknown field preserves incoming order.
-- Sorting does not change status or type filters. The featured section still
-  includes only active projects; events are not excluded by these settings.
+- Values with no usable sort date remain last in either direction. Equal values
+  retain their incoming order. An unknown field preserves incoming order.
+- Sorting does not change status or type filters. The featured section includes
+  only active projects and excludes records with payload type `Veranstaltung`.
+  Events remain available in the category and all-project lists.
 
 The app must include this sorting implementation before using the new settings.
 After saving static content, pull to refresh the participation home and reopen

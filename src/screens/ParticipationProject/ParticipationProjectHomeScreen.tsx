@@ -392,7 +392,11 @@ export const ParticipationProjectHomeScreen = ({
     if (!homeConfig.showFeatured) return [];
 
     return genericItems
-      .filter((item) => isParticipationProjectActive(item as ParticipationProject))
+      .filter(
+        (item) =>
+          isParticipationProjectActive(item as ParticipationProject) &&
+          getPayloadType(item.payload)?.trim().toLocaleLowerCase('de-DE') !== 'veranstaltung'
+      )
       .sort((first, second) =>
         compareParticipationProjects(first, second, homeConfig.featuredOrder)
       )

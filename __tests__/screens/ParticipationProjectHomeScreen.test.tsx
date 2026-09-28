@@ -229,6 +229,44 @@ describe('ParticipationProjectHomeScreen', () => {
     );
   });
 
+  it('keeps events in participation lists while excluding them from the featured preview', () => {
+    useQuery.mockReturnValue({
+      data: {
+        genericItems: [
+          {
+            id: 'event',
+            title: 'Rathaustür',
+            categories: [{ id: 'veranstaltung', name: 'Veranstaltung' }],
+            payload: { itemIndex: 0, status: 'active', type: 'Veranstaltung' }
+          },
+          {
+            id: 'bundid',
+            title: 'Online-Beratung BundID',
+            categories: [{ id: 'terminvereinbarung', name: 'Terminvereinbarung' }],
+            payload: { itemIndex: 1, status: 'active', type: 'Terminvereinbarung' }
+          }
+        ]
+      },
+      isLoading: false,
+      refetch: jest.fn()
+    });
+
+    const navigation = { navigate: jest.fn() };
+    const screen = render(<ParticipationProjectHomeScreen navigation={navigation as never} />);
+
+    expect(screen.queryByTestId('list-item-event')).toBeNull();
+    expect(screen.getByTestId('list-item-bundid')).toBeTruthy();
+    expect(screen.getByText('Veranstaltung|1')).toBeTruthy();
+
+    fireEvent.press(screen.getByTestId('list-item-veranstaltung'));
+    expect(navigation.navigate).toHaveBeenLastCalledWith(
+      'Index',
+      expect.objectContaining({
+        queryVariables: expect.objectContaining({ categoryId: 'veranstaltung' })
+      })
+    );
+  });
+
   it('renders intro content without read aloud controls on the overview page', () => {
     const { getByText, queryByTestId } = render(
       <ParticipationProjectHomeScreen navigation={{ navigate: jest.fn() } as never} />
