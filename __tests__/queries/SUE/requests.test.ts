@@ -1,6 +1,8 @@
+import { File } from 'expo-file-system';
+
 import { SUE_STATUS_SOURCE } from '../../../src/config';
-import { addToStore, readFromStore } from '../../../src/helpers';
-import { myRequests } from '../../../src/queries/SUE/requests';
+import { addToStore, fetchSueEndpoints, readFromStore } from '../../../src/helpers';
+import { myRequests, postRequests } from '../../../src/queries/SUE/requests';
 import { requestsWithServiceRequestId } from '../../../src/queries/SUE/requestsWithServiceRequestId';
 
 jest.mock('../../../src/helpers', () => ({
@@ -90,4 +92,43 @@ describe('SUE myRequests status handling', () => {
     expect(persistedReports()[0]).not.toHaveProperty('lastStatusCheck');
     expect(persistedReports()[0].status).toBe('Unbearbeitet');
   });
+});
+
+it('uploads SUE images as byte-backed multipart files', async () => {
+  (fetchSueEndpoints as jest.Mock).mockResolvedValue({
+    apiKey: 'test-key',
+    suePostRequest: 'https://example.test/sue'
+  });
+  const appendSpy = jest.spyOn(FormData.prototype, 'append').mockImplementation(() => {});
+  const bytesSpy = jest.spyOn(File.prototype, 'bytes').mockResolvedValue(new Uint8Array([1, 2]));
+  const fetchSpy = jest.spyOn(global, 'fetch').mockResolvedValue({
+    json: async () => ({ service_request_id: '123' })
+  } as Response);
+
+  try {
+    await postRequests({
+      images: JSON.stringify([
+        { uri: 'file:///report.jpg', imageName: 'report.jpg', mimeType: 'image/jpeg' }
+      ]),
+      title: 'Report'
+    });
+
+    const attachment = appendSpy.mock.calls.find(([name]) => name === 'media_file_1')?.[1];
+    expect(attachment).toEqual({
+      name: 'report.jpg',
+      type: 'image/jpeg',
+      bytes: expect.any(Function)
+    });
+    expect(await attachment.bytes()).toEqual(new Uint8Array([1, 2]));
+    expect(bytesSpy).toHaveBeenCalledTimes(1);
+    expect(fetchSpy).toHaveBeenCalledWith(
+      'https://example.test/sue',
+      expect.objectContaining({
+        headers: { accept: 'application/json', api_key: 'test-key' },
+        body: expect.any(FormData)
+      })
+    );
+  } finally {
+    jest.restoreAllMocks();
+  }
 });

@@ -1,5 +1,6 @@
 import _camelCase from 'lodash/camelCase';
 import _mapKeys from 'lodash/mapKeys';
+import { File } from 'expo-file-system';
 
 import { SUE_MY_REPORTS, SUE_STATUS, SUE_STATUS_SOURCE } from '../../config';
 import {
@@ -155,11 +156,12 @@ export const postRequests = async (data: any) => {
   const images = JSON.parse(data?.images) || [];
   for (let i = 0; i < images.length; i++) {
     const image = images[i];
+    const file = new File(image.uri);
 
     formData.append(`media_file_${i + 1}`, {
-      uri: image?.uri,
       name: image?.imageName,
-      type: image?.mimeType
+      type: image?.mimeType,
+      bytes: () => file.bytes()
     });
   }
 
@@ -167,8 +169,7 @@ export const postRequests = async (data: any) => {
     method: 'POST',
     headers: {
       accept: 'application/json',
-      api_key: apiKey,
-      'Content-Type': 'multipart/form-data'
+      api_key: apiKey
     },
     body: formData
   };

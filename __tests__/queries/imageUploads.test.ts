@@ -121,13 +121,27 @@ it.each([createUserAsync, updateUserAsync])(
       userId: '1',
       imageUri: 'file:///photo.png'
     });
-    expect(appendSpy).toHaveBeenCalledWith('image', {
-      uri: 'file:///photo.png',
+    const attachment = appendSpy.mock.calls.find(([name]) => name === 'image')?.[1];
+    expect(attachment).toEqual({
+      name: 'image.png',
       type: 'image/png',
-      name: 'image.png'
+      bytes: expect.any(Function)
     });
+    expect(await attachment.bytes()).toEqual(new Uint8Array([65, 66, 67]));
   }
 );
+
+it('updates Encounter profile without a file part when no new image is selected', async () => {
+  await updateUserAsync({
+    birthDate: '2000-01-01',
+    firstName: 'Test',
+    lastName: 'Test',
+    phone: '',
+    userId: '1'
+  });
+
+  expect(appendSpy.mock.calls.some(([name]) => name === 'image')).toBe(false);
+});
 
 it.each([
   ['image', 'jpg', 'image/jpeg'],

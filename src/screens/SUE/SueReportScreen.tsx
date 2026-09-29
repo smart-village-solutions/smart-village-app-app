@@ -705,7 +705,7 @@ export const SueReportScreen = ({
           resetStoredValues();
           setIsLoading(false);
         }
-      });
+      }).catch(() => undefined); // The mutation's onError callback already shows the failure alert.
     },
     [
       alertTextGeneratorForMissingData,

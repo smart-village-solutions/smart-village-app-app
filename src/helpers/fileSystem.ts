@@ -34,11 +34,11 @@ export const uploadMultipartFile = async ({
     formData.append(key, value);
   });
 
-  formData.append(
-    fieldName,
-    mimeType ? file.slice(undefined, undefined, mimeType) : file,
-    file.name
-  );
+  formData.append(fieldName, {
+    name: file.name,
+    type: mimeType ?? file.type,
+    bytes: () => file.bytes()
+  } as unknown as Blob);
 
   const response = await fetch(url, {
     body: formData,
