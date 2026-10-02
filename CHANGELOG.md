@@ -5,6 +5,75 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [5.0.0] :sparkles:
+
+This release introduces app-wide accessibility settings and dark mode, participation projects and interactive floor plans, adds profile content creation and local waste reminders, and upgrades Expo to SDK 57
+
+### Breaking
+
+- upgraded from Expo SDK 54 to 57 and React Native 0.81.5 to 0.86.2, requiring new iOS and Android binaries instead of an OTA-only update
+- replaced the BUS `settings.busBb` GraphQL integration with `settings.bus` and a REST proxy that requires a `federalState` configuration
+- local and flexible waste reminders require compatible Main-Server registration fields for reminder slots and local coverage, including server fallback synchronization
+- tenant configurations need versioned `5.0.0` global settings and updates for the new theme and navigation integration; see the [v4.3.0 to v5.0.0 migration guide](docs/MIGRATION_V4.3.0_TO_V5.0.0.md)
+
+### Added
+
+- added configurable accessibility settings for text scaling, bold text, grayscale, high contrast, reduced motion, reduced transparency and switch on/off labels
+- added light, dark and system theme selection with remotely configurable palettes and persisted user preferences
+- added read-aloud support across detail screens, forms and profile flows, including playback controls, a floating player and an optional read-along panel
+- added participation projects with home, list, detail and map views, status and nearby filters, bookmarks, search and remotely configurable sorting
+- added interactive floor plans with zoomable SVG floors, selectable pins, linked content and an accessible list view
+- added profile content creation and management for news, events and points of interest, with role-based service tiles, rich-text editing, image uploads and a personal content overview
+- added local waste reminder scheduling with configurable reminder slots per waste type, scheduled reminder counts and street editing from reminder settings
+- added waste disruption notification settings for the selected location or all locations
+- added opt-in feedback diagnostics with granular controls for permissions, push settings and waste reminder scheduling information
+- added configurable Generic Item event sources and Volunteer events to shared event lists, calendars, home sections and widgets
+- added optional reporting of Volunteer content and events with selectable report reasons
+- added BUS life situations, area search, paginated service search, online services, authorities and contact persons through the live API
+- added configurable compass and distance cards for points of interest and tour stops, plus route planning for points of interest without a postal address
+- added support for multiple icon libraries, per-tab and service-tile icon selection, image and SVG tab icons, and theme-aware widget SVGs
+- added configurable main map initial zoom and image-carousel pagination
+- added configurable cache expiration for general, Apollo, home and SUE data, plus a development cache reset action
+- added support for defect reports without a location and category ordering by position
+- added configurable SUE internal pending-status visibility and a separate SUE version label
+- added remotely configurable mobile user agents and bot-control support for web screens
+- added automated accessibility checks and simulator preview tooling for development
+
+### Changed
+
+- upgraded React to 19.2.3, TypeScript to 6.0.3 and Node.js to 22.13.0, with matching Expo and native dependency updates
+- migrated navigation imports to Expo Router entry points and file handling to the current Expo file system APIs
+- replaced `react-native-snap-carousel` with `react-native-reanimated-carousel` and updated GiftedChat to 3.4.0
+- improved Keycloak profile login with configurable OAuth endpoints, PKCE support, SecureStore-backed sessions and authenticated content editing and messaging
+- made service tiles, widgets, controls and voucher counters responsive to text scaling and available space
+- standardized accessible detail actions and moved secondary actions into the content area
+- enabled global search in regular headers and refreshed remote tab navigation configuration every minute
+- grouped recurring POI opening times by weekday by default, with an option to retain the previous layout
+- extended configurable news date formats to include time in list and detail views
+- extended parking availability handling to support parking garages and additional vehicle status formats
+- improved SUE saved-report status refresh, paginated search, report draft recovery and image-coordinate handling
+- extended dark theme support to Disturber content, calendars, maps, forms and module-specific screens
+- centralized configurable bookmark icons and aligned bookmark lists with configured layouts
+
+### Fixed
+
+- fixed push notification detail navigation across foreground, background and Android cold starts, including Volunteer notifications and navigation before the app is ready
+- fixed waste reminder synchronization after token, permission and address changes, duplicate scheduling and cleanup when push notifications are disabled
+- fixed waste calendar crashes, loading states after street changes and autocomplete keyboard handling
+- fixed camera and gallery crashes, report draft loss and Android image-saving permission flows in SUE
+- fixed HEIC and HEIF conversion, image MIME types and filenames, and multipart uploads for shared files, defect reports, SUE and Encounter images
+- fixed defect report category refresh, search, keyboard visibility and selection update loops
+- fixed Volunteer calendar pagination, duplicate event requests, recurring-event sharing and participation event calendar export
+- fixed participation event visibility and excluded event records from featured project previews while retaining them in category and full lists
+- fixed participation map state, filtering, home carousel alignment and portal links opening in the modal browser
+- fixed voucher availability, used-coupon listing and redemption layout and session timing issues
+- fixed onboarding consent flow, floating button navigation crashes and theme flashes during app transitions
+- fixed image-carousel shuffle stability, rendering and reduced-motion behavior
+- fixed screen-reader labels, image alternative text, HTML semantics, grayscale coverage and accessible modal controls
+- fixed tour map state when switching stop views and kept filter actions above Android navigation controls
+- fixed missing BUS initial-filter crashes, service detail fallbacks and category description formatting
+- fixed noticeboard prices being lost when entries are hidden
+
 ## [4.3.0] :world_map:
 
 This release introduces the new wallet and discovery tours modules, extends remote configurability for key screens and includes major SUE and map stability improvements
