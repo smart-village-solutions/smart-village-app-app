@@ -11,6 +11,7 @@ import {
 import { useTheme } from '../hooks/useTheme';
 import { QUERY_TYPES } from '../queries';
 import { myRequests } from '../queries/SUE';
+import { subscribeSueOutbox } from '../helpers/sueReportStorage';
 
 import { Button } from './Button';
 import { Wrapper } from './Wrapper';
@@ -70,9 +71,20 @@ export const ImageButton = ({ button }: { button: TImageButton }) => {
   useEffect(() => {
     if (params?.query !== QUERY_TYPES.SUE.MY_REQUESTS) return;
 
-    myRequests({ showInternalPendingStatus }).then((reports) => {
-      setIsVisible(!!reports?.length);
-    });
+    let active = true;
+    const updateVisibility = () => {
+      myRequests({ showInternalPendingStatus })
+        .then((reports) => {
+          if (active) setIsVisible(!!reports?.length);
+        })
+        .catch(() => undefined);
+    };
+    updateVisibility();
+    const unsubscribe = subscribeSueOutbox(updateVisibility);
+    return () => {
+      active = false;
+      unsubscribe();
+    };
   }, [params?.query, showInternalPendingStatus]);
 
   if (!params || !routeName) {

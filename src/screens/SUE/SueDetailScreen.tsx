@@ -2,7 +2,7 @@ import { StackScreenProps } from 'expo-router/js-stack';
 import { useBottomTabBarHeight } from 'expo-router/js-tabs';
 import _upperFirst from 'lodash/upperFirst';
 import React, { useContext, useEffect, useState } from 'react';
-import { ActivityIndicator, RefreshControl, ScrollView, View } from 'react-native';
+import { ActivityIndicator, Alert, RefreshControl, ScrollView, View } from 'react-native';
 import { Divider } from 'react-native-elements';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
@@ -30,6 +30,13 @@ import {
 } from '../../components';
 import { SUE_MY_REPORTS, device, normalize, texts } from '../../config';
 import { getVisibleSueStatus, readFromStore } from '../../helpers';
+import { getSueApiConfig } from '../../helpers/sueHelper';
+import {
+  readSueOutbox,
+  sueOutboxPresentation,
+  SueDeliveryStatus
+} from '../../helpers/sueReportStorage';
+import { retrySueReport } from '../../helpers/sueReportSync';
 import { useTheme } from '../../hooks/useTheme';
 import { useThemeStyles } from '../../hooks/useThemeStyles';
 import { QUERY_TYPES, getQuery } from '../../queries';
@@ -53,30 +60,64 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
   const { bottom: safeAreaBottom, top: safeAreaTop } = useSafeAreaInsets();
   const bottomTabBarHeight = useBottomTabBarHeight();
 
+  const localId = route.params?.localId || route.params?.details?.localId;
+  const { data: savedEntry, refetch: refetchSavedEntry } = useQuery(
+    ['sueOutboxReport', localId],
+    async () => (await readSueOutbox()).find((entry) => entry.localId === localId),
+    { enabled: !!localId }
+  );
+  const localDetails = savedEntry ? sueOutboxPresentation(savedEntry) : route.params?.details;
+  const deliveryStatus = localDetails?.deliveryStatus as SueDeliveryStatus | undefined;
+  const remoteId = savedEntry?.serviceRequestId || queryVariables?.id;
+  const currentEndpoint = `${
+    getSueApiConfig((sueConfig as { apiConfig?: Record<string, unknown> }).apiConfig).serverUrl
+  }/requests`;
+  const sameEndpoint =
+    !localDetails?.submissionEndpoint || localDetails.submissionEndpoint === currentEndpoint;
+  const [retrying, setRetrying] = useState(false);
+
+  const retry = async () => {
+    if (retrying) return;
+    setRetrying(true);
+    try {
+      await retrySueReport(localId);
+      await refetchSavedEntry();
+    } catch {
+      Alert.alert(texts.sue.report.alerts.hint, texts.sue.delivery.actionError);
+    } finally {
+      setRetrying(false);
+    }
+  };
+
   const { data, refetch, isLoading } = useQuery(
-    [QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID, queryVariables?.id],
-    () => getQuery(QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID)(queryVariables?.id)
+    [QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID, remoteId],
+    () => getQuery(QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID)(remoteId),
+    { enabled: !!remoteId && sameEndpoint && isConnected }
   );
 
   useEffect(() => {
     const checkIfMyReport = async () => {
       try {
         const myReportsJson = await readFromStore(SUE_MY_REPORTS);
-        if (myReportsJson) {
-          const myReports = JSON.parse(myReportsJson);
-          const found = myReports.some(
-            (report: any) => report.serviceRequestId === route.params?.details?.serviceRequestId
-          );
+        const myReports = [
+          ...JSON.parse(myReportsJson || '[]'),
+          ...(await readSueOutbox()).map(sueOutboxPresentation)
+        ];
+        const found = myReports.some(
+          (report: { serviceRequestId?: string | number; submissionEndpoint?: string }) =>
+            report.serviceRequestId &&
+            String(report.serviceRequestId) === String(remoteId) &&
+            (!report.submissionEndpoint || report.submissionEndpoint === currentEndpoint)
+        );
 
-          setIsMyReport(!!found);
-        }
+        setIsMyReport(!!found);
       } catch (e) {
         console.error('Error checking if report is my report', e);
       }
     };
 
     checkIfMyReport();
-  }, [data, queryVariables, route.params]);
+  }, [data, queryVariables, route.params, remoteId, currentEndpoint]);
 
   if (query === QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID && isLoading) {
     return (
@@ -87,7 +128,7 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
   }
 
   const details =
-    query === QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID ? data : route.params?.details;
+    query === QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID ? data || {} : localDetails || {};
   const {
     address,
     description,
@@ -111,7 +152,8 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
 
   const refresh = async () => {
     setRefreshing(true);
-    isConnected && (await refetch());
+    if (localId) await refetchSavedEntry();
+    if (isConnected && remoteId && sameEndpoint) await refetch();
     setRefreshing(false);
   };
 
@@ -156,6 +198,46 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
             </WrapperHorizontal>
           )}
 
+          {!!deliveryStatus && query === QUERY_TYPES.SUE.MY_REQUEST_WITH_SERVICE_REQUEST_ID && (
+            <Wrapper>
+              <BoldText>{texts.sue.delivery.labels[deliveryStatus]}</BoldText>
+              <RegularText>{texts.sue.delivery.messages[deliveryStatus]}</RegularText>
+              {!sameEndpoint && <RegularText>{texts.sue.delivery.differentServer}</RegularText>}
+              {sameEndpoint && localDetails.deliveryStatus === 'failed' && (
+                <Button
+                  title={texts.sue.delivery.edit}
+                  accessibilityLabel={texts.sue.delivery.edit}
+                  accessibilityHint={texts.sue.delivery.messages.failed}
+                  small={false}
+                  smallest={false}
+                  onPress={() =>
+                    navigation.push(ScreenName.SueReport, { rejectedReportId: localId })
+                  }
+                />
+              )}
+              {sameEndpoint && ['failed', 'uncertain'].includes(localDetails.deliveryStatus) && (
+                <Button
+                  disabled={retrying}
+                  title={texts.sue.delivery.retry}
+                  accessibilityLabel={texts.sue.delivery.retry}
+                  accessibilityHint={texts.sue.delivery.messages[deliveryStatus]}
+                  small={false}
+                  smallest={false}
+                  onPress={() => {
+                    if (localDetails.deliveryStatus === 'uncertain') {
+                      Alert.alert(texts.sue.delivery.retryTitle, texts.sue.delivery.retryMessage, [
+                        { text: texts.sue.report.alerts.close, style: 'cancel' },
+                        { text: texts.sue.delivery.retry, onPress: retry }
+                      ]);
+                    } else {
+                      void retry();
+                    }
+                  }}
+                />
+              )}
+            </Wrapper>
+          )}
+
           {!!matchedStatus && (
             <SueStatus iconName={matchedStatus.iconName} status={matchedStatus?.status} />
           )}
@@ -165,7 +247,9 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
           </WrapperHorizontal>
 
           {((query === QUERY_TYPES.SUE.MY_REQUEST_WITH_SERVICE_REQUEST_ID &&
-            !!data &&
+            sameEndpoint &&
+            !!remoteId &&
+            !!data?.serviceRequestId &&
             data?.status !== 404) ||
             (query === QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID && isMyReport)) && (
             <Wrapper noPaddingBottom>
@@ -189,17 +273,22 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
                     try {
                       const storedReportsJson = await readFromStore(SUE_MY_REPORTS);
 
-                      if (storedReportsJson) {
-                        const storedReports = JSON.parse(storedReportsJson);
-                        const matchingReport = Array.isArray(storedReports)
-                          ? storedReports.find(
-                              (report: any) => report?.serviceRequestId === serviceRequestId
-                            )
-                          : null;
+                      const storedReports = [
+                        ...JSON.parse(storedReportsJson || '[]'),
+                        ...(await readSueOutbox()).map(sueOutboxPresentation)
+                      ];
+                      const matchingReport = storedReports.find(
+                        (report: {
+                          serviceRequestId?: string | number;
+                          submissionEndpoint?: string;
+                        }) =>
+                          String(report.serviceRequestId) === String(serviceRequestId) &&
+                          (!report.submissionEndpoint ||
+                            report.submissionEndpoint === currentEndpoint)
+                      );
 
-                        if (matchingReport) {
-                          details = matchingReport;
-                        }
+                      if (matchingReport) {
+                        details = matchingReport;
                       }
                     } catch (e) {
                       // In case of any storage error, fall back to existing route params
@@ -208,6 +297,7 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
 
                   navigation.push(ScreenName.Detail, {
                     bookmarkable: false,
+                    localId: details?.localId,
                     details,
                     query: targetQuery,
                     queryVariables: { id: serviceRequestId },

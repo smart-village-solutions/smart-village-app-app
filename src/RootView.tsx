@@ -1,4 +1,3 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import React, { useCallback, useContext, useRef } from 'react';
@@ -7,7 +6,7 @@ import { StyleSheet, View } from 'react-native';
 import { AccessibilityContext } from './AccessibilityProvider';
 import { AppWideGrayscaleFilter } from './components/AppWideGrayscaleFilter';
 import { AppStatusBar } from './components/AppStatusBar';
-import { fontConfig, SUE_REPORT_VALUES } from './config';
+import { fontConfig } from './config';
 import { useTheme } from './hooks/useTheme';
 
 const RootView = ({ children }: { children: React.ReactNode }) => {
@@ -19,9 +18,6 @@ const RootView = ({ children }: { children: React.ReactNode }) => {
   const onLayoutRootView = useCallback(async () => {
     if (isFontLoaded && !hasHandledInitialLayout.current) {
       hasHandledInitialLayout.current = true;
-
-      // when the application is closed and reopened, the saved data in the sue report form is deleted
-      await AsyncStorage.removeItem(SUE_REPORT_VALUES);
 
       // Keep the native splash visible until the hydrated theme has rendered
       // and the root view has performed layout. This prevents a light blank

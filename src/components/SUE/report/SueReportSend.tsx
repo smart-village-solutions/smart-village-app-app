@@ -10,6 +10,7 @@ import { device, normalize, texts } from '../../../config';
 import { useAppInfo, useKeyboardHeight } from '../../../hooks';
 import { QUERY_TYPES, createQuery } from '../../../queries';
 import { ScreenName } from '../../../types';
+import { SueDeliveryStatus } from '../../../helpers/sueReportStorage';
 import { Button } from '../../Button';
 import { DefaultKeyboardAvoidingView } from '../../DefaultKeyboardAvoidingView';
 import { Image } from '../../Image';
@@ -27,11 +28,13 @@ type TNewContent = {
 export const SueReportSend = ({
   isDone,
   isLoading,
-  navigation
+  navigation,
+  deliveryStatus
 }: {
   isDone: boolean;
   isLoading: boolean;
   navigation: any;
+  deliveryStatus?: SueDeliveryStatus;
 }) => {
   const { colors: colors } = useTheme();
 
@@ -62,8 +65,17 @@ export const SueReportSend = ({
     }
   });
 
-  const title = isDone ? doneTitle : loadingTitle;
-  const subtitle = isDone ? doneSubtitle : loadingSubtitle;
+  const isQueued = isDone && deliveryStatus && deliveryStatus !== 'sent';
+  const title = isQueued
+    ? texts.sue.delivery.labels[deliveryStatus]
+    : isDone
+    ? doneTitle
+    : loadingTitle;
+  const subtitle = isQueued
+    ? texts.sue.delivery.messages[deliveryStatus]
+    : isDone
+    ? doneSubtitle
+    : loadingSubtitle;
 
   const [createAppUserContent, { loading }] = useMutation(
     createQuery(QUERY_TYPES.APP_USER_CONTENT)
@@ -123,11 +135,16 @@ export const SueReportSend = ({
             <Button
               invert
               notFullWidth
-              onPress={() => navigation.navigate(ScreenName.SueList)}
-              title={texts.sue.report.sendReportDone.toEntryList}
+              onPress={() =>
+                navigation.navigate(ScreenName.SueList, {
+                  query: QUERY_TYPES.SUE.MY_REQUESTS,
+                  title: texts.sue.myReports
+                })
+              }
+              title={texts.sue.viewMyReports}
             />
 
-            {showFeedbackSection && (
+            {showFeedbackSection && !isQueued && (
               <>
                 <Divider />
 

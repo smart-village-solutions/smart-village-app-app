@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Location from 'expo-location';
+import { randomUUID } from 'expo-crypto';
 import { StackScreenProps } from 'expo-router/js-stack';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import parsePhoneNumber from 'libphonenumber-js';
@@ -16,7 +17,7 @@ import React, {
 import { UseFormGetValues, UseFormSetValue, useForm } from 'react-hook-form';
 import { ActivityIndicator, Alert, Keyboard, ScrollView, View } from 'react-native';
 import { Divider } from 'react-native-elements';
-import { useMutation, useQuery } from 'react-query';
+import { useQuery } from 'react-query';
 
 import { ConfigurationsContext } from '../../ConfigurationsProvider';
 import {
@@ -35,7 +36,7 @@ import {
   SueReportUser,
   Wrapper
 } from '../../components';
-import { SUE_MY_REPORTS, SUE_REPORT_VALUES, consts, device, normalize, texts } from '../../config';
+import { SUE_REPORT_VALUES, consts, device, normalize, texts } from '../../config';
 import {
   addToStore,
   formatSizeStandard,
@@ -47,7 +48,9 @@ import { useKeyboardHeight } from '../../hooks';
 import { useTheme } from '../../hooks/useTheme';
 import { useThemeStyles } from '../../hooks/useThemeStyles';
 import { QUERY_TYPES, getQuery } from '../../queries';
-import { postRequests } from '../../queries/SUE';
+import { fetchSueEndpoints } from '../../helpers/sueHelper';
+import { enqueueSueReport, readSueOutbox, SueDeliveryStatus } from '../../helpers/sueReportStorage';
+import { syncSueOutbox } from '../../helpers/sueReportSync';
 
 const { INPUT_KEYS, MB_TO_BYTES } = consts;
 
@@ -234,7 +237,7 @@ type TReports = {
   email: string;
   familyName: string;
   houseNumber: string;
-  images: { uri: string; mimeType: string }[];
+  images: string;
   name: string;
   phone: string;
   postalCode: string;
@@ -245,6 +248,8 @@ type TReports = {
 
 type TStoredValues = Partial<TReports> & {
   currentProgress?: number;
+  clientSubmissionId?: string;
+  rejectedReportId?: string;
   selectedPosition?: Location.LocationObjectCoords;
   service?: TService;
 };
@@ -310,6 +315,10 @@ export const SueReportScreen = ({
   const [isLoadingStoredData, setIsLoadingStoredData] = useState<boolean>(true);
   const [selectedPosition, setSelectedPosition] = useState<Location.LocationObjectCoords>();
   const [isDone, setIsDone] = useState(false);
+  const [deliveryStatus, setDeliveryStatus] = useState<SueDeliveryStatus>();
+  const clientSubmissionId = useRef(randomUUID());
+  const submitting = useRef(false);
+  const rejectedReportId = useRef<string | undefined>(undefined);
   const [storedValues, setStoredValues] = useState<TStoredValues>();
   const [updateRegionFromImage, setUpdateRegionFromImage] = useState(false);
   const [contentHeights, setContentHeights] = useState([]);
@@ -382,8 +391,6 @@ export const SueReportScreen = ({
     () => getQuery(QUERY_TYPES.SUE.AREA_SERVICE)(),
     { enabled: !!limitOfAreaCity }
   );
-
-  const { mutateAsync } = useMutation(postRequests);
 
   const alertTextGeneratorForMissingData = () => {
     const requiredInputs = sueProgressWithConfig?.[currentProgress]?.requiredInputs;
@@ -496,6 +503,8 @@ export const SueReportScreen = ({
   const storeReportValues = useCallback(
     async (progress = currentProgress) => {
       await addToStore(SUE_REPORT_VALUES, {
+        clientSubmissionId: clientSubmissionId.current,
+        rejectedReportId: rejectedReportId.current,
         currentProgress: progress,
         selectedPosition,
         service,
@@ -505,26 +514,34 @@ export const SueReportScreen = ({
     [currentProgress, selectedPosition, service, getValues]
   );
 
-  const storeMyReportsValues = async (newReport: any) => {
-    try {
-      const jsonValue = await readFromStore(SUE_MY_REPORTS);
-      let myReports = [];
-
-      if (jsonValue != null) {
-        myReports = JSON.parse(jsonValue);
-      }
-      myReports.unshift(newReport);
-
-      await addToStore(SUE_MY_REPORTS, JSON.stringify(myReports));
-    } catch (error) {
-      console.error('Error storing my reports values to AsyncStorage', error);
-    }
-  };
-
   async function readReportValuesFromStore() {
-    const savedValues = (await readFromStore(SUE_REPORT_VALUES)) as TStoredValues | undefined;
+    let savedValues = (await readFromStore(SUE_REPORT_VALUES)) as TStoredValues | undefined;
+    if (route.params?.rejectedReportId) {
+      const entry = (await readSueOutbox()).find(
+        (item) => item.localId === route.params.rejectedReportId
+      );
+      if (entry?.deliveryStatus === 'failed') {
+        savedValues = {
+          ...entry.payload,
+          rejectedReportId: entry.localId,
+          currentProgress: 0,
+          clientSubmissionId: randomUUID(),
+          service: {
+            serviceCode: entry.payload.serviceCode,
+            serviceName: entry.report.serviceName
+          },
+          selectedPosition:
+            entry.payload.lat != null && entry.payload.long != null
+              ? { latitude: entry.payload.lat, longitude: entry.payload.long }
+              : undefined
+        } as TStoredValues;
+      }
+    }
 
     if (savedValues) {
+      rejectedReportId.current = savedValues.rejectedReportId;
+      if (savedValues.clientSubmissionId)
+        clientSubmissionId.current = savedValues.clientSubmissionId;
       const restoredProgress = clampProgress(
         savedValues.currentProgress,
         sueProgressWithConfig.length - 1
@@ -534,7 +551,13 @@ export const SueReportScreen = ({
       setSelectedPosition(savedValues.selectedPosition);
       setCurrentProgress(restoredProgress);
       Object.entries(savedValues).forEach(([key, value]) => {
-        if (key !== 'currentProgress' && key !== 'service' && key !== 'selectedPosition') {
+        if (
+          key !== 'rejectedReportId' &&
+          key !== 'clientSubmissionId' &&
+          key !== 'currentProgress' &&
+          key !== 'service' &&
+          key !== 'selectedPosition'
+        ) {
           setValue(key as keyof TValues, value);
         }
       });
@@ -546,6 +569,8 @@ export const SueReportScreen = ({
   const resetStoredValues = useCallback(async () => {
     setIsLoadingStoredData(true);
     await AsyncStorage.removeItem(SUE_REPORT_VALUES);
+    clientSubmissionId.current = randomUUID();
+    rejectedReportId.current = undefined;
     setStoredValues(undefined);
     setService(undefined);
     setSelectedPosition(undefined);
@@ -624,9 +649,18 @@ export const SueReportScreen = ({
     async (sueReportData: TReports) => {
       Keyboard.dismiss();
 
-      await storeReportValues();
+      if (submitting.current) return;
+      submitting.current = true;
+      try {
+        await storeReportValues();
+      } catch {
+        submitting.current = false;
+        Alert.alert(texts.sue.report.alerts.hint, texts.sue.delivery.saveError);
+        return;
+      }
 
       if (alertTextGeneratorForMissingData()) {
+        submitting.current = false;
         return Alert.alert(texts.sue.report.alerts.hint, alertTextGeneratorForMissingData());
       }
 
@@ -651,67 +685,65 @@ export const SueReportScreen = ({
       };
 
       setIsLoading(true);
-      await mutateAsync(formData, {
-        onError: () => {
-          setIsLoading(false);
-          setCurrentProgress(0);
-
-          return Alert.alert(texts.defectReport.alerts.hint, texts.defectReport.alerts.error);
-        },
-        onSuccess: async (data) => {
-          if (data?.status && data.status !== 200) {
-            setIsLoading(false);
-            setCurrentProgress(0);
-
-            return Alert.alert(texts.defectReport.alerts.hint, texts.defectReport.alerts.error);
-          }
-
-          const serviceRequestId = Array.isArray(data)
-            ? data[0]?.service_request_id
-            : data?.service_request_id;
-
-          if (!serviceRequestId) {
-            setIsLoading(false);
-            setCurrentProgress(0);
-
-            return Alert.alert(texts.defectReport.alerts.hint, texts.defectReport.alerts.error);
-          }
-
-          let parsedImages = [];
-          try {
-            parsedImages = JSON.parse(formData.images) || [];
-          } catch (e) {
-            // fallback to empty list if images JSON is invalid
-          }
-
-          await storeMyReportsValues({
-            address: `${sueReportData.street} ${sueReportData.houseNumber}\r\n ${sueReportData.postalCode} ${sueReportData.city}`,
-            id: serviceRequestId,
-            media_url: JSON.stringify(
-              parsedImages.map((image: any, index: number) => ({
-                contentType: 'image',
-                id: `local-${index}`,
-                url: image.uri,
-                visible: true
-              }))
-            ),
-            requestedDatetime: new Date().toISOString(),
-            serviceName: service?.serviceName,
-            serviceRequestId,
-            ...formData,
-            ...getInitialSueStatus(showInternalPendingStatus)
-          });
-          setIsDone(true);
-          resetStoredValues();
-          setIsLoading(false);
+      let queuedId: string | undefined;
+      try {
+        const { suePostRequest, apiKey } = await fetchSueEndpoints();
+        if (!apiKey || !suePostRequest || suePostRequest.startsWith('undefined')) {
+          throw new Error('Missing SUE configuration');
         }
-      }).catch(() => undefined); // The mutation's onError callback already shows the failure alert.
+        const entry = await enqueueSueReport(
+          {
+            localId: clientSubmissionId.current,
+            endpoint: suePostRequest,
+            deliveryStatus: 'pending',
+            attempts: 0,
+            nextAttemptAt: 0,
+            payload: { ...formData, images: formData.images || '[]' },
+            report: {
+              ...formData,
+              address: `${sueReportData.street} ${sueReportData.houseNumber}\r\n ${sueReportData.postalCode} ${sueReportData.city}`,
+              requestedDatetime: new Date().toISOString(),
+              serviceName: service?.serviceName,
+              ...getInitialSueStatus(showInternalPendingStatus)
+            }
+          },
+          rejectedReportId.current
+        );
+        queuedId = entry.localId;
+        // Once queued, the report belongs to the outbox. A failed sync must not restore the form
+        // or enqueue another copy. The stable draft ID also protects interrupted draft cleanup.
+        await resetStoredValues();
+        await syncSueOutbox(true);
+      } catch (error) {
+        if (!queuedId) {
+          submitting.current = false;
+          setIsLoading(false);
+          Alert.alert(texts.sue.report.alerts.hint, texts.sue.delivery.saveError);
+          return;
+        }
+        console.error('SUE report saved; synchronization or draft cleanup failed');
+      }
+
+      let status: SueDeliveryStatus = 'uncertain';
+      try {
+        status =
+          (await readSueOutbox()).find((entry) => entry.localId === queuedId)?.deliveryStatus ||
+          'pending';
+      } catch {
+        // The durable entry was already written successfully.
+      }
+      setDeliveryStatus(status);
+      setIsDone(true);
+      setIsLoading(false);
+      // Keep the submission guard set while the completion screen is displayed.
+      if (status !== 'sent') {
+        Alert.alert(texts.sue.report.alerts.hint, texts.sue.delivery.messages[status]);
+      }
     },
     [
       alertTextGeneratorForMissingData,
       selectedPosition,
       service,
-      mutateAsync,
       resetStoredValues,
       showInternalPendingStatus,
       storeReportValues
@@ -775,7 +807,14 @@ export const SueReportScreen = ({
   }
 
   if (isDone || isLoading) {
-    return <SueReportSend navigation={navigation} isDone={isDone} isLoading={isLoading} />;
+    return (
+      <SueReportSend
+        navigation={navigation}
+        isDone={isDone}
+        isLoading={isLoading}
+        deliveryStatus={deliveryStatus}
+      />
+    );
   }
 
   return (

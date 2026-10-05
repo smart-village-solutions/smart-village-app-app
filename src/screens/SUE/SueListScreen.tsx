@@ -133,6 +133,7 @@ export const SueListScreen = ({ navigation, route }: Props) => {
         }),
       {
         getNextPageParam: (lastPage, allPages) => {
+          if (query === QUERY_TYPES.SUE.MY_REQUESTS) return undefined;
           if (lastPage.length < limit) {
             return undefined;
           }
@@ -225,7 +226,7 @@ export const SueListScreen = ({ navigation, route }: Props) => {
 
   const refresh = async () => {
     setRefreshing(true);
-    isConnected && (await refetch());
+    (isConnected || query === QUERY_TYPES.SUE.MY_REQUESTS) && (await refetch());
     setRefreshing(false);
   };
 

@@ -1,6 +1,6 @@
+import NetInfo from '@react-native-community/netinfo';
 import _camelCase from 'lodash/camelCase';
 import _mapKeys from 'lodash/mapKeys';
-import { File } from 'expo-file-system';
 
 import { SUE_MY_REPORTS, SUE_STATUS, SUE_STATUS_SOURCE } from '../../config';
 import {
@@ -12,6 +12,11 @@ import {
 } from '../../helpers';
 
 import { requestsWithServiceRequestId } from './requestsWithServiceRequestId';
+import {
+  readSueOutbox,
+  sueOutboxPresentation,
+  updateSueOutboxStatuses
+} from '../../helpers/sueReportStorage';
 
 // TTL for how often we refresh the status of a stored report (in ms)
 const STATUS_TTL_MS = 5 * 60 * 1000; // 5 minutes
@@ -56,16 +61,22 @@ export const myRequests = async ({
   try {
     const jsonValue = await readFromStore(SUE_MY_REPORTS);
 
-    if (jsonValue?.length) {
-      myReports = JSON.parse(jsonValue);
+    if (jsonValue != null) {
+      myReports = typeof jsonValue === 'string' ? JSON.parse(jsonValue) : jsonValue;
+      if (!Array.isArray(myReports)) throw new Error('Invalid saved SUE reports');
     }
   } catch (e) {
     console.error('Error reading my reports values from AsyncStorage', e);
+    throw e;
   }
+
+  const outboxReports = (await readSueOutbox()).map(sueOutboxPresentation);
+  const { suePostRequest } = outboxReports.length ? await fetchSueEndpoints() : {};
+  const isConnected = (await NetInfo.fetch()).isConnected === true;
 
   // Process all reports and update statuses where needed
   const updatedReports = await Promise.all(
-    myReports.map(async (item: any) => {
+    [...outboxReports, ...myReports].map(async (item: any) => {
       if (!item) return item;
 
       const inferredStatusSource = inferSueStatusSource(item);
@@ -88,15 +99,20 @@ export const myRequests = async ({
       // Only refresh non-final reports if the last check is older than our TTL (or missing)
       const shouldRefreshStatus =
         item.serviceRequestId &&
+        isConnected &&
+        (!item.submissionEndpoint || item.submissionEndpoint === suePostRequest) &&
         !isFinalStatus &&
         (!item.lastStatusCheck || now - item.lastStatusCheck > STATUS_TTL_MS);
 
       if (shouldRefreshStatus) {
         try {
-          const onlineReport = await requestsWithServiceRequestId(item.serviceRequestId);
+          const onlineReport = (await requestsWithServiceRequestId(item.serviceRequestId)) as
+            | Record<string, unknown>
+            | undefined;
           const isSuccessfulLookup =
             !!onlineReport &&
             typeof onlineReport === 'object' &&
+            String(onlineReport.serviceRequestId) === String(item.serviceRequestId) &&
             typeof onlineReport.status !== 'number';
 
           if (isSuccessfulLookup) {
@@ -121,6 +137,7 @@ export const myRequests = async ({
   // Save updated reports back to AsyncStorage
   try {
     await addToStore(SUE_MY_REPORTS, JSON.stringify(myReports));
+    await updateSueOutboxStatuses(outboxReports);
   } catch (e) {
     console.error('Error saving updated reports to AsyncStorage', e);
   }
@@ -129,51 +146,4 @@ export const myRequests = async ({
 };
 /* eslint-enable complexity */
 
-/* eslint-disable complexity */
-export const postRequests = async (data: any) => {
-  const { apiKey = '', suePostRequest = '' } = await fetchSueEndpoints();
-  const formData = new FormData();
-
-  if (data) {
-    const fieldMappings = {
-      addressString: 'address_string',
-      description: 'description',
-      email: 'email',
-      firstName: 'first_name',
-      lastName: 'last_name',
-      lat: 'lat',
-      long: 'long',
-      phone: 'phone',
-      serviceCode: 'service_code',
-      title: 'title'
-    };
-
-    Object.entries(fieldMappings).forEach(([key, formKey]) => {
-      data[key] && formData.append(formKey, data[key]);
-    });
-  }
-
-  const images = JSON.parse(data?.images) || [];
-  for (let i = 0; i < images.length; i++) {
-    const image = images[i];
-    const file = new File(image.uri);
-
-    formData.append(`media_file_${i + 1}`, {
-      name: image?.imageName,
-      type: image?.mimeType,
-      bytes: () => file.bytes()
-    });
-  }
-
-  const fetchObj = {
-    method: 'POST',
-    headers: {
-      accept: 'application/json',
-      api_key: apiKey
-    },
-    body: formData
-  };
-
-  return (await fetch(`${suePostRequest}`, fetchObj)).json();
-};
-/* eslint-enable complexity */
+export { postRequests } from './submitRequest';

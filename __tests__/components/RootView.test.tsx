@@ -107,8 +107,7 @@ describe('RootView', () => {
       await updatedRootView.props.onLayout();
     });
 
-    expect(mockRemoveItem).toHaveBeenCalledTimes(1);
-    expect(mockRemoveItem).toHaveBeenCalledWith('sueReportValues');
+    expect(mockRemoveItem).not.toHaveBeenCalled();
     expect(mockHideAsync).toHaveBeenCalledTimes(1);
   });
 

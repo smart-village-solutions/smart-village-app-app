@@ -38,6 +38,7 @@ import { initialContext, SettingsContext, SettingsProvider } from './SettingsPro
 import { AppThemeProvider } from './ThemeProvider';
 import { UnreadMessagesProvider } from './UnreadMessagesProvider';
 import { WasteReminderRuntime } from './WasteReminderRuntime';
+import { SueReportRuntime } from './SueReportRuntime';
 import { OtaUpdateManager, VolunteerReportProvider } from './components';
 
 const { LIST_TYPES } = consts;
@@ -261,6 +262,7 @@ export const MainApp = () => (
       <BookmarkProvider>
         <PermanentFilterProvider>
           <ReactQueryProvider>
+            <SueReportRuntime />
             <SafeAreaProvider>
               <MainAppWithApolloProvider />
             </SafeAreaProvider>
