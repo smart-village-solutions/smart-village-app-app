@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useContext } from 'react';
 import Autocomplete from 'react-native-autocomplete-input';
 
 import { device, normalize, texts } from '../../config';
@@ -11,7 +11,6 @@ import { Label } from '../Label';
 import { Wrapper } from '../Wrapper';
 
 import {
-  getAutocompleteKeyboardMarginBottom,
   getAutocompleteListContainerHeight,
   getAutocompleteMaxDropdownHeight
 } from './autocompleteLayout';
@@ -63,15 +62,6 @@ export const WasteCityInput = ({
   const { filterCities } = useFilterCities(isFocused);
   const cities = filterCities(inputValueCity, data?.wasteAddresses);
   const keyboardHeight = useKeyboardHeight();
-  const listContainerHeight = useMemo(() => {
-    const listLength = cities?.length ?? 0;
-
-    if (listLength < 6) {
-      return device.platform === 'ios' ? 'auto' : listLength * (normalize(22) + 2 * normalize(16));
-    } else {
-      return dimensions.height / 2.5;
-    }
-  }, [cities, dimensions.height]);
 
   /**
    * The variable `isCityResultsHidden` indicates whether the city results should be hidden based
@@ -85,7 +75,7 @@ export const WasteCityInput = ({
   );
 
   return (
-    <Wrapper>
+    <Wrapper shrink={!isCityResultsHidden && !!cities.length}>
       <Label bold>{wasteTexts.location}</Label>
       <Autocomplete
         autoCorrect={false}
@@ -104,20 +94,14 @@ export const WasteCityInput = ({
         listContainerStyle={[
           styles.autoCompleteListContainer,
           {
-            height: inputValueCitySelected
-              ? undefined
-              : getAutocompleteListContainerHeight({
-                  height: listContainerHeight,
-                  keyboardHeight,
-                  maxDropdownHeight: getAutocompleteMaxDropdownHeight({
-                    androidMaxHeight: normalize(250),
-                    iosMaxHeight: normalize(220),
-                    platform: device.platform
-                  })
-                }),
-            marginBottom: getAutocompleteKeyboardMarginBottom({
+            maxHeight: getAutocompleteListContainerHeight({
+              height: dimensions.height / 2.5,
               keyboardHeight,
-              platform: device.platform
+              maxDropdownHeight: getAutocompleteMaxDropdownHeight({
+                androidMaxHeight: normalize(250),
+                iosMaxHeight: normalize(220),
+                platform: device.platform
+              })
             })
           }
         ]}
