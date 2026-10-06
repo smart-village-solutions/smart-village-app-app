@@ -15,6 +15,7 @@ import {
   getAutocompleteMaxDropdownHeight
 } from './autocompleteLayout';
 import { createWasteInputStyles } from './wasteInputStyles';
+import { WasteSuggestionList } from './WasteSuggestionList';
 
 type Props = {
   isFocused: boolean;
@@ -75,7 +76,7 @@ export const WasteCityInput = ({
   );
 
   return (
-    <Wrapper shrink={!isCityResultsHidden && !!cities.length}>
+    <Wrapper>
       <Label bold>{wasteTexts.location}</Label>
       <Autocomplete
         autoCorrect={false}
@@ -115,6 +116,7 @@ export const WasteCityInput = ({
         placeholder={wasteTexts.location}
         placeholderTextColor={colors.placeholder}
         selectionColor={colors.primary}
+        renderResultList={WasteSuggestionList}
         style={styles.autoCompleteInput}
         value={inputValueCity}
       />
