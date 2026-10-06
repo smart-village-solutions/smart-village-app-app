@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import renderer from 'react-test-renderer';
 
 import { FloatingButton } from '../../src/components/FloatingButton';
@@ -28,6 +28,10 @@ const renderFloatingButton = (props) => {
   return testRenderer;
 };
 
+let mockInsets = { left: 0, right: 0 };
+jest.mock('react-native-safe-area-context', () => ({
+  useSafeAreaInsets: () => mockInsets
+}));
 const mockUseAccessibilityPreferences = jest.fn();
 const mockUseStaticContent = jest.fn();
 const mockUseHomeRefresh = jest.fn();
@@ -98,6 +102,7 @@ jest.mock('../../src/components/Image', () => ({
 describe('FloatingButton', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockInsets = { left: 0, right: 0 };
 
     mockUseStaticContent.mockReturnValue({
       data: [],
@@ -232,6 +237,19 @@ describe('FloatingButton', () => {
     });
 
     expect(testRenderer.root.findAllByType(TouchableOpacity)).toHaveLength(1);
+  });
+
+  it('keeps floating actions and the read-aloud player clear of landscape cutouts', () => {
+    mockInsets = { left: 62, right: 62 };
+    mockUseStaticContent.mockReturnValue({
+      data: [{ accessibilityLabel: 'Open', routeName: 'Home' }],
+      loading: false
+    });
+    const tree = renderFloatingButton({ bottomOffset: 49 });
+    const style = StyleSheet.flatten(tree.root.findAllByType(View)[0].props.style);
+    expect(style.left).toBe(78);
+    expect(style.right).toBe(78);
+    expect(style.bottom).toBe(65);
   });
 
   it('navigates on press with configured route and params', () => {

@@ -3,6 +3,8 @@ import {
   createStackNavigator
 } from 'expo-router/build/react-navigation/stack';
 import React, { useContext } from 'react';
+import { StyleSheet, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { AccessibilityContext } from '../AccessibilityProvider';
 import { StackConfig } from '../types';
@@ -35,7 +37,6 @@ const AppStackNavigator = ({ stackConfig }: { stackConfig: StackConfig }) => {
         <Stack.Screen
           key={screenConfig.routeName}
           name={screenConfig.routeName}
-          component={screenConfig.screenComponent}
           options={(props) => {
             const resolvedOptions =
               typeof screenConfig.screenOptions === 'function'
@@ -52,7 +53,15 @@ const AppStackNavigator = ({ stackConfig }: { stackConfig: StackConfig }) => {
             };
           }}
           initialParams={screenConfig.initialParams}
-        />
+        >
+          {(props) => (
+            <SafeAreaView edges={['left', 'right']} style={styles.screen}>
+              <View style={styles.screen}>
+                <screenConfig.screenComponent {...props} />
+              </View>
+            </SafeAreaView>
+          )}
+        </Stack.Screen>
       ))}
     </Stack.Navigator>
   );
@@ -87,3 +96,9 @@ export const createStackNavigatorResolver = () => {
     return ResolvedStackNavigator;
   };
 };
+
+const styles = StyleSheet.create({
+  screen: {
+    flex: 1
+  }
+});
