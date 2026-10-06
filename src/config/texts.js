@@ -1734,8 +1734,8 @@ export const texts = {
           camera: 'Bild aufnehmen',
           cancel: 'Abbrechen',
           description:
-            'Möchten Sie ein Bild mit der Kamera aufnehmen oder aus der Galerie auswählen?',
-          gallery: 'Galerie öffnen',
+            'Möchten Sie ein Bild mit der Kamera aufnehmen oder aus der Mediathek auswählen?',
+          gallery: 'Mediathek öffnen',
           title: 'Bildquelle auswählen'
         },
         invalidMail: 'Die eingegebene E-Mail-Adresse ist nicht gültig.',
