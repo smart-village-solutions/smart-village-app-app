@@ -6,7 +6,7 @@ import { ApolloLink } from 'apollo-link';
 import { setContext } from 'apollo-link-context';
 import { createHttpLink } from 'apollo-link-http';
 import _isEmpty from 'lodash/isEmpty';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { ApolloProvider } from 'react-apollo';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
@@ -80,6 +80,7 @@ const MainAppWithApolloProvider = () => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const [loading, setLoading] = useState(true);
   const [client, setClient] = useState();
+  const bootstrap = useRef({ client: undefined, pending: false, complete: false });
   const [initialGlobalSettings, setInitialGlobalSettings] = useState(initialContext.globalSettings);
   const [initialListTypesSettings, setInitialListTypesSettings] = useState({});
   const [initialLocationSettings, setInitialLocationSettings] = useState({});
@@ -206,13 +207,21 @@ const MainAppWithApolloProvider = () => {
     applyImageAspectRatio(globalSettings.imageAspectRatio);
     setInitialGlobalSettings(globalSettings);
     setInitialConversationSettings((await storageHelper.conversationSettings()) || {});
-
-    // this is currently the last point where something was done, so the app startup is done
-    setLoading(false);
   };
 
-  // setup the apollo client and setup global settings after apollo client setup finished
+  // Bootstrap once; reconnects must not replace the live cache or reset user settings.
   useEffect(() => {
+    const state = bootstrap.current;
+    if (isMainserverUp === null || state.pending) return;
+
+    if (state.complete) {
+      if (isMainserverUp) {
+        void auth().catch((error) => console.warn('Unable to refresh app authentication', error));
+      }
+      return;
+    }
+
+    state.pending = true;
     async function prepare() {
       try {
         if (isMainserverUp) {
@@ -223,18 +232,20 @@ const MainAppWithApolloProvider = () => {
           }
         }
 
-        const client = await setupApolloClient();
-
-        await setupInitialGlobalSettings({ client });
+        // Reuse the client if settings hydration failed and bootstrap is retried.
+        if (!state.client) state.client = await setupApolloClient();
+        await setupInitialGlobalSettings({ client: state.client });
+        state.complete = true;
+        setLoading(false);
       } catch (error) {
         console.warn(error);
+      } finally {
+        state.pending = false;
       }
     }
 
-    if (isMainserverUp !== null) {
-      void prepare();
-    }
-  }, [isMainserverUp]);
+    void prepare();
+  }, [isMainserverUp, loading]);
 
   if (loading || !client) return null;
 
