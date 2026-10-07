@@ -1,6 +1,7 @@
 import * as SecureStore from 'expo-secure-store';
 
 import { namespace, secrets } from './config';
+import { isJsonObject, JsonResponseError, readJsonResponse } from './helpers/jsonResponse';
 
 const ACCESS_TOKEN_EXPIRE_TIME = 'ACCESS_TOKEN_EXPIRE_TIME';
 
@@ -58,10 +59,22 @@ export const auth = async (callback, forceNewToken = false) => {
     `${secrets[namespace].serverUrl}${secrets[namespace].oAuthTokenEndpoint}`,
     fetchObj
   );
-  const json = await response.json();
+  const json = await readJsonResponse(response);
+  if (
+    !isJsonObject(json) ||
+    typeof json.access_token !== 'string' ||
+    !json.access_token ||
+    !Number.isFinite(json.created_at) ||
+    !Number.isFinite(json.expires_in) ||
+    json.expires_in <= 0
+  ) {
+    throw new JsonResponseError('shape', response.status);
+  }
 
   await SecureStore.setItemAsync('ACCESS_TOKEN', json.access_token);
   // save the time when the token will expire, calculated from the creation time in seconds
   // added by the expire duration in seconds
   await SecureStore.setItemAsync(ACCESS_TOKEN_EXPIRE_TIME, `${json.created_at + json.expires_in}`);
+
+  return callback && callback();
 };

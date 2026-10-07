@@ -25,6 +25,7 @@ import {
   storageHelper
 } from './helpers';
 import { AUTH_MODE_PUBLIC, getGraphqlAuthHeaders } from './graphqlAuth';
+import { queryWithAuthRetry } from './helpers/queryWithAuthRetry';
 import { IconProvider } from './IconProvider';
 import { Navigator } from './navigation/Navigator';
 import { NetworkContext, NetworkProvider } from './NetworkProvider';
@@ -83,7 +84,6 @@ const MainAppWithApolloProvider = () => {
   const [initialListTypesSettings, setInitialListTypesSettings] = useState({});
   const [initialLocationSettings, setInitialLocationSettings] = useState({});
   const [initialConversationSettings, setInitialConversationSettings] = useState({});
-  const [authRetried, setAuthRetried] = useState(false);
 
   const setupApolloClient = async () => {
     // https://www.apollographql.com/docs/react/recipes/authentication/#header
@@ -142,13 +142,6 @@ const MainAppWithApolloProvider = () => {
     return client;
   };
 
-  // we wait for NetInfo to check for main server reachability, which is made when `isMainserverUp`
-  // becomes `true` or `false` and is not `null` anymore.
-  useEffect(() => {
-    // setup the apollo client if NetInfo finished and if there is no client existing already
-    isMainserverUp !== null && !client && auth(setupApolloClient);
-  }, [isMainserverUp]);
-
   const setupInitialGlobalSettings = async ({ client }) => {
     const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
 
@@ -168,22 +161,20 @@ const MainAppWithApolloProvider = () => {
     let globalSettingsData;
 
     try {
-      const response = await client.query({
-        query: getQuery(QUERY_TYPES.PUBLIC_JSON_FILE),
-        variables: { name: 'globalSettings', version: appJson.expo.version },
-        fetchPolicy
-      });
+      const response = await queryWithAuthRetry(
+        () =>
+          client.query({
+            query: getQuery(QUERY_TYPES.PUBLIC_JSON_FILE),
+            variables: { name: 'globalSettings', version: appJson.expo.version },
+            fetchPolicy
+          }),
+        () => auth(undefined, true)
+      );
 
       globalSettingsData = response.data;
     } catch (error) {
-      console.warn('error', error);
-
-      if (error.message.includes('Network error')) {
-        // try once to authenticate with forcing a fresh token request
-        !authRetried && auth(setupApolloClient, true);
-        // set flag `true` to prevent endless loops
-        setAuthRetried(true);
-      }
+      // Keep cached settings on transport/parse failures; do not refresh valid credentials.
+      console.warn('Unable to refresh global settings', error);
     }
 
     const globalSettingsPublicJsonFileContent = globalSettingsData?.publicJsonFile?.content;
@@ -224,17 +215,23 @@ const MainAppWithApolloProvider = () => {
   useEffect(() => {
     async function prepare() {
       try {
-        await auth();
+        if (isMainserverUp) {
+          try {
+            await auth();
+          } catch (error) {
+            console.warn('Unable to refresh app authentication', error);
+          }
+        }
 
         const client = await setupApolloClient();
 
-        setupInitialGlobalSettings({ client });
+        await setupInitialGlobalSettings({ client });
       } catch (error) {
         console.warn(error);
       }
     }
 
-    !!isMainserverUp && prepare();
+    isMainserverUp !== null && prepare();
   }, [isMainserverUp]);
 
   if (loading || !client) return null;

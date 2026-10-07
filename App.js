@@ -28,7 +28,7 @@ const App = () => {
     // runs auth() if app returns from background or inactive to foreground
     const subscription = AppState.addEventListener('change', (nextAppState) => {
       if (appState.current.match(/inactive|background/) && nextAppState === 'active') {
-        auth();
+        auth().catch((error) => console.warn('Unable to refresh app authentication', error));
       }
 
       appState.current = nextAppState;
