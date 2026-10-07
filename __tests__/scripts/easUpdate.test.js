@@ -1,5 +1,5 @@
-const fs = require('fs');
-const { execSync, execFileSync } = require('child_process');
+import fs from 'fs';
+import { execSync, execFileSync } from 'child_process';
 
 jest.mock('fs', () => ({ readFileSync: jest.fn(), writeFileSync: jest.fn() }));
 jest.mock('child_process', () => ({ execSync: jest.fn(), execFileSync: jest.fn() }));
