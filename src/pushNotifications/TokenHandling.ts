@@ -1,6 +1,7 @@
 import * as SecureStore from 'expo-secure-store';
 import { Alert, DeviceEventEmitter } from 'react-native';
 
+import { readSecureStoreItem } from '../helpers/secureStore';
 import * as appJson from '../../app.json';
 import { device, secrets, texts } from '../config';
 
@@ -65,7 +66,7 @@ export const handleIncomingToken = async (token?: string) => {
 };
 
 const removeTokenFromServer = async (token: string) => {
-  const accessToken = await SecureStore.getItemAsync(PushNotificationStorageKeys.ACCESS_TOKEN);
+  const accessToken = await readSecureStoreItem(PushNotificationStorageKeys.ACCESS_TOKEN);
   const requestPath = secrets[namespace].serverUrl + secrets[namespace].rest.pushDevicesDelete;
   const fetchObj = {
     method: 'DELETE',
@@ -94,7 +95,7 @@ const removeTokenFromServer = async (token: string) => {
 };
 
 const addTokenToServer = async (token: string) => {
-  const accessToken = await SecureStore.getItemAsync(PushNotificationStorageKeys.ACCESS_TOKEN);
+  const accessToken = await readSecureStoreItem(PushNotificationStorageKeys.ACCESS_TOKEN);
   const requestPath = secrets[namespace].serverUrl + secrets[namespace].rest.pushDevicesRegister;
   const os =
     device.platform === 'ios' || device.platform === 'android' ? device.platform : 'undefined';
@@ -135,7 +136,7 @@ export const addExcludeNotificationConfigurationOnServer = async (
   token: string,
   excludeCategoryIds: Record<string, Record<string, unknown>>
 ) => {
-  const accessToken = await SecureStore.getItemAsync(PushNotificationStorageKeys.ACCESS_TOKEN);
+  const accessToken = await readSecureStoreItem(PushNotificationStorageKeys.ACCESS_TOKEN);
   const requestPath =
     secrets[namespace].serverUrl + '/notification/devices/0/exclusion_filter_config.json';
 
@@ -167,7 +168,7 @@ export const addExcludeNotificationConfigurationOnServer = async (
 };
 
 export const getExcludeNotificationConfigurationFromServer = async (token: string) => {
-  const accessToken = await SecureStore.getItemAsync(PushNotificationStorageKeys.ACCESS_TOKEN);
+  const accessToken = await readSecureStoreItem(PushNotificationStorageKeys.ACCESS_TOKEN);
   const requestPath =
     secrets[namespace].serverUrl + '/notification/devices/0/exclusion_filter_config.json';
 
@@ -202,11 +203,11 @@ export const getExcludeNotificationConfigurationFromServer = async (token: strin
 };
 
 export const getPushTokenFromStorage = () =>
-  SecureStore.getItemAsync(PushNotificationStorageKeys.PUSH_TOKEN);
+  readSecureStoreItem(PushNotificationStorageKeys.PUSH_TOKEN);
 
 export const addDataProvidersToTokenOnServer = async (excludeDataProviderIds: number[]) => {
   const storedToken = await getPushTokenFromStorage();
-  const accessToken = await SecureStore.getItemAsync(PushNotificationStorageKeys.ACCESS_TOKEN);
+  const accessToken = await readSecureStoreItem(PushNotificationStorageKeys.ACCESS_TOKEN);
   const requestPath =
     secrets[namespace].serverUrl + secrets[namespace].rest.pushDevicesDataProviders;
 
@@ -236,7 +237,7 @@ export const addDataProvidersToTokenOnServer = async (excludeDataProviderIds: nu
 
 export const addMowasRegionalKeysToTokenOnServer = async (mowasRegionalKeys: number[]) => {
   const storedToken = await getPushTokenFromStorage();
-  const accessToken = await SecureStore.getItemAsync(PushNotificationStorageKeys.ACCESS_TOKEN);
+  const accessToken = await readSecureStoreItem(PushNotificationStorageKeys.ACCESS_TOKEN);
   const requestPath =
     secrets[namespace].serverUrl + secrets[namespace].rest.pushDevicesDataProviders;
 
@@ -266,7 +267,7 @@ export const addMowasRegionalKeysToTokenOnServer = async (mowasRegionalKeys: num
 
 export const addMemberIdToTokenOnServer = async (memberId?: number) => {
   const storedToken = await getPushTokenFromStorage();
-  const accessToken = await SecureStore.getItemAsync(PushNotificationStorageKeys.ACCESS_TOKEN);
+  const accessToken = await readSecureStoreItem(PushNotificationStorageKeys.ACCESS_TOKEN);
   const requestPath =
     secrets[namespace].serverUrl + secrets[namespace].rest.pushDevicesDataProviders;
 
@@ -295,7 +296,7 @@ export const togglePushDeviceAssignment = async (
   method: 'POST' | 'DELETE' = 'POST'
 ) => {
   const storedToken = await getPushTokenFromStorage();
-  const accessToken = await SecureStore.getItemAsync(PushNotificationStorageKeys.ACCESS_TOKEN);
+  const accessToken = await readSecureStoreItem(PushNotificationStorageKeys.ACCESS_TOKEN);
   let requestPath = secrets[namespace].serverUrl + secrets[namespace].rest.pushDevicesAddAssignment;
 
   if (method === 'DELETE') {

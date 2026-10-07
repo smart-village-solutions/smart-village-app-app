@@ -1,5 +1,6 @@
 import * as SecureStore from 'expo-secure-store';
 
+import { readSecureStoreItem } from './helpers/secureStore';
 import { namespace, secrets } from './config';
 import { isJsonObject, JsonResponseError, readJsonResponse } from './helpers/jsonResponse';
 
@@ -11,17 +12,7 @@ const ACCESS_TOKEN_EXPIRE_TIME = 'ACCESS_TOKEN_EXPIRE_TIME';
  * we need to divide Date.now() by 1000, which otherwise would return miliseconds.
  */
 const isTokenValid = async () => {
-  let accessTokenExpireTime = null;
-
-  // The reason for the problem of staying in SplashScreen that occurs after the application is
-  // updated on the Android side is the inability to obtain the token here.
-  // For this reason, try/catch is used here and the problem of getting stuck in SplashScreen is solved.
-  try {
-    accessTokenExpireTime = await SecureStore.getItemAsync(ACCESS_TOKEN_EXPIRE_TIME);
-  } catch {
-    // Token deleted here so that it can be recreated
-    await SecureStore.deleteItemAsync(ACCESS_TOKEN_EXPIRE_TIME);
-  }
+  const accessTokenExpireTime = await readSecureStoreItem(ACCESS_TOKEN_EXPIRE_TIME);
 
   if (!accessTokenExpireTime) return false;
 

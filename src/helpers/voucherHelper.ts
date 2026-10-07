@@ -1,6 +1,7 @@
 import { randomUUID as uuid } from 'expo-crypto';
 import * as SecureStore from 'expo-secure-store';
 
+import { readSecureStoreItem } from './secureStore';
 import { addToStore, readFromStore, removeFromStore } from './storageHelper';
 
 const VOUCHER_AUTH_TOKEN = 'VOUCHER_AUTH_TOKEN';
@@ -18,18 +19,7 @@ export const storeVoucherAuthToken = (authToken?: string) => {
   }
 };
 
-export const voucherAuthToken = async () => {
-  let authToken = null;
-
-  try {
-    authToken = await SecureStore.getItemAsync(VOUCHER_AUTH_TOKEN);
-  } catch {
-    // Token deleted here so that it can be recreated
-    SecureStore.deleteItemAsync(VOUCHER_AUTH_TOKEN);
-  }
-
-  return authToken;
-};
+export const voucherAuthToken = () => readSecureStoreItem(VOUCHER_AUTH_TOKEN);
 
 export const storeVoucherAuthKey = async (authKey?: string) => {
   if (authKey) {
@@ -40,7 +30,7 @@ export const storeVoucherAuthKey = async (authKey?: string) => {
 };
 
 export const voucherAuthKey = async () => {
-  let authKey = await SecureStore.getItemAsync(VOUCHER_AUTH_KEY);
+  let authKey = await readSecureStoreItem(VOUCHER_AUTH_KEY);
 
   if (!authKey) {
     authKey = uuid();
