@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as SecureStore from 'expo-secure-store';
+
+import { readSecureStoreItem } from '../helpers/secureStore';
 
 import { PushNotificationStorageKeys } from './TokenHandling';
 import {
@@ -183,7 +184,7 @@ export const getWasteReminderOwnerKeyForToken = (pushToken?: string | null) =>
   pushToken ? `push:${hashString(pushToken)}` : 'anonymous';
 
 export const getWasteReminderOwnerKey = async () => {
-  const pushToken = await SecureStore.getItemAsync(PushNotificationStorageKeys.PUSH_TOKEN);
+  const pushToken = await readSecureStoreItem(PushNotificationStorageKeys.PUSH_TOKEN);
 
   return getWasteReminderOwnerKeyForToken(pushToken);
 };

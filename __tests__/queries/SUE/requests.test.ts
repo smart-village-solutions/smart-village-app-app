@@ -2,7 +2,7 @@ import { File } from 'expo-file-system';
 
 import { SUE_STATUS_SOURCE } from '../../../src/config';
 import { addToStore, fetchSueEndpoints, readFromStore } from '../../../src/helpers';
-import { myRequests, postRequests } from '../../../src/queries/SUE/requests';
+import { myRequests, postRequests, requests } from '../../../src/queries/SUE/requests';
 import { requestsWithServiceRequestId } from '../../../src/queries/SUE/requestsWithServiceRequestId';
 
 jest.mock('../../../src/helpers', () => ({
@@ -131,4 +131,29 @@ it('uploads SUE images as byte-backed multipart files', async () => {
   } finally {
     jest.restoreAllMocks();
   }
+});
+
+describe('SUE malformed response handling', () => {
+  afterEach(() => jest.restoreAllMocks());
+
+  it.each(['null', '{}', '[null, 1]'])(
+    'ignores invalid stored report collections: %s',
+    async (stored) => {
+      (readFromStore as jest.Mock).mockResolvedValue(stored);
+      await expect(myRequests()).resolves.toEqual([]);
+    }
+  );
+
+  it('rejects a malformed list response instead of returning an empty successful page', async () => {
+    (fetchSueEndpoints as jest.Mock).mockResolvedValue({
+      sueRequestsUrl: 'https://example.test/reports'
+    });
+    jest.spyOn(global, 'fetch').mockResolvedValue({
+      ok: true,
+      status: 200,
+      headers: { get: () => 'application/json' },
+      text: async () => '{}'
+    } as unknown as Response);
+    await expect(requests({})).rejects.toMatchObject({ reason: 'shape' });
+  });
 });

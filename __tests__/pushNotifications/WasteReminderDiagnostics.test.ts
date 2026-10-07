@@ -8,7 +8,8 @@ import {
 } from '../../src/pushNotifications/WasteReminderDiagnostics';
 
 jest.mock('@sentry/react-native', () => ({
-  captureMessage: jest.fn()
+  captureMessage: jest.fn(),
+  addBreadcrumb: jest.fn()
 }));
 
 jest.mock('expo-application', () => ({
@@ -88,21 +89,43 @@ describe('WasteReminderDiagnostics', () => {
     reportWasteReminderOwnerMigration('unchanged');
     reportWasteReminderMaintenanceSync('failed-pending');
 
-    expect(Sentry.captureMessage).toHaveBeenNthCalledWith(1, 'waste_reminder_owner_migration', {
-      contexts: { wasteReminder: { outcome: 'migrated' } },
+    expect(Sentry.addBreadcrumb).toHaveBeenNthCalledWith(1, {
+      category: 'wasteReminder',
+      message: 'waste_reminder_owner_migration',
+      data: { outcome: 'migrated' },
       level: 'info'
     });
-    expect(Sentry.captureMessage).toHaveBeenNthCalledWith(2, 'waste_reminder_owner_migration', {
-      contexts: { wasteReminder: { outcome: 'unchanged' } },
+    expect(Sentry.addBreadcrumb).toHaveBeenNthCalledWith(2, {
+      category: 'wasteReminder',
+      message: 'waste_reminder_owner_migration',
+      data: { outcome: 'unchanged' },
       level: 'debug'
     });
-    expect(Sentry.captureMessage).toHaveBeenNthCalledWith(3, 'waste_reminder_maintenance_sync', {
+    expect(Sentry.captureMessage).toHaveBeenNthCalledWith(1, 'waste_reminder_maintenance_sync', {
       contexts: { wasteReminder: { outcome: 'failed-pending' } },
       level: 'warning'
     });
     const serialized = JSON.stringify((Sentry.captureMessage as jest.Mock).mock.calls);
     ['token-a', 'token-b', 'ownerKey', 'storeId', 'payload', 'notificationId', 'stack'].forEach(
       (value) => expect(serialized).not.toContain(value)
+    );
+  });
+  it('keeps successful scheduling and routine maintenance out of the issue stream', () => {
+    reportWasteReminderSchedulingTransition({
+      actualCount: 42,
+      expectedCount: 42,
+      schedulingStatus: 'scheduled'
+    });
+    reportWasteReminderOwnerMigration('deferred-no-token');
+    reportWasteReminderMaintenanceSync('synced');
+    reportWasteReminderMaintenanceSync('skipped-no-token');
+    expect(Sentry.captureMessage).not.toHaveBeenCalled();
+    expect(Sentry.addBreadcrumb).toHaveBeenCalledTimes(4);
+    expect(Sentry.addBreadcrumb).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: 'waste_reminder_scheduling',
+        data: expect.objectContaining({ actualCount: 42, expectedCount: 42 })
+      })
     );
   });
 });

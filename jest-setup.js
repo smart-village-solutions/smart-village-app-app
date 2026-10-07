@@ -5,6 +5,8 @@ import mockReact from 'react';
 import { Image as MockReactNativeImage } from 'react-native';
 import { setUpTests } from 'react-native-reanimated';
 
+jest.mock('./src/config/secrets', () => require('./__mocks__/configSecrets'), { virtual: true });
+
 jest.mock('@react-native-async-storage/async-storage', () => mockAsyncStorage);
 jest.mock('@react-native-community/netinfo', () =>
   require('@react-native-community/netinfo/jest/netinfo-mock')

@@ -1,9 +1,10 @@
 import { FlashList } from '@shopify/flash-list';
-import React, { useContext, useMemo, useRef, useState } from 'react';
+import React, { useContext, useMemo, useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { consts, normalize } from '../config';
 import { useGroupedData, useRenderItem } from '../hooks';
+import { useListPagination } from '../hooks/useListPagination';
 import { QUERY_TYPES } from '../queries';
 import { SettingsContext } from '../SettingsProvider';
 
@@ -46,7 +47,7 @@ export const GroupedList = ({
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { switchBetweenListAndMap = SWITCH_BETWEEN_LIST_AND_MAP.TOP_FILTER } = settings;
-  const [listEndReached, setListEndReached] = useState(false);
+  const { listEndReached, onEndReached } = useListPagination(fetchMoreData, query, queryVariables);
   const flatListRef = useRef();
   const groupKey = queryVariables?.groupKey || 'publishedAt';
   const sectionedData = useMemo(
@@ -66,18 +67,6 @@ export const GroupedList = ({
         .filter((item) => item !== null),
     [sectionedData]
   );
-
-  const onEndReached = async () => {
-    if (fetchMoreData) {
-      // if there is a pagination, the end of the list is reached, when no more data is returned
-      // from partially fetching, so we need to check the data to determine the lists end
-      const { data: moreData } = await fetchMoreData();
-
-      setListEndReached(!moreData[query].length);
-    } else {
-      setListEndReached(true);
-    }
-  };
 
   const renderItem = useRenderItem(query, navigation, {
     queryVariables: { ...queryVariables, groupKey }
