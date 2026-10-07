@@ -82,3 +82,19 @@ Note: `.gitignore` already covers these rules; this section makes the agent beha
 - Main docs index: `docs/INDEX.md`
 - Changelog policy and release notes: `CHANGELOG.md`
 - Contribution and commit guidance: `CONTRIBUTING.md`
+
+## Code Review Rules
+
+- Write all review findings and summaries in English. Report actionable regressions introduced by the pull request, explain the affected scenario and impact, and point to the relevant changed lines. Leave formatting and lint checks to CI.
+
+### Customer app configuration
+
+- Check that shared changes preserve customer-specific API endpoints, feature flags, and branding. Flag hard-coded customer values in shared code or configuration changes that leave the corresponding generation templates inconsistent. Respect intentional differences between customer release branches.
+
+### Native and OTA compatibility
+
+- When a change adds or changes native modules, config plugins, or native build settings, check whether an OTA update could reach an incompatible installed binary. Require a compatible native build/runtime for native changes; JavaScript-only updates may remain OTA-compatible. Check both iOS and Android behavior where applicable.
+
+### Authentication and failure recovery
+
+- Flag changes that discard valid credentials or cached user data after temporary network or secure-storage failures, expose tokens or personal data in logs, or let stale asynchronous responses overwrite current state. Preserve recoverable state on transient failures; explicit logout and confirmed invalid credentials may clear the relevant state.
