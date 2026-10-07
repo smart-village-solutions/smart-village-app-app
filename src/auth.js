@@ -30,7 +30,7 @@ const isTokenValid = async () => {
  */
 export const auth = async (callback, forceNewToken = false) => {
   // if the token is still valid, just run the callback, if one exist, and quit
-  if (!forceNewToken && (await isTokenValid())) return callback && callback();
+  if (!forceNewToken && (await isTokenValid())) return callback?.();
 
   // otherwise fetch a new access token and expire time
   const fetchObj = {
@@ -67,5 +67,5 @@ export const auth = async (callback, forceNewToken = false) => {
   // added by the expire duration in seconds
   await SecureStore.setItemAsync(ACCESS_TOKEN_EXPIRE_TIME, `${json.created_at + json.expires_in}`);
 
-  return callback && callback();
+  return callback?.();
 };

@@ -231,7 +231,9 @@ const MainAppWithApolloProvider = () => {
       }
     }
 
-    isMainserverUp !== null && prepare();
+    if (isMainserverUp !== null) {
+      void prepare();
+    }
   }, [isMainserverUp]);
 
   if (loading || !client) return null;

@@ -1,5 +1,10 @@
 import fs from 'fs';
+import { createRequire } from 'module';
 import { execSync, execFileSync } from 'child_process';
+
+// CI does not need a global EAS installation; publishing remains mocked.
+const mockResolveCli = jest.fn();
+jest.mock('module', () => ({ createRequire: jest.fn(() => ({ resolve: mockResolveCli })) }));
 
 jest.mock('fs', () => ({ readFileSync: jest.fn(), writeFileSync: jest.fn() }));
 jest.mock('child_process', () => ({ execSync: jest.fn(), execFileSync: jest.fn() }));
@@ -24,6 +29,7 @@ describe('OTA source map publishing', () => {
   const originalToken = process.env.SENTRY_AUTH_TOKEN;
   beforeEach(() => {
     jest.clearAllMocks();
+    mockResolveCli.mockReset().mockReturnValue('/tools/eas-cli/bin/run');
     process.argv = ['node', 'eas-update.js', 'fix "quoted" message'];
     process.env.SENTRY_AUTH_TOKEN = 'test-token';
     fs.readFileSync.mockReturnValue(
@@ -49,8 +55,15 @@ describe('OTA source map publishing', () => {
     jest.isolateModules(() => require('../../.github/scripts/eas-update'));
     expect(execFileSync).toHaveBeenNthCalledWith(
       1,
-      'eas',
-      ['update', '--channel', 'production', '--message', 'fix "quoted" message'],
+      process.execPath,
+      [
+        '/tools/eas-cli/bin/run',
+        'update',
+        '--channel',
+        'production',
+        '--message',
+        'fix "quoted" message'
+      ],
       { stdio: 'inherit' }
     );
     expect(execFileSync).toHaveBeenNthCalledWith(
@@ -59,6 +72,8 @@ describe('OTA source map publishing', () => {
       [expect.stringContaining('expo-upload-sourcemaps'), 'dist'],
       { stdio: 'inherit' }
     );
+    expect(createRequire).toHaveBeenCalledWith(expect.stringContaining('eas-update.js'));
+    expect(mockResolveCli).toHaveBeenCalledWith('eas-cli/bin/run', { paths: expect.any(Array) });
     const commitIndex = execSync.mock.calls.findIndex(([command]) =>
       command.startsWith('git commit')
     );
@@ -66,6 +81,17 @@ describe('OTA source map publishing', () => {
       execSync.mock.invocationCallOrder[commitIndex]
     );
   });
+  it('fails before modifying config or publishing if the CLI cannot be resolved', () => {
+    mockResolveCli.mockImplementationOnce(() => {
+      throw new Error('EAS CLI missing');
+    });
+    expect(() => jest.isolateModules(() => require('../../.github/scripts/eas-update'))).toThrow(
+      'EAS CLI missing'
+    );
+    expect(fs.writeFileSync).not.toHaveBeenCalled();
+    expect(execFileSync).not.toHaveBeenCalled();
+  });
+
   it('does not commit or push after a source map upload failure', () => {
     execFileSync
       .mockImplementationOnce(() => undefined)
