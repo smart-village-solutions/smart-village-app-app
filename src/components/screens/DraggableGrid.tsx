@@ -16,9 +16,10 @@ type Props = {
   children: ReactElement<{ draggableId: string; draggableKey: string }>[];
   columns?: number;
   onDragEnd: (diff: Positions) => void;
+  width?: number;
 };
 
-export const DraggableGrid = ({ children, columns = 3, onDragEnd }: Props) => {
+export const DraggableGrid = ({ children, columns = 3, onDragEnd, width }: Props) => {
   const scrollY = useSharedValue(0);
   const scrollView = useAnimatedRef<Animated.ScrollView>();
   const positions = useSharedValue<Positions>(
@@ -39,7 +40,7 @@ export const DraggableGrid = ({ children, columns = 3, onDragEnd }: Props) => {
   const containerPadding = normalize(14);
   const numberOfTiles = Math.max(1, columns);
   const availableWidth =
-    dimensions.width - safeAreaInsets.left - safeAreaInsets.right - 2 * containerPadding;
+    (width ?? dimensions.width - safeAreaInsets.left - safeAreaInsets.right) - 2 * containerPadding;
 
   // calculate tile sizes based on live window dimensions, safe area insets and padding
   const tileSize = Math.max(0, availableWidth) / numberOfTiles;

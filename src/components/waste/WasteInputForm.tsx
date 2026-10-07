@@ -1,13 +1,9 @@
 import React, { useContext, useState } from 'react';
 
-import { device } from '../../config';
-import { useThemeStyles } from '../../hooks/useThemeStyles';
 import { SettingsContext } from '../../SettingsProvider';
-import { Wrapper } from '../Wrapper';
 
 import { WasteCityInput } from './WasteCityInput';
 import { WasteStreetInput } from './WasteStreetInput';
-import { createWasteInputStyles } from './wasteInputStyles';
 
 export const WasteInputForm = ({
   renderSuggestions = {
@@ -34,7 +30,6 @@ export const WasteInputForm = ({
   };
   setSelectedStreetId: (id?: number) => void;
 }) => {
-  const styles = useThemeStyles(createWasteInputStyles);
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { wasteAddresses = {} } = settings;
@@ -53,14 +48,6 @@ export const WasteInputForm = ({
           setIsFocused={setIsCityInputFocused}
           setSelectedStreetId={setSelectedStreetId}
         />
-      )}
-
-      {/* Render empty container for spacing as the inputs are overlaying on Androids */}
-      {hasWasteAddressesTwoStep && device.platform === 'android' && (
-        <>
-          <Wrapper />
-          <Wrapper style={styles.noPaddingTop} />
-        </>
       )}
 
       {/* Render street input field if city is selected or two-step is disabled */}

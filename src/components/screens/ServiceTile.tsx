@@ -79,6 +79,7 @@ const omitTileDimensionOverrides = (style: { [key: string]: any } = {}) => {
 
 /* eslint-disable complexity */
 export const ServiceTile = ({
+  contentWidth,
   draggableId,
   hasDiagonalGradientBackground = false,
   isEditMode = false,
@@ -90,6 +91,7 @@ export const ServiceTile = ({
   shouldAddMargin = false,
   tileSizeFactor = 1
 }: {
+  contentWidth?: number;
   draggableId: string;
   hasDiagonalGradientBackground?: boolean;
   isEditMode?: boolean;
@@ -243,6 +245,7 @@ export const ServiceTile = ({
                 },
                 !!item.tile &&
                   stylesWithProps({
+                    contentWidth,
                     columns,
                     dimensions,
                     safeAreaInsets,
@@ -270,6 +273,7 @@ export const ServiceTile = ({
                 normalizedFontStyle,
                 !!item.tile &&
                   stylesWithProps({
+                    contentWidth,
                     columns,
                     dimensions,
                     safeAreaInsets,
@@ -340,11 +344,13 @@ const createStyles = (colors) => ({
 /* eslint-disable react-native/no-unused-styles */
 /* this works properly, we do not want that warning */
 const stylesWithProps = ({
+  contentWidth,
   columns,
   dimensions,
   safeAreaInsets,
   tileSizeFactor = 1
 }: {
+  contentWidth?: number;
   columns: number;
   dimensions: { width: number; height: number };
   safeAreaInsets: EdgeInsets;
@@ -353,6 +359,7 @@ const stylesWithProps = ({
   const containerPadding = normalize(14);
   const safeColumns = Math.max(1, columns);
   const availableWidth =
+    contentWidth ??
     dimensions.width - safeAreaInsets.left - safeAreaInsets.right - 2 * containerPadding;
 
   // calculate tile sizes based on live window dimensions, safe area insets and padding
