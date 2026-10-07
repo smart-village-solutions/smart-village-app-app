@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { execSync } = require('child_process');
+const { execSync, execFileSync } = require('child_process');
 
 const appJsonPath = path.resolve(__dirname, '../../app.json');
 // Read the file
@@ -19,8 +19,14 @@ if (runtimePolicies.some((runtime) => runtime?.policy !== 'fingerprint')) {
   );
 }
 
+// The installed uploader requires this even when the project is configured via app.config.ts.
+if (!process.env.SENTRY_AUTH_TOKEN) {
+  throw new Error('SENTRY_AUTH_TOKEN is required to upload OTA source maps.');
+}
+const sourceMapUploader = require.resolve('@sentry/react-native/scripts/expo-upload-sourcemaps');
+
 // Ensure that expo.extra.otaVersion exists and is a number
-if (!appJson.expo || typeof appJson.expo.extra.otaVersion !== 'number') {
+if (!appJson.expo || typeof appJson.expo.extra?.otaVersion !== 'number') {
   console.error('❌ Error: expo.extra.otaVersion is missing or is not a number.');
   process.exit(1);
 }
@@ -41,7 +47,12 @@ execSync(`yarn prettier --write ${appJsonPath}`, { stdio: 'inherit' });
 
 console.log(`✅ expo.extra.otaVersion has been incremented to ${appJson.expo.extra.otaVersion}.`);
 
-execSync(`eas update --channel production --message "${updateMessage}"`, { stdio: 'inherit' });
+execFileSync('eas', ['update', '--channel', 'production', '--message', updateMessage], {
+  stdio: 'inherit'
+});
+
+// Upload the exact artifacts exported by EAS, not a second bundle with different debug IDs.
+execFileSync(process.execPath, [sourceMapUploader, 'dist'], { stdio: 'inherit' });
 
 // Perform Git commit
 execSync('git add app.json', { stdio: 'inherit' });
