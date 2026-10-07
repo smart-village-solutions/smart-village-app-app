@@ -14,6 +14,7 @@ export const buildSingleIconStyle = ({
   ownLocationPin,
   selectedMarker,
   showMarkerLabels,
+  sortMarkers,
   singleIconStyle
 }: {
   labelStyles?: LabelStyles;
@@ -21,6 +22,7 @@ export const buildSingleIconStyle = ({
   ownLocationPin: string;
   selectedMarker?: string;
   showMarkerLabels: boolean;
+  sortMarkers?: boolean;
   singleIconStyle?: SingleIconStyle;
 }) => ({
   ...singleIconStyle,
@@ -44,6 +46,10 @@ export const buildSingleIconStyle = ({
   ],
   iconAllowOverlap: true,
   iconIgnorePlacement: true,
+  ...(sortMarkers && {
+    symbolSortKey: ['get', 'sortKey'],
+    symbolZOrder: 'source'
+  }),
   ...(showMarkerLabels && {
     textField: ['get', 'label'],
     textFont: ['Noto Sans Bold', 'Open Sans Bold'],
