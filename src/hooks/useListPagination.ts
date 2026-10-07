@@ -7,7 +7,8 @@ type PageResult = {
 };
 
 const getArrayPageEnd = (result: PageResult, query?: string) => {
-  const items = query ? result.data?.[query] : result.data;
+  const data = result.data;
+  const items = query && data && !Array.isArray(data) ? data[query] : data;
   return Array.isArray(items) ? items.length === 0 : undefined;
 };
 
