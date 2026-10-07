@@ -6,6 +6,19 @@ const appJsonPath = path.resolve(__dirname, '../../app.json');
 // Read the file
 const appJson = JSON.parse(fs.readFileSync(appJsonPath, 'utf8'));
 
+// Native compatibility must be derived from the actual native dependencies.
+// Refuse inherited release configuration that could deliver new JS to old binaries.
+const runtimePolicies = [
+  appJson.expo?.runtimeVersion,
+  appJson.expo?.ios?.runtimeVersion ?? appJson.expo?.runtimeVersion,
+  appJson.expo?.android?.runtimeVersion ?? appJson.expo?.runtimeVersion
+];
+if (runtimePolicies.some((runtime) => runtime?.policy !== 'fingerprint')) {
+  throw new Error(
+    'OTA updates require the fingerprint runtime policy and a compatible native build.'
+  );
+}
+
 // Ensure that expo.extra.otaVersion exists and is a number
 if (!appJson.expo || typeof appJson.expo.extra.otaVersion !== 'number') {
   console.error('❌ Error: expo.extra.otaVersion is missing or is not a number.');
