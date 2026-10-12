@@ -1,6 +1,6 @@
-import { fireEvent, render } from '@testing-library/react-native';
+import { act, fireEvent, render, waitFor } from '@testing-library/react-native';
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Alert, Modal, PixelRatio, StyleSheet, View } from 'react-native';
 
 const mockUseWindowDimensions = jest.fn(() => ({
   fontScale: 1,
@@ -48,6 +48,9 @@ jest.mock('../../src/components/widgets/CustomWidget', () => ({
 jest.mock('../../src/components/widgets/EventWidget', () => ({
   EventWidget: () => null
 }));
+jest.mock('../../src/components/widgets/KlimaTalerWidget', () => ({
+  KlimaTalerWidget: () => null
+}));
 jest.mock('../../src/components/widgets/LunchWidget', () => ({
   LunchWidget: () => null
 }));
@@ -67,13 +70,24 @@ jest.mock('../../src/components/widgets/WebWidget', () => ({
   WebWidget: () => null
 }));
 
-import { AccessibilityContext } from '../../src/AccessibilityProvider';
-import { Widgets } from '../../src/components/widgets/Widgets';
+const mockSave = jest.fn().mockResolvedValue(undefined);
+jest.mock('../../src/hooks/useWidgetOrder', () => ({
+  useWidgetOrder: () => ({ order: [], loaded: true, save: mockSave })
+}));
 
-const getItemViewsByWidth = (views: ReturnType<typeof render>, width: string) =>
-  views
-    .UNSAFE_getAllByType(View)
-    .filter((view) => StyleSheet.flatten(view.props.style)?.width === width);
+import { AccessibilityContext } from '../../src/AccessibilityProvider';
+import { SettingsContext } from '../../src/SettingsProvider';
+import { Widgets } from '../../src/components/widgets/Widgets';
+import { ReorderableWidget } from '../../src/components/widgets/ReorderableWidget';
+
+const widgetItems = (tree: ReturnType<typeof render>) =>
+  tree.UNSAFE_getAllByType(ReorderableWidget);
+const widths = (tree: ReturnType<typeof render>) =>
+  widgetItems(tree).map((item) => StyleSheet.flatten(item.props.style).width as number);
+
+beforeEach(() => {
+  mockUseWindowDimensions.mockReturnValue({ width: 360, height: 800, scale: 3, fontScale: 1 });
+});
 
 describe('Widgets responsive layout', () => {
   it('renders four enlarged widgets as a two-by-two grid', () => {
@@ -83,7 +97,8 @@ describe('Widgets responsive layout', () => {
       </AccessibilityContext.Provider>
     );
 
-    expect(getItemViewsByWidth(tree, '50%')).toHaveLength(4);
+    expect(widths(tree)).toHaveLength(4);
+    widths(tree).forEach((width) => expect(width).toBe(163.5));
   });
 
   it('recalculates columns from the measured container width', () => {
@@ -98,6 +113,184 @@ describe('Widgets responsive layout', () => {
 
     fireEvent(container!, 'layout', { nativeEvent: { layout: { width: 320 } } });
 
-    expect(getItemViewsByWidth(tree, '25%')).toHaveLength(5);
+    expect(widths(tree).slice(0, 4)).toEqual(Array(4).fill(widths(tree)[0]));
+    expect(widths(tree)[0]).toBe(71.5);
+    expect(widths(tree)[4]).toBe(287.5);
+    tree.getAllByTestId('compactWidgetContainer').forEach((item) => {
+      expect(StyleSheet.flatten(item.props.style)).toMatchObject({ flexGrow: 1, minWidth: 0 });
+    });
   });
+});
+
+// Keep this at the real widget registry boundary: no separate widgets entry is required.
+
+test('globalSettings.settings automatically adds and removes the Klima-Taler widget', () => {
+  const tree = render(
+    <SettingsContext.Provider
+      value={{ globalSettings: { settings: { 'klima-taler': true } } } as never}
+    >
+      <Widgets widgetConfigs={[]} />
+    </SettingsContext.Provider>
+  );
+  expect(tree.UNSAFE_getAllByType(View).length).toBeGreaterThan(0);
+  tree.rerender(
+    <SettingsContext.Provider value={{ globalSettings: { 'klima-taler': true } } as never}>
+      <Widgets widgetConfigs={['klimaTaler']} />
+    </SettingsContext.Provider>
+  );
+  expect(tree.toJSON()).toBeNull();
+});
+
+test('Klima-Taler preserves explicit placement and splits compact rows', () => {
+  const screen = render(
+    <SettingsContext.Provider
+      value={{ globalSettings: { settings: { 'klima-taler': true } } } as never}
+    >
+      <Widgets widgetConfigs={['custom', 'klimaTaler', 'custom', 'custom', 'custom']} />
+    </SettingsContext.Provider>
+  );
+  expect(widgetItems(screen).map((item) => item.props.testID)).toEqual([
+    'compactWidgetContainer',
+    'klimaTalerCardContainer',
+    'compactWidgetContainer',
+    'compactWidgetContainer',
+    'compactWidgetContainer'
+  ]);
+  expect(screen.getAllByTestId('compactWidgetContainer')).toHaveLength(4);
+  expect(screen.getAllByTestId('klimaTalerCardContainer')).toHaveLength(1);
+  expect(StyleSheet.flatten(screen.getByTestId('klimaTalerCardContainer').props.style).width).toBe(
+    327.5
+  );
+});
+
+test.each([320, 360, 393, 411.4285714286, 430, 844])(
+  'fills complete and incomplete rows at width %s',
+  (width) => {
+    mockUseWindowDimensions.mockReturnValue({ width, height: 900, scale: 3, fontScale: 1 });
+    const tree = render(<Widgets widgetConfigs={Array(8).fill('custom')} />);
+    const items = tree.getAllByTestId('compactWidgetContainer');
+    expect(items).toHaveLength(8);
+    expect(StyleSheet.flatten(tree.getByTestId('widgetGrid').props.style)).toMatchObject({
+      width: '100%',
+      flexDirection: 'row',
+      flexWrap: 'wrap'
+    });
+    items.forEach((item) => expect(StyleSheet.flatten(item.props.style).flexGrow).toBe(1));
+  }
+);
+
+test('ordering is off by default and follows the remote flag', () => {
+  const tree = render(
+    <SettingsContext.Provider value={{ globalSettings: {} } as never}>
+      <Widgets widgetConfigs={['weather', 'event']} />
+    </SettingsContext.Provider>
+  );
+  expect(tree.queryByRole('button', { name: 'Widgets anordnen' })).toBeNull();
+  tree.rerender(
+    <SettingsContext.Provider
+      value={{ globalSettings: { settings: { personalizedWidgets: true } } } as never}
+    >
+      <Widgets widgetConfigs={['weather', 'event']} />
+    </SettingsContext.Provider>
+  );
+  expect(tree.getByRole('button', { name: 'Widgets anordnen' })).toBeTruthy();
+});
+
+const editingWidgets = (enabled = true) => (
+  <SettingsContext.Provider
+    value={
+      {
+        globalSettings: { settings: { personalizedWidgets: enabled, 'klima-taler': true } }
+      } as never
+    }
+  >
+    <Widgets widgetConfigs={['weather', 'klima-taler', 'event']} />
+  </SettingsContext.Provider>
+);
+
+test('edits the real widgets in place, saves on Done and never opens a modal', async () => {
+  mockSave.mockClear();
+  const tree = render(editingWidgets());
+  fireEvent.press(tree.getByRole('button', { name: 'Widgets anordnen' }));
+  expect(tree.UNSAFE_queryAllByType(Modal)).toHaveLength(0);
+  expect(tree.getByTestId('klimaTalerCardContainer')).toBeTruthy();
+  fireEvent(tree.getByRole('adjustable', { name: 'Klima-Taler' }), 'accessibilityAction', {
+    nativeEvent: { actionName: 'decrement' }
+  });
+  expect(widgetItems(tree)[0].props.testID).toBe('klimaTalerCardContainer');
+  expect(mockSave).not.toHaveBeenCalled();
+  fireEvent.press(tree.getByRole('button', { name: 'Fertig' }));
+  await waitFor(() =>
+    expect(mockSave).toHaveBeenCalledWith([
+      'widget:klimaTaler:0',
+      'widget:weather:0',
+      'widget:event:0'
+    ])
+  );
+  expect(tree.queryByRole('button', { name: 'Fertig' })).toBeNull();
+});
+
+test('cancel discards the draft and remote disabling exits editing', () => {
+  mockSave.mockClear();
+  const tree = render(editingWidgets());
+  fireEvent.press(tree.getByRole('button', { name: 'Widgets anordnen' }));
+  fireEvent(tree.getByRole('adjustable', { name: 'Klima-Taler' }), 'accessibilityAction', {
+    nativeEvent: { actionName: 'decrement' }
+  });
+  fireEvent.press(tree.getByRole('button', { name: 'Abbrechen' }));
+  expect(widgetItems(tree)[0].props.id).toBe('widget:weather:0');
+  expect(mockSave).not.toHaveBeenCalled();
+  fireEvent.press(tree.getByRole('button', { name: 'Widgets anordnen' }));
+  tree.rerender(editingWidgets(false));
+  expect(tree.queryByRole('button', { name: 'Fertig' })).toBeNull();
+  tree.rerender(editingWidgets());
+  expect(tree.getByRole('button', { name: 'Widgets anordnen' })).toBeTruthy();
+});
+
+test('a failed save keeps the inline editor open for retry', async () => {
+  const alert = jest.spyOn(Alert, 'alert').mockImplementation(() => undefined);
+  mockSave.mockRejectedValueOnce(new Error('storage'));
+  const tree = render(editingWidgets());
+  fireEvent.press(tree.getByRole('button', { name: 'Widgets anordnen' }));
+  fireEvent.press(tree.getByRole('button', { name: 'Fertig' }));
+  await waitFor(() => expect(alert).toHaveBeenCalled());
+  expect(tree.getByRole('button', { name: 'Fertig' })).toBeTruthy();
+  alert.mockRestore();
+});
+
+test('fractional Android widths leave rounding room before flexGrow fills the row', () => {
+  const ratio = jest.spyOn(PixelRatio, 'get').mockReturnValue(2.975);
+  mockUseWindowDimensions.mockReturnValue({
+    width: 477.71427396498575,
+    height: 900,
+    scale: 2.975,
+    fontScale: 1
+  });
+  const tree = render(<Widgets widgetConfigs={['custom', 'weather', 'voucher']} />);
+  const total = widths(tree).reduce((sum, width) => sum + width, 0);
+  expect(total).toBeLessThan(445.7142639160156);
+  expect(445.7142639160156 - total).toBeLessThan(3 / 2.975);
+  ratio.mockRestore();
+});
+
+test('hover previews ordering before release without remounting widgets; cancelled drag restores it', () => {
+  const measureGrid = jest
+    .spyOn(View.prototype, 'measureInWindow')
+    .mockImplementation((callback) => callback(0, 0, 360, 800));
+  const tree = render(editingWidgets());
+  fireEvent.press(tree.getByRole('button', { name: 'Widgets anordnen' }));
+  const card = widgetItems(tree)[1];
+  const cardIdentity = tree.getByTestId('klimaTalerCardContainer');
+  act(() => {
+    widgetItems(tree).forEach((item, index) =>
+      item.props.onLayout({ id: item.props.id, x: 0, y: index * 100, width: 300, height: 100 })
+    );
+    card.props.onDrag(card.props.id);
+  });
+  act(() => card.props.onHover(card.props.id, 50, 50));
+  expect(widgetItems(tree)[0].props.id).toBe('widget:klimaTaler:0');
+  expect(tree.getByTestId('klimaTalerCardContainer')).toBe(cardIdentity);
+  act(() => card.props.onDragEnd(card.props.id, false, 50, 50));
+  expect(widgetItems(tree)[0].props.id).toBe('widget:weather:0');
+  measureGrid.mockRestore();
 });
