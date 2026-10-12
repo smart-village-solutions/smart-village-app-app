@@ -12,6 +12,7 @@ import {
   resolveServiceTileStyle
 } from '../../helpers';
 import { IconLibrary } from '../../IconProvider';
+import { openKlimaTaler } from '../../klimaTaler/entry';
 import { OrientationContext } from '../../OrientationProvider';
 import { Image } from '../Image';
 import { Badge } from '../profile';
@@ -125,6 +126,8 @@ export const ServiceTile = ({
     () =>
       isEditMode
         ? onToggleVisibility(draggableId, isVisible, setIsVisible)
+        : item.routeName === 'KlimaTaler'
+        ? void openKlimaTaler()
         : navigation.push(item.routeName, {
             ...(item.params ?? {}),
             navigationSourceStaticJsonName: staticJsonName,

@@ -6,6 +6,10 @@ import renderer from 'react-test-renderer';
 const mockGoBack = jest.fn();
 let mockValidationErrors: Record<string, { message: string }> | null = null;
 
+// This isolated screen fixture provides only UI primitives, not Expo's native bridge.
+// Settings synchronization is covered with the real SettingsProvider in Klima-Taler tests.
+jest.mock('../../src/klimaTaler/configure', () => ({ configureKlimaTaler: jest.fn() }));
+
 jest.mock('react-native', () => {
   const ReactLocal = require('react');
 

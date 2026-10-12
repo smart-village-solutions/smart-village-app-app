@@ -1,6 +1,22 @@
 import appJson from '../../app.json';
 
 export const texts = {
+  klimaTaler: {
+    title: 'Klima-Taler',
+    opening: 'Klima-Taler wird geöffnet …',
+    retry: 'Erneut versuchen',
+    errors: {
+      E_DISABLED: 'Klima-Taler ist in dieser App noch nicht aktiviert.',
+      E_NATIVE_UNAVAILABLE: 'Klima-Taler benötigt eine neue Version dieser App.',
+      E_SIMULATOR_UNSUPPORTED:
+        'Klima-Taler ist auf diesem Simulator nicht verfügbar. Bitte auf einem echten iPhone testen.',
+      E_CONFIGURATION: 'Klima-Taler ist noch nicht eingerichtet.',
+      E_AUTHENTICATION:
+        'Die bestehende Klima-Taler-Sitzung konnte nicht wiederhergestellt werden. Bitte später erneut versuchen.',
+      E_PROVIDER:
+        'Klima-Taler konnte nicht geöffnet werden. Bitte die Verbindung prüfen und erneut versuchen.'
+    }
+  },
   accessibilityLabels: {
     actions: {
       back: 'Zurück',

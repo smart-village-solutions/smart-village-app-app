@@ -1,5 +1,8 @@
 import PropTypes from 'prop-types';
-import React, { createContext, useState } from 'react';
+import React, { createContext, useLayoutEffect, useState } from 'react';
+
+import { configureKlimaTaler } from './klimaTaler/configure';
+import { isKlimaTalerConfigured } from './klimaTaler/settings';
 
 export const initialContext = {
   globalSettings: {
@@ -30,6 +33,12 @@ export const SettingsProvider = ({
   const [listTypesSettings, setListTypesSettings] = useState(initialListTypesSettings);
   const [locationSettings, setLocationSettings] = useState(initialLocationSettings);
   const [conversationSettings, setConversationSettings] = useState(initialConversationSettings);
+  const klimaTalerEnabled = isKlimaTalerConfigured(globalSettings);
+
+  useLayoutEffect(() => {
+    configureKlimaTaler(klimaTalerEnabled);
+    return () => configureKlimaTaler(false);
+  }, [klimaTalerEnabled]);
 
   return (
     <SettingsContext.Provider
