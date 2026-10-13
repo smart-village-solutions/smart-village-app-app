@@ -5,12 +5,10 @@ import _upperFirst from 'lodash/upperFirst';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useQuery } from 'react-apollo';
 import { StyleSheet, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { NetworkContext } from '../../NetworkProvider';
-import { OrientationContext } from '../../OrientationProvider';
 import { SettingsContext } from '../../SettingsProvider';
-import { Icon, consts, device, normalize } from '../../config';
+import { Icon, consts, normalize } from '../../config';
 import {
   geoLocationFilteredListItem,
   graphqlFetchPolicy,
@@ -146,8 +144,6 @@ export const LocationOverview = ({
 
   const styles = useThemeStyles(createStyles);
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
-  const { orientation } = useContext(OrientationContext);
-  const safeAreaInsets = useSafeAreaInsets();
   const { globalSettings } = useContext(SettingsContext);
   const { navigation: navigationType } = globalSettings;
   const { locationSettings } = useLocationSettings();
@@ -331,10 +327,7 @@ export const LocationOverview = ({
           style={[
             styles.listItemContainer,
             stylesWithProps({
-              navigationType,
-              orientation,
-              safeAreaInsets,
-              deviceHeight: device.height
+              navigationType
             }).position
           ]}
         >
@@ -416,22 +409,12 @@ const createStyles = (colors) => ({
 
 /* eslint-disable react-native/no-unused-styles */
 /* this works properly, we do not want that warning */
-const stylesWithProps = ({
-  navigationType,
-  orientation,
-  safeAreaInsets,
-  deviceHeight
-}: {
-  navigationType: string;
-  orientation: string;
-  safeAreaInsets: { left: number; right: number };
-  deviceHeight: number;
-}) => {
+const stylesWithProps = ({ navigationType }: { navigationType: string }) => {
   return StyleSheet.create({
     position: {
       bottom: navigationType === 'drawer' ? '8%' : '4%',
-      left: orientation === 'landscape' ? safeAreaInsets.left + deviceHeight * 0.04 : '4%',
-      right: orientation === 'landscape' ? safeAreaInsets.right + deviceHeight * 0.04 : '4%'
+      left: '4%',
+      right: '4%'
     }
   });
 };

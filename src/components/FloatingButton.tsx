@@ -1,6 +1,7 @@
 import _filter from 'lodash/filter';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { Platform, TouchableOpacity, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Icon, normalize } from '../config';
 import { useAccessibilityPreferences, useHomeRefresh, useStaticContent } from '../hooks';
@@ -31,6 +32,7 @@ export const FloatingButton = ({
   bottomOffset?: number;
   publicJsonFile: string;
 }) => {
+  const { left, right } = useSafeAreaInsets();
   const { colors } = useTheme();
 
   const styles = useThemeStyles(createStyles);
@@ -58,8 +60,12 @@ export const FloatingButton = ({
   const readAloudItems = getRouteItems(activeRouteKey);
   const showReadAloudPlayer = features.readAloud && isRouteAvailable(activeRouteKey);
   const positionStyle = useMemo(
-    () => ({ bottom: navigationType === 'drawer' ? '5%' : normalize(16) + bottomOffset }),
-    [bottomOffset, navigationType]
+    () => ({
+      bottom: navigationType === 'drawer' ? '5%' : normalize(16) + bottomOffset,
+      left: normalize(16) + left,
+      right: normalize(16) + right
+    }),
+    [bottomOffset, navigationType, left, right]
   );
 
   const { data, loading, refetch } = useStaticContent<TButton[]>({
@@ -156,9 +162,7 @@ const createStyles = (colors) => ({
   },
 
   container: {
-    left: normalize(16),
-    position: 'absolute',
-    right: normalize(16)
+    position: 'absolute'
   },
 
   icon: {
