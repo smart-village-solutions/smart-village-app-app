@@ -230,12 +230,11 @@ export const SueListScreen = ({ navigation, route }: Props) => {
   };
 
   const fetchMoreData = useCallback(async () => {
-    if (hasNextPage) {
-      return await fetchNextPage();
-    }
+    if (!isConnected || isFetchingNextPage) return;
+    if (hasNextPage) return await fetchNextPage();
 
-    return {};
-  }, [data, fetchNextPage, hasNextPage, query]);
+    return { hasNextPage };
+  }, [fetchNextPage, hasNextPage, isConnected, isFetchingNextPage]);
 
   if (isOpening) return null;
 
@@ -254,6 +253,7 @@ export const SueListScreen = ({ navigation, route }: Props) => {
           query={query}
           data={listItems}
           fetchMoreData={fetchMoreData}
+          queryVariables={queryVariables}
           ListEmptyComponent={
             isLoading ? <SueLoadingIndicator /> : <EmptyMessage title={texts.sue.empty.list} />
           }
