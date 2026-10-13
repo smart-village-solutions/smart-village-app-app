@@ -34,11 +34,14 @@ jest.mock('expo-in-app-updates', () => ({
   startUpdate: jest.fn(async () => undefined)
 }));
 jest.mock('expo-media-library', () => ({
+  requestPermissionsAsync: jest.fn(async () => ({ status: 'granted' }))
+}));
+jest.mock('expo-media-library/legacy', () => ({
   addAssetsToAlbumAsync: jest.fn(async () => undefined),
   createAlbumAsync: jest.fn(async () => undefined),
   createAssetAsync: jest.fn(async (uri) => ({ uri })),
   getAlbumAsync: jest.fn(async () => null),
-  requestPermissionsAsync: jest.fn(async () => ({ status: 'granted' }))
+  saveToLibraryAsync: jest.fn(async () => undefined)
 }));
 jest.mock('expo-video', () => ({
   useVideoPlayer: jest.fn((_source, setup) => {

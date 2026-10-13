@@ -1,5 +1,5 @@
-import React, { useContext, useMemo } from 'react';
-import { StyleSheet, View } from 'react-native';
+import React, { useContext, useEffect, useMemo, useRef } from 'react';
+import { Platform, StyleSheet, View } from 'react-native';
 import { Overlay } from 'react-native-elements';
 
 import { AccessibilityContext } from '../AccessibilityProvider';
@@ -37,12 +37,24 @@ export const Modal = ({
   const { isReduceMotionEnabled } = useContext(AccessibilityContext);
   const { colors } = useTheme();
   const styles = useMemo(() => createStyles(colors), [colors]);
+  const wasVisible = useRef(isVisible);
+
+  useEffect(() => {
+    const didHide = wasVisible.current && !isVisible;
+    wasVisible.current = isVisible;
+
+    // Android removes the native modal when hidden, but only iOS emits onDismiss.
+    // Run after the hidden render commits so native pickers can open safely.
+    if (Platform.OS === 'android' && didHide) {
+      onModalHide?.();
+    }
+  }, [isVisible, onModalHide]);
 
   return (
     <Overlay
       animationType={isReduceMotionEnabled ? 'none' : 'fade'}
       isVisible={isVisible}
-      onDismiss={onModalHide}
+      onDismiss={Platform.OS === 'android' ? undefined : onModalHide}
       onBackdropPress={isBackdropPress ? onModalVisible : undefined}
       overlayStyle={[!isListView && styles.overlay, styles.overlayWidth, { height }, overlayStyle]}
       statusBarTranslucent
