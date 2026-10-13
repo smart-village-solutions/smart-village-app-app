@@ -4,20 +4,24 @@ import configureApp from '../../app.config';
 import withChangers from '../../modules/expo-changers/plugin';
 
 jest.mock('../../modules/expo-changers/plugin', () => jest.fn((config) => config));
-jest.mock('../../src/config/secrets', () => ({
-  secrets: {
-    'fixture-app': {
-      'klima-taler': {
-        clientId: '123',
-        clientSecret: 'fixture-only-secret',
-        clientName: 'fixture-app'
+jest.mock(
+  '../../src/config/secrets',
+  () => ({
+    secrets: {
+      'fixture-app': {
+        'klima-taler': {
+          clientId: '123',
+          clientSecret: 'fixture-only-secret',
+          clientName: 'fixture-app'
+        }
+      },
+      'other-app': {
+        'klima-taler': { clientId: '456', clientSecret: 'other-fixture', clientName: 'other-app' }
       }
-    },
-    'other-app': {
-      'klima-taler': { clientId: '456', clientSecret: 'other-fixture', clientName: 'other-app' }
     }
-  }
-}));
+  }),
+  { virtual: true }
+);
 
 beforeEach(() => jest.clearAllMocks());
 
