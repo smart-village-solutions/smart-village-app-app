@@ -220,7 +220,7 @@ The table identifies the original local commits before rebase. This handover ori
 
 Reviewed the pinned [iOS vendor repository](https://github.com/Changers/changers-ios-sdk/tree/33c65f9b8db1618dfff3530c73a061935a66a9ff) and [Android sample](https://github.com/Changers/Sample-Android-SDK). The local iOS framework metadata confirms Changers 4.2.0 and MotionTag 6.3.4; the public Swift interface was read at the pinned commit. Inspected JVM classes were byte-for-byte checked against the resolved sdkstaging 1.20.6 and MotionTag 7.2.5 AARs before relying on their lifecycle/statistics behavior. No second MotionTag wrapper was introduced.
 
-### Test results recorded on 2026-10-13
+### Initial test results recorded on 2026-10-13 (before physical-device preparation)
 
 Commands ran with Node 22.13.0 and Yarn 1.22.22 using the existing installed dependencies. This is not a clean-install or release acceptance report.
 
@@ -242,7 +242,7 @@ No new failed Jest suites or failing test descriptions remain. The corrected App
 
 Local raw command logs are in `/tmp/klima-taler-validation`; the UIKit screenshot/result are in `/tmp/sva-klima-presentation.g1Zp40`. These temporary paths are supplementary, not durable release artifacts. The commands, test sources and summarized results here are the reproducible handover.
 
-### Build and device limits
+### Initial build and device limits (superseded by the iOS follow-up below)
 
 No installable, configured SVA development APK/IPA was produced. The expected private `src/config/secrets.js` is absent, the existing generated Android project has app-version-only runtime and no Changers configuration asset, and the local SVA iOS framework directories are incomplete. The separate research checkout supplied pinned frameworks for API inspection/typecheck only. Connected physical iPhones were offline. No secret material, signing credentials or accounts were created or modified; no paid build was started.
 
@@ -266,3 +266,46 @@ The only newly built iOS application was the credential-free UIKit test harness,
 4. On Android, enable the module and complete provider consent; verify route recording after backgrounding, OS process recreation, reboot and package update. Test force-stop separately, then reopen manually. Revoke permissions and provider consent; confirm no host-induced re-enablement.
 5. Disable the module remotely while online: entry/provider close and stop request, identity retained. Restart to verify the saved disable; re-enable and manage any tracking restart through the provider. Validate actual stop/server effects separately from `tracking=unknown`.
 6. Open/close repeatedly, including VoiceOver/TalkBack and large text; verify return focus, provider close control, current balance refresh and accessible widget ordering. Badge/POI target acceptance awaits the contracts above.
+
+## Physical iOS follow-up — 2026-10-13 (SVAK-239)
+
+> Historical device evidence from 13 October. This session does not validate the current rebased SDK, registration, lifecycle or widget changes. Current results and remaining device acceptance are recorded in the stacked PRs.
+
+The user supplied the private configuration and made an iPhone 16 Pro available over the local network. The following results supersede the initial iOS build limitation above; Android device acceptance remains deferred until after the iOS session and disk cleanup.
+
+### Build preparation and launch failure
+
+Generated an isolated native project, preserving the workspace's existing `ios` and `android` projects. The fixture used the existing registered bundle ID `de.dev.smartvillage.klima-taler.app`, cached signing profile and device authorization. No signing account, credentials or private secrets were created or modified. The pinned vendor frameworks were restored from the verified local research checkout into ignored framework directories.
+
+The first installed build crashed before JavaScript on iOS 27. Its crash report identified `UIApplicationEvaluateRuntimeIssueForNoSceneLifecycleAdoption`. The installed Expo packages were stale relative to the existing lockfile: Expo 57.0.14 and expo-build-properties 57.0.12 did not generate the intended scene configuration. `yarn install --frozen-lockfile` restored the already-declared Expo 57.0.27 / expo-build-properties 57.0.22 / ExpoModulesCore 57.0.21 versions without manifest or lockfile changes. Regenerated the isolated iOS project and updated its affected Expo pods. The resulting `UIApplicationSceneManifest` references `EXExpoAppSceneDelegate`; the rebuilt application launches successfully. See Expo's [scene lifecycle guidance](https://github.com/expo/fyi/blob/main/ios-scene-lifecycle.md).
+
+The device build used Xcode 27, Debug/arm64, four build jobs and disabled native debug-symbol generation to fit the available disk. `xcodebuild` succeeded and `codesign --verify --deep --strict` passed. Installed in place, preserving application data: app version 5.0.0 (build 1), runtime `5.0.0-changers-3`, Changers 4.2.0 and MotionTag 6.3.4. This is a local development client requiring Metro, not a distributed IPA or release build.
+
+### Observed on the physical device
+
+| Scenario                       | Result                                                                                                                                     |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| Home with an existing account  | Widget loads without a signup or permission prompt; native state is initialized/authenticated/ready, registration `existing`               |
+| Native statistics              | Finite `coins = 0.0004264`; widget and provider dashboard both display rounded `0`. This is not an exact-zero fixture                      |
+| Main provider entry            | `Mein Bereich` opens the actual provider dashboard; native `providerOpen` becomes true                                                     |
+| Close and refresh              | One close returns to Home, `providerOpen` becomes false, loading indicator resolves to the balance                                         |
+| Rapid double tap               | One visible dashboard; one close returns to Home, without a second stacked provider sheet                                                  |
+| Background / foreground        | Home and balance recover after leaving the app and bringing the existing process forward                                                   |
+| Process termination / relaunch | Home and dashboard reopen successfully; this is a process restart, not a device reboot or an OS-kill tracking test                         |
+| Identity preservation          | Local SHA-256 comparison matches the initial identity after open/close, background/foreground and process restart; no raw UUID is logged   |
+| Explicit wallet shortcut       | Displays `Bald verfügbar`; retained customer configuration is not a completed wallet destination                                           |
+| Tracking                       | Native status remains `unknown`; provider dashboard requests activation of automatic journey recording. Active tracking is not established |
+
+No fresh registration, account deletion, consent/permission change, real recorded journey/server credit, remote feature disable, OS reboot, VoiceOver acceptance, or deterministic missing/late SDK callback was verified in this session. The iOS permanent-busy and ambiguous-registration provider dependencies remain open. Offline/reconnect recovery requires a separate coordinated device step because turning off networking also disconnects the wireless development session.
+
+### Quality gate after dependency reconciliation
+
+- `yarn lint`: failed, 982 errors / 159 warnings, unchanged totals.
+- `yarn test --runInBand`: failed, 210 suites passed / 9 failed; 1343 tests passed / 13 failed / 8 skipped; 18 snapshots passed / 5 failed.
+- All 15 Klima-Taler and widget layout/reordering suites passed within the full run.
+
+The test environment now contains the user-provided private configuration and lockfile-aligned dependencies, so these totals are not directly comparable to the earlier missing-secrets/stale-dependency run. Failures remain in waste settings/accessibility, owner-auth context, HeaderRight, SettingsScreen, ImageButtonTheme and Button/Link/HtmlScreen snapshots. No snapshots were updated or failing tests suppressed. This follow-up changes documentation only; the repository-wide quality gate is still red.
+
+Local evidence is under `/tmp/klima-taler-device-validation`: `ios-build-aligned.log`, `ios-install-aligned.log`, `ios-provider-dashboard.png`, `ios-widget-restarted.png`, `lint-aligned.log` and `jest-aligned.log`. Keep logs local; they are not release artifacts. The signed `.app` is under `ios-derived/Build/Products/Debug-iphoneos/SmartVillageApp.app` in that directory.
+
+For disk cleanup after testing, the generated `ios-derived` directory occupies approximately 2.7 GiB and the isolated project's `ios/Pods` approximately 1.1 GiB; deleting text logs alone recovers little space. The isolated project path is recorded in `/tmp/klima-taler-device-validation/build-root.txt`. Preserve the small screenshots/report and any build needed for further installation before removing generated products. Cleanup does not require changing the repository's native projects or the installed application's data.
