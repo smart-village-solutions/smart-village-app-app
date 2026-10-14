@@ -2,16 +2,16 @@ import _camelCase from 'lodash/camelCase';
 import _mapKeys from 'lodash/mapKeys';
 import { File } from 'expo-file-system';
 
-import { SUE_MY_REPORTS, SUE_STATUS, SUE_STATUS_SOURCE } from '../../config';
+import { SUE_MY_REPORTS, SUE_STATUS_SOURCE } from '../../config/sue';
 import {
-  addToStore,
   fetchSueEndpoints,
   getVisibleSueStatus,
   inferSueStatusSource,
   readFromStore
 } from '../../helpers';
+import { StoredSueReport, updateSueMyReports } from '../../helpers/sueReportStorageHelper';
 
-import { requestsWithServiceRequestId } from './requestsWithServiceRequestId';
+import { requestsWithServiceRequestId, SueRequestError } from './requestsWithServiceRequestId';
 
 // TTL for how often we refresh the status of a stored report (in ms)
 const STATUS_TTL_MS = 5 * 60 * 1000; // 5 minutes
@@ -44,88 +44,123 @@ export const requests = async (queryVariables) => {
   });
 };
 
+const normalizeStoredReport = (item: StoredSueReport) => {
+  const report = { ...item };
+  const statusSource = inferSueStatusSource(report);
+
+  if (statusSource && !report.statusSource) {
+    report.statusSource = statusSource;
+  }
+
+  if (typeof report.media_url === 'string') {
+    try {
+      report.media_url = JSON.parse(report.media_url);
+    } catch (error) {
+      console.error('Error parsing media_url for stored SUE report', error);
+    }
+  }
+
+  return report;
+};
+
 /* eslint-disable complexity */
 export const myRequests = async ({
+  forceRefresh = false,
   showInternalPendingStatus
 }: {
+  forceRefresh?: boolean;
   showInternalPendingStatus?: unknown;
-} = {}): Promise<any[]> => {
-  let myReports = [];
+} = {}): Promise<StoredSueReport[]> => {
+  let myReports: StoredSueReport[] = [];
   const now = Date.now();
+  const statusUpdates = new Map<string, Partial<StoredSueReport> | null>();
 
   try {
     const jsonValue = await readFromStore(SUE_MY_REPORTS);
+    myReports = jsonValue ? JSON.parse(jsonValue) : [];
 
-    if (jsonValue?.length) {
-      myReports = JSON.parse(jsonValue);
+    if (!Array.isArray(myReports)) {
+      throw new Error('Invalid stored SUE reports');
     }
-  } catch (e) {
-    console.error('Error reading my reports values from AsyncStorage', e);
+  } catch (error) {
+    // Never overwrite recoverable reports when reading storage fails.
+    console.error('Error reading my reports values from AsyncStorage', error);
+    throw error;
   }
 
-  // Process all reports and update statuses where needed
-  const updatedReports = await Promise.all(
-    myReports.map(async (item: any) => {
-      if (!item) return item;
-
-      const inferredStatusSource = inferSueStatusSource(item);
-      if (inferredStatusSource && !item.statusSource) {
-        item.statusSource = inferredStatusSource;
-      }
-
-      // Parse media_url if it exists and is a string
-      if (item.media_url && typeof item.media_url === 'string') {
-        try {
-          item.media_url = JSON.parse(item.media_url);
-        } catch (e) {
-          // Do not let malformed stored media_url break the whole Promise.all
-          console.error('Error parsing media_url for stored SUE report', e);
-        }
-      }
-
-      const isFinalStatus = item.status === SUE_STATUS.CLOSED || item.status === SUE_STATUS.INVALID;
-
-      // Only refresh non-final reports if the last check is older than our TTL (or missing)
+  await Promise.all(
+    myReports.map(async (item) => {
       const shouldRefreshStatus =
-        item.serviceRequestId &&
-        !isFinalStatus &&
-        (!item.lastStatusCheck || now - item.lastStatusCheck > STATUS_TTL_MS);
+        item?.serviceRequestId &&
+        (forceRefresh || !item.lastStatusCheck || now - item.lastStatusCheck > STATUS_TTL_MS);
 
-      if (shouldRefreshStatus) {
-        try {
-          const onlineReport = await requestsWithServiceRequestId(item.serviceRequestId);
-          const isSuccessfulLookup =
-            !!onlineReport &&
-            typeof onlineReport === 'object' &&
-            typeof onlineReport.status !== 'number';
+      if (!shouldRefreshStatus) return;
 
-          if (isSuccessfulLookup) {
-            if (typeof onlineReport.status === 'string' && onlineReport.status.trim()) {
-              item.statusSource = SUE_STATUS_SOURCE.API;
-              item.status = onlineReport.status;
-            }
-            item.lastStatusCheck = now;
-          }
-        } catch (e) {
-          console.error(`Error fetching status for ${item.serviceRequestId}`, e);
+      try {
+        const onlineReport = await requestsWithServiceRequestId(item.serviceRequestId);
+
+        if (
+          onlineReport &&
+          typeof onlineReport.status === 'string' &&
+          onlineReport.status.trim() &&
+          (!onlineReport.serviceRequestId ||
+            String(onlineReport.serviceRequestId) === String(item.serviceRequestId))
+        ) {
+          statusUpdates.set(String(item.serviceRequestId), {
+            status: onlineReport.status,
+            statusSource: SUE_STATUS_SOURCE.API,
+            lastStatusCheck: now
+          });
+        }
+      } catch (error) {
+        const wasConfirmedByApi =
+          inferSueStatusSource(item) === SUE_STATUS_SOURCE.API &&
+          typeof item.lastStatusCheck === 'number' &&
+          item.lastStatusCheck > 0;
+
+        // A newly submitted report may be unavailable until moderation publishes it.
+        // Only remove a missing report that this endpoint previously confirmed.
+        if (
+          wasConfirmedByApi &&
+          error instanceof SueRequestError &&
+          (error.status === 404 || error.status === 410)
+        ) {
+          statusUpdates.set(String(item.serviceRequestId), null);
+        } else {
+          console.error(`Error fetching status for ${item.serviceRequestId}`, error);
         }
       }
-
-      const visibleStatus = getVisibleSueStatus(item, showInternalPendingStatus);
-      const presentationItem = { ...item, status: visibleStatus };
-
-      return _mapKeys(presentationItem, (value, key) => _camelCase(key));
     })
   );
 
-  // Save updated reports back to AsyncStorage
+  const mergeStatusUpdates = (reports: StoredSueReport[]) =>
+    reports.filter(Boolean).flatMap((item) => {
+      const update = statusUpdates.get(String(item.serviceRequestId));
+
+      // Do not let an older refresh replace the result of a newer successful lookup.
+      if (item.lastStatusCheck && item.lastStatusCheck > now) return [normalizeStoredReport(item)];
+      if (update === null) return [];
+
+      return [normalizeStoredReport({ ...item, ...update })];
+    });
+
+  let updatedReports: StoredSueReport[];
+
   try {
-    await addToStore(SUE_MY_REPORTS, JSON.stringify(myReports));
-  } catch (e) {
-    console.error('Error saving updated reports to AsyncStorage', e);
+    // Read current storage inside the update queue: reports submitted while the network
+    // requests were pending must remain present, and removed reports must not reappear.
+    updatedReports = await updateSueMyReports(mergeStatusUpdates);
+  } catch (error) {
+    console.error('Error saving updated reports to AsyncStorage', error);
+    updatedReports = mergeStatusUpdates(myReports);
   }
 
-  return updatedReports;
+  return updatedReports.map((item) =>
+    _mapKeys(
+      { ...item, status: getVisibleSueStatus(item, showInternalPendingStatus) },
+      (value, key) => _camelCase(key)
+    )
+  );
 };
 /* eslint-enable complexity */
 

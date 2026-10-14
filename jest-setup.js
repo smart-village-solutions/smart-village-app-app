@@ -5,6 +5,32 @@ import mockReact from 'react';
 import { Image as MockReactNativeImage } from 'react-native';
 import { setUpTests } from 'react-native-reanimated';
 
+jest.mock(
+  './src/config/secrets',
+  () => ({
+    encounterApi: {
+      serverUrl: 'https://example.test',
+      version: '/v1',
+      qr: '/qr',
+      user: '/user',
+      support: { create: '/support' }
+    },
+    secrets: {
+      [require('./app.json').expo.slug]: {
+        serverUrl: 'https://example.test',
+        graphqlEndpoint: '/graphql',
+        rest: {
+          pushDevicesDelete: '/notification/devices/0',
+          pushDevicesRegister: '/notification/devices',
+          pushDevicesDataProviders: '/notification/devices/0/data_providers',
+          pushDevicesAddAssignment: '/notification/device_assignments',
+          pushDevicesRemoveAssignment: '/notification/device_assignments/0'
+        }
+      }
+    }
+  }),
+  { virtual: true }
+);
 jest.mock('@react-native-async-storage/async-storage', () => mockAsyncStorage);
 jest.mock('@react-native-community/netinfo', () =>
   require('@react-native-community/netinfo/jest/netinfo-mock')

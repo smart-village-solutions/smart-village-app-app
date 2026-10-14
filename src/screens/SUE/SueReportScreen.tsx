@@ -35,14 +35,10 @@ import {
   SueReportUser,
   Wrapper
 } from '../../components';
-import { SUE_MY_REPORTS, SUE_REPORT_VALUES, consts, device, normalize, texts } from '../../config';
-import {
-  addToStore,
-  formatSizeStandard,
-  getInitialSueStatus,
-  getSueLimitOfAreaCity,
-  readFromStore
-} from '../../helpers';
+import { SUE_REPORT_VALUES, consts, device, normalize, texts } from '../../config';
+import { formatSizeStandard, getInitialSueStatus, getSueLimitOfAreaCity } from '../../helpers';
+import { readSueReportDraft, storeSueReportDraft } from '../../helpers/sueReportDraftHelper';
+import { updateSueMyReports } from '../../helpers/sueReportStorageHelper';
 import { useKeyboardHeight } from '../../hooks';
 import { useTheme } from '../../hooks/useTheme';
 import { useThemeStyles } from '../../hooks/useThemeStyles';
@@ -267,11 +263,7 @@ export const SueReportScreen = ({
   const { colors: colors } = useTheme();
 
   const styles = useThemeStyles(createStyles);
-  const {
-    isLoading: isConfigLoading,
-    refetch: configRefetch,
-    sueConfig = {}
-  } = useContext(ConfigurationsContext);
+  const { refetch: configRefetch, sueConfig = {} } = useContext(ConfigurationsContext);
   const {
     geoMap = {},
     limitation = {},
@@ -308,6 +300,8 @@ export const SueReportScreen = ({
   const [service, setService] = useState<TService>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isLoadingStoredData, setIsLoadingStoredData] = useState<boolean>(true);
+  const [draftRestoreFailed, setDraftRestoreFailed] = useState(false);
+  const [draftRestoreAttempt, setDraftRestoreAttempt] = useState(0);
   const [selectedPosition, setSelectedPosition] = useState<Location.LocationObjectCoords>();
   const [isDone, setIsDone] = useState(false);
   const [storedValues, setStoredValues] = useState<TStoredValues>();
@@ -327,6 +321,7 @@ export const SueReportScreen = ({
   const scrollViewRef = useRef(null);
   const scrollViewContentRef = useRef([]);
   const hasAppliedInitialProgressRef = useRef(false);
+  const hasRestoredDraftRef = useRef(false);
 
   const keyboardHeight = useKeyboardHeight();
 
@@ -484,18 +479,20 @@ export const SueReportScreen = ({
     return alertText;
   };
 
-  useEffect(() => {
-    readReportValuesFromStore();
-  }, []);
-
   const sueProgressWithConfig = useMemo(
     () => sueProgressWithRequiredInputs(requiredFields, geoMap, sueProgress),
     [requiredFields, geoMap, sueProgress]
   );
 
+  const hasConfiguredReportSteps =
+    !!sueProgressWithConfig.length &&
+    sueProgressWithConfig.every(({ content }) =>
+      ['category', 'description', 'location', 'user'].includes(content)
+    );
+
   const storeReportValues = useCallback(
     async (progress = currentProgress) => {
-      await addToStore(SUE_REPORT_VALUES, {
+      await storeSueReportDraft({
         currentProgress: progress,
         selectedPosition,
         service,
@@ -507,41 +504,56 @@ export const SueReportScreen = ({
 
   const storeMyReportsValues = async (newReport: any) => {
     try {
-      const jsonValue = await readFromStore(SUE_MY_REPORTS);
-      let myReports = [];
-
-      if (jsonValue != null) {
-        myReports = JSON.parse(jsonValue);
-      }
-      myReports.unshift(newReport);
-
-      await addToStore(SUE_MY_REPORTS, JSON.stringify(myReports));
+      await updateSueMyReports((reports) => [newReport, ...reports]);
     } catch (error) {
       console.error('Error storing my reports values to AsyncStorage', error);
     }
   };
 
-  async function readReportValuesFromStore() {
-    const savedValues = (await readFromStore(SUE_REPORT_VALUES)) as TStoredValues | undefined;
+  useEffect(() => {
+    // Step definitions can arrive after a draft from the current app session.
+    // Restoring earlier would clamp the saved step to zero permanently.
+    if (!hasConfiguredReportSteps || hasRestoredDraftRef.current) return;
 
-    if (savedValues) {
-      const restoredProgress = clampProgress(
-        savedValues.currentProgress,
-        sueProgressWithConfig.length - 1
-      );
-      setStoredValues(savedValues);
-      setService(savedValues.service);
-      setSelectedPosition(savedValues.selectedPosition);
-      setCurrentProgress(restoredProgress);
-      Object.entries(savedValues).forEach(([key, value]) => {
-        if (key !== 'currentProgress' && key !== 'service' && key !== 'selectedPosition') {
-          setValue(key as keyof TValues, value);
+    let cancelled = false;
+    const restoreDraft = async () => {
+      try {
+        const savedValues = (await readSueReportDraft()) as TStoredValues | undefined;
+        if (cancelled) return;
+
+        hasRestoredDraftRef.current = true;
+
+        if (savedValues) {
+          setStoredValues(savedValues);
+          setService(savedValues.service);
+          setSelectedPosition(savedValues.selectedPosition);
+          setCurrentProgress(
+            clampProgress(savedValues.currentProgress, sueProgressWithConfig.length - 1)
+          );
+          Object.entries(savedValues).forEach(([key, value]) => {
+            if (key in getValues()) setValue(key as keyof TValues, value);
+          });
         }
-      });
-    }
+        if (!cancelled) setIsLoadingStoredData(false);
+      } catch {
+        if (!cancelled) {
+          hasRestoredDraftRef.current = false;
+          setDraftRestoreFailed(true);
+        }
+      }
+    };
 
-    setIsLoadingStoredData(false);
-  }
+    void restoreDraft();
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    draftRestoreAttempt,
+    getValues,
+    hasConfiguredReportSteps,
+    setValue,
+    sueProgressWithConfig.length
+  ]);
 
   const resetStoredValues = useCallback(async () => {
     setIsLoadingStoredData(true);
@@ -560,21 +572,27 @@ export const SueReportScreen = ({
     setIsLoadingStoredData(false);
   }, [reset]);
 
-  useEffect(() => {
-    if (isLoadingStoredData || hasAppliedInitialProgressRef.current) {
-      return;
-    }
+  const restoreScrollPosition = useCallback(
+    (contentWidth: number) => {
+      if (
+        isLoadingStoredData ||
+        hasAppliedInitialProgressRef.current ||
+        !scrollViewRef.current ||
+        contentWidth < device.width * (currentProgress + 1)
+      ) {
+        return;
+      }
 
-    if (currentProgress > 0) {
-      scrollViewRef?.current?.scrollTo({
+      // Wait for the restored page to be laid out before issuing a native scroll.
+      scrollViewRef.current.scrollTo({
         x: device.width * currentProgress,
         y: 0,
         animated: false
       });
-    }
-
-    hasAppliedInitialProgressRef.current = true;
-  }, [isLoadingStoredData, currentProgress]);
+      hasAppliedInitialProgressRef.current = true;
+    },
+    [isLoadingStoredData, currentProgress]
+  );
 
   const handleNextPage = useCallback(async () => {
     Keyboard.dismiss();
@@ -762,11 +780,26 @@ export const SueReportScreen = ({
     }
   }, [navigation, resetStoredValues, route, storedValues]);
 
-  if (!sueProgressWithConfig.length) {
+  if (!hasConfiguredReportSteps) {
     return null;
   }
 
-  if (areaServiceLoading) {
+  if (draftRestoreFailed) {
+    return (
+      <Wrapper>
+        <BoldText>{texts.sue.report.draftRestoreError}</BoldText>
+        <Button
+          title={texts.sue.report.retry}
+          onPress={() => {
+            setDraftRestoreFailed(false);
+            setDraftRestoreAttempt((attempt) => attempt + 1);
+          }}
+        />
+      </Wrapper>
+    );
+  }
+
+  if (areaServiceLoading || isLoadingStoredData) {
     return (
       <LoadingContainer>
         <ActivityIndicator color={colors.refreshControl} />
@@ -791,6 +824,7 @@ export const SueReportScreen = ({
           horizontal
           pagingEnabled
           ref={scrollViewRef}
+          onContentSizeChange={restoreScrollPosition}
           scrollEnabled={false}
           showsHorizontalScrollIndicator={false}
         >

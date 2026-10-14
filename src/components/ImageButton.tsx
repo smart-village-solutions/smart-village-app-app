@@ -70,9 +70,12 @@ export const ImageButton = ({ button }: { button: TImageButton }) => {
   useEffect(() => {
     if (params?.query !== QUERY_TYPES.SUE.MY_REQUESTS) return;
 
-    myRequests({ showInternalPendingStatus }).then((reports) => {
-      setIsVisible(!!reports?.length);
-    });
+    myRequests({ showInternalPendingStatus })
+      .then((reports) => {
+        setIsVisible(!!reports?.length);
+      })
+      // Keep the current visibility if local storage is temporarily unavailable.
+      .catch(() => undefined);
   }, [params?.query, showInternalPendingStatus]);
 
   if (!params || !routeName) {
