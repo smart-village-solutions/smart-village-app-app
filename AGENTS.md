@@ -14,6 +14,9 @@ This document defines how AI agents should work in this repository.
 - Keep changes focused and minimal for the requested task.
 - Follow existing architecture and coding style in `src/`.
 - Update tests/documentation when behavior changes.
+- Update `CHANGELOG.md` only when preparing a new release version. Do not add
+  changelog entries or an `Unreleased` section for routine tasks, fixes, or
+  local-only version changes.
 - Do not introduce unrelated refactors in the same change.
 
 ### Icon library mappings (v5.0.0+)
@@ -34,16 +37,28 @@ yarn test
 
 `maestro` is currently optional and not part of the mandatory gate.
 
-## 4) Mandatory Commit Policy
+## 4) Commit Approval Policy
 
-For AI-assisted development work, commits are required and must follow these rules:
+Do not create commits automatically after tasks, fixes, tests, or individual changes.
+Keep changes uncommitted until the user explicitly approves committing the specific
+changes. A request to implement or test something, a ticket number, or an earlier
+commit approval does not authorize additional commits.
 
-1. Use **Conventional Commit** format in the subject:
+- Before requesting approval, show the proposed scope and identify changes intended
+  only for local development or testing. Keep local-only changes out of commits.
+- Stage and commit only the changes covered by the user's approval.
+- Obtain explicit approval before rewriting, squashing, reverting, or removing
+  existing commits, and before creating merge commits or pushing changes.
+
+Once the user approves a commit, follow these rules:
+
+1. **Before every commit, determine the ticket number**. First inspect the current branch name for a ticket pattern such as `SVA-1723`, `SVAK-183`, `SVASD-537`, or `MQGB-208`. If the branch name contains a ticket, use it. Otherwise use a ticket already provided by the user for this task, or ask for one before committing. A ticket number alone is not commit approval.
+2. Use **Conventional Commit** format in the subject:
    - `type(scope): short summary`
    - or `type: short summary` when scope is not needed
-2. Allowed `type` values: `feat`, `fix`, `refactor`, `chore`, `docs`, `test`, `style`.
-3. Add a commit body with concise bullet points explaining what changed (and why when needed).
-4. If the task already has a ticket number, put it on the last line of the commit body. Use the number supplied with the task or take it from the current branch name if it refers to the same task (for example, `SVAK-183`). If neither provides a number, proceed without one or a follow-up question.
+3. Allowed `type` values: `feat`, `fix`, `refactor`, `chore`, `docs`, `test`, `style`.
+4. Add a commit body with concise bullet points explaining what changed (and why when needed).
+5. If the task already has a ticket number, put it on the last line of the commit body. Use the number supplied with the task or take it from the current branch name if it refers to the same task (for example, `SVAK-183`). If neither provides a number, proceed without one or a follow-up question.
 
 Example:
 
