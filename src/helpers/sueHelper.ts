@@ -75,7 +75,7 @@ export const getSueLimitOfAreaCity = ({
   return areaName.replace(/\s*\[[^\]]*]\s*/g, '').trim();
 };
 
-export const fetchSueEndpoints = async (serviceRequestId?: number) => {
+export const fetchSueEndpoints = async (serviceRequestId?: number | string) => {
   const configurations = await storageHelper.configurations();
   const { sueConfig = {} } = configurations;
   const { apiConfig = {} } = sueConfig;
@@ -93,7 +93,9 @@ export const fetchSueEndpoints = async (serviceRequestId?: number) => {
   const suePostRequest = `${serverUrl}/requests`;
   const suePrioritiesUrl = `${serverUrl}/priorities`;
   const sueRequestsUrl = `${serverUrl}/requests`;
-  const sueRequestsUrlWithServiceId = `${serverUrl}/requests/${serviceRequestId}`;
+  const sueRequestsUrlWithServiceId = `${serverUrl}/requests/${encodeURIComponent(
+    serviceRequestId ?? ''
+  )}`;
   const sueServicesUrl = `${serverUrl}/services`;
   const sueStatusesUrl = `${serverUrl}/statuses`;
 

@@ -1,4 +1,8 @@
-import { launchCameraAsync, launchImageLibraryAsync } from 'expo-image-picker';
+import {
+  launchCameraAsync,
+  launchImageLibraryAsync,
+  requestCameraPermissionsAsync
+} from 'expo-image-picker';
 import { requestPermissionsAsync } from 'expo-media-library';
 import {
   addAssetsToAlbumAsync,
@@ -7,7 +11,7 @@ import {
   getAlbumAsync,
   saveToLibraryAsync
 } from 'expo-media-library/legacy';
-import { Alert } from 'react-native';
+import { Alert, Linking } from 'react-native';
 
 import { device } from '../../src/config';
 import { useCaptureImage, useSelectImage } from '../../src/hooks/imagePicker';
@@ -221,4 +225,42 @@ it.each(['jpg', 'png'])('leaves camera %s unchanged', async (extension) => {
   (launchCameraAsync as jest.Mock).mockResolvedValue({ canceled: false, assets: [photo] });
   expect(await useCaptureImage().captureImage()).toBe(photo);
   expect(mockManipulate).not.toHaveBeenCalled();
+});
+
+it('saves a recovery snapshot before opening camera permission settings', async () => {
+  (requestCameraPermissionsAsync as jest.Mock).mockResolvedValueOnce({ status: 'denied' });
+  const openSettings = jest.spyOn(Linking, 'openSettings').mockResolvedValue();
+  let finishSaving: () => void = () => undefined;
+  const saveDraft = jest.fn(
+    () =>
+      new Promise<void>((resolve) => {
+        finishSaving = resolve;
+      })
+  );
+
+  await useCaptureImage({ onBeforeOpenSettings: saveDraft }).captureImage();
+  expect(saveDraft).not.toHaveBeenCalled();
+  expect(launchCameraAsync).not.toHaveBeenCalled();
+
+  const settingsButton = (Alert.alert as jest.Mock).mock.calls[0][2][1];
+  const opening = settingsButton.onPress();
+  expect(saveDraft).toHaveBeenCalledTimes(1);
+  expect(openSettings).not.toHaveBeenCalled();
+  finishSaving();
+  await opening;
+  expect(openSettings).toHaveBeenCalledTimes(1);
+});
+
+it('keeps the form in the app if saving before settings fails', async () => {
+  (requestCameraPermissionsAsync as jest.Mock).mockResolvedValueOnce({ status: 'denied' });
+  const openSettings = jest.spyOn(Linking, 'openSettings').mockResolvedValue();
+  const saveDraft = jest.fn(async () => {
+    throw new Error('Storage unavailable');
+  });
+
+  await useCaptureImage({ onBeforeOpenSettings: saveDraft }).captureImage();
+  await (Alert.alert as jest.Mock).mock.calls[0][2][1].onPress();
+
+  expect(openSettings).not.toHaveBeenCalled();
+  expect(Alert.alert).toHaveBeenCalledTimes(2);
 });

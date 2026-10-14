@@ -65,6 +65,7 @@ export const MultiImageSelector = ({
   imageId,
   item,
   onBeforeNativeImagePicker,
+  onBeforeOpenSettings,
   selectorType
 }: {
   authToken: string | null;
@@ -76,6 +77,7 @@ export const MultiImageSelector = ({
   imageId?: number | string;
   item: any;
   onBeforeNativeImagePicker?: () => Promise<void>;
+  onBeforeOpenSettings?: () => Promise<void>;
   selectorType: string;
 }) => {
   const { colors: colors } = useTheme();
@@ -113,6 +115,7 @@ export const MultiImageSelector = ({
     allowsEditing: false,
     aspect: selectorType === IMAGE_SELECTOR_TYPES.SUE ? undefined : [1, 1],
     exif: selectorType === IMAGE_SELECTOR_TYPES.SUE,
+    onBeforeOpenSettings,
     saveImage: selectorType === IMAGE_SELECTOR_TYPES.SUE
   });
 

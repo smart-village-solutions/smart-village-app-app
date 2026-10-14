@@ -1711,6 +1711,9 @@ export const texts = {
     location: 'Ort',
     myReports: 'Meine Meldungen',
     report: {
+      draftRestoreError:
+        'Der gespeicherte Entwurf konnte nicht geladen werden. Bitte versuchen Sie es erneut.',
+      retry: 'Erneut versuchen',
       addImage: 'Bilder hinzufügen',
       alerts: {
         address: 'Bitte stellen Sie sicher, dass Sie Ihre Adressdaten korrekt eingeben',
