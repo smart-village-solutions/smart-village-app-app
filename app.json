@@ -26,6 +26,9 @@
     "primaryColor": "#107821",
     "assetBundlePatterns": ["**/*"],
     "ios": {
+      "runtimeVersion": {
+        "policy": "nativeVersion"
+      },
       "appleTeamId": "",
       "bundleIdentifier": "de.dev.smartvillage.app",
       "buildNumber": "1",
@@ -106,6 +109,9 @@
       [
         "expo-build-properties",
         {
+          "ios": {
+            "enableSceneSupport": true
+          },
           "android": {
             "usesCleartextTraffic": true
           }
