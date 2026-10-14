@@ -25,6 +25,7 @@ import {
 import { consts, normalize, texts } from '../../config';
 import { parseListItemsFromQuery, shouldShowInternalSuePendingStatus } from '../../helpers';
 import { CACHE_SCOPES, millisecondsUntilCacheExpires } from '../../helpers/cacheHelper';
+import { useSueReportRefresh } from '../../hooks/useSueReportRefresh';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { StatusProps, SueViewType } from '../../types';
 import { useThemeStyles } from '../../hooks/useThemeStyles';
@@ -94,7 +95,7 @@ export const SueListScreen = ({ navigation, route }: Props) => {
     sueConfig.showInternalPendingStatus
   );
   const myRequestsOptions =
-    query === QUERY_TYPES.SUE.MY_REQUESTS ? { showInternalPendingStatus } : {};
+    query === QUERY_TYPES.SUE.MY_REQUESTS ? { showInternalPendingStatus, forceRefresh: true } : {};
 
   const initialQueryVariables = route.params?.queryVariables ?? {
     limit,
@@ -133,7 +134,7 @@ export const SueListScreen = ({ navigation, route }: Props) => {
         }),
       {
         getNextPageParam: (lastPage, allPages) => {
-          if (lastPage.length < limit) {
+          if (query === QUERY_TYPES.SUE.MY_REQUESTS || lastPage.length < limit) {
             return undefined;
           }
 
@@ -142,6 +143,8 @@ export const SueListScreen = ({ navigation, route }: Props) => {
         cacheTime: millisecondsUntilCacheExpires(globalSettings, CACHE_SCOPES.SUE)
       }
     );
+
+  useSueReportRefresh(refetch, isConnected && query === QUERY_TYPES.SUE.MY_REQUESTS);
 
   const { data: servicesData } = useQuery([QUERY_TYPES.SUE.SERVICES], () =>
     getQuery(QUERY_TYPES.SUE.SERVICES)()
@@ -225,8 +228,11 @@ export const SueListScreen = ({ navigation, route }: Props) => {
 
   const refresh = async () => {
     setRefreshing(true);
-    isConnected && (await refetch());
-    setRefreshing(false);
+    try {
+      if (isConnected) await refetch();
+    } finally {
+      setRefreshing(false);
+    }
   };
 
   const fetchMoreData = useCallback(async () => {

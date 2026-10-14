@@ -60,6 +60,8 @@ rules:
   import/no-cycle:
     - error
     - maxDepth: 3
+      ignoreExternal: true
+      disableScc: true
   import/order:
     - error
     - newlines-between: always

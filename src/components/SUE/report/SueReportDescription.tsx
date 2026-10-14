@@ -61,6 +61,7 @@ export const SueReportDescription = ({
         setValue
       },
       onBeforeNativeImagePicker: storeReportValues,
+      onBeforeOpenSettings: storeReportValues,
       isMultiImages: true,
       selectorType: IMAGE_SELECTOR_TYPES.SUE,
       errorType: IMAGE_SELECTOR_ERROR_TYPES.SUE,

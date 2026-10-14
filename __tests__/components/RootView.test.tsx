@@ -6,8 +6,8 @@ import renderer from 'react-test-renderer';
 const mockRemoveItem = jest.fn();
 const mockHideAsync = jest.fn();
 
-jest.mock('@react-native-async-storage/async-storage', () => ({
-  removeItem: (...args: unknown[]) => mockRemoveItem(...args)
+jest.mock('../../src/helpers/sueReportDraftHelper', () => ({
+  initializeSueReportSession: () => mockRemoveItem('sueReportValues')
 }));
 
 jest.mock('expo-font', () => ({
@@ -109,6 +109,33 @@ describe('RootView', () => {
 
     expect(mockRemoveItem).toHaveBeenCalledTimes(1);
     expect(mockRemoveItem).toHaveBeenCalledWith('sueReportValues');
+    expect(mockHideAsync).toHaveBeenCalledTimes(1);
+  });
+
+  it('waits for startup draft cleanup before mounting screens that can read storage', async () => {
+    let finishCleanup: () => void = () => undefined;
+    mockRemoveItem.mockImplementationOnce(
+      () =>
+        new Promise<void>((resolve) => {
+          finishCleanup = resolve;
+        })
+    );
+    const tree = renderRootView(false);
+    const rootView = tree.root.findAllByType(View)[0];
+
+    expect(tree.root.findAllByProps({ testID: 'child' })).toHaveLength(0);
+    let layout: Promise<void>;
+    await renderer.act(async () => {
+      layout = rootView.props.onLayout();
+    });
+    expect(mockHideAsync).not.toHaveBeenCalled();
+    expect(tree.root.findAllByProps({ testID: 'child' })).toHaveLength(0);
+
+    await renderer.act(async () => {
+      finishCleanup();
+      await layout;
+    });
+    expect(tree.root.findAllByProps({ testID: 'child' }).length).toBeGreaterThan(0);
     expect(mockHideAsync).toHaveBeenCalledTimes(1);
   });
 
