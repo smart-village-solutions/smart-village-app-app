@@ -3,7 +3,11 @@ import { StyleSheet, type StyleProp, type ViewStyle } from 'react-native';
 
 export type WidgetLayoutMode = 'grid' | 'list';
 
-export const WidgetLayoutContext = createContext<{ mode: WidgetLayoutMode }>({ mode: 'grid' });
+export const WidgetLayoutContext = createContext<{
+  mode: WidgetLayoutMode;
+  // Standalone widgets keep their inset; a parent grid can own row spacing.
+  contentPaddingVertical?: number;
+}>({ mode: 'grid' });
 
 export const omitResponsiveDimensions = (style: StyleProp<ViewStyle>): StyleProp<ViewStyle> => {
   const flattenedStyle = StyleSheet.flatten(style);
