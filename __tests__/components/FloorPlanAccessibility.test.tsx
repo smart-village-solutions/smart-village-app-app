@@ -22,6 +22,7 @@ jest.mock('../../src/config', () => {
     },
     device: { height: 800, platform: 'ios' },
     Icon: { ArrowRight: MockIcon, PinFilled: MockIcon },
+    IconSet: { IconRefresh: MockIcon },
     normalize: (value: number) => value,
     texts
   };
@@ -95,10 +96,13 @@ describe('floor plan accessibility', () => {
 
     const selectedFloor = getByLabelText('(Erdgeschoss) (Taste)');
     const floorButtons = UNSAFE_getAllByType(TouchableOpacity);
+    const switcherStyle = StyleSheet.flatten(floorButtons[0].parent?.props.style);
 
     expect(selectedFloor.props.accessibilityHint).toBe('Wechselt zu diesem Stockwerk.');
     expect(selectedFloor.props.accessibilityState).toEqual({ selected: true });
     expect(StyleSheet.flatten(floorButtons[0].props.style).minHeight).toBe(48);
+    expect(switcherStyle.flexDirection).not.toBe('row');
+    expect(switcherStyle.top).toBe(16);
 
     fireEvent.press(getByLabelText('(Obergeschoss) (Taste)'));
     expect(onFloorSelect).toHaveBeenCalledWith('first-floor');
@@ -159,12 +163,18 @@ describe('floor plan accessibility', () => {
   });
 
   it('provides a meaningful reset action with a full-size touch target', () => {
-    const { getByLabelText } = render(<FloorPlanResetButton onPress={jest.fn()} />);
+    const { getByLabelText } = render(
+      <ThemeContext.Provider value={{ colors: darkColors, isDark: true, mode: 'dark' }}>
+        <FloorPlanResetButton onPress={jest.fn()} />
+      </ThemeContext.Provider>
+    );
     const resetButton = getByLabelText('Planansicht zurücksetzen');
 
     expect(resetButton.props.accessibilityHint).toBe(
       'Setzt Zoom und Position des Lageplans zurück.'
     );
+    expect(StyleSheet.flatten(resetButton.props.style).minHeight).toBe(48);
+    expect(StyleSheet.flatten(resetButton.props.style).minWidth).toBe(48);
   });
 
   it('disables reset motion when reduced motion is active', () => {
