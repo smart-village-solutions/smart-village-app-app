@@ -2,12 +2,13 @@ import React, { useCallback, useContext } from 'react';
 import { TouchableOpacity, View } from 'react-native';
 
 import { BookmarkContext } from '../../BookmarkProvider';
-import { consts, normalize } from '../../config';
+import { Icon, colors, consts, normalize, texts } from '../../config';
 import { useBookmarkedStatus } from '../../hooks';
 import { useTheme } from '../../hooks/useTheme';
 import { useThemeStyles } from '../../hooks/useThemeStyles';
 import { TDiscount } from '../../types';
 import { ConfiguredBookmarkIcon } from '../bookmarks/BookmarkIcon';
+import { hasVoucherDiscount } from '../../helpers/voucherDiscount';
 import { BoldText, RegularText } from '../Text';
 
 const a11yLabel = consts.a11yLabel;
@@ -36,7 +37,10 @@ export const Discount = ({
 
   const styles = useThemeStyles(createStyles);
   const { toggleBookmark } = useContext(BookmarkContext);
-  const { discountAmount, discountedPrice, originalPrice } = discount;
+  const { discountAmount, discountedPrice, discountPercentage, originalPrice } = discount;
+  const hasDiscountedPrice = discountedPrice != null && Number.isFinite(discountedPrice);
+  const hasPercentage = discountPercentage != null && discountPercentage > 0;
+  const hasAmount = discountAmount != null && discountAmount > 0;
 
   const isBookmarked = useBookmarkedStatus(query, id);
 
@@ -47,20 +51,30 @@ export const Discount = ({
   return (
     <View style={styles.container}>
       <View style={styles.container}>
-        {!!discountedPrice?.toString() && (
+        {hasDiscountedPrice && (
           <View style={styles.discountedPriceContainer}>
-            <BoldText lightest>{toLocaleString(discountedPrice)}</BoldText>
+            <BoldText lightest>{toLocaleString(discountedPrice!)}</BoldText>
           </View>
         )}
 
-        {!!originalPrice?.toString() && (
-          <RegularText lineThrough lighter>
+        {originalPrice != null && Number.isFinite(originalPrice) && (
+          <RegularText lineThrough={hasVoucherDiscount(discount)} lighter>
             {toLocaleString(originalPrice)}
           </RegularText>
         )}
 
-        {!!discountAmount?.toString() && (
-          <RegularText primary> -{toLocaleString(discountAmount)}</RegularText>
+        {hasPercentage && (
+          <RegularText primary>
+            {texts.voucher.detailScreen.discountPercentage(
+              discountPercentage!.toLocaleString(localeString)
+            )}
+          </RegularText>
+        )}
+
+        {hasAmount && !hasPercentage && (
+          <RegularText primary>
+            {texts.voucher.detailScreen.discountAmount(toLocaleString(discountAmount!))}
+          </RegularText>
         )}
       </View>
 

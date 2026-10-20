@@ -1,6 +1,6 @@
 import { StackScreenProps } from 'expo-router/js-stack';
 import React, { useCallback, useMemo, useState } from 'react';
-import { FlatList, RefreshControl, ScrollView } from 'react-native';
+import { RefreshControl, ScrollView } from 'react-native';
 import { useQuery as RQuseQuery } from 'react-query';
 
 import { ReactQueryClient } from '../../ReactQueryClient';
@@ -24,6 +24,8 @@ import {
 import { texts } from '../../config';
 import { dateOfAvailabilityText, parseListItemsFromQuery } from '../../helpers';
 import { getActiveVoucherDateRange } from '../../helpers/voucherAvailability';
+import { getVoucherPartnerAddress } from '../../helpers/voucherAddress';
+import { hasVoucherDiscount } from '../../helpers/voucherDiscount';
 import { useOpenWebScreen, useVoucher } from '../../hooks';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { useReadAloudScrollContentContainerStyle } from '../../ReadAloudAvailabilityProvider';
@@ -108,11 +110,18 @@ export const VoucherDetailScreen = ({ navigation, route }: StackScreenProps<any>
     activeDateRange?.dateStart,
     activeDateRange?.dateEnd
   );
-  const dataProviderLogo = dataProvider?.logo?.url;
+  const dataProviderLogo = dataProvider?.logo?.url?.trim();
   const { availableQuantity, frequency, maxPerPerson, maxQuantity } = quota || {};
+  const operatingCompany = pointOfInterest?.operatingCompany;
+  const partner = pointOfInterest && {
+    name: operatingCompany?.name || pointOfInterest.name,
+    address: getVoucherPartnerAddress(operatingCompany?.address, pointOfInterest.addresses),
+    contact: operatingCompany?.contact
+  };
 
   // hide quota when more than 10% is still available (show only when 90%+ has been used)
-  const shouldHideQuota = !!maxQuantity && availableQuantity / maxQuantity > 0.1;
+  const shouldHideQuota =
+    maxQuantity != null && availableQuantity != null && availableQuantity / maxQuantity > 0.1;
 
   return (
     <ScrollView
@@ -199,7 +208,7 @@ export const VoucherDetailScreen = ({ navigation, route }: StackScreenProps<any>
           </Wrapper>
         ))}
 
-      {!!quota && (
+      {(!!quota || hasVoucherDiscount(discountType)) && (
         <Wrapper noPaddingTop>
           <VoucherRedeem
             autoLogin={autoLogin}
@@ -213,12 +222,12 @@ export const VoucherDetailScreen = ({ navigation, route }: StackScreenProps<any>
         </Wrapper>
       )}
 
-      {!!pointOfInterest?.operatingCompany && (
+      {!!pointOfInterest && (
         <>
           <OperatingCompany
             logo={dataProviderLogo}
             openWebScreen={openWebScreen}
-            operatingCompany={pointOfInterest.operatingCompany}
+            operatingCompany={partner}
             title={texts.pointOfInterest.operatingCompany}
           />
 
@@ -243,22 +252,17 @@ export const VoucherDetailScreen = ({ navigation, route }: StackScreenProps<any>
       {!!voucherListItems?.length && (
         <>
           <SectionHeader title={texts.pointOfInterest.vouchersMore} />
-          <FlatList
-            data={voucherListItems.slice(0, loadedVoucherDataCount)}
-            renderItem={({ item }) => <VoucherListItem item={item} navigation={navigation} />}
-            ListFooterComponent={() =>
-              voucherListItems.length > loadedVoucherDataCount && (
-                <Wrapper>
-                  <Button
-                    title={texts.pointOfInterest.loadMoreVouchers}
-                    onPress={() =>
-                      setLoadedVoucherDataCount((prev) => prev + INCREMENT_VOUCHER_COUNT)
-                    }
-                  />
-                </Wrapper>
-              )
-            }
-          />
+          {voucherListItems.slice(0, loadedVoucherDataCount).map((item: TVoucherItem) => (
+            <VoucherListItem key={item.id} item={item} navigation={navigation} />
+          ))}
+          {voucherListItems.length > loadedVoucherDataCount && (
+            <Wrapper>
+              <Button
+                title={texts.pointOfInterest.loadMoreVouchers}
+                onPress={() => setLoadedVoucherDataCount((prev) => prev + INCREMENT_VOUCHER_COUNT)}
+              />
+            </Wrapper>
+          )}
         </>
       )}
     </ScrollView>

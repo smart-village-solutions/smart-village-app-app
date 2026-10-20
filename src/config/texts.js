@@ -2147,6 +2147,8 @@ export const texts = {
       close: 'Schließen',
       daily: 'pro Tag',
       desiredQuantity: 'Gewünschte Anzahl',
+      discountAmount: (amount) => `${amount} Rabatt`,
+      discountPercentage: (percentage) => `${percentage} % Rabatt`,
       emptyMessage: 'Der Inhalt kann nicht geladen werden. Bitte versuchen Sie es später erneut.',
       frequency: (maxPerPerson, frequency) =>
         `${maxPerPerson || 1}x pro Person ${texts.voucher.detailScreen[frequency]} einlösbar`,

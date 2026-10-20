@@ -292,22 +292,17 @@ export const PointOfInterest = ({
       {!!voucherListItems?.length && (
         <View>
           <SectionHeader title={texts.pointOfInterest.vouchers} />
-          <FlatList
-            data={voucherListItems.slice(0, loadedVoucherDataCount)}
-            renderItem={({ item }) => <VoucherListItem item={item} navigation={navigation} />}
-            ListFooterComponent={() =>
-              voucherListItems.length > loadedVoucherDataCount && (
-                <Wrapper>
-                  <Button
-                    title={texts.pointOfInterest.loadMoreVouchers}
-                    onPress={() =>
-                      setLoadedVoucherDataCount((prev) => prev + INCREMENT_VOUCHER_COUNT)
-                    }
-                  />
-                </Wrapper>
-              )
-            }
-          />
+          {voucherListItems.slice(0, loadedVoucherDataCount).map((item) => (
+            <VoucherListItem key={item.id} item={item} navigation={navigation} />
+          ))}
+          {voucherListItems.length > loadedVoucherDataCount && (
+            <Wrapper>
+              <Button
+                title={texts.pointOfInterest.loadMoreVouchers}
+                onPress={() => setLoadedVoucherDataCount((prev) => prev + INCREMENT_VOUCHER_COUNT)}
+              />
+            </Wrapper>
+          )}
         </View>
       )}
 

@@ -23,10 +23,10 @@ export type TVoucherItem = {
 };
 
 export type TDiscount = {
-  discountAmount: number;
-  discountedPrice: number;
-  discountPercentage: number;
-  originalPrice: number;
+  discountAmount?: number | null;
+  discountedPrice?: number | null;
+  discountPercentage?: number | null;
+  originalPrice?: number | null;
 };
 
 export type TQuota = {
