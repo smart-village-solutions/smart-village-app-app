@@ -23,7 +23,7 @@ export const CustomDrawerContentComponent = ({ navigation, drawerRoutes, state }
 
   return (
     <DiagonalGradient>
-      <SafeAreaViewFlex>
+      <SafeAreaViewFlex edges={['left', 'right', 'bottom']}>
         <View style={stylesWithProps({ orientation }).header}>
           <TouchableOpacity
             accessibilityLabel={a11yText.closeMenuIcon}

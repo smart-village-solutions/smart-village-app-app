@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useContext } from 'react';
 import Autocomplete from 'react-native-autocomplete-input';
 
 import { device, normalize, texts } from '../../config';
@@ -12,11 +12,11 @@ import { LoadingSpinner } from '../LoadingSpinner';
 import { Wrapper } from '../Wrapper';
 
 import {
-  getAutocompleteKeyboardMarginBottom,
   getAutocompleteListContainerHeight,
   getAutocompleteMaxDropdownHeight
 } from './autocompleteLayout';
 import { createWasteInputStyles } from './wasteInputStyles';
+import { WasteSuggestionList } from './WasteSuggestionList';
 
 type Props = {
   isFocused: boolean;
@@ -49,15 +49,6 @@ export const WasteStreetInput = ({ isFocused, renderSuggestions, setIsFocused }:
   const streets = filterStreets(inputValue, data?.wasteAddresses);
   const isLoading = inputValue.length >= minSearchLength && loading;
   const keyboardHeight = useKeyboardHeight();
-  const listContainerHeight = useMemo(() => {
-    const listLength = streets?.length ?? 0;
-
-    if (listLength < 6) {
-      return device.platform === 'ios' ? 'auto' : listLength * (normalize(22) + 2 * normalize(16));
-    } else {
-      return dimensions.height / 2.5;
-    }
-  }, [streets, dimensions.height]);
 
   /**
    * The variable `isStreetResultsHidden` indicates whether the street results should be hidden based
@@ -93,18 +84,14 @@ export const WasteStreetInput = ({ isFocused, renderSuggestions, setIsFocused }:
         listContainerStyle={[
           styles.autoCompleteListContainer,
           {
-            height: getAutocompleteListContainerHeight({
-              height: listContainerHeight,
+            maxHeight: getAutocompleteListContainerHeight({
+              height: dimensions.height / 2.5,
               keyboardHeight,
               maxDropdownHeight: getAutocompleteMaxDropdownHeight({
                 androidMaxHeight: normalize(230),
                 iosMaxHeight: normalize(200),
                 platform: device.platform
               })
-            }),
-            marginBottom: getAutocompleteKeyboardMarginBottom({
-              keyboardHeight,
-              platform: device.platform
             })
           }
         ]}
@@ -114,6 +101,7 @@ export const WasteStreetInput = ({ isFocused, renderSuggestions, setIsFocused }:
         placeholder={wasteTexts.street}
         placeholderTextColor={colors.placeholder}
         selectionColor={colors.primary}
+        renderResultList={WasteSuggestionList}
         style={styles.autoCompleteInput}
         value={inputValue}
       />
