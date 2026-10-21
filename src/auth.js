@@ -1,6 +1,8 @@
 import * as SecureStore from 'expo-secure-store';
 
+import { readSecureStoreItem } from './helpers/secureStore';
 import { namespace, secrets } from './config';
+import { isJsonObject, JsonResponseError, readJsonResponse } from './helpers/jsonResponse';
 
 const ACCESS_TOKEN_EXPIRE_TIME = 'ACCESS_TOKEN_EXPIRE_TIME';
 
@@ -10,17 +12,7 @@ const ACCESS_TOKEN_EXPIRE_TIME = 'ACCESS_TOKEN_EXPIRE_TIME';
  * we need to divide Date.now() by 1000, which otherwise would return miliseconds.
  */
 const isTokenValid = async () => {
-  let accessTokenExpireTime = null;
-
-  // The reason for the problem of staying in SplashScreen that occurs after the application is
-  // updated on the Android side is the inability to obtain the token here.
-  // For this reason, try/catch is used here and the problem of getting stuck in SplashScreen is solved.
-  try {
-    accessTokenExpireTime = await SecureStore.getItemAsync(ACCESS_TOKEN_EXPIRE_TIME);
-  } catch {
-    // Token deleted here so that it can be recreated
-    await SecureStore.deleteItemAsync(ACCESS_TOKEN_EXPIRE_TIME);
-  }
+  const accessTokenExpireTime = await readSecureStoreItem(ACCESS_TOKEN_EXPIRE_TIME);
 
   if (!accessTokenExpireTime) return false;
 
@@ -38,7 +30,7 @@ const isTokenValid = async () => {
  */
 export const auth = async (callback, forceNewToken = false) => {
   // if the token is still valid, just run the callback, if one exist, and quit
-  if (!forceNewToken && (await isTokenValid())) return callback && callback();
+  if (!forceNewToken && (await isTokenValid())) return callback?.();
 
   // otherwise fetch a new access token and expire time
   const fetchObj = {
@@ -58,10 +50,22 @@ export const auth = async (callback, forceNewToken = false) => {
     `${secrets[namespace].serverUrl}${secrets[namespace].oAuthTokenEndpoint}`,
     fetchObj
   );
-  const json = await response.json();
+  const json = await readJsonResponse(response);
+  if (
+    !isJsonObject(json) ||
+    typeof json.access_token !== 'string' ||
+    !json.access_token ||
+    !Number.isFinite(json.created_at) ||
+    !Number.isFinite(json.expires_in) ||
+    json.expires_in <= 0
+  ) {
+    throw new JsonResponseError('shape', response.status);
+  }
 
   await SecureStore.setItemAsync('ACCESS_TOKEN', json.access_token);
   // save the time when the token will expire, calculated from the creation time in seconds
   // added by the expire duration in seconds
   await SecureStore.setItemAsync(ACCESS_TOKEN_EXPIRE_TIME, `${json.created_at + json.expires_in}`);
+
+  return callback?.();
 };

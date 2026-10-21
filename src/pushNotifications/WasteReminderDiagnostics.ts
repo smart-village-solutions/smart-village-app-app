@@ -47,15 +47,27 @@ export const reportWasteReminderSchedulingTransition = (
     'actualCount' | 'errorClass' | 'expectedCount' | 'schedulingStatus'
   >
 ) => {
+  if (input.schedulingStatus === 'scheduled') {
+    Sentry.addBreadcrumb({
+      category: 'wasteReminder',
+      message: 'waste_reminder_scheduling',
+      data: buildWasteReminderDiagnostic(input),
+      level: 'info'
+    });
+    return;
+  }
+
   Sentry.captureMessage('waste_reminder_scheduling', {
     contexts: { wasteReminder: buildWasteReminderDiagnostic(input) },
-    level: input.schedulingStatus === 'scheduled' ? 'info' : 'warning'
+    level: 'warning'
   });
 };
 
 export const reportWasteReminderOwnerMigration = (outcome: WasteReminderOwnerMigrationOutcome) => {
-  Sentry.captureMessage('waste_reminder_owner_migration', {
-    contexts: { wasteReminder: { outcome } },
+  Sentry.addBreadcrumb({
+    category: 'wasteReminder',
+    message: 'waste_reminder_owner_migration',
+    data: { outcome },
     level: outcome === 'migrated' ? 'info' : 'debug'
   });
 };
@@ -63,9 +75,19 @@ export const reportWasteReminderOwnerMigration = (outcome: WasteReminderOwnerMig
 export const reportWasteReminderMaintenanceSync = (
   outcome: WasteReminderMaintenanceSyncOutcome
 ) => {
+  if (outcome !== 'failed-pending') {
+    Sentry.addBreadcrumb({
+      category: 'wasteReminder',
+      message: 'waste_reminder_maintenance_sync',
+      data: { outcome },
+      level: 'info'
+    });
+    return;
+  }
+
   Sentry.captureMessage('waste_reminder_maintenance_sync', {
     contexts: { wasteReminder: { outcome } },
-    level: outcome === 'failed-pending' ? 'warning' : 'info'
+    level: 'warning'
   });
 };
 

@@ -3,6 +3,7 @@ import * as SecureStore from 'expo-secure-store';
 
 import { ProfileMember } from '../types';
 
+import { readSecureStoreItem } from './secureStore';
 import { addToStore, readFromStore } from './storageHelper';
 
 export const PROFILE_AUTH_TOKEN = 'PROFILE_AUTH_TOKEN';
@@ -31,21 +32,7 @@ export const storeProfileAuthToken = (authToken?: string) => {
   return SecureStore.deleteItemAsync(PROFILE_AUTH_TOKEN);
 };
 
-export const profileAuthToken = async () => {
-  let authToken = null;
-
-  // The reason for the problem of staying in SplashScreen that occurs after the application is
-  // updated on the Android side is the inability to obtain the token here.
-  // For this reason, try/catch is used here and the problem of getting stuck in SplashScreen is solved.
-  try {
-    authToken = await SecureStore.getItemAsync(PROFILE_AUTH_TOKEN);
-  } catch {
-    // Token deleted here so that it can be recreated
-    await SecureStore.deleteItemAsync(PROFILE_AUTH_TOKEN);
-  }
-
-  return authToken;
-};
+export const profileAuthToken = () => readSecureStoreItem(PROFILE_AUTH_TOKEN);
 
 const storeProfileUserAuthToken = (userAuthToken?: string) => {
   if (userAuthToken) {
@@ -55,21 +42,7 @@ const storeProfileUserAuthToken = (userAuthToken?: string) => {
   return SecureStore.deleteItemAsync(PROFILE_USER_AUTH_TOKEN);
 };
 
-export const profileUserAuthToken = async () => {
-  let userAuthToken = null;
-
-  // The reason for the problem of staying in SplashScreen that occurs after the application is
-  // updated on the Android side is the inability to obtain the token here.
-  // For this reason, try/catch is used here and the problem of getting stuck in SplashScreen is solved.
-  try {
-    userAuthToken = await SecureStore.getItemAsync(PROFILE_USER_AUTH_TOKEN);
-  } catch {
-    // Token deleted here so that it can be recreated
-    await SecureStore.deleteItemAsync(PROFILE_USER_AUTH_TOKEN);
-  }
-
-  return userAuthToken;
-};
+export const profileUserAuthToken = () => readSecureStoreItem(PROFILE_USER_AUTH_TOKEN);
 
 export const storeProfileUserData = (userData?: ProfileMember) => {
   if (userData) {
