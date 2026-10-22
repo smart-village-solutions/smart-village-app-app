@@ -140,7 +140,18 @@ export const EventRecords = ({ navigation, route }) => {
   );
 
   const { data: eventRecordsCategoriesData, loading: eventRecordsCategoriesLoading } = useQuery(
-    getQuery(QUERY_TYPES.EVENT_RECORDS_AND_CATEGORIES)
+    getQuery(QUERY_TYPES.EVENT_RECORDS_AND_CATEGORIES),
+    {
+      variables: {
+        ids: queryVariables.ids,
+        location: queryVariables.location,
+        locations: queryVariables.locations,
+        dateRange: queryVariables.dateRange,
+        dataProvider: queryVariables.dataProvider,
+        dataProviderId: queryVariables.dataProviderId,
+        onlyUniqEvents: queryVariables.onlyUniqEvents
+      }
+    }
   );
 
   const { data: dataVolunteerEvents, refetch: refetchVolunteerEvents } = useVolunteerData({

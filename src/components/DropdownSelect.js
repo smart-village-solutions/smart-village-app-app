@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 import Dropdown from 'react-native-modal-dropdown';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -67,6 +67,7 @@ export const DropdownSelect = ({
   );
 
   const [arrow, setArrow] = useState('down');
+  const [inlineSearchText, setInlineSearchText] = useState('');
   const selectedData = data?.find((entry) => entry.selected);
   const selectedValue = selectedData?.value;
   const options = useMemo(
@@ -176,11 +177,18 @@ export const DropdownSelect = ({
 
     setData(updatedData);
 
+    if (showInlineDropdown && !multipleSelect) setArrow('down');
     if (multipleSelect) return false;
   };
-  const showInlineDropdown = inlineDropdown && isOverlayFilter && multipleSelect;
+  // Keep Android filter options inside the filter Modal instead of stacking native Modals.
+  const showInlineDropdown = isOverlayFilter && (inlineDropdown || device.platform === 'android');
+  const visibleInlineEntries = (data || [])
+    .map((entry, index) => ({ entry, index }))
+    .filter(({ entry }) =>
+      entry.value?.toLocaleLowerCase().includes(inlineSearchText.trim().toLocaleLowerCase())
+    );
 
-  if (inlineSearch) {
+  if (inlineSearch || (showInlineDropdown && showSearch && !multipleSelect)) {
     return (
       <InlineSearchDropdown
         {...{
@@ -216,7 +224,10 @@ export const DropdownSelect = ({
               : texts.accessibilityLabels.dropDownMenu.open
           })`}
           accessibilityRole="button"
-          onPress={() => setArrow((currentArrow) => (currentArrow === 'down' ? 'up' : 'down'))}
+          onPress={() => {
+            setInlineSearchText('');
+            setArrow((currentArrow) => (currentArrow === 'down' ? 'up' : 'down'));
+          }}
         >
           <WrapperRow
             style={[styles.dropdownTextWrapper, !errorMessage && { marginBottom: normalize(8) }]}
@@ -227,30 +238,42 @@ export const DropdownSelect = ({
               placeholder={selectedValue == placeholder}
               numberOfLines={1}
             >
-              {selectedMultipleValues}
+              {multipleSelect ? selectedMultipleValues : selectedValue}
             </RegularText>
             {arrow === 'down' ? <Icon.ArrowDown /> : <Icon.ArrowUp />}
           </WrapperRow>
         </TouchableOpacity>
         {arrow === 'up' && (
           <View style={[styles.dropdownDropdown, styles.inlineDropdown]}>
-            {data.map((entry, index) => (
-              <React.Fragment key={`${entry.id}-${entry.value}`}>
-                {index > 0 && <View style={styles.dropdownSeparator} />}
-                <TouchableOpacity
-                  accessibilityLabel={
-                    entry.id !== 0
-                      ? checkboxAccessibilityLabel(entry.value, !!entry.selected)
-                      : `${entry.value} (${a11yLabel.dropDownMenuItem})`
-                  }
-                  accessibilityRole={entry.id !== 0 ? 'checkbox' : undefined}
-                  accessibilityState={entry.id !== 0 ? { checked: !!entry.selected } : undefined}
-                  onPress={() => handleSelect(index, entry.value)}
-                >
-                  {renderRow(entry.value, index, false, false)}
-                </TouchableOpacity>
-              </React.Fragment>
-            ))}
+            <ScrollView keyboardShouldPersistTaps="handled" nestedScrollEnabled>
+              {showSearch && (
+                <TextInput
+                  accessibilityLabel={`${label}: ${searchPlaceholder}`}
+                  onChangeText={setInlineSearchText}
+                  placeholder={searchPlaceholder}
+                  placeholderTextColor={colors.placeholder}
+                  style={searchInputStyle}
+                  value={inlineSearchText}
+                />
+              )}
+              {visibleInlineEntries.map(({ entry, index }, visibleIndex) => (
+                <React.Fragment key={`${entry.id}-${entry.value}`}>
+                  {visibleIndex > 0 && <View style={styles.dropdownSeparator} />}
+                  <TouchableOpacity
+                    accessibilityLabel={
+                      entry.id !== 0
+                        ? checkboxAccessibilityLabel(entry.value, !!entry.selected)
+                        : `${entry.value} (${a11yLabel.dropDownMenuItem})`
+                    }
+                    accessibilityRole={entry.id !== 0 ? 'checkbox' : undefined}
+                    accessibilityState={entry.id !== 0 ? { checked: !!entry.selected } : undefined}
+                    onPress={() => handleSelect(index, entry.value)}
+                  >
+                    {renderRow(entry.value, index, false, false)}
+                  </TouchableOpacity>
+                </React.Fragment>
+              ))}
+            </ScrollView>
           </View>
         )}
       </View>

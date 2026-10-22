@@ -117,6 +117,76 @@ jest.mock('../../src/config', () => {
 });
 
 describe('DropdownSelect multiselect checkboxes', () => {
+  it('renders a searchable single-select filter inline on Android', () => {
+    const { device } = require('../../src/config');
+    const previousPlatform = device.platform;
+    device.platform = 'android';
+    const setData = jest.fn();
+
+    try {
+      const screen = render(
+        <DropdownSelect
+          data={[
+            { id: 0, selected: true, value: 'Alle' },
+            { id: 1, selected: false, value: 'Kultur' }
+          ]}
+          isOverlayFilter
+          label="Kategorie"
+          setData={setData}
+          showSearch
+          searchPlaceholder="Suche"
+        />
+      );
+
+      fireEvent.press(screen.getByRole('button', { name: /Kategorie/ }));
+      expect(screen.queryByTestId('modal-dropdown')).toBeNull();
+      fireEvent.changeText(screen.getByPlaceholderText('Suche'), 'Kul');
+      fireEvent.press(screen.getByRole('button', { name: /Kultur/ }));
+      expect(setData).toHaveBeenCalledWith([
+        { id: 0, selected: false, value: 'Alle' },
+        { id: 1, selected: true, value: 'Kultur' }
+      ]);
+    } finally {
+      device.platform = previousPlatform;
+    }
+  });
+
+  it('keeps filtered multiselect options usable on Android', () => {
+    const { device } = require('../../src/config');
+    const previousPlatform = device.platform;
+    device.platform = 'android';
+    const setData = jest.fn();
+
+    try {
+      const screen = render(
+        <DropdownSelect
+          data={[
+            { id: 0, selected: true, value: 'Alle' },
+            { id: 1, selected: false, value: 'Sport' },
+            { id: 2, selected: false, value: 'Kultur' }
+          ]}
+          isOverlayFilter
+          label="Kategorie"
+          multipleSelect
+          setData={setData}
+          showSearch
+          searchPlaceholder="Suche"
+        />
+      );
+
+      fireEvent.press(screen.getByRole('button', { name: /Kategorie/ }));
+      fireEvent.changeText(screen.getByPlaceholderText('Suche'), 'Kul');
+      fireEvent.press(screen.getByRole('checkbox', { name: /Kultur/ }));
+      expect(setData).toHaveBeenCalledWith([
+        { id: 0, selected: false, value: 'Alle' },
+        { id: 1, selected: false, value: 'Sport' },
+        { id: 2, selected: true, value: 'Kultur' }
+      ]);
+    } finally {
+      device.platform = previousPlatform;
+    }
+  });
+
   it('searches within the page and closes after selecting a filtered category', () => {
     const setData = jest.fn();
     const onSearchFocus = jest.fn();
