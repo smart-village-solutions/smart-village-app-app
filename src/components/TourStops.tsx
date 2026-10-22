@@ -4,6 +4,7 @@ import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { consts, normalize, texts } from '../config';
+import { QUERY_TYPES } from '../queries/types';
 import {
   useLastKnownPosition,
   useLocationSettings,
@@ -108,7 +109,7 @@ export const TourStops = ({
       <IndexFilterWrapperAndList filter={filter} setFilter={setFilter} />
 
       {selectedFilterId === TOP_FILTER.LIST_VIEW && (
-        <ListComponent data={listItem} navigation={navigation} />
+        <ListComponent data={listItem} navigation={navigation} query={QUERY_TYPES.TOUR_STOPS} />
       )}
 
       <View
