@@ -34,7 +34,25 @@ export const serverConnectionAlert = (
 // if it is different it will add the new one to the server if it is present
 // in theory the token should be persistent, so we should never have
 // two defined values that are distinct.
-export const handleIncomingToken = async (token?: string) => {
+let tokenUpdateQueue: Promise<unknown> = Promise.resolve();
+let queuedToken: string | undefined;
+let queuedUpdate: Promise<boolean> | undefined;
+
+export const handleIncomingToken = (token?: string): Promise<boolean> => {
+  if (queuedUpdate && queuedToken === token) return queuedUpdate;
+
+  const update = tokenUpdateQueue.then(() => updateStoredToken(token));
+  tokenUpdateQueue = update.catch(() => undefined);
+  queuedToken = token;
+  queuedUpdate = update;
+  const clearQueuedUpdate = () => {
+    if (queuedUpdate === update) queuedUpdate = undefined;
+  };
+  void update.then(clearQueuedUpdate, clearQueuedUpdate);
+  return update;
+};
+
+const updateStoredToken = async (token?: string): Promise<boolean> => {
   const storedToken = await getPushTokenFromStorage();
 
   if (storedToken !== (token ?? null)) {
