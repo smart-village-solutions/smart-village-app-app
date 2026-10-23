@@ -3,13 +3,17 @@ import React from 'react';
 import renderer, { act } from 'react-test-renderer';
 
 import { AUTH_MODE_USER, getApolloAuthContext } from '../../../src/graphqlAuth';
+import { isValidGeoLocation } from '../../../src/helpers';
 import { EventRecord } from '../../../src/components/screens/EventRecord';
 import { NewsItem } from '../../../src/components/screens/NewsItem';
 import { PointOfInterest } from '../../../src/components/screens/PointOfInterest';
 import { NoticeboardDetail } from '../../../src/components/screens/noticeboard/NoticeboardDetail';
 import { DELETE_EVENT_RECORD } from '../../../src/queries/eventRecords';
 import { DELETE_NEWS_ITEM } from '../../../src/queries/newsItems';
-import { DELETE_POINT_OF_INTEREST } from '../../../src/queries/pointsOfInterest';
+import {
+  DELETE_POINT_OF_INTEREST,
+  GET_POINT_OF_INTEREST_MAP_MARKERS
+} from '../../../src/queries/pointsOfInterest';
 import { DELETE_GENERIC_ITEM } from '../../../src/queries/genericItem';
 
 const mockUseMutation = jest.fn();
@@ -63,6 +67,8 @@ jest.mock('../../../src/hooks', () => ({
 jest.mock('../../../src/helpers', () => ({
   filterGenericItems: jest.fn(() => true),
   getGenericItemMatomoName: jest.fn(() => 'noticeboard'),
+  graphqlFetchPolicy: jest.fn(() => 'network-only'),
+  isValidGeoLocation: jest.fn(() => false),
   isTodayOrLater: jest.fn(() => true),
   matomoTrackingString: jest.fn(() => 'tracking'),
   momentFormatUtcToLocal: jest.fn(() => ''),
@@ -379,6 +385,7 @@ const renderComponent = async (component) => {
 describe('owner auth context for detail screen actions', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    isValidGeoLocation.mockReturnValue(false);
 
     mockUseMutation.mockImplementation(() => [jest.fn(), {}]);
     mockUseQuery.mockImplementation(() => ({
@@ -440,6 +447,30 @@ describe('owner auth context for detail screen actions', () => {
       expect.objectContaining({
         ...getApolloAuthContext(AUTH_MODE_USER),
         variables: { id: 'poi-1' }
+      })
+    );
+  });
+
+  it('loads POI map markers using the opened list category before detail categories arrive', async () => {
+    isValidGeoLocation.mockReturnValue(true);
+
+    await renderComponent(
+      <PointOfInterest
+        data={{
+          id: 'poi-1',
+          addresses: [{ geoLocation: { latitude: 52, longitude: 13 } }],
+          payload: {}
+        }}
+        navigation={navigation}
+        route={{ params: { queryVariables: { categoryName: 'Hotels, Pensionen etc.' } } }}
+      />
+    );
+
+    expect(mockUseQuery).toHaveBeenCalledWith(
+      GET_POINT_OF_INTEREST_MAP_MARKERS,
+      expect.objectContaining({
+        skip: false,
+        variables: { category: 'Hotels, Pensionen etc.', categoryIds: undefined }
       })
     );
   });
