@@ -4,6 +4,11 @@ import * as Speech from 'expo-speech';
 
 import { getNativeSpeechRate, useDetailSpeech } from '../../src/hooks/useDetailSpeech';
 
+const mockPauseAudio = jest.fn();
+jest.mock('../../src/AudioPlayerProvider', () => ({
+  useOptionalAudioPlayback: () => ({ pause: mockPauseAudio })
+}));
+
 jest.mock('expo-speech', () => ({
   maxSpeechInputLength: 4000,
   speak: jest.fn(),
@@ -60,6 +65,15 @@ describe('useDetailSpeech section navigation', () => {
     );
     expect(currentHook.currentItemIndex).toBe(0);
     expect(currentHook.canSkipPrevious).toBe(false);
+  });
+
+  it('pauses MP3 playback before starting read aloud', async () => {
+    await renderer.act(async () => {
+      await currentHook.start();
+    });
+
+    expect(mockPauseAudio).toHaveBeenCalledTimes(1);
+    expect(Speech.speak).toHaveBeenCalled();
   });
 });
 

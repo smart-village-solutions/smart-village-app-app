@@ -123,6 +123,28 @@ const buildImageValue = (mediaContents: any[] = []) =>
       })
   );
 
+type ExistingMediaContent = {
+  contentType?: string;
+  captionText?: string;
+  copyright?: string;
+  sourceUrl?: { url?: string };
+};
+
+const buildNonImageMediaContents = (mediaContents: ExistingMediaContent[] = []) =>
+  mediaContents.flatMap((mediaContent) => {
+    const url = mediaContent?.sourceUrl?.url;
+    if (!mediaContent?.contentType || mediaContent.contentType === 'image' || !url) return [];
+
+    return [
+      {
+        contentType: mediaContent.contentType,
+        captionText: mediaContent.captionText,
+        copyright: mediaContent.copyright,
+        sourceUrl: { url }
+      }
+    ];
+  });
+
 const buildWebUrlsValue = (webUrls: any[] = []): WebUrlFormValue[] =>
   webUrls.map((webUrl) => ({
     description: webUrl?.description ?? '',
@@ -270,6 +292,9 @@ export const PointOfInterestForm = ({
       }
 
       const { imageUrls } = result;
+      const nonImageMediaContents = isEdit
+        ? buildNonImageMediaContents(initialData?.mediaContents)
+        : [];
       const contact = buildContactData(formValues);
       const openingHours = buildOpeningHours(formValues.openingHours);
       const webUrls = buildWebUrls(formValues.webUrls);
@@ -282,7 +307,9 @@ export const PointOfInterestForm = ({
           categories: formValues.categories.map((name: string) => ({ name })),
           name: formValues.name,
           ...(formValues.description && { description: formValues.description }),
-          ...(imageUrls.length && { mediaContents: imageUrls }),
+          ...((nonImageMediaContents.length || imageUrls.length) && {
+            mediaContents: [...nonImageMediaContents, ...imageUrls]
+          }),
           ...(contact && { contact }),
           ...(openingHours.length && { openingHours }),
           ...(webUrls.length && { webUrls }),

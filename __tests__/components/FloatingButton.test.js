@@ -38,6 +38,11 @@ const mockAddListener = jest.fn();
 const mockRemoveListener = jest.fn();
 const mockGetRouteItems = jest.fn();
 const mockIsRouteAvailable = jest.fn();
+const mockUseOptionalAudioPlayback = jest.fn();
+
+jest.mock('../../src/AudioPlayerProvider', () => ({
+  useOptionalAudioPlayback: (...args) => mockUseOptionalAudioPlayback(...args)
+}));
 
 jest.mock('../../src/hooks', () => ({
   useAccessibilityPreferences: (...args) => mockUseAccessibilityPreferences(...args),
@@ -112,6 +117,7 @@ describe('FloatingButton', () => {
 
     mockGetRouteItems.mockReturnValue([]);
     mockIsRouteAvailable.mockReturnValue(false);
+    mockUseOptionalAudioPlayback.mockReturnValue(null);
     mockGetCurrentRoute.mockReturnValue({ key: 'home-key', name: 'Home' });
     mockIsReady.mockReturnValue(true);
     mockAddListener.mockReturnValue(mockRemoveListener);
@@ -139,6 +145,49 @@ describe('FloatingButton', () => {
     const tree = renderFloatingButton({ bottomOffset: 0 }).toJSON();
 
     expect(tree).toBeNull();
+  });
+
+  it('renders one shared floating player when MP3 and read aloud are available', () => {
+    mockUseOptionalAudioPlayback.mockReturnValue({
+      currentTrack: { title: 'Tour', url: 'https://example.org/tour.mp3' }
+    });
+    mockUseAccessibilityPreferences.mockReturnValue({ features: { readAloud: true } });
+    mockGetRouteItems.mockReturnValue([{ id: 'title', text: 'Tour' }]);
+    mockIsRouteAvailable.mockReturnValue(true);
+
+    const tree = renderFloatingButton({ bottomOffset: 0 });
+    expect(tree.root.findAllByType('mock-read-aloud-player')).toHaveLength(1);
+  });
+
+  it('keeps the floating shortcut beside the compact player and hides it while expanded', () => {
+    mockUseOptionalAudioPlayback.mockReturnValue({
+      currentTrack: { title: 'Tour', url: 'https://example.org/tour.mp3' }
+    });
+    mockUseStaticContent.mockReturnValue({
+      data: [{ accessibilityLabel: 'Open chatbot', routeName: 'Search' }],
+      loading: false,
+      refetch: jest.fn()
+    });
+
+    const tree = renderFloatingButton({ bottomOffset: 0 });
+    expect(tree.root.findAllByType(TouchableOpacity)).toHaveLength(1);
+    expect(tree.root.findByType('mock-read-aloud-player')).toBeTruthy();
+    expect(tree.root.findByType('mock-read-aloud-player').parent.props.style).toEqual(
+      expect.objectContaining({ alignItems: 'center' })
+    );
+    expect(tree.root.findAllByType(TouchableOpacity)[0].parent.props.style).toEqual(
+      expect.arrayContaining([expect.objectContaining({ position: 'absolute', right: 0 })])
+    );
+
+    renderer.act(() => {
+      tree.root.findByType('mock-read-aloud-player').props.onExpandedChange(true);
+    });
+    expect(tree.root.findAllByType(TouchableOpacity)).toHaveLength(0);
+
+    renderer.act(() => {
+      tree.root.findByType('mock-read-aloud-player').props.onExpandedChange(false);
+    });
+    expect(tree.root.findAllByType(TouchableOpacity)).toHaveLength(1);
   });
 
   it('renders outside a navigator context and subscribes through navigationRef', () => {

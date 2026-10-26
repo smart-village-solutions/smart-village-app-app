@@ -4,6 +4,7 @@ import { ActivityIndicator, DeviceEventEmitter, RefreshControl, ScrollView } fro
 import { useQuery } from 'react-query';
 
 import { AccessibilityContext } from '../AccessibilityProvider';
+import { AudioTrackSourceContext } from '../AudioPlayerProvider';
 import {
   DetailActions,
   EmptyMessage,
@@ -227,31 +228,40 @@ export const DetailScreen = ({ navigation, route }) => {
   if (!Component) return null;
 
   const detailActions = <DetailActions data={detailData} route={route} suffix={genericType} />;
+  const audioSource = {
+    id: String(queryVariables.id),
+    query,
+    rootRouteName: route.params?.rootRouteName,
+    title:
+      route.params?.title || detailData?.title || detailData?.name || detailData?.mainTitle || ''
+  };
 
   return (
-    <SafeAreaViewFlex>
-      <ScrollView
-        contentContainerStyle={scrollContentContainerStyle}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={() => refresh(refetch)}
-            colors={[colors.refreshControl]}
-            tintColor={colors.refreshControl}
+    <AudioTrackSourceContext.Provider value={audioSource}>
+      <SafeAreaViewFlex>
+        <ScrollView
+          contentContainerStyle={scrollContentContainerStyle}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={() => refresh(refetch)}
+              colors={[colors.refreshControl]}
+              tintColor={colors.refreshControl}
+            />
+          }
+        >
+          <Component
+            data={detailData}
+            navigation={navigation}
+            fetchPolicy={fetchPolicy}
+            readAloudControls={detailActions}
+            refetch={refetch}
+            route={route}
           />
-        }
-      >
-        <Component
-          data={detailData}
-          navigation={navigation}
-          fetchPolicy={fetchPolicy}
-          readAloudControls={detailActions}
-          refetch={refetch}
-          route={route}
-        />
-        <FeedbackFooter />
-      </ScrollView>
-    </SafeAreaViewFlex>
+          <FeedbackFooter />
+        </ScrollView>
+      </SafeAreaViewFlex>
+    </AudioTrackSourceContext.Provider>
   );
 };
 /* eslint-enable complexity, react-hooks/static-components */

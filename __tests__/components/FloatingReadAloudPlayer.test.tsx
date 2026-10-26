@@ -3,6 +3,12 @@ import renderer from 'react-test-renderer';
 
 const mockUseDetailSpeech = jest.fn();
 const mockSetPlayerBottomSpacing = jest.fn();
+let mockAudioPlayback: Record<string, unknown> | null = null;
+
+jest.mock('../../src/AudioPlayerProvider', () => ({
+  useAudioPlayback: () => mockAudioPlayback,
+  useOptionalAudioPlayback: () => mockAudioPlayback
+}));
 
 jest.mock('../../src/hooks', () => ({
   useDetailSpeech: (...args: unknown[]) => mockUseDetailSpeech(...args)
@@ -123,7 +129,55 @@ describe('FloatingReadAloudPlayer controls', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockAudioPlayback = null;
     mockUseDetailSpeech.mockReturnValue(speechState);
+  });
+
+  it('uses one floating player with Vorlesen and MP3 source tabs', () => {
+    const pauseAudio = jest.fn();
+    mockAudioPlayback = {
+      currentTrack: { title: 'Audio', url: 'https://example.org/tour.mp3' },
+      currentTime: 4,
+      duration: 132,
+      error: false,
+      isBuffering: false,
+      isPlaying: false,
+      openRequestId: 0,
+      pause: pauseAudio,
+      play: jest.fn(),
+      rate: 1,
+      registerReadAloudPause: jest.fn(() => jest.fn()),
+      seekBy: jest.fn(),
+      seekTo: jest.fn(),
+      setRate: jest.fn(),
+      stop: jest.fn()
+    };
+
+    let tree: renderer.ReactTestRenderer;
+    renderer.act(() => {
+      tree = renderer.create(
+        <FloatingReadAloudPlayer items={[{ id: 'title', text: speechState.currentItemText }]} />
+      );
+    });
+
+    expect(tree!.root.findByProps({ accessibilityLabel: 'Audioplayer öffnen' })).toBeTruthy();
+    renderer.act(() =>
+      tree!.root.findByProps({ accessibilityLabel: 'Audioplayer öffnen' }).props.onPress()
+    );
+    expect(tree!.root.findByProps({ accessibilityLabel: 'Audio auswählen' })).toBeTruthy();
+    expect(tree!.root.findByProps({ accessibilityLabel: 'Audio fortsetzen' })).toBeTruthy();
+
+    renderer.act(() =>
+      tree!.root.findByProps({ accessibilityLabel: 'Vorlesen auswählen' }).props.onPress()
+    );
+    expect(pauseAudio).toHaveBeenCalled();
+    expect(tree!.root.findByProps({ accessibilityLabel: 'Start' })).toBeTruthy();
+    expect(() => tree!.root.findByProps({ accessibilityLabel: 'Audio fortsetzen' })).toThrow();
+
+    renderer.act(() =>
+      tree!.root.findByProps({ accessibilityLabel: 'Audio auswählen' }).props.onPress()
+    );
+    expect(tree!.root.findByProps({ accessibilityLabel: 'Audio fortsetzen' })).toBeTruthy();
   });
 
   it('expands from the minimal speaker into six accessible controls', () => {

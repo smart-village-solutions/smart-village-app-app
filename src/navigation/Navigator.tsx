@@ -4,6 +4,7 @@ import { Platform, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { FloatingButton } from '../components/FloatingButton';
+import { AudioPlayerProvider } from '../AudioPlayerProvider';
 import { navigationConfig } from '../config/navigation';
 import { useTheme } from '../hooks/useTheme';
 import { ReadAloudAvailabilityProvider } from '../ReadAloudAvailabilityProvider';
@@ -57,12 +58,14 @@ export const Navigator = ({ navigationType }: { navigationType: NavigationType }
       theme={navigationTheme}
       linking={linkingConfig}
     >
-      <ReadAloudAvailabilityProvider>
-        <View style={rootStyle}>
-          {navigationType === NavigationType.DRAWER ? <DrawerNavigator /> : <MainTabNavigator />}
-          <FloatingButton publicJsonFile="floatingButton" bottomOffset={tabBottomOffset} />
-        </View>
-      </ReadAloudAvailabilityProvider>
+      <AudioPlayerProvider>
+        <ReadAloudAvailabilityProvider>
+          <View style={rootStyle}>
+            {navigationType === NavigationType.DRAWER ? <DrawerNavigator /> : <MainTabNavigator />}
+            <FloatingButton publicJsonFile="floatingButton" bottomOffset={tabBottomOffset} />
+          </View>
+        </ReadAloudAvailabilityProvider>
+      </AudioPlayerProvider>
     </NavigationContainer>
   );
 };

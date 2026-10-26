@@ -11,6 +11,7 @@ import { DataProviderButton } from '../DataProviderButton';
 import { DataProviderNotice } from '../DataProviderNotice';
 import { HtmlView } from '../HtmlView';
 import { ImageSection } from '../ImageSection';
+import { MediaSection } from '../MediaSection';
 import { DistanceDirectionCard, InfoCard } from '../infoCard';
 import { Logo } from '../Logo';
 import { SectionHeader } from '../SectionHeader';
@@ -92,6 +93,11 @@ export const Tour = ({ data, navigation, readAloudControls, route }) => {
         <InfoCard category={category} addresses={addresses} contact={contact} webUrls={webUrls} />
       </Wrapper>
       {readAloudControls}
+      <MediaSection
+        mediaContents={mediaContents?.filter(
+          (mediaContent) => mediaContent.contentType === 'audio'
+        )}
+      />
 
       {(!!tourAddresses.length || !!lengthKm) && (
         <TourCard lengthKm={lengthKm} tourAddresses={tourAddresses} payload={payload} />

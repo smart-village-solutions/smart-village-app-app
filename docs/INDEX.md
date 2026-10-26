@@ -78,6 +78,10 @@ For module setup and static content examples see [the Participation Project docs
 
 For detailed documentation see [the accessibility settings docs](./accessibility-settings.md).
 
+## MP3 player
+
+For the native player and its remote UI options see [the MP3 player docs](./AUDIO_PLAYER.md).
+
 ## Version module history
 
 Overview of modules and major capabilities introduced or developed in every release, see [the version module history](./VERSION_MODULE_HISTORY.md).

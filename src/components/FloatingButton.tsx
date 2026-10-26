@@ -1,8 +1,9 @@
 import _filter from 'lodash/filter';
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Platform, TouchableOpacity, View } from 'react-native';
 
 import { Icon, normalize } from '../config';
+import { useOptionalAudioPlayback } from '../AudioPlayerProvider';
 import { useAccessibilityPreferences, useHomeRefresh, useStaticContent } from '../hooks';
 import { navigationRef, type RootNavigationParamList } from '../navigation/navigationRef';
 import { useReadAloudAvailability } from '../ReadAloudAvailabilityProvider';
@@ -38,12 +39,17 @@ export const FloatingButton = ({
   const { navigation: navigationType } = globalSettings;
   const { features } = useAccessibilityPreferences();
   const { getRouteItems, isRouteAvailable } = useReadAloudAvailability();
+  const currentTrack = useOptionalAudioPlayback()?.currentTrack;
 
   // FloatingButton is rendered next to the navigator, so navigator-bound hooks
   // cannot be used here. Subscribe through the root ref to track the focused route.
   const [activeRoute, setActiveRoute] = useState(() =>
     navigationRef.isReady() ? navigationRef.getCurrentRoute() : undefined
   );
+  const [playerLayout, setPlayerLayout] = useState<{
+    expanded: boolean;
+    routeKey?: string;
+  }>({ expanded: false });
 
   useEffect(() => {
     const updateActiveRoute = () =>
@@ -57,6 +63,18 @@ export const FloatingButton = ({
   const activeRouteKey = activeRoute?.key;
   const readAloudItems = getRouteItems(activeRouteKey);
   const showReadAloudPlayer = features.readAloud && isRouteAvailable(activeRouteKey);
+  const hasPlayer = showReadAloudPlayer || !!currentTrack;
+  const isPlayerExpanded = playerLayout.routeKey === activeRouteKey && playerLayout.expanded;
+  const onPlayerExpandedChange = useCallback(
+    (expanded: boolean) => {
+      setPlayerLayout((current) =>
+        current.routeKey === activeRouteKey && current.expanded === expanded
+          ? current
+          : { expanded, routeKey: activeRouteKey }
+      );
+    },
+    [activeRouteKey]
+  );
   const positionStyle = useMemo(
     () => ({ bottom: navigationType === 'drawer' ? '5%' : normalize(16) + bottomOffset }),
     [bottomOffset, navigationType]
@@ -79,18 +97,31 @@ export const FloatingButton = ({
         ({ visibleScreens }) => !visibleScreens?.length || visibleScreens.includes(activeRouteName)
       );
 
-  if (!showReadAloudPlayer && !visibleItems.length) return null;
+  if (!hasPlayer && !visibleItems.length) return null;
 
+  const showAdditionalButtons = !!visibleItems.length && (!hasPlayer || !isPlayerExpanded);
+  const showCompactRow = hasPlayer && showAdditionalButtons;
   return (
     <View pointerEvents="box-none" style={[styles.container, positionStyle]}>
-      {showReadAloudPlayer && (
+      {hasPlayer && (
         <View pointerEvents="box-none" style={styles.readAloudRow}>
-          <FloatingReadAloudPlayer items={readAloudItems} key={activeRouteKey} />
+          <FloatingReadAloudPlayer
+            items={showReadAloudPlayer ? readAloudItems : []}
+            key={activeRouteKey}
+            onExpandedChange={onPlayerExpandedChange}
+          />
         </View>
       )}
 
-      {!!visibleItems.length && (
-        <View pointerEvents="box-none" style={styles.additionalButtons}>
+      {showAdditionalButtons && (
+        <View
+          pointerEvents="box-none"
+          style={
+            showCompactRow
+              ? [styles.additionalButtons, styles.compactAdditionalButtons]
+              : styles.additionalButtons
+          }
+        >
           {visibleItems.map((item, index) => (
             <TouchableOpacity
               activeOpacity={0.8}
@@ -159,6 +190,12 @@ const createStyles = (colors) => ({
     left: normalize(16),
     position: 'absolute',
     right: normalize(16)
+  },
+
+  compactAdditionalButtons: {
+    bottom: 0,
+    position: 'absolute',
+    right: 0
   },
 
   icon: {

@@ -1,7 +1,9 @@
-import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { Animated, Easing, Platform, Pressable, TextStyle, View, ViewStyle } from 'react-native';
 
 import { AccessibilityContext } from '../AccessibilityProvider';
+import { useOptionalAudioPlayback } from '../AudioPlayerProvider';
+import { useAudioPlayerSettings } from '../AudioPlayerSettings';
 import { device, Icon, normalize, texts } from '../config';
 import { DetailSpeechItem } from '../helpers/accessibility/detailSpeechParser';
 import { useDetailSpeech } from '../hooks';
@@ -11,9 +13,11 @@ import { useReadAloudAvailability } from '../ReadAloudAvailabilityProvider';
 import { ThemeColorPalette } from '../types/Theme';
 
 import { RegularText } from './Text';
+import { FloatingAudioControls } from './AudioPlayerControls';
 
 type Props = {
   items: DetailSpeechItem[];
+  onExpandedChange?: (expanded: boolean) => void;
 };
 
 type PlayerControlProps = {
@@ -36,6 +40,7 @@ const CONTROL_TOUCH_SIZE = normalize(44);
 const CONTROL_VISUAL_SIZE = normalize(36);
 const COMPACT_PLAYER_HEIGHT = normalize(56);
 const EXPANDED_PLAYER_HEIGHT = normalize(112);
+const SOURCE_SWITCH_HEIGHT = normalize(36);
 const PLAYER_WIDTH = device.width - normalize(32);
 const PLAYER_BOTTOM_CLEARANCE = normalize(16);
 const SPEED_OPTIONS = [1, 1.2, 1.5, 1.8, 2, 0.5, 0.8];
@@ -128,11 +133,18 @@ const PlayerControl = ({
 };
 
 // eslint-disable-next-line complexity
-export const FloatingReadAloudPlayer = ({ items }: Props) => {
+export const FloatingReadAloudPlayer = ({ items, onExpandedChange }: Props) => {
   const { colors } = useTheme();
   const styles = useThemeStyles(createStyles);
   const { isReduceMotionEnabled } = useContext(AccessibilityContext);
   const { setPlayerBottomSpacing } = useReadAloudAvailability();
+  const audio = useOptionalAudioPlayback();
+  const { label: audioLabel } = useAudioPlayerSettings();
+  const registerReadAloudPause = audio?.registerReadAloudPause;
+  const [source, setSource] = useState<'speech' | 'audio'>(
+    audio?.currentTrack ? 'audio' : 'speech'
+  );
+  const seenOpenRequest = useRef(audio?.openRequestId ?? 0);
   const [isControlsVisible, setIsControlsVisible] = useState(false);
   const [isReadAlongRendered, setIsReadAlongRendered] = useState(false);
   const [showReadAlong, setShowReadAlong] = useState(false);
@@ -140,6 +152,10 @@ export const FloatingReadAloudPlayer = ({ items }: Props) => {
   const [width] = useState(() => new Animated.Value(FLOATING_BUTTON_SIZE));
   const [height] = useState(() => new Animated.Value(COMPACT_PLAYER_HEIGHT));
   const [readAlongProgress] = useState(() => new Animated.Value(0));
+
+  useEffect(() => {
+    onExpandedChange?.(isControlsVisible);
+  }, [isControlsVisible, onExpandedChange]);
 
   const {
     activeWordRange,
@@ -157,6 +173,28 @@ export const FloatingReadAloudPlayer = ({ items }: Props) => {
     start,
     totalItems
   } = useDetailSpeech(items, true, speechRate);
+
+  const hasSpeech = items.length > 0;
+  const hasAudio = !!audio?.currentTrack;
+  const hasBothSources = hasSpeech && hasAudio;
+  const showAudioControls = hasAudio && (source === 'audio' || !hasSpeech);
+
+  useEffect(() => {
+    const requestId = audio?.openRequestId ?? 0;
+    if (requestId === seenOpenRequest.current) return;
+    seenOpenRequest.current = requestId;
+    // An inline MP3 action requests the shared player on the current screen.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setSource('audio');
+    setIsControlsVisible(true);
+  }, [audio?.openRequestId]);
+
+  useEffect(() => {
+    if (!registerReadAloudPause) return;
+    return registerReadAloudPause(() => {
+      if (isSpeaking) return pause();
+    });
+  }, [isSpeaking, pause, registerReadAloudPause]);
 
   const animationDuration = isReduceMotionEnabled ? 0 : 240;
   const rateLabel = formatSpeechRate(speechRate);
@@ -217,18 +255,38 @@ export const FloatingReadAloudPlayer = ({ items }: Props) => {
   }, [animationDuration, isControlsVisible, width]);
 
   useEffect(() => {
-    setPlayerBottomSpacing(
-      (isReadAlongRendered ? EXPANDED_PLAYER_HEIGHT : COMPACT_PLAYER_HEIGHT) +
-        PLAYER_BOTTOM_CLEARANCE
-    );
+    const sourceHeight = showAudioControls
+      ? EXPANDED_PLAYER_HEIGHT
+      : isReadAlongRendered
+      ? EXPANDED_PLAYER_HEIGHT
+      : COMPACT_PLAYER_HEIGHT;
+    const targetHeight = isControlsVisible
+      ? sourceHeight + (hasBothSources ? SOURCE_SWITCH_HEIGHT : 0)
+      : COMPACT_PLAYER_HEIGHT;
+
+    Animated.timing(height, {
+      duration: animationDuration,
+      easing: Easing.inOut(Easing.cubic),
+      toValue: targetHeight,
+      useNativeDriver: false
+    }).start();
+
+    setPlayerBottomSpacing(targetHeight + PLAYER_BOTTOM_CLEARANCE);
 
     return () => setPlayerBottomSpacing(0);
-  }, [isReadAlongRendered, setPlayerBottomSpacing]);
+  }, [
+    animationDuration,
+    hasBothSources,
+    height,
+    isControlsVisible,
+    isReadAlongRendered,
+    setPlayerBottomSpacing,
+    showAudioControls
+  ]);
 
   const toggleReadAlong = useCallback(() => {
     const shouldShowReadAlong = !showReadAlong;
 
-    height.stopAnimation();
     readAlongProgress.stopAnimation();
 
     if (shouldShowReadAlong) {
@@ -236,25 +294,17 @@ export const FloatingReadAloudPlayer = ({ items }: Props) => {
     }
     setShowReadAlong(shouldShowReadAlong);
 
-    Animated.parallel([
-      Animated.timing(height, {
-        duration: animationDuration,
-        easing: Easing.inOut(Easing.cubic),
-        toValue: shouldShowReadAlong ? EXPANDED_PLAYER_HEIGHT : COMPACT_PLAYER_HEIGHT,
-        useNativeDriver: false
-      }),
-      Animated.timing(readAlongProgress, {
-        duration: animationDuration,
-        easing: Easing.inOut(Easing.cubic),
-        toValue: shouldShowReadAlong ? 1 : 0,
-        useNativeDriver: false
-      })
-    ]).start(({ finished }) => {
+    Animated.timing(readAlongProgress, {
+      duration: animationDuration,
+      easing: Easing.inOut(Easing.cubic),
+      toValue: shouldShowReadAlong ? 1 : 0,
+      useNativeDriver: false
+    }).start(({ finished }) => {
       if (finished && !shouldShowReadAlong) {
         setIsReadAlongRendered(false);
       }
     });
-  }, [animationDuration, height, readAlongProgress, showReadAlong]);
+  }, [animationDuration, readAlongProgress, showReadAlong]);
 
   const primaryAction = useCallback(() => {
     if (isSpeaking) return pause();
@@ -276,14 +326,18 @@ export const FloatingReadAloudPlayer = ({ items }: Props) => {
     outputRange: [normalize(12), 0]
   });
 
-  if (!items.length) return null;
+  if (!hasSpeech && !hasAudio) return null;
 
   if (!isControlsVisible) {
     return (
       <Animated.View style={[styles.shadowContainer, { height, width }]}>
         <View style={[styles.container, styles.floatingContainer]}>
           <Pressable
-            accessibilityLabel={texts.settingsContents.accessibility.readAloud.expandPlayer}
+            accessibilityLabel={
+              showAudioControls
+                ? 'Audioplayer öffnen'
+                : texts.settingsContents.accessibility.readAloud.expandPlayer
+            }
             accessibilityRole="button"
             onPress={expandPlayer}
             style={({ pressed }) => [
@@ -294,7 +348,7 @@ export const FloatingReadAloudPlayer = ({ items }: Props) => {
             <Icon.NamedIcon
               color={colors.text}
               hasNoHitSlop
-              name="volume"
+              name={showAudioControls ? 'music' : 'volume'}
               size={normalize(24)}
               strokeWidth={2}
             />
@@ -308,73 +362,109 @@ export const FloatingReadAloudPlayer = ({ items }: Props) => {
     <Animated.View style={[styles.shadowContainer, { height, width }]}>
       <View style={styles.container}>
         <Animated.View style={[styles.controlsContent, { opacity: controlsOpacity }]}>
-          {isReadAlongRendered && (
-            <Animated.View
-              accessibilityElementsHidden
-              importantForAccessibility="no-hide-descendants"
-              style={[
-                styles.readAlongRow,
-                { opacity: readAlongProgress, transform: [{ translateY: readAlongTranslateY }] }
-              ]}
-            >
-              <View style={styles.readAlongWords}>
-                {readAlongWords.map((word) => (
-                  <RegularText
-                    key={word.key}
-                    numberOfLines={1}
-                    style={[styles.readAlongWord, word.active && styles.activeWord]}
-                    testID={word.active ? 'active-read-along-word' : undefined}
-                  >
-                    {word.text}
-                  </RegularText>
-                ))}
-              </View>
-            </Animated.View>
-          )}
-
-          <View accessibilityLabel={progressLabel} style={styles.controlsRow}>
-            <View style={styles.leftControls}>
-              <PlayerControl
-                label={`${texts.settingsContents.accessibility.readAloud.speedTitle}: ${rateLabel}`}
-                onPress={() => setSpeechRate((currentRate) => getNextSpeechRate(currentRate))}
-                text={rateLabel}
-              />
-              <PlayerControl
-                disabled={!canSkipPrevious}
-                iconName="player-skip-back"
-                label={texts.settingsContents.accessibility.readAloud.previous}
-                onPress={() => void skipPrevious()}
-              />
-              <PlayerControl
-                disabled={!canStart}
-                iconName={isSpeaking ? 'player-pause' : 'player-play'}
-                label={primaryLabel}
-                onPress={() => void primaryAction()}
-              />
-              <PlayerControl
-                disabled={!canSkipNext}
-                iconName="player-skip-forward"
-                label={texts.settingsContents.accessibility.readAloud.next}
-                onPress={() => void skipNext()}
-              />
-              <PlayerControl
-                expanded={showReadAlong}
-                iconName={showReadAlong ? 'eye' : 'eye-off'}
-                label={
-                  showReadAlong
-                    ? texts.settingsContents.accessibility.readAloud.hideReadAlong
-                    : texts.settingsContents.accessibility.readAloud.showReadAlong
-                }
-                onPress={toggleReadAlong}
-              />
+          {hasBothSources && (
+            <View style={styles.sourceSwitchRow}>
+              <Pressable
+                accessibilityLabel="Vorlesen auswählen"
+                accessibilityRole="tab"
+                accessibilityState={{ selected: !showAudioControls }}
+                onPress={() => {
+                  audio?.pause();
+                  setSource('speech');
+                }}
+                style={[styles.sourceSwitch, !showAudioControls && styles.sourceSwitchActive]}
+              >
+                <RegularText small>Vorlesen</RegularText>
+              </Pressable>
+              <Pressable
+                accessibilityLabel={`${audioLabel} auswählen`}
+                accessibilityRole="tab"
+                accessibilityState={{ selected: showAudioControls }}
+                onPress={() => {
+                  if (isSpeaking) void pause();
+                  setSource('audio');
+                }}
+                style={[styles.sourceSwitch, showAudioControls && styles.sourceSwitchActive]}
+              >
+                <RegularText numberOfLines={1} small>
+                  {audioLabel}
+                </RegularText>
+              </Pressable>
             </View>
+          )}
+          {showAudioControls ? (
+            <FloatingAudioControls onCollapse={collapsePlayer} />
+          ) : (
+            <>
+              {isReadAlongRendered && (
+                <Animated.View
+                  accessibilityElementsHidden
+                  importantForAccessibility="no-hide-descendants"
+                  style={[
+                    styles.readAlongRow,
+                    { opacity: readAlongProgress, transform: [{ translateY: readAlongTranslateY }] }
+                  ]}
+                >
+                  <View style={styles.readAlongWords}>
+                    {readAlongWords.map((word) => (
+                      <RegularText
+                        key={word.key}
+                        numberOfLines={1}
+                        style={[styles.readAlongWord, word.active && styles.activeWord]}
+                        testID={word.active ? 'active-read-along-word' : undefined}
+                      >
+                        {word.text}
+                      </RegularText>
+                    ))}
+                  </View>
+                </Animated.View>
+              )}
 
-            <PlayerControl
-              iconName="chevron-down"
-              label={texts.settingsContents.accessibility.readAloud.collapsePlayer}
-              onPress={collapsePlayer}
-            />
-          </View>
+              <View accessibilityLabel={progressLabel} style={styles.controlsRow}>
+                <View style={styles.leftControls}>
+                  <PlayerControl
+                    label={`${texts.settingsContents.accessibility.readAloud.speedTitle}: ${rateLabel}`}
+                    onPress={() => setSpeechRate((currentRate) => getNextSpeechRate(currentRate))}
+                    text={rateLabel}
+                  />
+                  <PlayerControl
+                    disabled={!canSkipPrevious}
+                    iconName="player-skip-back"
+                    label={texts.settingsContents.accessibility.readAloud.previous}
+                    onPress={() => void skipPrevious()}
+                  />
+                  <PlayerControl
+                    disabled={!canStart}
+                    iconName={isSpeaking ? 'player-pause' : 'player-play'}
+                    label={primaryLabel}
+                    onPress={() => void primaryAction()}
+                  />
+                  <PlayerControl
+                    disabled={!canSkipNext}
+                    iconName="player-skip-forward"
+                    label={texts.settingsContents.accessibility.readAloud.next}
+                    onPress={() => void skipNext()}
+                  />
+                  <PlayerControl
+                    expanded={showReadAlong}
+                    iconName={showReadAlong ? 'eye' : 'eye-off'}
+                    label={
+                      showReadAlong
+                        ? texts.settingsContents.accessibility.readAloud.hideReadAlong
+                        : texts.settingsContents.accessibility.readAloud.showReadAlong
+                    }
+                    onPress={toggleReadAlong}
+                  />
+                </View>
+
+                <PlayerControl
+                  iconName="chevron-down"
+                  label={texts.settingsContents.accessibility.readAloud.collapsePlayer}
+                  onPress={collapsePlayer}
+                />
+              </View>
+            </>
+          )}
         </Animated.View>
       </View>
     </Animated.View>
@@ -501,5 +591,24 @@ const createStyles = (colors: ThemeColorPalette): Record<string, TextStyle | Vie
     fontWeight: '600',
     letterSpacing: -0.3,
     lineHeight: normalize(14)
+  },
+
+  sourceSwitchRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    height: SOURCE_SWITCH_HEIGHT,
+    paddingHorizontal: normalize(8)
+  },
+
+  sourceSwitch: {
+    alignItems: 'center',
+    borderRadius: normalize(18),
+    flex: 1,
+    height: normalize(30),
+    justifyContent: 'center'
+  },
+
+  sourceSwitchActive: {
+    backgroundColor: colors.lighterPrimaryRgba
   }
 });

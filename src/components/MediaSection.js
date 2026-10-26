@@ -1,16 +1,19 @@
 import _filter from 'lodash/filter';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useContext } from 'react';
 import { ActivityIndicator, Linking, Platform } from 'react-native';
 import WebView from 'react-native-webview';
 import YoutubeIframe from 'react-native-youtube-iframe';
 
 import { consts, normalize } from '../config';
+import { AudioTrackSourceContext } from '../AudioPlayerProvider';
+import { useAudioPlayerSettings } from '../AudioPlayerSettings';
 import { trimNewLines } from '../helpers';
 import { useThemeStyles } from '../hooks/useThemeStyles';
 import { useTheme } from '../hooks/useTheme';
 
 import { LoadingContainer } from './LoadingContainer';
+import { AudioPlayerControls } from './AudioPlayerControls';
 import { WrapperHorizontal, WrapperVertical } from './Wrapper';
 
 // Extracts the YouTube video ID from an embed URL or an iframe HTML string.
@@ -119,18 +122,24 @@ const buildHtmlDocument = (content) => `<!DOCTYPE html>
   <body>${content}</body>
 </html>`;
 
+// eslint-disable-next-line complexity
 export const MediaItem = ({ mediaContent }) => {
+  const { enabled: audioPlayerEnabled } = useAudioPlayerSettings();
+  const audioSource = useContext(AudioTrackSourceContext);
   const { colors: colors } = useTheme();
 
   const styles = useThemeStyles(createStyles);
   const rawUrl = mediaContent?.sourceUrl?.url ?? '';
+
   const youtubeId = extractYoutubeId(rawUrl);
 
   if (youtubeId) {
     return <YoutubeIframe videoId={youtubeId} height={normalize(210)} />;
   }
 
-  const soundCloudPlayerUrl = extractSoundCloudPlayerUrl(rawUrl);
+  const soundCloudPlayerUrl =
+    extractSoundCloudPlayerUrl(rawUrl) ||
+    (/^https:\/\/w\.soundcloud\.com\/player\//i.test(rawUrl) ? rawUrl : null);
 
   if (soundCloudPlayerUrl) {
     // Load the player URL directly (source={{ uri }}) so the WebView origin is
@@ -166,6 +175,19 @@ export const MediaItem = ({ mediaContent }) => {
     );
   }
 
+  if (mediaContent?.contentType === 'audio' && isSafeHttpUrl(rawUrl)) {
+    if (!audioPlayerEnabled) return null;
+    return (
+      <AudioPlayerControls
+        track={{
+          ...(audioSource ? { source: audioSource } : {}),
+          title: mediaContent.captionText || mediaContent.sourceUrl?.description || 'Audio',
+          url: rawUrl
+        }}
+      />
+    );
+  }
+
   // Generic iframe fallback: use height declared in the tag, default to 210.
   const iframeHeight = extractIframeHeight(rawUrl) ?? 210;
 
@@ -194,11 +216,15 @@ export const MediaItem = ({ mediaContent }) => {
 };
 
 export const MediaSection = ({ mediaContents }) => {
+  const { enabled: audioPlayerEnabled } = useAudioPlayerSettings();
   const filteredContents = _filter(
     mediaContents,
     (mediaContent) =>
       (mediaContent.contentType === 'video' || mediaContent.contentType === 'audio') &&
-      !!mediaContent?.sourceUrl?.url
+      !!mediaContent?.sourceUrl?.url &&
+      (audioPlayerEnabled ||
+        mediaContent.contentType !== 'audio' ||
+        !isSafeHttpUrl(mediaContent.sourceUrl.url))
   );
 
   if (!filteredContents?.length) {
@@ -208,7 +234,7 @@ export const MediaSection = ({ mediaContents }) => {
   return (
     <WrapperHorizontal>
       {filteredContents.map((mediaContent) => (
-        <WrapperVertical key={`mediaContent${mediaContent.id}`}>
+        <WrapperVertical key={`mediaContent${mediaContent.id || mediaContent.sourceUrl.url}`}>
           <MediaItem mediaContent={mediaContent} />
         </WrapperVertical>
       ))}
@@ -225,4 +251,15 @@ const createStyles = () => ({
 
 MediaSection.propTypes = {
   mediaContents: PropTypes.array
+};
+
+MediaItem.propTypes = {
+  mediaContent: PropTypes.shape({
+    captionText: PropTypes.string,
+    contentType: PropTypes.string,
+    sourceUrl: PropTypes.shape({
+      description: PropTypes.string,
+      url: PropTypes.string
+    })
+  })
 };

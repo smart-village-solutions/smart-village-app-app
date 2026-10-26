@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AppState } from 'react-native';
 import * as Speech from 'expo-speech';
 
+import { useOptionalAudioPlayback } from '../AudioPlayerProvider';
 import { DetailSpeechItem } from '../helpers/accessibility/detailSpeechParser';
 
 type SpeechChunk = {
@@ -85,6 +86,7 @@ const buildQueue = (items: DetailSpeechItem[]) => {
 };
 
 export const useDetailSpeech = (items: DetailSpeechItem[], enabled = true, speechRate = 1) => {
+  const pauseAudio = useOptionalAudioPlayback()?.pause;
   const queue = useMemo(() => (enabled ? buildQueue(items) : []), [enabled, items]);
   const queueKey = useMemo(() => items.map((item) => `${item.id}:${item.text}`).join('|'), [items]);
   const generationRef = useRef(0);
@@ -238,6 +240,7 @@ export const useDetailSpeech = (items: DetailSpeechItem[], enabled = true, speec
   const start = useCallback(async () => {
     if (!enabled || !queue.length) return;
 
+    pauseAudio?.();
     generationRef.current += 1;
     pausedByUserRef.current = false;
     resumeChunkIndexRef.current = 0;
@@ -252,7 +255,7 @@ export const useDetailSpeech = (items: DetailSpeechItem[], enabled = true, speec
     if (!mountedRef.current) return;
     setCurrentItemIndex(0);
     playFromIndex(0);
-  }, [enabled, playFromIndex, queue.length]);
+  }, [enabled, pauseAudio, playFromIndex, queue.length]);
 
   const pause = useCallback(async () => {
     if (!isSpeaking) return;
@@ -277,10 +280,11 @@ export const useDetailSpeech = (items: DetailSpeechItem[], enabled = true, speec
   const resume = useCallback(() => {
     if (!enabled || !isPaused || !queue.length) return;
 
+    pauseAudio?.();
     generationRef.current += 1;
     pausedByUserRef.current = false;
     playFromIndex(resumeChunkIndexRef.current, resumeChunkOffsetRef.current);
-  }, [enabled, isPaused, playFromIndex, queue.length]);
+  }, [enabled, isPaused, pauseAudio, playFromIndex, queue.length]);
 
   const skipToItem = useCallback(
     async (targetItemIndex: number) => {
