@@ -752,7 +752,10 @@ export const WasteCollectionSettingsScreen = () => {
       if (
         !hasStartedLoadingStoredSettingsFromServer.current &&
         !loadedStoredSettingsInitially &&
-        ((!_isEmpty(typeSettings) &&
+        !typesLoading &&
+        !streetLoading &&
+        ((usedTypes &&
+          (usedTypeKeys.length === 0 || !_isEmpty(typeSettings)) &&
           (!!effectiveStreetName || waste.streetId !== selectedStreetId)) ||
           (!selectedStreetId && !_isEmpty(disruptionTypes)))
       ) {
@@ -768,7 +771,11 @@ export const WasteCollectionSettingsScreen = () => {
     loadStoredSettingsFromServer,
     loadedStoredSettingsInitially,
     selectedStreetId,
+    streetLoading,
     typeSettings,
+    typesLoading,
+    usedTypeKeys,
+    usedTypes,
     disruptionTypes,
     waste.streetId
   ]);

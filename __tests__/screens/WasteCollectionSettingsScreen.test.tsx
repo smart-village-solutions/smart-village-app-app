@@ -8,7 +8,7 @@ import {
   WasteCollectionSettingsScreen
 } from '../../src/screens/WasteCollectionSettingsScreen';
 import { SettingsContext, initialContext } from '../../src/SettingsProvider';
-import { ScreenName } from '../../src/types';
+import { ScreenName, WasteTypeData } from '../../src/types';
 import { saveWasteReminderSettings } from '../../src/helpers';
 import {
   storeWasteReminderSettingsWithoutScheduling,
@@ -109,7 +109,9 @@ jest.mock('../../src/components', () => {
   };
 });
 
-let mockUsedTypes = {
+let mockTypesLoading = false;
+let mockStreetLoading = false;
+let mockUsedTypes: WasteTypeData = {
   paper: {
     color: '#000000',
     label: 'Paper',
@@ -152,8 +154,8 @@ jest.mock('../../src/hooks', () => ({
     }
   }),
   useWasteAddresses: () => ({ data: mockStreetData, loading: false }),
-  useWasteStreet: () => ({ data: mockStreetData, loading: false }),
-  useWasteTypes: () => ({ data: mockUsedTypes, loading: false }),
+  useWasteStreet: () => ({ data: mockStreetData, loading: mockStreetLoading }),
+  useWasteTypes: () => ({ data: mockUsedTypes, loading: mockTypesLoading }),
   useWasteUsedTypes: () => mockUsedTypes
 }));
 
@@ -275,6 +277,8 @@ describe('WasteCollectionSettingsScreen', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockTypesLoading = false;
+    mockStreetLoading = false;
     mockGetInAppPermission.mockResolvedValue(true);
     mockGetLocalNotificationPermission.mockResolvedValue(false);
     mockGetScheduledWasteReminderNotificationCount.mockResolvedValue(2);
@@ -365,6 +369,63 @@ describe('WasteCollectionSettingsScreen', () => {
       ).toBe('empty');
     });
   });
+
+  it.each([
+    ['unknown waste types', 'types', [{ wasteType: 'Restmüll (60–1.100 L)' }]],
+    ['unknown waste types', 'street', [{ wasteType: 'Restmüll (60–1.100 L)' }]],
+    ['no waste types', 'types', []],
+    ['no waste types', 'street', []]
+  ] as const)(
+    'finishes initialization with %s after the %s query completes',
+    async (_, pendingQuery, wasteLocationTypes) => {
+      mockUsedTypes = {};
+      mockStreetData.wasteAddresses[0].wasteLocationTypes = [...wasteLocationTypes];
+      mockTypesLoading = pendingQuery === 'types';
+      mockStreetLoading = pendingQuery === 'street';
+      const globalSettings = {
+        ...initialContext.globalSettings,
+        navigation: 'tab',
+        waste: {
+          streetId: 1,
+          streetName: 'Test Street (12345 Berlin)',
+          selectedTypeKeys: []
+        }
+      };
+      let tree: renderer.ReactTestRenderer;
+      const screen = (
+        <SettingsContext.Provider value={{ ...initialContext, globalSettings }}>
+          <WasteCollectionSettingsScreen />
+        </SettingsContext.Provider>
+      );
+
+      await act(async () => {
+        tree = renderer.create(screen);
+      });
+
+      expect(collectText(tree.toJSON())).toEqual(['loading']);
+      expect(mockReadWasteReminderLocalState).not.toHaveBeenCalled();
+
+      mockTypesLoading = false;
+      mockStreetLoading = false;
+      await act(async () => {
+        tree.update(
+          <SettingsContext.Provider value={{ ...initialContext, globalSettings }}>
+            <WasteCollectionSettingsScreen />
+          </SettingsContext.Provider>
+        );
+      });
+
+      expect(collectText(tree.toJSON())).not.toContain('loading');
+      expect(mockReadWasteReminderLocalState).toHaveBeenCalledTimes(1);
+      act(() => {
+        tree.root.findByProps({ accessibilityLabel: 'Edit waste location' }).props.onPress();
+      });
+      expect(mockNavigation.popTo).toHaveBeenCalledWith(ScreenName.WasteCollection, {
+        editStreet: true
+      });
+      act(() => tree.unmount());
+    }
+  );
 
   it('shows the number of locally scheduled waste notifications when reminders are enabled', async () => {
     const globalSettings = {
