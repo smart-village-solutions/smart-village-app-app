@@ -1,4 +1,5 @@
 import React from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import renderer from 'react-test-renderer';
 
 import { AccessibilityContext } from '../src/AccessibilityProvider';
@@ -78,8 +79,9 @@ const renderProvider = (
 };
 
 describe('ConfigurationsProvider', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     jest.clearAllMocks();
+    await AsyncStorage.clear();
 
     mockApolloUseQuery.mockReturnValue({
       data: {
@@ -114,6 +116,48 @@ describe('ConfigurationsProvider', () => {
         })
       })
     );
+  });
+
+  it('restores SUE form steps after restart without the Apollo content cache', async () => {
+    const progress = [{ content: 'category', inputs: [], requiredInputs: [] }];
+    await AsyncStorage.setItem('sueReportProgressV1:https://city.test', JSON.stringify(progress));
+    let tree: renderer.ReactTestRenderer;
+    await renderer.act(async () => {
+      tree = renderProvider({ apiConfig: { apiKey: 'test', serverUrl: 'https://city.test' } });
+    });
+    expect(mockSetConfigurations).toHaveBeenLastCalledWith(
+      expect.objectContaining({ sueConfig: expect.objectContaining({ sueProgress: progress }) })
+    );
+    renderer.act(() => tree!.unmount());
+  });
+
+  it('does not restore SUE form steps belonging to another municipality', async () => {
+    await AsyncStorage.setItem(
+      'sueReportProgressV1:https://other-city.test',
+      JSON.stringify([{ content: 'category' }])
+    );
+    let tree: renderer.ReactTestRenderer;
+    await renderer.act(async () => {
+      tree = renderProvider({ apiConfig: { apiKey: 'test', serverUrl: 'https://city.test' } });
+    });
+    expect(mockSetConfigurations).not.toHaveBeenCalledWith(
+      expect.objectContaining({
+        sueConfig: expect.objectContaining({ sueProgress: [{ content: 'category' }] })
+      })
+    );
+    renderer.act(() => tree!.unmount());
+  });
+
+  it('does not read or write SUE form caches when SUE is disabled', async () => {
+    (AsyncStorage.getItem as jest.Mock).mockClear();
+    (AsyncStorage.setItem as jest.Mock).mockClear();
+    let tree: renderer.ReactTestRenderer;
+    await renderer.act(async () => {
+      tree = renderProvider();
+    });
+    expect(AsyncStorage.getItem).not.toHaveBeenCalled();
+    expect(AsyncStorage.setItem).not.toHaveBeenCalled();
+    renderer.act(() => tree!.unmount());
   });
 
   it('refetches SUE configuration on home refresh when base apiConfig is complete and whichApi is invalid', async () => {

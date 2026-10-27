@@ -34,7 +34,7 @@ export const parseSueData = (data, query, appDesignSystem) => {
 
     return {
       ...item,
-      id: item.serviceRequestId || item.localId,
+      id: item.localId || item.serviceRequestId,
       address: item.address?.replace('\r\n ', '\r\n'),
       appDesignSystem: showDeliveryInCustomLayout
         ? {

@@ -27,6 +27,8 @@ import { useHomeRefresh, useStaticContent } from './hooks';
 import { useTheme } from './hooks/useTheme';
 import { QUERY_TYPES, getQuery } from './queries';
 import { GenericType } from './types';
+import { getSueApiConfig } from './helpers/sueHelper';
+import { addToStore, readFromStore } from './helpers/storageHelper';
 
 const FILTER_QUERY_TYPES = {
   'GenericItem::ConstructionSite': GenericType.ConstructionSite,
@@ -85,6 +87,11 @@ export const ConfigurationsProvider = ({ children }: { children?: ReactNode }) =
 
   const [configurations, setConfigurations] = useState(defaultConfiguration);
   const [isLoading, setIsLoading] = useState(true);
+  const [savedSueProgress, setSavedSueProgress] = useState<{
+    endpoint: string;
+    progress: unknown;
+  }>();
+  const sueEndpoint = getSueApiConfig(sue.apiConfig).serverUrl;
 
   const { data: sueConfigData, refetch: refetchSueConfig } = useQuery(
     [QUERY_TYPES.SUE.CONFIGURATIONS],
@@ -103,6 +110,26 @@ export const ConfigurationsProvider = ({ children }: { children?: ReactNode }) =
     fetchPolicy: 'network-only'
   });
 
+  useEffect(() => {
+    if (!hasCompleteSueApiConfiguration) return;
+    let active = true;
+    const key = `sueReportProgressV1:${sueEndpoint}`;
+    const restore = async () => {
+      if (Array.isArray(sueProgress) && sueProgress.length) {
+        await addToStore(key, sueProgress);
+      } else {
+        const progress = await readFromStore(key);
+        if (active && Array.isArray(progress)) {
+          setSavedSueProgress({ endpoint: sueEndpoint, progress });
+        }
+      }
+    };
+    restore().catch(() => console.error('Could not restore SUE form steps'));
+    return () => {
+      active = false;
+    };
+  }, [hasCompleteSueApiConfiguration, sueEndpoint, sueProgress]);
+
   const mergedConfig = useMemo(() => {
     const isSueConfigEmpty = !hasSueSettings;
     const isResourceFiltersEmpty = !resourceFiltersData?.resourceFilters?.length;
@@ -120,9 +147,24 @@ export const ConfigurationsProvider = ({ children }: { children?: ReactNode }) =
     return mergeDefaultConfiguration(defaultConfiguration, {
       appDesignSystem: themedAppDesignSystem,
       resourceFilters,
-      sueConfig: { ...sue, ...sueConfigData, sueProgress }
+      sueConfig: {
+        ...sue,
+        ...sueConfigData,
+        sueProgress:
+          sueProgress ||
+          (savedSueProgress?.endpoint === sueEndpoint ? savedSueProgress?.progress : undefined)
+      }
     });
-  }, [hasSueSettings, resourceFiltersData, sue, sueConfigData, sueProgress, themedAppDesignSystem]);
+  }, [
+    hasSueSettings,
+    resourceFiltersData,
+    savedSueProgress,
+    sue,
+    sueConfigData,
+    sueEndpoint,
+    sueProgress,
+    themedAppDesignSystem
+  ]);
 
   const reloadCallback = useCallback(async () => {
     setIsLoading(true);

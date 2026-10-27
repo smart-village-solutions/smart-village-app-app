@@ -1,6 +1,9 @@
 import _uniq from 'lodash/uniq';
 
-import { storageHelper } from '../../helpers';
+import { storageHelper } from '../../helpers/storageHelper';
+import { withSueResourceCache } from '../../helpers/sueResourceCache';
+
+import { fetchSueJson } from './submitRequest';
 
 export const areaService = async () => {
   const configurations = await storageHelper.configurations();
@@ -19,15 +22,20 @@ export const areaService = async () => {
     }
   };
 
-  const rs = (
-    await (await fetch(`${serverUrl}/${id}?selectAttributes=rs`, areaServiceFetchObj)).json()
-  )?.rs;
+  return withSueResourceCache(['areaService', serverUrl, String(id)], async () => {
+    const { rs } = await fetchSueJson(
+      `${serverUrl}/${id}?selectAttributes=rs`,
+      areaServiceFetchObj
+    );
+    const postalCodes = await fetchSueJson(
+      `${serverUrl}/getByRs?rs=${rs}*&selectAttributes=postalCodes`,
+      areaServiceFetchObj
+    );
 
-  const postalCodes = await (
-    await fetch(`${serverUrl}/getByRs?rs=${rs}*&selectAttributes=postalCodes`, areaServiceFetchObj)
-  ).json();
-
-  return {
-    postalCodes: _uniq(postalCodes?.values?.flatMap((item: any) => item.postalCodes || []))
-  };
+    return {
+      postalCodes: _uniq(
+        postalCodes?.values?.flatMap((item: { postalCodes?: string[] }) => item.postalCodes || [])
+      )
+    };
+  });
 };

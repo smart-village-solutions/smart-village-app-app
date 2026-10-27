@@ -3,6 +3,7 @@ import React from 'react';
 import { Alert } from 'react-native';
 import renderer from 'react-test-renderer';
 
+import { ConfigurationsContext } from '../../src/ConfigurationsProvider';
 import { readFromStore } from '../../src/helpers';
 import { enqueueSueReport, readSueOutbox } from '../../src/helpers/sueReportStorage';
 import { syncSueOutbox } from '../../src/helpers/sueReportSync';
@@ -90,14 +91,23 @@ jest.mock('../../src/queries', () => ({
   getQuery: jest.fn()
 }));
 
-const mount = async () => {
+const mount = async (sueConfig?: Record<string, unknown>) => {
   let tree: renderer.ReactTestRenderer;
   await renderer.act(async () => {
-    tree = renderer.create(
+    const screen = (
       <SueReportScreen
         navigation={{ setOptions: jest.fn(), addListener: () => jest.fn() }}
         route={{ params: {} }}
       />
+    );
+    tree = renderer.create(
+      sueConfig ? (
+        <ConfigurationsContext.Provider value={{ refetch: jest.fn(), sueConfig } as never}>
+          {screen}
+        </ConfigurationsContext.Provider>
+      ) : (
+        screen
+      )
     );
   });
   return tree!;
@@ -125,6 +135,13 @@ it('restores a legacy draft without automatically submitting it', async () => {
   expect(enqueueSueReport).not.toHaveBeenCalled();
   expect(syncSueOutbox).not.toHaveBeenCalled();
   expect(AsyncStorage.removeItem).not.toHaveBeenCalled();
+  renderer.act(() => tree.unmount());
+});
+
+it('does not mutate cached form steps while required fields are still loading', async () => {
+  const progress = [{ content: 'user', inputs: ['firstName'], requiredInputs: ['firstName'] }];
+  const tree = await mount({ sueProgress: progress, requiredFields: {} });
+  expect(progress[0].requiredInputs).toEqual(['firstName']);
   renderer.act(() => tree.unmount());
 });
 

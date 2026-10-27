@@ -4,6 +4,26 @@ New reports are saved before the first submission attempt. The form gets a stabl
 and attachments are copied to `Paths.document/sue-reports/<UUID>/` before the outbox entry is
 written. An interrupted draft cleanup cannot enqueue the same UUID twice.
 
+## Offline form data and module isolation
+
+- The delivery runtime is mounted inside the settings providers and starts only when SUE
+  has a configured API key and server URL. Apps without SUE do not register its timer,
+  app-state listener or query invalidation subscription.
+- An installed app with saved SUE settings can initialize offline without refreshing its
+  main-server token. Apps without SUE keep their existing startup behavior.
+- Categories, map rules, attachment limits, required fields and postal-code validation
+  are saved after successful reads in `sueResourceCacheV1:*` keys. Form steps are saved
+  separately in `sueReportProgressV1:*`, so they survive Apollo content-cache expiration.
+  These caches contain no API keys and never change bookmarks or other modules' data.
+- These read caches are separated by endpoint (and area ID for postal codes). Test and
+  production data are not reused across endpoints. Cached read data is used offline or
+  when a read fails; read requests include a 30-second timeout for the response body.
+- A first online visit is needed to populate the form data. This does not make the entire
+  app offline-capable: navigation and non-SUE content retain their existing cache behavior.
+- A connected Wi-Fi network with explicitly unavailable internet keeps queued reports
+  pending. Form-step validation does not mutate the cached configuration, and local report
+  IDs remain the row keys even when different backends return the same backend ID.
+
 ## Compatibility with installed apps
 
 - `sueMyReports` retains its existing format and records. These records are never enqueued or
@@ -72,6 +92,12 @@ cannot be replaced through this edit action.
    that the old local entry is replaced only after the edit is saved.
 7. Switch the configured backend URL with a pending entry. It must remain saved and must not
    be sent to the new backend.
+8. Open the SUE form online to populate its read caches. Restart in airplane mode with an
+   expired main-server token and verify saved forms and history; verify categories, required
+   fields and postal codes on the configured SUE navigation path. Repeat with another backend:
+   its form data must not come from the original backend's cache.
+9. Run an app without SUE configuration. Its startup and navigation must retain their existing
+   behavior, and no SUE runtime timer or delivery requests should be registered.
 
 Automated coverage includes legacy isolation, offline/reconnect delivery, backoff, concurrent
 triggers, interrupted sends, storage/copy failures, manual retry, rejected edits, list parsing,

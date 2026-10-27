@@ -78,17 +78,17 @@ const sueProgressWithRequiredInputs = (
   requiredInputs[INPUT_KEYS.SUE.STREET] = !!geoMap?.locationStreetIsRequired;
 
   return progress.map((item) => {
-    item.requiredInputs = (item.requiredInputs || []).filter(
+    const requiredInputsForStep = (item.requiredInputs || []).filter(
       (key: string) => requiredInputs?.[key]
     );
 
     for (const key of item.inputs || []) {
-      if (requiredInputs[key] && !item.requiredInputs.includes(key)) {
-        item.requiredInputs.push(key);
+      if (requiredInputs[key] && !requiredInputsForStep.includes(key)) {
+        requiredInputsForStep.push(key);
       }
     }
 
-    return item;
+    return { ...item, requiredInputs: requiredInputsForStep };
   });
 };
 

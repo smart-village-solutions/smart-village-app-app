@@ -27,6 +27,13 @@ const withSueTimeout = async <T>(request: (signal: AbortSignal) => Promise<T>): 
 export const fetchSueWithTimeout = (url: string, options: RequestInit) =>
   withSueTimeout((signal) => fetch(url, { ...options, signal }));
 
+export const fetchSueJson = (url: string, options: RequestInit) =>
+  withSueTimeout(async (signal) => {
+    const response = await fetch(url, { ...options, signal });
+    if (!response.ok) throw new Error(`SUE request failed (HTTP ${response.status})`);
+    return response.json();
+  });
+
 /* eslint-disable complexity */
 export const postRequests = async (
   data: Record<string, unknown>,

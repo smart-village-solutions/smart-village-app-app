@@ -42,3 +42,16 @@ it('keeps delivery visible in existing custom SUE layouts without changing their
   expect(item.appDesignSystem.sueListItem.contentSequence).toEqual(['title', 'status', 'subtitle']);
   expect(design.sueListItem.contentSequence).toEqual(['title', 'status']);
 });
+
+it('keeps distinct row keys when different backends return the same report ID', () => {
+  const rows = parseSueData(
+    [
+      { localId: 'city-a', serviceRequestId: 123, title: 'First report' },
+      { localId: 'city-b', serviceRequestId: 123, title: 'Second report' }
+    ],
+    'myRequests',
+    {}
+  );
+  expect(rows.map((row) => row.id)).toEqual(['city-a', 'city-b']);
+  expect(rows.map((row) => row.params.queryVariables.id)).toEqual([123, 123]);
+});

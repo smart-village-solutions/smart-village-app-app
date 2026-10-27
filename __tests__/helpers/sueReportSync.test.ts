@@ -101,6 +101,18 @@ it('keeps offline submissions durable and sends exactly once on reconnection', a
   });
 });
 
+it('keeps reports pending on a connected network without internet access', async () => {
+  await enqueueSueReport(entry());
+  (NetInfo.fetch as jest.Mock).mockResolvedValue({
+    isConnected: true,
+    isInternetReachable: false
+  });
+  await syncSueOutbox(true);
+  expect(fetchSueWithTimeout).not.toHaveBeenCalled();
+  expect(postRequests).not.toHaveBeenCalled();
+  expect((await readSueOutbox())[0].deliveryStatus).toBe('pending');
+});
+
 it('backs off while the server is unavailable and resumes when it recovers', async () => {
   await enqueueSueReport(entry());
   (fetchSueWithTimeout as jest.Mock).mockResolvedValueOnce({ ok: false });

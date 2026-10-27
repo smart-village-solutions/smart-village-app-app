@@ -14,7 +14,11 @@ let activeSync: Promise<void> | undefined;
 
 const maySend = async () => {
   const network = await NetInfo.fetch();
-  return AppState.currentState === 'active' && network.isConnected === true;
+  return (
+    AppState.currentState === 'active' &&
+    network.isConnected === true &&
+    network.isInternetReachable !== false
+  );
 };
 
 const deferReport = (entry: SueOutboxReport) => {
