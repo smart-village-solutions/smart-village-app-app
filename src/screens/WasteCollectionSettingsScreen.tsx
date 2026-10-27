@@ -1291,6 +1291,7 @@ const LegacyGlobalReminderSettings = ({
       <Divider style={styles.divider} />
       <LegacyDayBeforeSelector
         areWasteReminderControlsDisabled={areWasteReminderControlsDisabled}
+        colors={colors}
         onDayBefore={onDayBefore}
         onPressUpdateOnDayBefore={onPressUpdateOnDayBefore}
         styles={styles}
@@ -1592,6 +1593,7 @@ const ReminderSettingsPanel = ({
 
 type LegacyDayBeforeSelectorProps = {
   areWasteReminderControlsDisabled: boolean;
+  colors: { surface: string; shadowRgba: string };
   onDayBefore: boolean;
   onPressUpdateOnDayBefore: (value: boolean) => void;
   styles: ReturnType<typeof createStyles>;
@@ -1601,6 +1603,7 @@ type LegacyDayBeforeSelectorProps = {
 
 const LegacyDayBeforeSelector = ({
   areWasteReminderControlsDisabled,
+  colors,
   onDayBefore,
   onPressUpdateOnDayBefore,
   styles,

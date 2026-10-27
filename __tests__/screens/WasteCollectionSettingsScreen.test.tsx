@@ -1,6 +1,8 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { DeviceEventEmitter, Linking } from 'react-native';
+import Collapsible from 'react-native-collapsible';
+import { Tooltip } from 'react-native-elements';
 import renderer, { act } from 'react-test-renderer';
 
 import {
@@ -9,6 +11,9 @@ import {
 } from '../../src/screens/WasteCollectionSettingsScreen';
 import { SettingsContext, initialContext } from '../../src/SettingsProvider';
 import { ScreenName, WasteTypeData } from '../../src/types';
+import { device } from '../../src/config';
+import { lightColors } from '../../src/config/colors';
+import { ThemeContext } from '../../src/ThemeContext';
 import { saveWasteReminderSettings } from '../../src/helpers';
 import {
   storeWasteReminderSettingsWithoutScheduling,
@@ -54,12 +59,6 @@ jest.mock('expo-router/react-navigation', () => ({
 }));
 
 jest.mock('@react-native-community/datetimepicker', () => 'DateTimePicker');
-jest.mock(
-  'react-native-collapsible',
-  () =>
-    ({ children, collapsed }) =>
-      collapsed ? null : children
-);
 jest.mock('react-native-elements', () => {
   const React = require('react');
   const { View } = require('react-native');
@@ -277,6 +276,7 @@ describe('WasteCollectionSettingsScreen', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    device.platform = 'ios';
     mockTypesLoading = false;
     mockStreetLoading = false;
     mockGetInAppPermission.mockResolvedValue(true);
@@ -423,6 +423,58 @@ describe('WasteCollectionSettingsScreen', () => {
       expect(mockNavigation.popTo).toHaveBeenCalledWith(ScreenName.WasteCollection, {
         editStreet: true
       });
+      act(() => tree.unmount());
+    }
+  );
+
+  it.each([
+    ['android', true],
+    ['android', false],
+    ['ios', true],
+    ['ios', false]
+  ] as const)(
+    'mounts collapsed legacy reminder content with theme colors on %s (known types: %s)',
+    async (platform, hasKnownTypes) => {
+      device.platform = platform;
+      mockUsedTypes = hasKnownTypes
+        ? {
+            paper: {
+              ...mockUsedTypes.paper,
+              reminders: { channels: { push: false } }
+            }
+          }
+        : {};
+      const colors = {
+        ...lightColors,
+        surface: '#102030',
+        shadowRgba: 'rgba(10,20,30,0.5)'
+      };
+      const globalSettings = {
+        ...initialContext.globalSettings,
+        waste: {
+          streetId: 1,
+          streetName: 'Test Street (12345 Berlin)',
+          selectedTypeKeys: []
+        }
+      };
+      let tree: renderer.ReactTestRenderer;
+
+      await act(async () => {
+        tree = renderer.create(
+          <ThemeContext.Provider value={{ colors, isDark: true, mode: 'dark' }}>
+            <SettingsContext.Provider value={{ ...initialContext, globalSettings }}>
+              <WasteCollectionSettingsScreen />
+            </SettingsContext.Provider>
+          </ThemeContext.Provider>
+        );
+      });
+
+      const collapsedPanel = tree.root.findByType(Collapsible);
+      expect(collapsedPanel.props.collapsed).toBe(true);
+      const tooltip = collapsedPanel.findByType(Tooltip);
+      expect(tooltip.props.backgroundColor).toBe(colors.surface);
+      expect(tooltip.props.overlayColor).toBe(colors.shadowRgba);
+      expect(collectText(tree.toJSON())).not.toContain('loading');
       act(() => tree.unmount());
     }
   );
