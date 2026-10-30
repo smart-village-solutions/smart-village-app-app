@@ -1,5 +1,4 @@
-import * as SecureStore from 'expo-secure-store';
-
+import { readSecureStoreItem } from './helpers/secureStore';
 import { profileAuthToken, profileUserAuthToken } from './helpers/profileHelper';
 import { voucherAuthToken } from './helpers/voucherHelper';
 
@@ -40,7 +39,7 @@ const resolveAuthToken = async (authMode: GraphqlAuthMode) => {
 export const getGraphqlAuthHeaders = async (
   authMode: GraphqlAuthMode = AUTH_MODE_PUBLIC
 ): Promise<GraphqlAuthHeaders> => {
-  const accessToken = await SecureStore.getItemAsync('ACCESS_TOKEN');
+  const accessToken = await readSecureStoreItem('ACCESS_TOKEN');
   const authToken = await resolveAuthToken(authMode);
   const userAuthToken = includesUserAuth(authMode) ? await profileUserAuthToken() : '';
 
