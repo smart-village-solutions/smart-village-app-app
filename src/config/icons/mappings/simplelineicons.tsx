@@ -100,6 +100,17 @@ export const simplelineiconsIconMapping: Record<string, string> = {
   play: 'control-play',
   pause: 'control-pause',
 
+  // Accessibility & Read Aloud
+  accessible: 'user',
+  volume: 'volume-2',
+  'player-play': 'control-play',
+  'player-pause': 'control-pause',
+  'player-skip-back': 'control-start',
+  'player-skip-forward': 'control-end',
+  eye: 'eye',
+  'eye-off': 'eye',
+  'chevron-down': 'arrow-down',
+
   // Visibility
   visible: 'eye',
   unvisible: 'eye',

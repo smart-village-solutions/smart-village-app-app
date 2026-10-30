@@ -101,6 +101,17 @@ export const fontawesome6IconMapping: Record<string, string> = {
   play: 'circle-play',
   pause: 'circle-pause',
 
+  // Accessibility & Read Aloud
+  accessible: 'universal-access',
+  volume: 'volume-high',
+  'player-play': 'play',
+  'player-pause': 'pause',
+  'player-skip-back': 'backward-step',
+  'player-skip-forward': 'forward-step',
+  eye: 'eye',
+  'eye-off': 'eye-slash',
+  'chevron-down': 'chevron-down',
+
   // Visibility
   visible: 'eye',
   unvisible: 'eye-slash',
