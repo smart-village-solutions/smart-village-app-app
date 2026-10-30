@@ -155,8 +155,9 @@ const MainAppWithApolloProvider = () => {
     // rehydrate data from the async storage to the global state
     let globalSettings = (await storageHelper.globalSettings()) || initialGlobalSettings;
 
-    // if there are no list type settings yet, set the defaults as fallback
-    const listTypesSettings = (await storageHelper.listTypesSettings()) || {
+    // The list settings screen is no longer available; start from the code defaults.
+    // Remote list types in globalSettings.sections take precedence when rendering.
+    const listTypesSettings = {
       [QUERY_TYPES.NEWS_ITEMS]: LIST_TYPES.TEXT_LIST,
       [QUERY_TYPES.EVENT_RECORDS]: LIST_TYPES.TEXT_LIST,
       [QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS]: LIST_TYPES.CARD_LIST,

@@ -25,6 +25,7 @@ export const EventList = ({
   isFetchingNextPage,
   ListEmptyComponent,
   ListHeaderComponent,
+  listType,
   navigation,
   noSubtitle,
   queryVariables,
@@ -49,6 +50,7 @@ export const EventList = ({
   };
 
   const renderItem = useRenderItem(QUERY_TYPES.EVENT_RECORDS, navigation, {
+    listType,
     noSubtitle,
     queryVariables,
     isIndexStartingAt1: true
@@ -124,6 +126,7 @@ EventList.propTypes = {
   isFetchingNextPage: PropTypes.bool,
   ListEmptyComponent: PropTypes.object,
   ListHeaderComponent: PropTypes.object,
+  listType: PropTypes.string,
   navigation: PropTypes.object,
   noSubtitle: PropTypes.bool,
   query: PropTypes.string,

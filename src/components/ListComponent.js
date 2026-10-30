@@ -4,6 +4,7 @@ import React, { useContext } from 'react';
 import { consts } from '../config';
 import { QUERY_TYPES } from '../queries';
 import { SettingsContext } from '../SettingsProvider';
+import { resolveListType } from '../helpers/listTypeSettings';
 
 import { CategoryList } from './CategoryList';
 import { EventList } from './EventList';
@@ -13,16 +14,6 @@ import { VerticalList } from './VerticalList';
 import { VoucherList } from './vouchers';
 
 const { LIST_TYPES } = consts;
-
-const isHorizontal = (query, listTypesSettings) => {
-  switch (query) {
-    case QUERY_TYPES.TOURS:
-    case QUERY_TYPES.POINTS_OF_INTEREST:
-      return listTypesSettings[QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS] === LIST_TYPES.CARD_LIST;
-    default:
-      return listTypesSettings[query] === LIST_TYPES.CARD_LIST;
-  }
-};
 
 // eslint-disable-next-line complexity
 const getComponent = (query, horizontal, sectionByDate) => {
@@ -81,10 +72,11 @@ export const ListComponent = ({
   const { globalSettings, listTypesSettings } = useContext(SettingsContext);
   const { sections = {} } = globalSettings;
   const { categoryTitles } = sections;
+  const resolvedListType = resolveListType(query, globalSettings, listTypesSettings, listType);
 
   const Component = getComponent(
     query,
-    horizontal ?? isHorizontal(query, listTypesSettings),
+    horizontal ?? resolvedListType === LIST_TYPES.CARD_LIST,
     sectionByDate
   );
 
@@ -107,7 +99,7 @@ export const ListComponent = ({
       navigation={navigation}
       noSubtitle={noSubtitle}
       noOvertitle={noOvertitle}
-      listType={listType}
+      listType={resolvedListType}
       openWebScreen={openWebScreen}
       query={query}
       queryVariables={queryVariables}
