@@ -1,5 +1,5 @@
 import React from 'react';
-import { Platform, TouchableOpacity } from 'react-native';
+import { Platform, StyleSheet, TouchableOpacity } from 'react-native';
 import renderer from 'react-test-renderer';
 
 jest.mock('react-native-elements', () => {
@@ -144,6 +144,27 @@ describe('Accessibility primitives', () => {
     expect(node.props.accessibilityState).toEqual({ disabled: true });
     expect(node.props.accessibilityLabel).toBe(`Speichern ${consts.a11yLabel.button}`);
   });
+
+  it.each([undefined, 'accept', 'reject', 'delete'])(
+    'updates the %s button title when the accessibility text size changes',
+    (variant) => {
+      const buttonAtScale = (textScaleMultiplier) => (
+        <AccessibilityContext.Provider value={{ textScaleMultiplier }}>
+          <Button onPress={onPress} title="Termin vereinbaren" variant={variant} />
+        </AccessibilityContext.Provider>
+      );
+      const tree = renderWithAct(buttonAtScale(0.9));
+      const titleSize = () =>
+        StyleSheet.flatten(tree.root.findByType('mock-rne-button').props.titleStyle).fontSize;
+
+      expect(titleSize()).toBeCloseTo(14 * 0.9);
+
+      renderer.act(() => tree.update(buttonAtScale(1.3)));
+
+      expect(titleSize()).toBeCloseTo(14 * 1.3);
+      renderer.act(() => tree.unmount());
+    }
+  );
 
   it('Touchable sets default role and merges state', () => {
     const tree = renderWithAct(
