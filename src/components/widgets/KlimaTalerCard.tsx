@@ -28,10 +28,11 @@ type Props = {
 
 const formatCoins = (config: KlimaTalerWidgetConfiguration, coins?: number) => {
   if (coins === undefined) return config.texts.unavailableBalance;
+  const wholeCoins = Math.trunc(coins);
   try {
-    return coins.toLocaleString(config.texts.locale);
+    return wholeCoins.toLocaleString(config.texts.locale);
   } catch {
-    return coins.toLocaleString('de-DE');
+    return wholeCoins.toLocaleString('de-DE');
   }
 };
 
