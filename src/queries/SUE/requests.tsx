@@ -10,6 +10,7 @@ import {
   inferSueStatusSource,
   readFromStore
 } from '../../helpers';
+import { isJsonObject, readJsonList } from '../../helpers/jsonResponse';
 
 import { requestsWithServiceRequestId } from './requestsWithServiceRequestId';
 
@@ -20,9 +21,9 @@ export const requests = async (queryVariables) => {
   const queryParams = new URLSearchParams(queryVariables);
   const { sueFetchObj = {}, sueRequestsUrl = '' } = await fetchSueEndpoints();
 
-  const response = await (
+  const response = await readJsonList(
     await fetch(`${sueRequestsUrl}?${queryParams.toString()}`, sueFetchObj)
-  ).json();
+  );
 
   return new Promise((resolve) => {
     // return with converted keys to camelCase for being accessible per JavaScript convention
@@ -57,7 +58,8 @@ export const myRequests = async ({
     const jsonValue = await readFromStore(SUE_MY_REPORTS);
 
     if (jsonValue?.length) {
-      myReports = JSON.parse(jsonValue);
+      const storedReports = JSON.parse(jsonValue);
+      myReports = Array.isArray(storedReports) ? storedReports.filter(isJsonObject) : [];
     }
   } catch (e) {
     console.error('Error reading my reports values from AsyncStorage', e);

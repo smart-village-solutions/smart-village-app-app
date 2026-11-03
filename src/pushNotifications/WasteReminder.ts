@@ -1,5 +1,4 @@
-import * as SecureStore from 'expo-secure-store';
-
+import { readSecureStoreItem } from '../helpers/secureStore';
 import * as appJson from '../../app.json';
 import { device, secrets, staticRestSuffix, texts } from '../config';
 import { formatWasteReminderTime } from '../helpers/wasteReminderTimeHelper';
@@ -110,7 +109,7 @@ export type WasteReminderSettingsFetchResult =
   | { status: 'invalid' };
 
 export const getReminderSettings = async (): Promise<WasteReminderSettingsFetchResult> => {
-  const accessToken = await SecureStore.getItemAsync(PushNotificationStorageKeys.ACCESS_TOKEN);
+  const accessToken = await readSecureStoreItem(PushNotificationStorageKeys.ACCESS_TOKEN);
   const pushToken = await getStoredWasteReminderPushToken();
 
   if (!accessToken || !pushToken) {
@@ -151,7 +150,7 @@ const updateReminderSettings = async ({
   street,
   zip
 }: SettingInfo) => {
-  const accessToken = await SecureStore.getItemAsync(PushNotificationStorageKeys.ACCESS_TOKEN);
+  const accessToken = await readSecureStoreItem(PushNotificationStorageKeys.ACCESS_TOKEN);
   const pushToken = await getWasteReminderPushToken();
   const requestPath = secrets[namespace].serverUrl + staticRestSuffix.wasteReminderRegister;
   const os =
@@ -205,7 +204,7 @@ const updateReminderSettings = async ({
 };
 
 const deleteReminderSetting = async (id: number | string) => {
-  const accessToken = await SecureStore.getItemAsync(PushNotificationStorageKeys.ACCESS_TOKEN);
+  const accessToken = await readSecureStoreItem(PushNotificationStorageKeys.ACCESS_TOKEN);
   const pushToken = await getWasteReminderPushToken();
   const requestPath =
     secrets[namespace].serverUrl +

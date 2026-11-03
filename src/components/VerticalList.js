@@ -1,9 +1,10 @@
 import PropTypes from 'prop-types';
-import React, { useContext, useRef, useState } from 'react';
+import React, { useContext, useRef } from 'react';
 import { ActivityIndicator, FlatList, View } from 'react-native';
 
 import { consts, normalize } from '../config';
 import { useRenderItem } from '../hooks';
+import { useListPagination } from '../hooks/useListPagination';
 import { QUERY_TYPES } from '../queries';
 import { SettingsContext } from '../SettingsProvider';
 import { useThemeStyles } from '../hooks/useThemeStyles';
@@ -47,7 +48,7 @@ export const VerticalList = ({
   const { settings = {} } = globalSettings;
   const { switchBetweenListAndMap = SWITCH_BETWEEN_LIST_AND_MAP.TOP_FILTER } = settings;
   const flatListRef = useRef();
-  const [listEndReached, setListEndReached] = useState(false);
+  const { listEndReached, onEndReached } = useListPagination(fetchMoreData, query, queryVariables);
 
   const renderItem = useRenderItem(query, navigation, {
     isIndexStartingAt1,
@@ -58,19 +59,6 @@ export const VerticalList = ({
     queryVariables,
     refetch
   });
-
-  const onEndReached = async () => {
-    if (fetchMoreData) {
-      // if there is a pagination, the end of the list is reached, when no more data is returned
-      // from partially fetching, so we need to check the data to determine the lists end
-      const { data: moreData } = await fetchMoreData();
-      const moreItems = query ? moreData?.[query] ?? [] : moreData ?? [];
-
-      setListEndReached(!moreItems.length);
-    } else {
-      setListEndReached(true);
-    }
-  };
 
   return (
     <FlatList
