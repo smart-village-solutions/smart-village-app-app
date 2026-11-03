@@ -6,6 +6,7 @@ import { BookmarkContext } from '../../BookmarkProvider';
 import { consts } from '../../config';
 import { useBookmarkedStatus } from '../../hooks';
 import { useTheme } from '../../hooks/useTheme';
+import { useHeaderForeground } from '../../hooks/useHeaderForeground';
 import { togglePushDeviceAssignment } from '../../pushNotifications';
 import { RegularText } from '../Text';
 import { HeaderIconButton } from '../HeaderIconButton';
@@ -30,11 +31,20 @@ type BookmarkRouteParams = {
 
 const a11yLabel = consts.a11yLabel;
 
-const BookmarkLabel = ({ label }: { label?: string }) =>
-  label ? <RegularText primary>{label}</RegularText> : null;
+const getActionFallback = (
+  label: string | undefined,
+  colors: ReturnType<typeof useTheme>['colors']
+) => (label ? colors.primary : colors.text);
 
-const getIconColor = (label: string | undefined, colors: ReturnType<typeof useTheme>['colors']) =>
-  label ? colors.primary : colors.darkText;
+const BookmarkLabel = ({ label }: { label?: string }) => {
+  const { colors } = useTheme();
+  const foreground = useHeaderForeground(colors.primary);
+  return label ? (
+    <RegularText primary style={{ color: foreground }}>
+      {label}
+    </RegularText>
+  ) : null;
+};
 
 export const BookmarkHeader = ({
   buttonStyle,
@@ -44,6 +54,7 @@ export const BookmarkHeader = ({
   suffix: suffixOverride
 }: Props) => {
   const { colors } = useTheme();
+  const foreground = useHeaderForeground(getActionFallback(label, colors));
 
   const { toggleBookmark } = useContext(BookmarkContext);
 
@@ -68,8 +79,6 @@ export const BookmarkHeader = ({
     return null;
   }
 
-  const iconColor = getIconColor(label, colors);
-
   return (
     <HeaderIconButton
       accessibilityLabel={label || a11yLabel.bookmarkList}
@@ -79,7 +88,7 @@ export const BookmarkHeader = ({
       style={buttonStyle}
     >
       <ConfiguredBookmarkIcon
-        color={iconColor}
+        color={foreground}
         selected={isBookmarked}
         strokeWidth={1}
         size={HEADER_RIGHT_ICON_SIZE}

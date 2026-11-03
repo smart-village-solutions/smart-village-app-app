@@ -3,7 +3,7 @@ import { StyleProp, ViewStyle } from 'react-native';
 
 import { SettingsContext } from '../SettingsProvider';
 import { consts, Icon } from '../config';
-import { useTheme } from '../hooks/useTheme';
+import { useHeaderForeground } from '../hooks/useHeaderForeground';
 import { useLoginProfile } from '../hooks/useLoginProfile';
 import { useProfileContext } from '../ProfileProvider';
 
@@ -33,7 +33,7 @@ type TProfileSettings = {
 
 export const LoginHeader = ({ style }: Props) => {
   const { globalSettings } = useContext(SettingsContext);
-  const { colors } = useTheme();
+  const foreground = useHeaderForeground();
   const { isLoggedIn: isProfileLoggedIn, refresh } = useProfileContext();
   const settings = (globalSettings?.settings || {}) as { profile?: TProfileSettings };
   const profile = settings.profile;
@@ -61,7 +61,7 @@ export const LoginHeader = ({ style }: Props) => {
     >
       <Icon.NamedIcon
         name={isProfileLoggedIn ? 'logout-2' : 'login-2'}
-        color={colors.darkText}
+        color={foreground}
         size={HEADER_RIGHT_ICON_SIZE}
         style={style}
         strokeWidth={HEADER_RIGHT_ICON_STROKE_WIDTH}

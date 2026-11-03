@@ -1,5 +1,5 @@
 import { useNavigation } from 'expo-router/react-navigation';
-import React, { useContext, useEffect, useLayoutEffect, useMemo } from 'react';
+import React, { useContext, useEffect, useLayoutEffect } from 'react';
 import { TouchableOpacity } from 'react-native';
 
 import {
@@ -12,17 +12,17 @@ import {
   WrapperRow
 } from '../components';
 import { HEADER_RIGHT_ICON_STROKE_WIDTH } from '../components/headerIconConfig';
-import { Icon, normalize, texts } from '../config';
+import { HeaderIcon } from '../components/HeaderIcon';
+import { Icon, IconProps, normalize, texts } from '../config';
 import { useChatbot, useStaticContent } from '../hooks';
 import { NetworkContext } from '../NetworkProvider';
 import { SettingsContext } from '../SettingsProvider';
 import { ChatbotConfig, ChatbotConnectionState } from '../types';
 import { useThemeStyles } from '../hooks/useThemeStyles';
-import { useTheme } from '../hooks/useTheme';
+
+const RefreshHeaderIcon = (props: IconProps) => <Icon.NamedIcon {...props} name="refresh" />;
 
 export const ChatbotScreen = () => {
-  const { colors: colors } = useTheme();
-
   const styles = useThemeStyles(createStyles);
   const navigation = useNavigation();
   const { isConnected: isNetworkConnected } = useContext(NetworkContext);
@@ -75,17 +75,16 @@ export const ChatbotScreen = () => {
             accessibilityLabel={texts.chatbot.headerButtonAccessibilityLabel}
             accessibilityHint={texts.chatbot.headerButtonAccessibilityHint}
           >
-            <Icon.NamedIcon
-              name="refresh"
+            <HeaderIcon
+              icon={RefreshHeaderIcon}
               size={normalize(24)}
-              color={colors.darkText}
               strokeWidth={HEADER_RIGHT_ICON_STROKE_WIDTH}
             />
           </TouchableOpacity>
         </WrapperRow>
       )
     });
-  }, [navigation, retry]);
+  }, [navigation, retry, styles.headerButton, styles.headerRight, styles.icon]);
 
   if (configLoading) {
     return <LoadingSpinner loading />;
