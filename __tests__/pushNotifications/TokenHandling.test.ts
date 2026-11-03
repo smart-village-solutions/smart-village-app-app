@@ -1,11 +1,15 @@
 import * as SecureStore from 'expo-secure-store';
-import { DeviceEventEmitter } from 'react-native';
+import { Alert, DeviceEventEmitter } from 'react-native';
 
 import {
+  addExcludeNotificationConfigurationOnServer,
+  getExcludeNotificationConfigurationFromServer,
   handleIncomingToken,
   PUSH_NOTIFICATION_TOKEN_CHANGED_EVENT,
   PushNotificationStorageKeys
 } from '../../src/pushNotifications/TokenHandling';
+
+jest.mock('../../app.json', () => ({ expo: { slug: 'smart-village-app' } }));
 
 jest.mock('expo-secure-store', () => ({
   deleteItemAsync: jest.fn(),
@@ -117,5 +121,54 @@ describe('handleIncomingToken', () => {
 
     await expect(handleIncomingToken()).rejects.toThrow('storage failed');
     expect(emit).not.toHaveBeenCalled();
+  });
+});
+
+describe('notification preference failure recovery', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    (SecureStore.getItemAsync as jest.Mock).mockResolvedValue('access-token');
+    jest.spyOn(Alert, 'alert').mockImplementation(() => {});
+  });
+
+  it.each([404, 500])('returns no preferences for HTTP %s without throwing', async (status) => {
+    global.fetch = jest.fn().mockResolvedValue({ status });
+    await expect(getExcludeNotificationConfigurationFromServer('token')).resolves.toBeUndefined();
+    expect(Alert.alert).toHaveBeenCalledTimes(1);
+  });
+
+  it('handles network failures on both reads and writes', async () => {
+    global.fetch = jest.fn().mockRejectedValue(new Error('offline'));
+    await expect(getExcludeNotificationConfigurationFromServer('token')).resolves.toBeUndefined();
+    await expect(addExcludeNotificationConfigurationOnServer('token', {})).resolves.toBe(false);
+  });
+
+  it('handles malformed JSON without throwing', async () => {
+    global.fetch = jest.fn().mockResolvedValue({
+      status: 200,
+      json: async () => {
+        throw new SyntaxError('invalid JSON');
+      }
+    });
+    await expect(getExcludeNotificationConfigurationFromServer('token')).resolves.toBeUndefined();
+  });
+
+  it.each([[], 'invalid', { news_item: null }])(
+    'rejects malformed configuration %p',
+    async (configuration) => {
+      global.fetch = jest.fn().mockResolvedValue({
+        status: 200,
+        json: async () => ({ exclude_notification_configuration: configuration })
+      });
+      await expect(getExcludeNotificationConfigurationFromServer('token')).resolves.toBeUndefined();
+    }
+  );
+
+  it('accepts null preferences as an empty configuration', async () => {
+    global.fetch = jest.fn().mockResolvedValue({
+      status: 200,
+      json: async () => ({ exclude_notification_configuration: null })
+    });
+    await expect(getExcludeNotificationConfigurationFromServer('token')).resolves.toEqual({});
   });
 });

@@ -1,6 +1,6 @@
 import _cloneDeep from 'lodash/cloneDeep';
 import _isEmpty from 'lodash/isEmpty';
-import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { FlatList } from 'react-native';
 import { useQuery } from 'react-query';
 
@@ -19,7 +19,9 @@ import { LoadingSpinner } from '../LoadingSpinner';
 import { SettingsToggle } from '../SettingsToggle';
 import { RegularText } from '../Text';
 import { Wrapper, WrapperHorizontal } from '../Wrapper';
-import { addToStore, readFromStore, removeFromStore, sleep } from '../../helpers';
+import { addToStore, readFromStore, removeFromStore } from '../../helpers';
+
+const DEFAULT_QUERY_VARIABLES = { tagList: ['news_item'] };
 
 const PERSONALIZED_PUSH_SETTINGS = 'PERSONALIZED_PUSH_SETTINGS';
 
@@ -46,15 +48,16 @@ export const PersonalizedPushSettings = () => {
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { personalizedPush = {}, settingsScreenListItemTitles = {} } = settings;
-  const queryVariables = personalizedPush.categories?.queryVariables || {
-    tagList: ['news_item']
-  };
+  const queryVariables = personalizedPush.categories?.queryVariables || DEFAULT_QUERY_VARIABLES;
 
   const [permission, setPermission] = useState<boolean>(false);
   const [pushToken, setPushToken] = useState<string | null>(null);
-  const [selectedCategoryIds, setSelectedCategoryIds] = useState<{ id: string; tags: string[] }[]>(
-    []
-  );
+  const [busy, setBusy] = useState(true);
+  const [preferencesToken, setPreferencesToken] = useState<string | null>(null);
+  const [settledPreferencesToken, setSettledPreferencesToken] = useState<string | null>(null);
+  const preferencesLoaded = permission && !!pushToken && preferencesToken === pushToken;
+  const loadingPreferences = permission && !!pushToken && settledPreferencesToken !== pushToken;
+  const operationInProgress = useRef(false);
   const [excludeCategoryIds, setExcludeCategoryIds] = useState<ExcludeMap>({});
 
   const { data, isLoading: loading } = useQuery(
@@ -70,11 +73,9 @@ export const PersonalizedPushSettings = () => {
   );
 
   const addIdsOnServer = useCallback(
-    (categories: { id: string; tags: string[] }[], token?: string | null) => {
-      if (!token) return;
-
+    async (categories: { id: string; tags: string[] }[], token: string, base: ExcludeMap) => {
       const tagList = queryVariables?.tagList ?? [];
-      const categoryIds: ExcludeMap = _cloneDeep(excludeCategoryIds || {});
+      const categoryIds: ExcludeMap = _cloneDeep(base);
       const selectedByTag = new Map<string, Set<string>>();
 
       categories.forEach(({ id, tags }) => {
@@ -87,7 +88,7 @@ export const PersonalizedPushSettings = () => {
 
       tagList.forEach((t: string) => {
         const ids = selectedByTag.get(t) ?? new Set<string>();
-        const obj: Record<string, {}> = {};
+        const obj: Record<string, Record<string, never>> = {};
 
         ids.forEach((id) => {
           obj[id] = {};
@@ -96,108 +97,169 @@ export const PersonalizedPushSettings = () => {
         categoryIds[t] = obj;
       });
 
-      addExcludeNotificationConfigurationOnServer(token, categoryIds);
+      const success = await addExcludeNotificationConfigurationOnServer(token, categoryIds);
+
+      return success ? categoryIds : undefined;
     },
-    [queryVariables?.tagList, excludeCategoryIds]
+    [queryVariables?.tagList]
   );
 
   useEffect(() => {
-    (async () => {
-      const inAppPermission = await getInAppPermission();
-      setPermission(!!inAppPermission);
-    })();
-  }, []);
-
-  useEffect(() => {
-    (async () => {
-      const storedToken = await getPushTokenFromStorage();
-      setPushToken(storedToken);
-    })();
-  }, []);
-
-  useEffect(() => {
-    (async () => {
-      if (!pushToken) return;
-
-      const categories = await getExcludeNotificationConfigurationFromServer(pushToken);
-      setExcludeCategoryIds(categories);
-    })();
-  }, [pushToken]);
-
-  useEffect(() => {
-    if (!Object.keys(excludeCategoryIds).length) return;
-
-    const newCategories = Object.entries(excludeCategoryIds).flatMap(([tag, items]) =>
-      Object.keys(items).map((id) => ({ id, tags: [tag] }))
-    );
-
-    setSelectedCategoryIds((prev) => [...prev, ...newCategories]);
-  }, [excludeCategoryIds]);
-
-  useEffect(() => {
-    addIdsOnServer(selectedCategoryIds, pushToken);
-  }, [addIdsOnServer, selectedCategoryIds, pushToken]);
-
-  useEffect(() => {
-    if (!!pushToken || permission) return;
+    let cancelled = false;
 
     (async () => {
-      const storedCategories = await readFromStore(PERSONALIZED_PUSH_SETTINGS);
+      try {
+        const [inAppPermission, storedToken] = await Promise.all([
+          getInAppPermission(),
+          getPushTokenFromStorage()
+        ]);
 
-      if (storedCategories?.length) {
-        setExcludeCategoryIds(
-          storedCategories.reduce((acc, { id, tags }) => {
-            tags.forEach((tag) => {
-              if (!acc[tag]) acc[tag] = {};
-              acc[tag][id] = {};
-            });
-            return acc;
-          }, {})
-        );
+        if (!cancelled) {
+          setPermission(!!inAppPermission);
+          setPushToken(storedToken);
+        }
+      } catch {
+        console.warn('Could not load push notification settings.');
+      } finally {
+        if (!cancelled) setBusy(false);
       }
     })();
-  }, [pushToken, permission]);
 
-  const onActivate = async (revert: () => void) => {
-    setPermission(true);
-    onActivatePushNotifications(() => {
-      setPermission(false);
-      revert?.();
-    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
-    const storedCategories = await readFromStore(PERSONALIZED_PUSH_SETTINGS);
-    let token;
-    let retryCount = 0;
+  useEffect(() => {
+    let cancelled = false;
 
-    // Try to get the push token and sync the categories to the server, but give up after 3 seconds total (including all retries and delays)
-    while (retryCount < 10 && !token) {
+    if (!permission || !pushToken) return;
+
+    (async () => {
       try {
-        token = await getPushTokenFromStorage();
-      } catch (e) {
-        console.warn(e);
-      } finally {
-        if (token) {
-          addIdsOnServer(storedCategories, token);
+        const categories = await getExcludeNotificationConfigurationFromServer(pushToken);
 
-          // cleanup the local storage after successful sync
+        // A failed read must never replace existing preferences or trigger a write.
+        if (cancelled || !categories) return;
+
+        const storedCategories = await readFromStore(PERSONALIZED_PUSH_SETTINGS);
+
+        if (cancelled) return;
+
+        let nextCategories = categories;
+
+        if (Array.isArray(storedCategories)) {
+          const syncedCategories = await addIdsOnServer(storedCategories, pushToken, categories);
+
+          if (cancelled || !syncedCategories) return;
+          nextCategories = syncedCategories;
           await removeFromStore(PERSONALIZED_PUSH_SETTINGS);
-
-          break;
         }
 
-        await sleep(300);
-        retryCount++;
+        if (!cancelled) {
+          setExcludeCategoryIds(nextCategories);
+          setPreferencesToken(pushToken);
+        }
+      } catch {
+        console.warn('Could not load push notification preferences.');
+      } finally {
+        if (!cancelled) setSettledPreferencesToken(pushToken);
       }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [addIdsOnServer, permission, pushToken]);
+
+  const selectedCategoryIds = useMemo(
+    () =>
+      Object.entries(excludeCategoryIds).flatMap(([tag, items]) =>
+        Object.keys(items).map((id) => ({ id, tags: [tag] }))
+      ),
+    [excludeCategoryIds]
+  );
+
+  const changeCategories = useCallback(
+    async (categories: { id: string; tags: string[] }[], revert: () => void) => {
+      if (operationInProgress.current || !pushToken || !preferencesLoaded) {
+        revert?.();
+        return;
+      }
+
+      operationInProgress.current = true;
+      setBusy(true);
+      try {
+        const nextCategories = await addIdsOnServer(categories, pushToken, excludeCategoryIds);
+
+        if (nextCategories) setExcludeCategoryIds(nextCategories);
+        else revert?.();
+      } catch {
+        console.warn('Could not save push notification preferences.');
+        revert?.();
+      } finally {
+        operationInProgress.current = false;
+        setBusy(false);
+      }
+    },
+    [addIdsOnServer, excludeCategoryIds, preferencesLoaded, pushToken]
+  );
+
+  const onActivate = async (revert: () => void) => {
+    if (operationInProgress.current) {
+      revert?.();
+      return;
+    }
+
+    operationInProgress.current = true;
+    setBusy(true);
+    try {
+      const success = await onActivatePushNotifications(revert);
+
+      if (!success) return;
+
+      const token = await getPushTokenFromStorage();
+
+      setPushToken(token);
+      setPermission(true);
+    } catch {
+      console.warn('Could not activate personalized push notifications.');
+      revert?.();
+    } finally {
+      operationInProgress.current = false;
+      setBusy(false);
     }
   };
 
   const onDeactivate = async (revert: () => void) => {
-    addToStore(PERSONALIZED_PUSH_SETTINGS, selectedCategoryIds);
-    setPermission(false);
-    onDeactivatePushNotifications(() => {
-      setPermission(true);
+    if (operationInProgress.current) {
       revert?.();
-    });
+      return;
+    }
+
+    operationInProgress.current = true;
+    setBusy(true);
+    try {
+      // Preserve recoverable preferences before removing the device on the server.
+      if (preferencesLoaded) {
+        await addToStore(PERSONALIZED_PUSH_SETTINGS, selectedCategoryIds);
+      }
+
+      const success = await onDeactivatePushNotifications(revert);
+
+      if (!success) return;
+
+      setPermission(false);
+      setPushToken(null);
+      setPreferencesToken(null);
+      setSettledPreferencesToken(null);
+    } catch {
+      console.warn('Could not deactivate personalized push notifications.');
+      revert?.();
+    } finally {
+      operationInProgress.current = false;
+      setBusy(false);
+    }
   };
 
   const listItems = useMemo(() => {
@@ -214,17 +276,29 @@ export const PersonalizedPushSettings = () => {
         categoryId: category.id,
         iconName: category.iconName,
         id: category.id,
-        isDisabled: !permission,
-        onActivate: () =>
-          setSelectedCategoryIds((prev) => prev.filter((item) => item.id !== category.id)),
-        onDeactivate: () => setSelectedCategoryIds((prev) => [...prev, { id: category.id, tags }]),
+        isDisabled: busy || !permission || !preferencesLoaded,
+        onActivate: (revert: () => void) =>
+          changeCategories(
+            selectedCategoryIds.filter((item) => item.id !== category.id),
+            revert
+          ),
+        onDeactivate: (revert: () => void) =>
+          changeCategories([...selectedCategoryIds, { id: category.id, tags }], revert),
         title: category.name,
         value: isExcluded
       };
     });
 
     return parsedListItems?.sort((a, b) => a.title.localeCompare(b.title)) || [];
-  }, [data, permission, excludeCategoryIds]);
+  }, [
+    busy,
+    changeCategories,
+    data,
+    permission,
+    preferencesLoaded,
+    excludeCategoryIds,
+    selectedCategoryIds
+  ]);
 
   if (loading) {
     return <LoadingSpinner loading />;
@@ -235,6 +309,7 @@ export const PersonalizedPushSettings = () => {
       <WrapperHorizontal>
         <SettingsToggle
           item={{
+            isDisabled: busy || loadingPreferences,
             onActivate,
             onDeactivate,
             title:

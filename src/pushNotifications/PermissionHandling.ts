@@ -26,7 +26,23 @@ export const getInAppPermission = async (): Promise<boolean> => {
   return (await readFromStore(PushNotificationStorageKeys.IN_APP_PERMISSION)) ?? false;
 };
 
-export const setInAppPermission = async (newValue: boolean) => {
+// Token refreshes and user permission changes must observe the same ordering.
+let pendingPushOperation = Promise.resolve();
+
+const enqueuePushOperation = <T>(operation: () => Promise<T>): Promise<T> => {
+  const result = pendingPushOperation.then(operation);
+
+  pendingPushOperation = result.then(
+    () => undefined,
+    () => undefined
+  );
+  return result;
+};
+
+export const setInAppPermission = (newValue: boolean) =>
+  enqueuePushOperation(() => applyInAppPermission(newValue));
+
+const applyInAppPermission = async (newValue: boolean) => {
   let token = undefined;
   const oldValue = await readFromStore(PushNotificationStorageKeys.IN_APP_PERMISSION);
 
@@ -63,9 +79,12 @@ export const setInAppPermission = async (newValue: boolean) => {
 };
 
 // https://docs.expo.dev/versions/latest/sdk/notifications/#expopushtokenoptions
-const registerForPushNotificationsAsync = async () => {
+const registerForPushNotificationsAsync = async (
+  devicePushToken?: Notifications.DevicePushToken
+) => {
   const { data: token } = await Notifications.getExpoPushTokenAsync({
-    projectId: Constants.expoConfig?.extra?.eas.projectId
+    projectId: Constants.expoConfig?.extra?.eas.projectId,
+    ...(devicePushToken ? { devicePushToken } : {})
   });
 
   return token;
@@ -187,13 +206,18 @@ export const handleSystemPermissions = async (
   return isGranted;
 };
 
-export const updatePushToken = async () => {
-  return handleSystemPermissions(false)
-    .then((hasPermission) => {
-      if (hasPermission) return registerForPushNotificationsAsync();
-    })
-    .then(handleIncomingToken);
-};
+export const updatePushToken = (devicePushToken?: Notifications.DevicePushToken) =>
+  enqueuePushOperation(async () => {
+    // System permission alone does not authorize re-enabling an in-app opt-out.
+    if (!(await getInAppPermission())) return false;
+
+    const hasPermission = await handleSystemPermissions(false);
+    const token = hasPermission
+      ? await registerForPushNotificationsAsync(devicePushToken)
+      : undefined;
+
+    return handleIncomingToken(token);
+  });
 
 export const showSystemPermissionMissingDialog = () => {
   const { abort, permissionMissingBody, permissionMissingTitle, settings } =

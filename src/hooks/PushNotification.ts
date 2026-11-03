@@ -49,11 +49,17 @@ export const usePushNotifications = (
       // timeout is needed due to ios system push permission popup triggering appstate change
       // no timeout causes the onGetActive to fire an additional request to our server
       setTimeout(async () => {
-        const inAppPermission = await readFromStore(PushNotificationStorageKeys.IN_APP_PERMISSION);
-        const token = await getPushTokenFromStorage();
+        try {
+          const inAppPermission = await readFromStore(
+            PushNotificationStorageKeys.IN_APP_PERMISSION
+          );
+          const token = await getPushTokenFromStorage();
 
-        if (nextState === 'active' && inAppPermission && !token) {
-          updatePushToken();
+          if (nextState === 'active' && inAppPermission && !token) {
+            await updatePushToken();
+          }
+        } catch {
+          console.warn('An error occurred while restoring the push notification token.');
         }
       }, 3000);
     }
@@ -111,8 +117,9 @@ export const usePushNotifications = (
           notificationHandlerRef.current?.(notification);
         }
       );
-      pushTokenListener.current = Notifications.addPushTokenListener(() => {
-        void updatePushToken().catch(() => {
+      pushTokenListener.current = Notifications.addPushTokenListener((devicePushToken) => {
+        // Re-requesting the native token here fires this listener again on iOS.
+        void updatePushToken(devicePushToken).catch(() => {
           // eslint-disable-next-line no-console
           console.warn('An error occurred while refreshing the push notification token.');
         });

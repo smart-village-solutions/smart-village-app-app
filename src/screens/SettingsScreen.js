@@ -181,36 +181,38 @@ renderItem.propTypes = {
   dimensions: PropTypes.object.isRequired
 };
 
-export const onActivatePushNotifications = (revert) => {
-  handleSystemPermissions(false)
-    .then((hasPermission) => {
-      if (!hasPermission) {
-        showSystemPermissionMissingDialog();
-        revert();
-      } else {
-        setInAppPermission(true)
-          .then((success) => !success && revert())
-          .catch((error) => {
-            console.warn('An error occurred while activating push notifications:', error);
-            revert();
-          });
-      }
-    })
-    .catch((error) => {
-      console.warn(
-        'An error occurred while handling system permissions for activating push notifications:',
-        error
-      );
-    });
+export const onActivatePushNotifications = async (revert) => {
+  try {
+    const hasPermission = await handleSystemPermissions(false);
+
+    if (!hasPermission) {
+      showSystemPermissionMissingDialog();
+      revert();
+      return false;
+    }
+
+    const success = await setInAppPermission(true);
+
+    if (!success) revert();
+    return success;
+  } catch {
+    console.warn('An error occurred while activating push notifications.');
+    revert();
+    return false;
+  }
 };
 
-export const onDeactivatePushNotifications = (revert) => {
-  setInAppPermission(false)
-    .then((success) => !success && revert())
-    .catch((error) => {
-      console.warn('An error occurred while deactivating push notifications:', error);
-      revert();
-    });
+export const onDeactivatePushNotifications = async (revert) => {
+  try {
+    const success = await setInAppPermission(false);
+
+    if (!success) revert();
+    return success;
+  } catch {
+    console.warn('An error occurred while deactivating push notifications.');
+    revert();
+    return false;
+  }
 };
 
 export const confirmResetPersistentCaches = () => {
