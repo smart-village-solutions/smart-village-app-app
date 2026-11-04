@@ -61,6 +61,7 @@ export const myRequests = async ({
     }
   } catch (e) {
     console.error('Error reading my reports values from AsyncStorage', e);
+    throw e;
   }
 
   // Process all reports and update statuses where needed

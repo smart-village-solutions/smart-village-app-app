@@ -70,9 +70,12 @@ export const ImageButton = ({ button }: { button: TImageButton }) => {
   useEffect(() => {
     if (params?.query !== QUERY_TYPES.SUE.MY_REQUESTS) return;
 
-    myRequests({ showInternalPendingStatus }).then((reports) => {
-      setIsVisible(!!reports?.length);
-    });
+    myRequests({ showInternalPendingStatus })
+      .then((reports) => {
+        setIsVisible(!!reports?.length);
+      })
+      // Keep the last known visibility when saved reports cannot be read.
+      .catch(() => undefined);
   }, [params?.query, showInternalPendingStatus]);
 
   if (!params || !routeName) {

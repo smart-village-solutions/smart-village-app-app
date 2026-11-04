@@ -68,7 +68,10 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
         (report: { serviceRequestId: number }) => report.serviceRequestId === queryVariables?.id
       );
     },
-    { enabled: query === QUERY_TYPES.SUE.MY_REQUEST_WITH_SERVICE_REQUEST_ID }
+    {
+      enabled: query === QUERY_TYPES.SUE.MY_REQUEST_WITH_SERVICE_REQUEST_ID,
+      refetchOnMount: true
+    }
   );
 
   useEffect(() => {

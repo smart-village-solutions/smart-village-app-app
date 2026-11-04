@@ -36,6 +36,27 @@ describe('SUE myRequests status handling', () => {
     jest.restoreAllMocks();
   });
 
+  it('does not overwrite saved reports when reading storage fails', async () => {
+    const error = new Error('Temporary storage failure');
+    (readFromStore as jest.Mock).mockRejectedValueOnce(error);
+    jest.spyOn(console, 'error').mockImplementation(() => undefined);
+
+    await expect(myRequests()).rejects.toBe(error);
+
+    expect(addToStore).not.toHaveBeenCalled();
+    expect(requestsWithServiceRequestId).not.toHaveBeenCalled();
+  });
+
+  it('does not overwrite saved reports when stored JSON cannot be parsed', async () => {
+    (readFromStore as jest.Mock).mockResolvedValueOnce('{invalid');
+    jest.spyOn(console, 'error').mockImplementation(() => undefined);
+
+    await expect(myRequests()).rejects.toBeInstanceOf(SyntaxError);
+
+    expect(addToStore).not.toHaveBeenCalled();
+    expect(requestsWithServiceRequestId).not.toHaveBeenCalled();
+  });
+
   it('keeps the legacy internal status visible by default', async () => {
     (readFromStore as jest.Mock).mockResolvedValue(JSON.stringify([storedReport()]));
 

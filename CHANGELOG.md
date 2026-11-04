@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+- prevented saved SUE reports from being overwritten after storage read or parse failures
+- fixed stale saved-report keywords and status when reopening detail screens
 - fixed clipped descenders in Android SUE keyword and status labels without changing iOS typography
 
 ## [5.0.0] :sparkles:
