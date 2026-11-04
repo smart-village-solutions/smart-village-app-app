@@ -111,7 +111,7 @@ Compact widgets share each row's full available width, including incomplete rows
 
 Install JavaScript dependencies from the checked-in lockfile with `yarn install --frozen-lockfile` before generating native projects. Native module or credential changes require a development build; they cannot be delivered to Expo Go.
 
-1. Supply customer-issued mobile SDK values in `secrets[<expo.slug>]['klima-taler']` in the existing private `src/config/secrets.js`: `clientId` (numeric identifier), `clientSecret`, and `clientName` (provider application identifier / `x-app`). Empty placeholders are available in both public secret templates.
+1. Supply customer-issued mobile SDK values in `secrets[<expo.slug>]['klima-taler']` in the existing private `src/config/secrets.js`: `clientId` (numeric identifier), `clientSecret`, and `clientName` (provider application identifier / `x-app`). Optional `environment` is `production` (default) or `stage`; it must match the credentials. Existing staging customers must explicitly select `stage`. Empty placeholders are available in both public secret templates.
 2. For local iOS builds, run `yarn changers:prepare:ios` before prebuild. The EAS `eas-build-pre-install` hook downloads the same pinned frameworks for iOS builds.
 3. Use the normal Expo prebuild and native build workflow. Expo Go cannot load this module.
 
@@ -119,10 +119,10 @@ Credentials are consumed by native build mods and are not serialized in Expo `ex
 
 ## Compatibility
 
-- OTA runtime: `<app version>-changers-4`. This pins the upgraded native SDKs and must not share updates with app-version-only, `changers-1`, `changers-2` or `changers-3` binaries. Existing activation and registration journals are retained. Install a new native build before publishing matching updates.
+- OTA runtime: `<app version>-changers-5-<environment>`. This pins the upgraded native SDKs and must not share updates with app-version-only, `changers-1`, `changers-2`, `changers-3` or `changers-4` binaries. Existing activation and registration journals are retained. Install a new native build before publishing matching updates.
 - iOS: Changers 4.3.0 / MotionTag 6.3.4, pinned to vendor commit `4bcbd85dcf3d303fd262b2165d5f57fa6c620ad0`.
-- Android: `com.github.Changers.Android-SDK:sdkstaging:1.20.7` / MotionTag 7.2.5.
-- The provider connection uses iOS `.stage` and Android `sdkstaging`. These names are vendor transport identifiers, not SVA customer environment selectors.
+- Android: `com.github.Changers.Android-SDK:sdk:1.20.7` for production or `sdkstaging:1.20.7` for stage / MotionTag 7.2.5.
+- The provider environment is independent of the SVA customer slug. Production uses iOS `.production`, Android `sdk`, and `https://activity.changers.com/api/statistics/sdk`. Stage uses iOS `.stage`, Android `sdkstaging`, and `https://activity.maroshi.de/api/statistics/sdk`. The config plugin writes the same selected environment to native configuration and Android's `expo.changers.environment` Gradle property. Android fails closed if generated credentials and the compiled environment disagree. Production and staging OTA runtimes are isolated.
 
 The plugin preserves existing permission descriptions, activities, providers and backup rules. It enables iOS Scene support through Expo build-properties, requiring the included Expo SDK 57 patch updates. Lifecycle integration uses Expo subscribers rather than edits to generated application delegates.
 
@@ -144,7 +144,11 @@ The last known gate is intentionally used while JS/network configuration is unav
 
 See Android's [background service restrictions](https://developer.android.com/develop/background-work/services/fgs/restrictions-bg-start) and [stopped-state behavior](https://developer.android.com/about/versions/15/behavior-changes-all#stopped-state).
 
-The SDK upgrade keeps the existing customer transport, activation/registration storage keys, account restoration, read-only statistics path and provider presentation/close flow. It does not wire the new deep-link methods or implement map/offer navigation. Android session accessors remain version-bound and have been checked against the 1.20.7 artifact; the vendor statistics method is still bypassed.
+The production correction changes the provider transport while keeping activation/registration storage keys, the read-only statistics path and provider presentation/close flow. Provider accounts and tokens from stage must not be treated as production identities. It does not wire the new deep-link methods or implement map/offer navigation. Android session accessors remain version-bound and have been checked against the 1.20.7 artifact; the vendor statistics method is still bypassed.
+
+### Switching provider environments
+
+Changing credentials alone does not switch the SDK server. A native rebuild with the matching environment is required; do not reuse staging credentials, tokens or UUIDs against production. The vendor iOS guide requires uninstall/reinstall when changing environments. Do not automatically uninstall, clear data or log out an existing installation: establish a provider-supported recovery/migration plan first. A successful build or launch does not establish that an existing account was migrated.
 
 ## Provider entry and widget lifecycle
 
@@ -164,9 +168,9 @@ The vendor `readStatistics()` method logs an authenticated cURL command and may 
 
 The dedicated HTTP client has no logging interceptors, shared cookies or cache. Redirects and automatic retries are disabled. Requests time out after 20 seconds, responses are limited to 1 MiB, and only finite numeric `user.recoins` is accepted as a balance. Errors expose fixed codes and messages without response bodies, request details or exception causes. No error path clears credentials, creates an account or changes tracking permissions.
 
-`ChangersStatisticsSession.java` isolates version-specific JVM accessors to the SDK's session. Revalidate those accessors, headers, endpoint and response fields when upgrading the vendor SDK. This adapter protects the widget request path; it does not change every logging path inside the vendor SDK.
+`ChangersStatisticsSession.java` uses environment-specific `ChangersSdkAccess.java` sources to read the matching SDK session without reflection. Production and stage expose different JVM accessor names. Revalidate those accessors, headers, endpoint and response fields when upgrading the vendor SDK. This adapter protects the widget request path; it does not change every logging path inside the vendor SDK.
 
-Android statistics require the native `safeStatistics: true` capability. Older binaries retain the unavailable state even with newer JavaScript. Rebuilding Android enables the balance; the capability was introduced in the `changers-2` runtime; current builds use `changers-4`.
+Android statistics require the native `safeStatistics: true` capability. Older binaries retain the unavailable state even with newer JavaScript. Rebuilding Android enables the balance; the capability was introduced in the `changers-2` runtime; current builds use `changers-5-<environment>`.
 
 ## Testing and limitations
 
@@ -183,6 +187,7 @@ Focused checks:
 yarn test __tests__/klimaTaler --runInBand
 cd android
 ./gradlew :expo-changers:testDebugUnitTest :expo-changers:testReleaseUnitTest
+./gradlew :expo-changers:testDebugUnitTest :expo-changers:testReleaseUnitTest -Pexpo.changers.environment=stage
 ```
 
 The plugin tests cover removal of the legacy simulator workaround. Run the UIKit presentation harness on a booted Apple Silicon simulator with `sh __tests__/klimaTaler/ios/run-presentation-tests.sh <UDID>`.

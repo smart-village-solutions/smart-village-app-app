@@ -7,6 +7,7 @@ import withChangers, {
   mergePlist,
   mergeManifest,
   mergeBackup,
+  resolveEnvironment,
   removeLegacySimulatorCompatibility
 } from '../../modules/expo-changers/plugin';
 
@@ -190,7 +191,61 @@ test('native runtime is isolated and credentials are not serialized in public co
       }
     }
   );
-  expect(config.runtimeVersion).toBe('5.0.0-changers-4');
+  expect(config.runtimeVersion).toBe('5.0.0-changers-5-production');
   expect(config.extra).toEqual({ customer: 'fixture' });
   expect(JSON.stringify(config)).not.toContain('test-only-provider-value');
 });
+
+test('provider environments are explicit and never inferred from the customer slug', () => {
+  expect(resolveEnvironment({})).toBe('production');
+  expect(resolveEnvironment({ environment: 'production' })).toBe('production');
+  expect(resolveEnvironment({ environment: 'stage' })).toBe('stage');
+  expect(() => resolveEnvironment({ environment: 'prod' })).toThrow(/environment/);
+  const config = withChangers(
+    { name: 'Fixture', slug: 'detmold', version: '5.0.0', sdkVersion: '57.0.27' },
+    { configuration: { environment: 'stage' } }
+  );
+  expect(config.runtimeVersion).toBe('5.0.0-changers-5-stage');
+});
+
+test.each(['production', 'stage'])(
+  'native mods consistently select %s without exposing credentials',
+  async (environment) => {
+    const config = withChangers(
+      { name: 'Fixture', slug: 'fixture', version: '5.0.0', sdkVersion: '57.0.27', extra: {} },
+      {
+        configuration: {
+          environment,
+          clientId: '123',
+          clientName: 'fixture',
+          clientSecret: 'fixture-only'
+        }
+      }
+    );
+    const modRequest = {
+      projectRoot: process.cwd(),
+      platformProjectRoot: process.cwd(),
+      introspect: true
+    };
+    const ios = await config.mods.ios.infoPlist({ ...config, modResults: {}, modRequest });
+    expect(ios.modResults.ChangersConfiguration.environment).toBe(environment);
+    const android = await config.mods.android.gradleProperties({
+      ...config,
+      modResults: [
+        { type: 'property', key: 'expo.changers.environment', value: 'old-value' },
+        { type: 'property', key: 'customer.setting', value: 'keep' }
+      ],
+      modRequest
+    });
+    expect(android.modResults.filter((entry) => entry.key === 'expo.changers.environment')).toEqual(
+      [{ type: 'property', key: 'expo.changers.environment', value: environment }]
+    );
+    expect(android.modResults).toContainEqual({
+      type: 'property',
+      key: 'customer.setting',
+      value: 'keep'
+    });
+    expect(config.extra).toEqual({});
+    expect(JSON.stringify(config)).not.toContain('fixture-only');
+  }
+);

@@ -5,6 +5,7 @@ const {
   withAndroidManifest,
   withProjectBuildGradle,
   withPodfile,
+  withGradleProperties,
   withDangerousMod,
   AndroidConfig
 } = require('expo/config-plugins');
@@ -182,18 +183,21 @@ async function mergeBackup(file, modern) {
   await XML.writeXMLAsync({ path: file, xml: doc });
 }
 function withChangers(config, options = {}) {
-  // The verified provider connection uses the SDK's stage transport. This is not
-  // an app environment selector. Never infer a different host from the SVA slug.
-  const environment = 'stage';
+  const provider = options.configuration || {};
+  const environment = resolveEnvironment(provider);
   if (!config.version) throw new Error('Changers requires an app version for OTA isolation.');
-  config.runtimeVersion = `${config.version}-changers-4`;
+  config.runtimeVersion = `${config.version}-changers-5-${environment}`;
 
   config = withBuildProperties(config, { ios: { enableSceneSupport: true } });
   config = withPodfile(config, (c) => {
     c.modResults.contents = removeLegacySimulatorCompatibility(c.modResults.contents);
     return c;
   });
-  const provider = options.configuration || {};
+  config = withGradleProperties(config, (c) => {
+    c.modResults = c.modResults.filter((entry) => entry.key !== 'expo.changers.environment');
+    c.modResults.push({ type: 'property', key: 'expo.changers.environment', value: environment });
+    return c;
+  });
   if (provider.clientId && !/^\d+$/.test(String(provider.clientId)))
     throw new Error('Changers clientId must be numeric.');
   config = withInfoPlist(config, (c) => {
@@ -292,3 +296,11 @@ module.exports.removeLegacySimulatorCompatibility = removeLegacySimulatorCompati
 module.exports.mergePlist = mergePlist;
 module.exports.mergeManifest = mergeManifest;
 module.exports.mergeBackup = mergeBackup;
+
+function resolveEnvironment(provider) {
+  const environment = provider.environment ?? 'production';
+  if (!['stage', 'production'].includes(environment))
+    throw new Error('Changers environment must be stage or production.');
+  return environment;
+}
+module.exports.resolveEnvironment = resolveEnvironment;

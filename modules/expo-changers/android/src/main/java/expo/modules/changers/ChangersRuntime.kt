@@ -16,7 +16,7 @@ internal object ChangersRuntime {
     write = { prefs.edit().putBoolean("enabled", it).commit() }
   )
   val enabled get() = settingsGate.enabled
-  var environment = "stage"
+  val environment = BuildConfig.CHANGERS_ENVIRONMENT
   var configured = false
   var errorCode: String? = null
   private var configuration = JSONObject()
@@ -32,7 +32,7 @@ internal object ChangersRuntime {
     application = app
     try {
       configuration = JSONObject(app.assets.open("changers-config.json").bufferedReader().use { it.readText() })
-      environment = configuration.optString("environment", "stage")
+      check(configuration.optString("environment", "production") == environment) { "E_CONFIGURATION" }
       configured = listOf("clientId", "clientSecret", "clientName").all { configuration.optString(it).isNotBlank() }
       app.registerActivityLifecycleCallbacks(object : Application.ActivityLifecycleCallbacks {
         override fun onActivityCreated(a: Activity, b: Bundle?) { if (a is WebActivity) { providerActivity = a; opening = false; if (!enabled) a.finish() } }
