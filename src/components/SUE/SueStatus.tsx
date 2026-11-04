@@ -146,6 +146,7 @@ const createStyles = () => ({
   },
 
   tag: {
+    borderRadius: normalize(8),
     borderWidth: 1,
     maxWidth: '100%',
     paddingHorizontal: normalize(4),
@@ -154,7 +155,7 @@ const createStyles = () => ({
 
   tagStatus: {
     flexShrink: 1,
-    maxWidth: '45%',
+    maxWidth: '50%',
     marginBottom: 0,
     marginRight: 0,
     marginTop: 0
