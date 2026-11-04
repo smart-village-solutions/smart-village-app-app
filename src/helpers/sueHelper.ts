@@ -116,3 +116,11 @@ export const fetchSueEndpoints = async (serviceRequestId?: number) => {
     sueStatusesUrl
   };
 };
+
+export const getSueTags = (tagName?: unknown): string[] =>
+  typeof tagName === 'string'
+    ? tagName
+        .split(';')
+        .map((tag) => tag.trim())
+        .filter(Boolean)
+    : [];

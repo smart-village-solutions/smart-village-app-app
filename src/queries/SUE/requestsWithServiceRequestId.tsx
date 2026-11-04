@@ -8,7 +8,10 @@ export const requestsWithServiceRequestId = async (serviceRequestId: number) => 
     serviceRequestId
   );
 
-  const response = await (await fetch(`${sueRequestsUrlWithServiceId}`, sueFetchObj)).json();
+  const result = await fetch(`${sueRequestsUrlWithServiceId}`, sueFetchObj);
+  if (result.status === 404) return { status: 404 };
+  if (!result.ok) throw new Error(`SUE request failed: ${result.status}`);
+  const response = await result.json();
 
   // convert media_url to JSON, as it is returned as a string by the API
   if (response?.media_url) {

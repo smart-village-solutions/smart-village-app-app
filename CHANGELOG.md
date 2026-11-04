@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+
+- added themed SUE keyword badges in report lists and details with five-minute refreshes for saved reports including closed and invalid reports
+
 ## [5.0.0] :sparkles:
 
 This release introduces app-wide accessibility settings and dark mode, participation projects and interactive floor plans, adds profile content creation and local waste reminders, and upgrades Expo to SDK 57

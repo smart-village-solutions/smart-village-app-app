@@ -6,6 +6,7 @@ import { Card, Divider } from 'react-native-elements';
 import { consts, normalize } from '../config';
 import { imageHeight, imageWidth, momentFormat, navigateToRoute, trimNewLines } from '../helpers';
 import { useTheme } from '../hooks/useTheme';
+import { getSueTags } from '../helpers/sueHelper';
 
 import { Image } from './Image';
 import { SueCategory, SueStatus } from './SUE';
@@ -28,6 +29,7 @@ const renderCardContent = (bigTitle, horizontal, index, isSue, item, noOvertitle
     serviceName,
     status,
     subtitle,
+    tagName,
     title
   } = item;
   const { sueListItem = {} } = appDesignSystem;
@@ -121,8 +123,13 @@ const renderCardContent = (bigTitle, horizontal, index, isSue, item, noOvertitle
             </Wrapper>
           ),
           status: () =>
-            !!status && (
-              <SueStatus key={keyExtractor(status, index)} iconName={iconName} status={status} />
+            (!!status || getSueTags(tagName).length > 0) && (
+              <SueStatus
+                key={keyExtractor(status, index)}
+                iconName={iconName}
+                status={status}
+                tagName={tagName}
+              />
             )
         }
       : {})
@@ -160,7 +167,7 @@ const renderCardContent = (bigTitle, horizontal, index, isSue, item, noOvertitle
       if (address) {
         cardContent.push(sequenceMap.address());
       }
-      if (status) {
+      if (status || getSueTags(tagName).length) {
         cardContent.push(sequenceMap.status());
       }
     }
@@ -200,7 +207,8 @@ export const CardListItem = memo(
       !!serviceName && serviceName,
       !!overtitle && overtitle,
       !!title && title,
-      !!subtitle && subtitle
+      !!subtitle && subtitle,
+      ...(isSue ? [...getSueTags(item.tagName), item.status] : [])
     ]
       .filter((text) => !!text)
       .map((text) => `(${text})`)

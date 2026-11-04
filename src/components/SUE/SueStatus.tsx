@@ -1,10 +1,11 @@
 import _upperFirst from 'lodash/upperFirst';
 import React, { useContext } from 'react';
-import 'react-native';
+import { View } from 'react-native';
 
 import { ConfigurationsContext } from '../../ConfigurationsProvider';
 import { Icon, device, normalize, texts } from '../../config';
-import { BoldText } from '../Text';
+import { getSueTags } from '../../helpers/sueHelper';
+import { BoldText, RegularText } from '../Text';
 import { WrapperRow } from '../Wrapper';
 import { useThemeStyles } from '../../hooks/useThemeStyles';
 import { useTheme } from '../../hooks/useTheme';
@@ -15,13 +16,15 @@ export const SueStatus = ({
   iconName,
   isFilter,
   small = false,
-  status
+  status = '',
+  tagName
 }: {
   disabled?: boolean;
   iconName?: string;
   isFilter?: boolean;
   small?: boolean;
-  status: string;
+  status?: string;
+  tagName?: unknown;
 }) => {
   const { colors: colors } = useTheme();
 
@@ -66,17 +69,20 @@ export const SueStatus = ({
       ? statusTextColors?.disabled
       : statusTextColors?.[status];
 
+  const tags = getSueTags(tagName);
+
   const statusIconName = `Sue${_upperFirst(iconName)}${small ? 'Small' : ''}`;
   const StatusIcon = Icon[statusIconName as keyof typeof Icon];
 
-  return (
+  const statusBadge = !!status && (
     <WrapperRow
       style={[
         styles.container,
         !!containerStyle && containerStyle,
         small && styles.smallContainer,
         { backgroundColor, borderColor },
-        isFilter && styles.filterContainer
+        isFilter && styles.filterContainer,
+        !!tags.length && styles.tagStatus
       ]}
     >
       {!!iconName && (
@@ -93,16 +99,71 @@ export const SueStatus = ({
       )}
       <BoldText
         smallest
-        style={[!!textStyle && textStyle, small && styles.smallFontSize, { color: textColor }]}
+        style={[
+          !!textStyle && textStyle,
+          small && styles.smallFontSize,
+          !!tags.length && styles.tagStatusText,
+          { color: textColor }
+        ]}
       >
         {status}
       </BoldText>
     </WrapperRow>
   );
+
+  if (!tags.length) return statusBadge;
+
+  return (
+    <View style={styles.tagsRow}>
+      <View style={styles.tags}>
+        {tags.map((tag, index) => (
+          <View key={`${index}-${tag}`} style={[styles.tag, { borderColor: colors.primary }]}>
+            <RegularText smallest>{tag}</RegularText>
+          </View>
+        ))}
+      </View>
+      {statusBadge}
+    </View>
+  );
 };
 /* eslint-enable complexity */
 
 const createStyles = () => ({
+  tagsRow: {
+    alignItems: 'flex-end',
+    flexDirection: 'row',
+    columnGap: normalize(12),
+    marginHorizontal: normalize(14),
+    marginTop: normalize(7),
+    marginBottom: normalize(14)
+  },
+
+  tags: {
+    flex: 1,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: normalize(6)
+  },
+
+  tag: {
+    borderWidth: 1,
+    maxWidth: '100%',
+    paddingHorizontal: normalize(4),
+    paddingVertical: normalize(4)
+  },
+
+  tagStatus: {
+    flexShrink: 1,
+    maxWidth: '45%',
+    marginBottom: 0,
+    marginRight: 0,
+    marginTop: 0
+  },
+
+  tagStatusText: {
+    flexShrink: 1
+  },
+
   container: {
     alignItems: 'center',
     alignSelf: 'flex-end',

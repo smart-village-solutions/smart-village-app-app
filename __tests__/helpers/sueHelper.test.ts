@@ -1,6 +1,7 @@
 import {
   getInitialSueStatus,
   getSueApiConfig,
+  getSueTags,
   getVisibleSueStatus,
   hasSueApiConfiguration,
   getSueLimitOfAreaCity,
@@ -135,4 +136,21 @@ describe('SUE internal pending status', () => {
     expect(getVisibleSueStatus({ status: 'In Bearbeitung' }, false)).toBe('In Bearbeitung');
     expect(getVisibleSueStatus({ status: 'Unbearbeitet' })).toBe('Unbearbeitet');
   });
+});
+
+describe('getSueTags', () => {
+  it('splits semicolon-separated tags in API order and ignores empty entries', () => {
+    expect(getSueTags(' Weitergeleitet ; ; Keine Kategorie;Geschlossen; ')).toEqual([
+      'Weitergeleitet',
+      'Keine Kategorie',
+      'Geschlossen'
+    ]);
+  });
+
+  it.each([undefined, null, '', ' ; ', 42, ['tag']])(
+    'ignores absent or invalid tags: %p',
+    (value) => {
+      expect(getSueTags(value)).toEqual([]);
+    }
+  );
 });

@@ -58,6 +58,19 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
     () => getQuery(QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID)(queryVariables?.id)
   );
 
+  const { data: storedDetails, refetch: refetchStoredDetails } = useQuery(
+    [QUERY_TYPES.SUE.MY_REQUEST_WITH_SERVICE_REQUEST_ID, queryVariables?.id],
+    async () => {
+      const reports = await getQuery(QUERY_TYPES.SUE.MY_REQUESTS)({
+        showInternalPendingStatus: sueConfig.showInternalPendingStatus
+      });
+      return reports.find(
+        (report: { serviceRequestId: number }) => report.serviceRequestId === queryVariables?.id
+      );
+    },
+    { enabled: query === QUERY_TYPES.SUE.MY_REQUEST_WITH_SERVICE_REQUEST_ID }
+  );
+
   useEffect(() => {
     const checkIfMyReport = async () => {
       try {
@@ -87,7 +100,9 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
   }
 
   const details =
-    query === QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID ? data : route.params?.details;
+    query === QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID
+      ? data ?? route.params?.details ?? {}
+      : storedDetails ?? route.params?.details ?? {};
   const {
     address,
     description,
@@ -100,6 +115,7 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
     serviceNotice,
     serviceRequestId,
     status,
+    tagName,
     title
   } = details;
   const visibleStatus =
@@ -111,7 +127,12 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
 
   const refresh = async () => {
     setRefreshing(true);
-    isConnected && (await refetch());
+    if (isConnected) {
+      await refetch();
+      if (query === QUERY_TYPES.SUE.MY_REQUEST_WITH_SERVICE_REQUEST_ID) {
+        await refetchStoredDetails();
+      }
+    }
     setRefreshing(false);
   };
 
@@ -156,9 +177,11 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
             </WrapperHorizontal>
           )}
 
-          {!!matchedStatus && (
-            <SueStatus iconName={matchedStatus.iconName} status={matchedStatus?.status} />
-          )}
+          <SueStatus
+            iconName={matchedStatus?.iconName}
+            status={matchedStatus?.status}
+            tagName={tagName}
+          />
 
           <WrapperHorizontal>
             <Divider />

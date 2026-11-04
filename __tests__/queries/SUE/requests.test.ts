@@ -1,6 +1,6 @@
 import { File } from 'expo-file-system';
 
-import { SUE_STATUS_SOURCE } from '../../../src/config';
+import { SUE_STATUS, SUE_STATUS_SOURCE } from '../../../src/config';
 import { addToStore, fetchSueEndpoints, readFromStore } from '../../../src/helpers';
 import { myRequests, postRequests } from '../../../src/queries/SUE/requests';
 import { requestsWithServiceRequestId } from '../../../src/queries/SUE/requestsWithServiceRequestId';
@@ -29,7 +29,7 @@ describe('SUE myRequests status handling', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     jest.spyOn(Date, 'now').mockReturnValue(1_000_000);
-    (requestsWithServiceRequestId as jest.Mock).mockResolvedValue({});
+    (requestsWithServiceRequestId as jest.Mock).mockResolvedValue({ serviceRequestId: 123 });
   });
 
   afterEach(() => {
@@ -81,6 +81,76 @@ describe('SUE myRequests status handling', () => {
 
     expect(report.status).toBe('Unbearbeitet');
     expect(persistedReports()[0].statusSource).toBe(SUE_STATUS_SOURCE.API);
+  });
+
+  it.each([SUE_STATUS.CLOSED, SUE_STATUS.INVALID])(
+    'refreshes tags for final status %s',
+    async (status) => {
+      (readFromStore as jest.Mock).mockResolvedValue(
+        JSON.stringify([storedReport({ status, tagName: 'Old', lastStatusCheck: 700_000 })])
+      );
+      (requestsWithServiceRequestId as jest.Mock).mockResolvedValue({
+        status,
+        tagName: 'New;Another'
+      });
+
+      const [report] = await myRequests();
+
+      expect(report.tagName).toBe('New;Another');
+      expect(persistedReports()[0]).toMatchObject({
+        tagName: 'New;Another',
+        lastStatusCheck: 1_000_000
+      });
+    }
+  );
+
+  it('keeps tags cached within the five-minute interval', async () => {
+    (readFromStore as jest.Mock).mockResolvedValue(
+      JSON.stringify([
+        storedReport({ status: SUE_STATUS.CLOSED, tagName: 'Cached', lastStatusCheck: 900_000 })
+      ])
+    );
+    const [report] = await myRequests();
+    expect(report.tagName).toBe('Cached');
+    expect(requestsWithServiceRequestId).not.toHaveBeenCalled();
+  });
+
+  it.each([undefined, '', null])(
+    'clears old tags on a successful response with tagName %p',
+    async (tagName) => {
+      (readFromStore as jest.Mock).mockResolvedValue(
+        JSON.stringify([storedReport({ tagName: 'Old', tag_name: 'Legacy' })])
+      );
+      (requestsWithServiceRequestId as jest.Mock).mockResolvedValue({ status: 'open', tagName });
+      const [report] = await myRequests();
+      expect(report.tagName).toBe('');
+      expect(persistedReports()[0]).not.toHaveProperty('tag_name');
+    }
+  );
+
+  it.each([{}, { status: 404 }, { error: 'Unavailable' }])(
+    'preserves cached tags on invalid response %p',
+    async (response) => {
+      (readFromStore as jest.Mock).mockResolvedValue(
+        JSON.stringify([storedReport({ tagName: 'Cached' })])
+      );
+      (requestsWithServiceRequestId as jest.Mock).mockResolvedValue(response);
+      const [report] = await myRequests();
+      expect(report.tagName).toBe('Cached');
+      expect(persistedReports()[0]).not.toHaveProperty('lastStatusCheck');
+    }
+  );
+
+  it('preserves cached tags when the network request fails', async () => {
+    (readFromStore as jest.Mock).mockResolvedValue(
+      JSON.stringify([storedReport({ tagName: 'Cached' })])
+    );
+    (requestsWithServiceRequestId as jest.Mock).mockRejectedValue(new Error('Offline'));
+    const log = jest.spyOn(console, 'error').mockImplementation(() => {});
+    const [report] = await myRequests();
+    expect(report.tagName).toBe('Cached');
+    expect(persistedReports()[0]).not.toHaveProperty('lastStatusCheck');
+    log.mockRestore();
   });
 
   it('does not treat numeric API errors as workflow statuses or successful checks', async () => {

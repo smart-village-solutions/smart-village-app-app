@@ -2,7 +2,7 @@ import _camelCase from 'lodash/camelCase';
 import _mapKeys from 'lodash/mapKeys';
 import { File } from 'expo-file-system';
 
-import { SUE_MY_REPORTS, SUE_STATUS, SUE_STATUS_SOURCE } from '../../config';
+import { SUE_MY_REPORTS, SUE_STATUS_SOURCE } from '../../config';
 import {
   addToStore,
   fetchSueEndpoints,
@@ -13,7 +13,7 @@ import {
 
 import { requestsWithServiceRequestId } from './requestsWithServiceRequestId';
 
-// TTL for how often we refresh the status of a stored report (in ms)
+// TTL for refreshing the status and tags of stored reports (in ms)
 const STATUS_TTL_MS = 5 * 60 * 1000; // 5 minutes
 
 export const requests = async (queryVariables) => {
@@ -83,13 +83,10 @@ export const myRequests = async ({
         }
       }
 
-      const isFinalStatus = item.status === SUE_STATUS.CLOSED || item.status === SUE_STATUS.INVALID;
-
-      // Only refresh non-final reports if the last check is older than our TTL (or missing)
+      // Final reports may still receive updated tags
       const shouldRefreshStatus =
         item.serviceRequestId &&
-        !isFinalStatus &&
-        (!item.lastStatusCheck || now - item.lastStatusCheck > STATUS_TTL_MS);
+        (!item.lastStatusCheck || now - item.lastStatusCheck >= STATUS_TTL_MS);
 
       if (shouldRefreshStatus) {
         try {
@@ -97,13 +94,17 @@ export const myRequests = async ({
           const isSuccessfulLookup =
             !!onlineReport &&
             typeof onlineReport === 'object' &&
-            typeof onlineReport.status !== 'number';
+            typeof onlineReport.status !== 'number' &&
+            (onlineReport.serviceRequestId === item.serviceRequestId ||
+              (typeof onlineReport.status === 'string' && !!onlineReport.status.trim()));
 
           if (isSuccessfulLookup) {
             if (typeof onlineReport.status === 'string' && onlineReport.status.trim()) {
               item.statusSource = SUE_STATUS_SOURCE.API;
               item.status = onlineReport.status;
             }
+            item.tagName = typeof onlineReport.tagName === 'string' ? onlineReport.tagName : '';
+            delete item.tag_name;
             item.lastStatusCheck = now;
           }
         } catch (e) {
