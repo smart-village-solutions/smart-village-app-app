@@ -61,8 +61,8 @@ internal object ChangersRuntime {
     val intent = application.packageManager.getLaunchIntentForPackage(application.packageName)
     val pending = PendingIntent.getActivity(application, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
     val notification = NotificationCompat.Builder(application, channel)
-      .setSmallIcon(android.R.drawable.ic_menu_mylocation).setContentTitle("Klima-Taler")
-      .setContentText("Klima-Taler berücksichtigt Ihre Tracking-Einstellungen").setContentIntent(pending)
+      .setSmallIcon(android.R.drawable.ic_menu_mylocation)
+      .setContentText(application.getString(R.string.expo_changers_tracking_notification_text)).setContentIntent(pending)
       .setOngoing(true).setCategory(NotificationCompat.CATEGORY_SERVICE).build()
     Changers.with(application, Changers.Settings(appName = configuration.getString("clientName"),
       clientId = configuration.getString("clientId"), clientSecret = configuration.getString("clientSecret"),
