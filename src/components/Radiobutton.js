@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
-import { StyleSheet } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
 import { CheckBox as RNECheckbox } from 'react-native-elements';
 
 import { Icon, normalize, texts } from '../config';
@@ -19,6 +19,7 @@ export const Radiobutton = ({
 
   return (
     <RNECheckbox
+      Component={Pressable}
       accessibilityRole="radio"
       accessibilityState={{ checked: selected, disabled }}
       accessibilityLabel={`${

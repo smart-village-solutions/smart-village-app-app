@@ -1,5 +1,5 @@
 import React from 'react';
-import { Platform, StyleSheet, TouchableOpacity } from 'react-native';
+import { Platform, Pressable, StyleSheet, TouchableOpacity } from 'react-native';
 import renderer from 'react-test-renderer';
 
 jest.mock('react-native-elements', () => {
@@ -123,6 +123,8 @@ import { Switch as AppSwitch } from '../../src/components/Switch';
 import { Touchable } from '../../src/components/Touchable';
 import { consts } from '../../src/config';
 import { AccessibilityContext } from '../../src/AccessibilityProvider';
+import { ThemeContext } from '../../src/ThemeContext';
+import { darkColors, lightColors } from '../../src/config/colors';
 
 describe('Accessibility primitives', () => {
   const onPress = () => {};
@@ -206,6 +208,26 @@ describe('Accessibility primitives', () => {
 
     expect(node.props.accessibilityState).toEqual({ checked: true, disabled: true });
     expect(node.props.accessibilityRole).toBe('radio');
+  });
+
+  it('updates radio selection colors without an opacity animation when the theme changes', () => {
+    const renderRadio = (colors, selected) => (
+      <ThemeContext.Provider value={{ colors, isDark: colors === darkColors, mode: 'system' }}>
+        <Radiobutton onPress={onPress} selected={selected} title="Dunkel" />
+      </ThemeContext.Provider>
+    );
+    const tree = renderWithAct(renderRadio(lightColors, false));
+
+    renderer.act(() => {
+      tree.update(renderRadio(darkColors, true));
+    });
+
+    const node = tree.root.findByType('mock-rne-checkbox');
+    expect(node.props.Component).toBe(Pressable);
+    expect(node.props.checked).toBe(true);
+    expect(node.props.checkedIcon.props.color).toBe(darkColors.primary);
+    expect(StyleSheet.flatten(node.props.textStyle).color).toBe(darkColors.primary);
+    expect(StyleSheet.flatten(node.props.containerStyle).opacity).toBeUndefined();
   });
 
   it('Rich text input exposes field, error and formatting controls to assistive technology', () => {
