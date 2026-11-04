@@ -186,11 +186,11 @@ function withChangers(config, options = {}) {
   // an app environment selector. Never infer a different host from the SVA slug.
   const environment = 'stage';
   if (!config.version) throw new Error('Changers requires an app version for OTA isolation.');
-  config.runtimeVersion = `${config.version}-changers-3`;
+  config.runtimeVersion = `${config.version}-changers-4`;
 
   config = withBuildProperties(config, { ios: { enableSceneSupport: true } });
   config = withPodfile(config, (c) => {
-    c.modResults.contents = withSimulatorCompatibility(c.modResults.contents);
+    c.modResults.contents = removeLegacySimulatorCompatibility(c.modResults.contents);
     return c;
   });
   const provider = options.configuration || {};
@@ -278,31 +278,17 @@ allprojects {
   return config;
 }
 module.exports = withChangers;
-function withSimulatorCompatibility(contents) {
-  const marker = '# @generated expo-changers-simulator';
-  if (contents.includes(marker)) return contents;
-  const hook = /^([ \t]*)post_integrate do \|(\w+)\|/m;
-  const requirement = `${marker}\nrequire_relative '../modules/expo-changers/ios/simulator_compatibility'\n`;
-  if (hook.test(contents)) {
-    return (
-      contents
-        .replace(
-          hook,
-          (match, indent, installer) =>
-            `${match}\n${indent}  ExpoChangersSimulatorCompatibility.apply(${installer})`
-        )
-        .trimEnd() + `\n\n${requirement}`
-    );
-  }
-  if (/^[\t ]*post_integrate\b/m.test(contents))
-    throw new Error('Changers requires a post_integrate hook with a named installer argument.');
-  return `${contents.trimEnd()}\n\n${requirement}
-post_integrate do |installer|
-  ExpoChangersSimulatorCompatibility.apply(installer)
-end
-`;
+// Remove only the workaround generated for Changers 4.2.0. Keep customer hooks.
+function removeLegacySimulatorCompatibility(contents) {
+  return contents
+    .replace(/^[ \t]*# @generated expo-changers-simulator[ \t]*\n/gm, '')
+    .replace(
+      /^[ \t]*require_relative ['"]\.\.\/modules\/expo-changers\/ios\/simulator_compatibility['"][ \t]*\n/gm,
+      ''
+    )
+    .replace(/^[ \t]*ExpoChangersSimulatorCompatibility\.apply\(\w+\)[ \t]*\n/gm, '');
 }
-module.exports.withSimulatorCompatibility = withSimulatorCompatibility;
+module.exports.removeLegacySimulatorCompatibility = removeLegacySimulatorCompatibility;
 module.exports.mergePlist = mergePlist;
 module.exports.mergeManifest = mergeManifest;
 module.exports.mergeBackup = mergeBackup;

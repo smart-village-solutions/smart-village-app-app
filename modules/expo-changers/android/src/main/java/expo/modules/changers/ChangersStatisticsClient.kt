@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit
 internal class StatisticsFailure(val code: String) : Exception(code)
 
 /**
- * Read-only replacement for sdkstaging 1.20.6 readStatistics(), using its exact
+ * Read-only replacement for sdkstaging 1.20.7 readStatistics(), using its exact
  * endpoint/headers. That vendor method logs an authenticated cURL command and
  * may sign up a new identity on Forbidden. Neither path may run for a widget.
  */

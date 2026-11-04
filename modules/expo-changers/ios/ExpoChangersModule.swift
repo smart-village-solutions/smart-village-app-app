@@ -1,4 +1,3 @@
-#if !targetEnvironment(simulator) || !arch(arm64)
 import ExpoModulesCore
 import ChangersSDK
 import UIKit
@@ -76,5 +75,3 @@ public class ExpoChangersModule: Module {
     }
   }
 }
-
-#endif

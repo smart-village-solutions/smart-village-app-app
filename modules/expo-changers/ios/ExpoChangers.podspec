@@ -6,7 +6,7 @@ Pod::Spec.new do |s|
   s.author = 'Smart Village Solutions'
   s.homepage = 'https://github.com/Changers/changers-ios-sdk'
   s.license = { :type => 'Proprietary' }
-  s.source = { :git => 'https://github.com/Changers/changers-ios-sdk.git', :commit => '33c65f9b8db1618dfff3530c73a061935a66a9ff' }
+  s.source = { :git => 'https://github.com/Changers/changers-ios-sdk.git', :commit => '4bcbd85dcf3d303fd262b2165d5f57fa6c620ad0' }
   s.platform = :ios, '16.4'
   s.swift_version = '5.0'
   s.static_framework = true

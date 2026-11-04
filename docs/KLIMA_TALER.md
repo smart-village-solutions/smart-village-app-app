@@ -119,14 +119,14 @@ Credentials are consumed by native build mods and are not serialized in Expo `ex
 
 ## Compatibility
 
-- OTA runtime: `<app version>-changers-3`. This includes the native registration attempt journal and must not share updates with app-version-only, `changers-1` or `changers-2` binaries. Install a new native build before publishing matching updates.
-- iOS: Changers 4.2.0 / MotionTag 6.3.4, pinned to vendor commit `33c65f9b8db1618dfff3530c73a061935a66a9ff`.
-- Android: `com.github.Changers.Android-SDK:sdkstaging:1.20.6` / MotionTag 7.2.5.
+- OTA runtime: `<app version>-changers-4`. This pins the upgraded native SDKs and must not share updates with app-version-only, `changers-1`, `changers-2` or `changers-3` binaries. Existing activation and registration journals are retained. Install a new native build before publishing matching updates.
+- iOS: Changers 4.3.0 / MotionTag 6.3.4, pinned to vendor commit `4bcbd85dcf3d303fd262b2165d5f57fa6c620ad0`.
+- Android: `com.github.Changers.Android-SDK:sdkstaging:1.20.7` / MotionTag 7.2.5.
 - The provider connection uses iOS `.stage` and Android `sdkstaging`. These names are vendor transport identifiers, not SVA customer environment selectors.
 
 The plugin preserves existing permission descriptions, activities, providers and backup rules. It enables iOS Scene support through Expo build-properties, requiring the included Expo SDK 57 patch updates. Lifecycle integration uses Expo subscribers rather than edits to generated application delegates.
 
-The iOS vendor framework contains arm64 device and x86_64 simulator slices, but no arm64 simulator slice. Apple Silicon simulator builds use an unavailable adapter (`E_SIMULATOR_UNSUPPORTED`). A prebuild-persistent CocoaPods hook excludes only that unsupported framework from linking and embedding. Provider testing requires a supported native target.
+The iOS vendor frameworks contain arm64 device and arm64/x86_64 simulator slices. Apple Silicon simulators now use the same provider adapter as devices. The config plugin removes the legacy generated simulator hook while preserving customer Podfile hooks. Regenerate the native project and reinstall pods before rebuilding; do not reuse previously patched CocoaPods build output. Simulator support does not establish physical-device permission or background-tracking acceptance.
 
 Android uses the OkHttp 5.1.0 BOM to align MotionTag's HTTP client with React Native/MapLibre's cookie adapter. Mixing the 4.x cookie adapter with the 5.x client causes a missing-class crash. `ChangersBootReceiver` replaces the vendor boot/update receiver. The Expo Application listener restores the last successfully applied native customer gate and previous explicit activation before initializing Changers in a cold process. The receiver forwards only supported boot/update actions after that initialization. Neither path calls `startTracking`, signs up, or requests permissions. The pinned MotionTag implementation restores its persisted session state during initialization; its boot receiver itself only records the event. Actual resumption still requires provider consent, OS permissions and device verification.
 
@@ -143,6 +143,8 @@ The last known gate is intentionally used while JS/network configuration is unav
 | Re-enable                                       | Initialize if required; do not automatically undo a provider stop or consent withdrawal.                                              |
 
 See Android's [background service restrictions](https://developer.android.com/develop/background-work/services/fgs/restrictions-bg-start) and [stopped-state behavior](https://developer.android.com/about/versions/15/behavior-changes-all#stopped-state).
+
+The SDK upgrade keeps the existing customer transport, activation/registration storage keys, account restoration, read-only statistics path and provider presentation/close flow. It does not wire the new deep-link methods or implement map/offer navigation. Android session accessors remain version-bound and have been checked against the 1.20.7 artifact; the vendor statistics method is still bypassed.
 
 ## Provider entry and widget lifecycle
 
@@ -164,7 +166,7 @@ The dedicated HTTP client has no logging interceptors, shared cookies or cache. 
 
 `ChangersStatisticsSession.java` isolates version-specific JVM accessors to the SDK's session. Revalidate those accessors, headers, endpoint and response fields when upgrading the vendor SDK. This adapter protects the widget request path; it does not change every logging path inside the vendor SDK.
 
-Android statistics require the native `safeStatistics: true` capability. Older binaries retain the unavailable state even with newer JavaScript. Rebuilding Android enables the balance; the capability was introduced in the `changers-2` runtime; current builds use `changers-3`.
+Android statistics require the native `safeStatistics: true` capability. Older binaries retain the unavailable state even with newer JavaScript. Rebuilding Android enables the balance; the capability was introduced in the `changers-2` runtime; current builds use `changers-4`.
 
 ## Testing and limitations
 
@@ -183,7 +185,7 @@ cd android
 ./gradlew :expo-changers:testDebugUnitTest :expo-changers:testReleaseUnitTest
 ```
 
-iOS compatibility checks are in `__tests__/klimaTaler/simulator_compatibility_test.rb`. Run the UIKit presentation harness on a booted Apple Silicon simulator with `sh __tests__/klimaTaler/ios/run-presentation-tests.sh <UDID>`.
+The plugin tests cover removal of the legacy simulator workaround. Run the UIKit presentation harness on a booted Apple Silicon simulator with `sh __tests__/klimaTaler/ios/run-presentation-tests.sh <UDID>`.
 
 Device acceptance should cover initial consent, denied and granted permissions, opening/closing, session restoration, widget refresh, disabling the module, and tracking lifecycle. Account deletion, actual background journey collection, buffered data handling and reboot recovery require separate provider/device validation. Map/POI navigation and badge data remain pending contracts. SVA profiles are not synchronized with provider accounts.
 
@@ -202,7 +204,7 @@ xcrun swiftc modules/expo-changers/ios/ChangersRegistration.swift __tests__/klim
 
 ### iOS timeout recovery
 
-The pinned Changers 4.2.0 public Swift interface stores authentication/setup/statistics delegates on the singleton. It exposes no cancellation handle from register/login/statistics, no documented non-destructive reset, and no request identifier in callbacks. The public `URLSessionDataTaskProtocol.cancel()` is not a request handle returned by those methods. `logoutUser`, `clearCache`, and `stopTrackingAndClearData` are not documented cancellation barriers.
+The upgraded Changers 4.3.0 public Swift interface stores authentication/setup/statistics delegates on the singleton. It exposes no cancellation handle from register/login/statistics, no documented non-destructive reset, and no request identifier in callbacks. The public `URLSessionDataTaskProtocol.cancel()` is not a request handle returned by those methods. `logoutUser`, `clearCache`, and `stopTrackingAndClearData` are not documented cancellation barriers.
 
 Accordingly the unresolved operation is still quarantined after `E_TIMEOUT`; freeing it would allow an old callback to settle a newer request or mutate its session. Late completion releases the slot and cannot settle the timed-out promise twice. If no callback arrives, a process restart is still required; **the permanent busy defect is not fixed**. Provider delivery needed: cancellable operations with completion acknowledgment, request-scoped delegates, or a documented reset that preserves identity and prevents late callbacks/session mutation. Registration outcomes also remain uncertain across restart, so restarting is not permission to repeat signup.
 

@@ -1,4 +1,3 @@
-#if !targetEnvironment(simulator) || !arch(arm64)
 import ExpoModulesCore
 import ChangersSDK
 import UIKit
@@ -81,7 +80,7 @@ final class ChangersRuntime {
     return "idle"
   }
   func status() -> [String: Any] {
-    ["platform": "ios", "environment": config["environment"] ?? "stage", "sdkVersion": "4.2.0", "motionTagVersion": "6.3.4",
+    ["platform": "ios", "environment": config["environment"] ?? "stage", "sdkVersion": "4.3.0", "motionTagVersion": "6.3.4",
      "state": state,
      "activated": activated, "initialized": initialized, "authenticated": initialized && ChangersInstance.shared().isLoggedIn,
      // ChangersInstance observes app activation and requires MotionTag to exist first.
@@ -176,5 +175,3 @@ final class ChangersDismissalObserver: NSObject, UIAdaptivePresentationControlle
     ChangersRuntime.shared.providerClosed()
   }
 }
-
-#endif

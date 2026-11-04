@@ -4,7 +4,7 @@ import com.blacksquared.sdk.app.Changers;
 import com.blacksquared.sdk.model.UserToken;
 import com.blacksquared.sdk.service.Prefs;
 
-/** Read-only access to the pinned 1.20.6 SDK session; never authenticates or registers. */
+/** Read-only access to the pinned 1.20.7 SDK session; never authenticates or registers. */
 final class ChangersStatisticsSession {
   final String uuid;
   final String token;

@@ -85,7 +85,7 @@ internal object ChangersRuntime {
   fun stop() { if (initialized) Changers.stopTracking(); check(prefs.edit().putBoolean("accepted", false).commit()) { "E_STORAGE" } }
   fun requireReady() { check(enabled) { "E_DISABLED" }; check(configured) { "E_CONFIGURATION" }; check(activated) { "E_NOT_ACTIVE" }; check(initialized) { "E_NOT_READY" } }
   fun status(): Map<String, Any?> = mapOf(
-    "platform" to "android", "environment" to environment, "sdkVersion" to "1.20.6", "motionTagVersion" to "7.2.5",
+    "platform" to "android", "environment" to environment, "sdkVersion" to "1.20.7", "motionTagVersion" to "7.2.5",
     "state" to when {
       !configured -> "unconfigured"
       !activated -> "inactive"

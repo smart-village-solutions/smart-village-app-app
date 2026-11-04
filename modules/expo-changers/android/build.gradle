@@ -14,7 +14,7 @@ repositories {
   maven { url 'https://jitpack.io'; content { includeGroupByRegex 'com.github.Changers.*' } }
 }
 dependencies {
-  implementation "com.github.Changers.Android-SDK:sdkstaging:1.20.6"
+  implementation "com.github.Changers.Android-SDK:sdkstaging:1.20.7"
   // Same tracker version already supplied by Changers; used by the guarded receiver.
   implementation 'de.motiontag:tracker:7.2.5'
   // MotionTag 7.2.5 requires OkHttp 5.1.0. Align the host's cookie adapter too:
