@@ -70,6 +70,20 @@ Full-scan tests still run for visibility but do not block PRs by themselves.
 
 ### Theme Integration Expectations
 
+Navigation headers resolve their appearance in `NavigationHeader`. By default, the background
+remains `surface`; apps can supply a brand background through `getScreenOptions`'s
+`headerBackgroundColor` or React Navigation's `headerStyle.backgroundColor`. The shared
+foreground uses `text` on normal surfaces and `onPrimary` on the primary brand color, with a
+contrast fallback for custom colors. An explicit `headerTintColor` overrides all header content
+together. Do not give the title an independent color through `headerTitleStyle.color`.
+
+Header actions must use `useHeaderForeground`; screen-installed custom icons can use
+`HeaderIcon` to read that color when rendered inside the header. The provider wraps the actual
+navigation header, including actions installed with `setOptions`. It does not modify the
+theme palette of dialogs or screen content. Reused labeled share/bookmark actions keep their
+primary color when rendered outside a header. System status icons follow the shared
+foreground unless `headerStatusBarStyle` is explicitly configured (for example, for images).
+
 1. Create styles from the current palette during render with `useThemeStyles(createStyles)`.
 2. Use `useTheme()` for non-style props such as icon, loader, calendar, map-layer, status-bar, and WebView colors.
 3. Use `props.theme` in styled-components and `ThemeContext` in class components.

@@ -3,7 +3,7 @@ import { StyleProp, ViewStyle } from 'react-native';
 
 import { Icon, normalize, texts } from '../config';
 import { VolunteerReportTarget } from '../types';
-import { useTheme } from '../hooks/useTheme';
+import { useHeaderForeground } from '../hooks/useHeaderForeground';
 
 import { HeaderIconButton } from './HeaderIconButton';
 import { useVolunteerReport } from './volunteer/VolunteerReportContext';
@@ -15,7 +15,7 @@ export const ReportHeader = ({
   style?: StyleProp<ViewStyle>;
   target: VolunteerReportTarget;
 }) => {
-  const { colors } = useTheme();
+  const foreground = useHeaderForeground();
   const { enabled, openReport } = useVolunteerReport();
 
   if (!enabled) return null;
@@ -27,7 +27,7 @@ export const ReportHeader = ({
       onPress={() => openReport(target)}
       style={style}
     >
-      <Icon.Flag color={colors.darkText} size={normalize(22)} />
+      <Icon.Flag color={foreground} size={normalize(22)} />
     </HeaderIconButton>
   );
 };

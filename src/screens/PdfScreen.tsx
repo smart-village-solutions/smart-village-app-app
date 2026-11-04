@@ -4,13 +4,13 @@ import { TouchableOpacity, View } from 'react-native';
 import Pdf from 'react-native-pdf';
 
 import { AccessibilityHeader, RegularText, SafeAreaViewFlex, WrapperRow } from '../components';
+import { HeaderIcon } from '../components/HeaderIcon';
 import { HEADER_RIGHT_ICON_STROKE_WIDTH } from '../components/headerIconConfig';
 import { consts, Icon, normalize } from '../config';
 import { onDownloadAndSharePdf } from '../helpers';
 import { useTrackScreenViewAsync } from '../hooks';
 import { NetworkContext } from '../NetworkProvider';
 import { useThemeStyles } from '../hooks/useThemeStyles';
-import { useTheme } from '../hooks/useTheme';
 
 const { MATOMO_TRACKING } = consts;
 
@@ -20,8 +20,6 @@ type PdfScreenProps = {
 };
 
 export const PdfScreen = ({ navigation, route }: PdfScreenProps) => {
-  const { colors: colors } = useTheme();
-
   const styles = useThemeStyles(createStyles);
   const { isConnected } = useContext(NetworkContext);
   const trackScreenViewAsync = useTrackScreenViewAsync();
@@ -46,8 +44,8 @@ export const PdfScreen = ({ navigation, route }: PdfScreenProps) => {
               accessibilityRole="button"
               onPress={() => onDownloadAndSharePdf({ title, url: pdfUrl })}
             >
-              <Icon.ArrowDownCircle
-                color={colors.lightestText}
+              <HeaderIcon
+                icon={Icon.ArrowDownCircle}
                 style={styles.icon}
                 strokeWidth={HEADER_RIGHT_ICON_STROKE_WIDTH}
               />
@@ -56,7 +54,7 @@ export const PdfScreen = ({ navigation, route }: PdfScreenProps) => {
         )
       });
     }
-  }, [navigation, pdfUrl, title]);
+  }, [navigation, pdfUrl, title, styles.headerRight, styles.icon]);
 
   if (!pdfUrl) return null;
 
