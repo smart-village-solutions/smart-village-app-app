@@ -229,6 +229,41 @@ The provider sheet can display only `Loading...` while offline, without a specif
 
 ## Extending badge and map support
 
+### Public offer feed foundation
+
+`src/klimaTaler/createOffersClient.ts` provides a read-only client for the public
+`/api/v1/map/offers` endpoint. It is not connected to a screen or widget yet. Creating
+the client does not initialize the SDK, register a user, request location permission
+or fetch data. Pass `expo/fetch` as the transport when connecting a screen.
+
+Each `load(environment, query)` explicitly selects `stage` or `production`. The caller
+must use the native configuration's environment; do not infer it from the customer slug.
+Supply either an area preset or coordinates, optionally a radius of 0.5–25 km. Language
+defaults to German and is sent through `Accept-Language`. The client sends no account
+headers or cookies and rejects redirects. Detmold is supplied by the caller as
+`{ area: 'detmold' }`, not hard-coded into shared map code.
+
+Successful results, including empty results, are cached in memory for five minutes,
+separately by environment, language and query. Concurrent identical requests share one
+operation. Requests have a 15-second timeout; failures are not cached as empty results.
+HTTP 429 blocks further network reads in the affected environment until `Retry-After`
+(seconds or HTTP date); a missing/invalid header uses 60 seconds. There are no automatic
+retries. Cached successful data can still be read during this interval.
+
+The client validates response coordinates, counts, offers and their documented HTTPS
+detail links. It preserves all offers per location, shared offer IDs across locations,
+server-adjusted pin positions, empty location images and null offer images. A malformed
+response rejects with a fixed error code; raw response bodies and transport errors are
+not exposed. Render placeholders, empty results and errors in the later screen step.
+
+Run `yarn test __tests__/klimaTaler/OffersClient.test.ts --runInBand` to check this layer.
+No native rebuild or manual screen acceptance is needed until it is connected to UI.
+The planned map should reuse the existing `MapLibre`, `ChipFilter` and location preview
+components. The separate SVA wallet in the design reference is not a Klima-Taler balance
+or an SDK wallet target.
+
+### Remaining provider contracts
+
 Do not synthesize badge values or assume that generic provider navigation opens a wallet, badge or POI detail. These features require confirmed provider contracts before implementation.
 
 For badges, obtain stable IDs, labels, images, acquisition state and update signals. For map integration, obtain the public feed's customer/source identification, stable partner/site/offer IDs, coordinates, title, image fallback, validity/deletion rules, pagination and synchronization behavior, plus a verified provider detail target for each platform. Preserve the selected target across onboarding or session recovery. A public POI feed must not contain personal tracking or account data.
