@@ -90,3 +90,8 @@ See [Disturber theme configuration](./disturber-theming.md) for static-content d
 
 For the complete app, Main-Server and remote configuration checklist see the
 [v4.3.0 to v5.0.0 migration guide](./MIGRATION_V4.3.0_TO_V5.0.0.md).
+
+## List view configuration
+
+See [Remote list views](./LIST_VIEW_CONFIGURATION.md) for configuring list presentations through
+`globalSettings.sections.listTypes`.
