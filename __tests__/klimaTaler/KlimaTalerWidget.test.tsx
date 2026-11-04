@@ -17,6 +17,9 @@ jest.mock('expo-router/react-navigation', () => ({
   useNavigation: () => mockNavigation,
   useFocusEffect: () => undefined
 }));
+jest.mock('../../src/queries', () => ({
+  QUERY_TYPES: { POINTS_OF_INTEREST: 'pointsOfInterest' }
+}));
 jest.mock('../../src/hooks', () => ({ useHomeRefresh: () => undefined }));
 jest.mock('../../src/klimaTaler/summary', () => ({
   klimaTalerSummary: { subscribe: () => () => undefined, getSnapshot: () => mockState }
@@ -173,7 +176,7 @@ const configured = (additionalProps: KlimaTalerWidgetOptions) => (
   <KlimaTalerWidget additionalProps={additionalProps} />
 );
 
-test('explicit shortcuts show honest placeholders and remote settings can hide or redirect each action', () => {
+test('configured map opens the existing POI map and remote settings can hide each action', () => {
   mockState = { phase: 'ready', coins: 0 };
   const alert = jest.spyOn(Alert, 'alert').mockImplementation(() => undefined);
   const screen = render(
@@ -182,7 +185,17 @@ test('explicit shortcuts show honest placeholders and remote settings can hide o
   ['Wallet', 'Karte', 'Abzeichen', 'Einstellungen'].forEach((name) => {
     fireEvent.press(screen.getByRole('button', { name }));
   });
-  expect(alert).toHaveBeenCalledTimes(4);
+  expect(alert).toHaveBeenCalledTimes(3);
+  expect(mockNavigation.navigate).toHaveBeenCalledWith(
+    'Index',
+    expect.objectContaining({
+      query: 'pointsOfInterest',
+      title: 'Karte',
+      queryVariables: { initialFilter: 'map' },
+      skipResourceFilters: true,
+      includeKlimaTaler: true
+    })
+  );
   expect(alert).toHaveBeenLastCalledWith('Bald verfügbar', 'Diese Funktion wird bald ergänzt.');
   expect(openKlimaTaler).not.toHaveBeenCalled();
   screen.rerender(
@@ -348,4 +361,16 @@ test('unconfigured shortcuts stay hidden without inventing badges or redirecting
   for (const name of ['Wallet', 'Karte', 'Abzeichen', 'Einstellungen']) {
     expect(screen.queryByRole('button', { name })).toBeNull();
   }
+});
+
+test('configured Karte is available before onboarding without opening the SDK', () => {
+  mockState = { phase: 'noSession' };
+  const screen = render(configured({ actions: { map: true } }));
+  const map = screen.getByRole('button', { name: 'Karte' });
+  expect(map.props.accessibilityHint).toBeUndefined();
+  fireEvent.press(map);
+  expect(mockNavigation.navigate).toHaveBeenCalledTimes(1);
+  expect(openKlimaTaler).not.toHaveBeenCalled();
+  screen.rerender(configured({ actions: { map: { showInPromo: false } } }));
+  expect(screen.queryByRole('button', { name: 'Karte' })).toBeNull();
 });

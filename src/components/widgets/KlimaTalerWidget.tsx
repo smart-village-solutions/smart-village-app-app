@@ -1,4 +1,4 @@
-import { useFocusEffect } from 'expo-router/react-navigation';
+import { useFocusEffect, useNavigation } from 'expo-router/react-navigation';
 import React, { useCallback, useContext, useSyncExternalStore } from 'react';
 import { Alert, AppState } from 'react-native';
 
@@ -7,13 +7,15 @@ import { accessibleKlimaTalerConfiguration } from '../../klimaTaler/appearance';
 import { useHomeRefresh } from '../../hooks';
 import { klimaTalerEntry, openKlimaTaler } from '../../klimaTaler/entry';
 import { klimaTalerSummary } from '../../klimaTaler/summary';
-import { WidgetProps } from '../../types';
+import { QUERY_TYPES } from '../../queries';
+import { ScreenName, WidgetProps } from '../../types';
 import { useTheme } from '../../hooks/useTheme';
 import { resolveKlimaTalerWidget, KlimaTalerAction } from '../../klimaTaler/widgetConfiguration';
 
 import { KlimaTalerCard } from './KlimaTalerCard';
 
 export const KlimaTalerWidget = ({ text, additionalProps }: WidgetProps) => {
+  const navigation = useNavigation();
   const { colors, mode } = useTheme();
   const accessibility = useContext(AccessibilityContext);
   const config = accessibleKlimaTalerConfiguration(
@@ -26,6 +28,14 @@ export const KlimaTalerWidget = ({ text, additionalProps }: WidgetProps) => {
     if (!action.enabled) return;
     if (action.target === 'provider') {
       void openKlimaTaler();
+    } else if (action.target === 'map') {
+      navigation.navigate(ScreenName.Index, {
+        title: action.label,
+        query: QUERY_TYPES.POINTS_OF_INTEREST,
+        queryVariables: { initialFilter: 'map' },
+        skipResourceFilters: true,
+        includeKlimaTaler: true
+      });
     } else {
       Alert.alert(
         action.alertTitle || config.texts.comingSoonTitle,

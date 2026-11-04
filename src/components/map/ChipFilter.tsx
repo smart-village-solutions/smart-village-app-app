@@ -10,7 +10,22 @@ import { QUERY_TYPES, getQuery } from '../../queries';
 import { BoldText } from '../Text';
 import { useThemeStyles } from '../../hooks/useThemeStyles';
 
+type FilterItem = {
+  id: string | number;
+  name: string;
+  iconName?: string;
+  icon?: React.ReactElement;
+  selected?: boolean;
+  onPress?: () => void;
+};
 type Props = {
+  additionalFilters?: {
+    id: string;
+    name: string;
+    selected: boolean;
+    onPress: () => void;
+    icon?: React.ReactElement;
+  }[];
   pointsOfInterest?: { category: { id: string | number; iconName?: string; name: string } }[];
   queryVariables: {
     category?: string;
@@ -27,12 +42,9 @@ type Props = {
   }) => Promise<ApolloQueryResult<any>>;
 };
 
-const keyExtractor = (
-  item: { id: string | number; iconName?: string; name: string },
-  index: number
-) => `index${index}-id${item.id}`;
+const keyExtractor = (item: FilterItem, index: number) => `index${index}-id${item.id}`;
 
-export const ChipFilter = ({ queryVariables, refetch }: Props) => {
+export const ChipFilter = ({ queryVariables, refetch, additionalFilters = [] }: Props) => {
   const styles = useThemeStyles(createStyles);
   const [categoryIds, setCategoryIds] = useState<string[]>(
     queryVariables.categoryIds?.map((item) => item.toString()) || []
@@ -40,16 +52,19 @@ export const ChipFilter = ({ queryVariables, refetch }: Props) => {
   const safeAreaInsets = useSafeAreaInsets();
 
   const { data, loading } = useQuery(getQuery(QUERY_TYPES.CATEGORIES_FILTER), {
+    skip: !queryVariables.categoryIds?.length,
     variables: {
       ids: queryVariables.categoryIds
     }
   });
 
-  const filter = _sortBy(data?.categories || [], 'name');
+  const categories = queryVariables.categoryIds?.length ? data?.categories || [] : [];
+  const filter: FilterItem[] = [...additionalFilters, ..._sortBy(categories, 'name')];
 
   useEffect(() => {
+    if (!queryVariables.categoryIds?.length) return;
     refetch?.({ limit: undefined, categoryIds });
-  }, [categoryIds]);
+  }, [categoryIds, queryVariables.categoryIds?.length, refetch]);
 
   const onPress = (item: { id: string | number }, isActive: boolean) => {
     // exclude an active pressed items id from category ids.
@@ -62,7 +77,7 @@ export const ChipFilter = ({ queryVariables, refetch }: Props) => {
     );
   };
 
-  if (loading) return null;
+  if (loading && !additionalFilters.length) return null;
 
   const horizontalPadding = normalize(16);
   const contentPaddingLeft = horizontalPadding + safeAreaInsets.left;
@@ -79,14 +94,15 @@ export const ChipFilter = ({ queryVariables, refetch }: Props) => {
           paddingRight: contentPaddingRight
         }}
         renderItem={({ item, index }) => {
-          const isActive = categoryIds.includes(item.id.toString());
+          const external = typeof item.onPress === 'function';
+          const isActive = external ? !!item.selected : categoryIds.includes(item.id.toString());
 
           return (
             <TouchableOpacity
               accessibilityLabel={`${item.name} ${consts.a11yLabel.button}`}
               accessibilityRole="button"
               accessibilityState={{ selected: isActive }}
-              onPress={() => onPress(item, isActive)}
+              onPress={() => (external ? item.onPress?.() : onPress(item, isActive))}
               activeOpacity={0.8}
             >
               {/* TODO: Chip from RNE? https://reactnativeelements.com/docs/3.4.2/chip */}
@@ -97,7 +113,7 @@ export const ChipFilter = ({ queryVariables, refetch }: Props) => {
                   index === filter?.length - 1 && styles.lastChip
                 ]}
               >
-                <IconUrl iconName={item.iconName || consts.MAP.DEFAULT_PIN} />
+                {item.icon ?? <IconUrl iconName={item.iconName || consts.MAP.DEFAULT_PIN} />}
                 <BoldText small style={styles.category}>
                   {item.name}
                 </BoldText>

@@ -83,7 +83,7 @@ Configure the card through `additionalProps` on its entry in `globalSettings.wid
 | `styles`      | React Native JSON style objects for `card`, `summary`, `logo`, `title`, `description`, `balance`, `status`, `actions`, `button`, `buttonText`, `shortcut`. Dimensions use density-independent pixels. Styles override color/layout defaults; balance typography still adapts to available width. The compact status indicator uses only `status.color`; legacy status text layout and typography overrides no longer apply. |
 | `actions`     | `main`, `wallet`, `map`, `badges`, `settings`. Each accepts `false` or an object with the fields below.                                                                                                                                                                                                                                                                                                                     |
 
-Action fields are `enabled`, `label`, `promoLabel`, `icon`, `showInPromo`, `target`, `alertTitle`, and `alertMessage`. Main is visible in both card states and opens the provider by default. Other actions are hidden by default until their destinations are available. Existing explicit action objects or `true` keep their configured visibility after onboarding, and display the configurable coming-soon alert unless assigned a supported target. Use `false` or `enabled: false` to hide them. Explicit placeholders remain unsupported product functions, not completed deep links. Their individual `alertTitle`/`alertMessage` override the shared alert copy when nonempty. `target: "provider"` opens the general provider screen; `"comingSoon"` (and unknown targets) shows the alert. Wallet, map, badge and settings deep links are not implemented. In particular, the wallet shortcut does not open an unrelated SVA wallet. Each shortcut can be hidden independently without affecting the others.
+Action fields are `enabled`, `label`, `promoLabel`, `icon`, `showInPromo`, `target`, `alertTitle`, and `alertMessage`. Main is visible in both card states and opens the provider by default. Other actions are hidden by default until their destinations are available. Explicit action objects or `true` enable a shortcut. Karte defaults to the public map target and is visible before onboarding as well; other shortcuts retain their configured promotional visibility and show a configurable coming-soon alert unless assigned a supported target. Use `false` or `enabled: false` to hide them. Explicit placeholders remain unsupported product functions, not completed deep links. Their individual `alertTitle`/`alertMessage` override the shared alert copy when nonempty. `target: "provider"` opens the general provider screen; `"comingSoon"` (and unknown targets) shows the alert. `target: "map"` opens the existing POI map with Klima-Taler locations. Wallet, badge and settings deep links are not implemented. In particular, the wallet shortcut does not open an unrelated SVA wallet. Each shortcut can be hidden independently without affecting the others.
 
 Explicit `additionalProps.texts` values override `text` on the widget entry. Appearance settings under `settings["klima-taler"]` are not read. Settings updates apply on refresh without a native rebuild. Wrong scalar types and unknown fields are ignored. Customer styles should retain readable contrast, text scaling and at least 48-point touch targets.
 
@@ -232,8 +232,8 @@ The provider sheet can display only `Loading...` while offline, without a specif
 ### Public offer feed foundation
 
 `src/klimaTaler/createOffersClient.ts` provides a read-only client for the public
-`/api/v1/map/offers` endpoint. It is not connected to a screen or widget yet. Creating
-the client does not initialize the SDK, register a user, request location permission
+`/api/v1/map/offers` endpoint. The existing POI map (`LocationOverview`) consumes this feed as an additional data
+source. Creating the client does not initialize the SDK, register a user, request location permission
 or fetch data. Pass `expo/fetch` as the transport when connecting a screen.
 
 Each `load(environment, query)` explicitly selects `stage` or `production`. The caller
@@ -254,11 +254,41 @@ The client validates response coordinates, counts, offers and their documented H
 detail links. It preserves all offers per location, shared offer IDs across locations,
 server-adjusted pin positions, empty location images and null offer images. A malformed
 response rejects with a fixed error code; raw response bodies and transport errors are
-not exposed. Render placeholders, empty results and errors in the later screen step.
+not exposed. The Klima-Taler map remains empty if its feed fails or is empty; it never falls back to backend POIs.
 
 Run `yarn test __tests__/klimaTaler/OffersClient.test.ts --runInBand` to check this layer.
-No native rebuild or manual screen acceptance is needed until it is connected to UI.
-The planned map should reuse the existing `MapLibre`, `ChipFilter` and location preview
+Enable the existing widget's Karte shortcut through
+`globalSettings.widgets[].additionalProps.actions.map: true` (or an object with
+`enabled: true, target: "map"`). It opens the existing POI overview directly in map
+mode with only the Klima-Taler source enabled. Backend POI reads, category filters and the
+list switch are disabled for this entry. No standalone screen is added. The shortcut
+is also available before onboarding; `showInPromo: false` hides it in that state.
+Explicit action targets and disabling the shortcut remain supported. Other POI map
+entries keep their existing sources. The existing map's chip
+filter includes a Klima-Taler source toggle. External pins share MapLibre clustering and
+use an existing fallback marker image. They have namespaced `klima-taler:<id>` IDs; selecting
+them never issues a backend POI-detail request. The existing bottom preview shows the partner;
+tapping it expands all public offers and their cost/remaining vouchers. SDK redemption and
+external detail links remain a separate follow-up step.
+
+The search defaults to the existing `mapSettings.mapCenterPosition` and German content.
+Radius is omitted unless configured; the API currently defaults to 10 km. An optional `settings["klima-taler"].offers` object can supply `area`,
+`radius` and `language`; shared code does not hard-code a customer. Opening or moving the
+map does not request device location or initialize a provider account. Equivalent map
+settings and map pans do not trigger additional feed requests.
+
+The source toggle affects Klima-Taler pins. Other map entries retain their existing backend category chips. External locations are hidden when the overview requires opening
+hours or a device-centered radius filter, because the public feed cannot verify those
+filters. Remote module disable hides pins and preview immediately and ignores late results.
+Feed errors and empty results are indicated in the source chip without replacing the map.
+
+Acceptance: open Karte in the Klima-Taler widget, check that only Klima-Taler pins appear,
+toggle the source, then select a partner and expand its offers. Check normal POI selection
+and category filters through an ordinary POI map entry. Check dark mode/large text.
+An empty staging feed should show `Klima-Taler (0)` without unrelated POI pins.
+Automated fixtures cover populated pins/previews; actual populated device testing requires
+Changers to supply public staging partners.
+The integration reuses the existing `MapLibre`, `ChipFilter` and location preview
 components. The separate SVA wallet in the design reference is not a Klima-Taler balance
 or an SDK wallet target.
 

@@ -30,8 +30,16 @@ import {
 } from '../screens/AvailableVehicles';
 import { useThemeStyles } from '../../hooks/useThemeStyles';
 import { useTheme } from '../../hooks/useTheme';
+import {
+  isKlimaTalerMarker,
+  offersToMapMarkers,
+  selectedOfferLocation
+} from '../../klimaTaler/mapOffers';
+import { useMapOffers } from '../../klimaTaler/useMapOffers';
+import { texts } from '../../config/texts';
 
 import { ChipFilter } from './ChipFilter';
+import { KlimaTalerPreview } from './KlimaTalerPreview';
 import { MapLibre } from './MapLibre';
 
 const { MAP } = consts;
@@ -158,6 +166,11 @@ export const LocationOverview = ({
   const [selectedPosition, setSelectedPosition] = useState();
   const [vehicleStatuses, setVehicleStatuses] = useState<VehicleStatusByUrl>({});
   const isPreviewWithoutNavigation = route.params?.isPreviewWithoutNavigation ?? false;
+  const klimaTalerOnly = route.params?.includeKlimaTaler === true;
+  const offers = useMapOffers(
+    klimaTalerOnly && !filterByOpeningTimes && !queryVariables?.radiusSearch?.distance
+  );
+  const externalLocation = selectedOfferLocation(offers.locations, selectedPointOfInterest);
 
   const updateSelectedPosition = useCallback(() => {
     if (alternativePosition?.coords?.latitude && alternativePosition?.coords?.longitude) {
@@ -193,6 +206,7 @@ export const LocationOverview = ({
     refetch
   } = useQuery(getQuery(QUERY_TYPES.POINTS_OF_INTEREST), {
     fetchPolicy,
+    skip: klimaTalerOnly,
     variables: {
       ...queryVariables,
       // if we show the map, we need to fetch all the entries at once and not a limited amount
@@ -200,7 +214,9 @@ export const LocationOverview = ({
     }
   });
 
-  let pointsOfInterest: any[] | undefined = overviewData?.[QUERY_TYPES.POINTS_OF_INTEREST];
+  let pointsOfInterest: any[] | undefined = klimaTalerOnly
+    ? undefined
+    : overviewData?.[QUERY_TYPES.POINTS_OF_INTEREST];
 
   useEffect(() => {
     if (!isConnected || !pointsOfInterest?.length) return;
@@ -271,30 +287,43 @@ export const LocationOverview = ({
     {
       fetchPolicy,
       variables: { id: selectedPointOfInterest },
-      skip: !selectedPointOfInterest
+      skip:
+        klimaTalerOnly || !selectedPointOfInterest || isKlimaTalerMarker(selectedPointOfInterest)
     }
   );
 
-  if (loading) {
+  if (!klimaTalerOnly && loading) {
     return <LoadingSpinner loading />;
   }
 
-  const showMapFilter = (queryVariables?.categoryIds?.length || 0) > 1;
-  const mapMarkers = mapToMapMarkers(pointsOfInterest, vehicleStatuses);
+  const showMapFilter =
+    (!klimaTalerOnly && (queryVariables?.categoryIds?.length || 0) > 1) || offers.enabled;
+  const mapMarkers = [
+    ...(mapToMapMarkers(pointsOfInterest, vehicleStatuses) ?? []),
+    ...offersToMapMarkers(offers.locations, MAP.DEFAULT_PIN)
+  ];
+  const sourceName = offers.loading
+    ? texts.klimaTaler.map.loading
+    : offers.error
+    ? texts.klimaTaler.map.unavailable
+    : offers.visible && !offers.configured
+    ? texts.klimaTaler.map.unconfigured
+    : `Klima-Taler${offers.visible ? ` (${offers.locations.length})` : ''}`;
 
-  const item = detailsData
-    ? parseListItemsFromQuery(
-        QUERY_TYPES.POINT_OF_INTEREST,
-        {
-          ...detailsData,
-          [QUERY_TYPES.POINT_OF_INTEREST]: [detailsData?.[QUERY_TYPES.POINT_OF_INTEREST]]
-        },
-        undefined,
-        {
-          queryVariables
-        }
-      )?.[0]
-    : undefined;
+  const item =
+    detailsData && !klimaTalerOnly && !isKlimaTalerMarker(selectedPointOfInterest)
+      ? parseListItemsFromQuery(
+          QUERY_TYPES.POINT_OF_INTEREST,
+          {
+            ...detailsData,
+            [QUERY_TYPES.POINT_OF_INTEREST]: [detailsData?.[QUERY_TYPES.POINT_OF_INTEREST]]
+          },
+          undefined,
+          {
+            queryVariables
+          }
+        )?.[0]
+      : undefined;
 
   if (item && !item.picture?.url) {
     const SelectedIcon = item?.iconName
@@ -309,10 +338,31 @@ export const LocationOverview = ({
   }
 
   return (
-    <>
-      {showMapFilter && <ChipFilter queryVariables={queryVariables} refetch={refetch} />}
+    <View style={styles.mapContainer}>
+      {showMapFilter && (
+        <ChipFilter
+          key={JSON.stringify(queryVariables.categoryIds ?? [])}
+          queryVariables={klimaTalerOnly ? {} : queryVariables}
+          refetch={refetch}
+          additionalFilters={
+            offers.enabled
+              ? [
+                  {
+                    id: 'klima-taler',
+                    name: sourceName,
+                    icon: (
+                      <Icon.NamedIcon name="leaf" color={colors.primary} size={normalize(16)} />
+                    ),
+                    selected: offers.visible,
+                    onPress: offers.toggle
+                  }
+                ]
+              : []
+          }
+        />
+      )}
 
-      {(!!mapMarkers?.length || showMapFilter) && (
+      {(klimaTalerOnly || !!mapMarkers?.length || showMapFilter) && (
         <MapLibre
           currentPosition={currentPosition}
           isMultipleMarkersMap
@@ -326,7 +376,7 @@ export const LocationOverview = ({
         />
       )}
 
-      {!!selectedPointOfInterest && !detailsLoading && !!item && (
+      {!!selectedPointOfInterest && (externalLocation || (!detailsLoading && !!item)) && (
         <View
           style={[
             styles.listItemContainer,
@@ -338,28 +388,38 @@ export const LocationOverview = ({
             }).position
           ]}
         >
-          <TextListItem
-            containerStyle={styles.textListItemContainer}
-            imageContainerStyle={styles.imageRadius}
-            imageStyle={styles.imageStyle}
-            item={{
-              ...item,
-              bottomDivider: false,
-              picture: item?.picture?.url ? item.picture : undefined
-            }}
-            leftImage={!!item?.picture?.url}
-            listItemStyle={styles.listItem}
-            listsWithoutArrows
-            navigation={isPreviewWithoutNavigation ? undefined : navigation}
-          />
+          {externalLocation ? (
+            <KlimaTalerPreview
+              key={externalLocation.id}
+              location={externalLocation}
+              navigation={navigation}
+              stale={!!offers.error}
+            />
+          ) : (
+            <TextListItem
+              containerStyle={styles.textListItemContainer}
+              imageContainerStyle={styles.imageRadius}
+              imageStyle={styles.imageStyle}
+              item={{
+                ...item,
+                bottomDivider: false,
+                picture: item?.picture?.url ? item.picture : undefined
+              }}
+              leftImage={!!item?.picture?.url}
+              listItemStyle={styles.listItem}
+              listsWithoutArrows
+              navigation={isPreviewWithoutNavigation ? undefined : navigation}
+            />
+          )}
         </View>
       )}
-    </>
+    </View>
   );
 };
 /* eslint-enable complexity */
 
 const createStyles = (colors) => ({
+  mapContainer: { flex: 1 },
   iconContainer: {
     alignItems: 'center',
     backgroundColor: colors.lighterPrimary,

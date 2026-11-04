@@ -279,7 +279,7 @@ const CardAction = ({
       accessibilityRole="button"
       accessibilityLabel={busy ? config.texts.opening : label}
       accessibilityHint={
-        action.target === 'provider'
+        ['provider', 'map'].includes(action.target)
           ? undefined
           : action.alertMessage || config.texts.comingSoonMessage
       }

@@ -114,8 +114,8 @@ export const resolveKlimaTalerWidget = (
               name === 'main' ||
               actions[name] === true ||
               Object.keys(configurationObject(actions[name])).length > 0,
-            showInPromo: name === 'main',
-            target: name === 'main' ? 'provider' : 'comingSoon',
+            showInPromo: name === 'main' || name === 'map',
+            target: name === 'main' ? 'provider' : name === 'map' ? 'map' : 'comingSoon',
             alertTitle: '',
             alertMessage: ''
           },

@@ -224,6 +224,8 @@ export const Overviews = ({ navigation, route }) => {
     poiListIntro
   } = sections;
   const query = route.params?.query ?? '';
+  const klimaTalerOnlyMap =
+    query === QUERY_TYPES.POINTS_OF_INTEREST && route.params?.includeKlimaTaler === true;
   const dateTimeFormat = news?.listDateFormat;
   const { initialFilter = FILTER_TYPES.LIST } = route.params?.queryVariables ?? {};
   const INITIAL_FILTER = [
@@ -295,7 +297,7 @@ export const Overviews = ({ navigation, route }) => {
     return () => subscription.remove();
   }, [isParticipationProjectOverview, route.key]);
   const [refreshing, setRefreshing] = useState(false);
-  const showMap = isMapSelected(query, filterType);
+  const showMap = klimaTalerOnlyMap || isMapSelected(query, filterType);
   const { excludeDataProviderIds, excludeMowasRegionalKeys } = usePermanentFilter();
   const { locationSettings } = useLocationSettings();
   const { locationService: locationServiceEnabled } = locationSettings;
@@ -343,6 +345,7 @@ export const Overviews = ({ navigation, route }) => {
 
   const { data, loading, fetchMore, refetch } = useQuery(getQuery(query, { showNewsFilter }), {
     ...(authMode ? getApolloAuthContext(authMode) : {}),
+    skip: klimaTalerOnlyMap,
     fetchPolicy,
     variables: {
       ...networkQueryVariables,
@@ -470,22 +473,22 @@ export const Overviews = ({ navigation, route }) => {
 
   const refresh = useCallback(() => {
     setRefreshing(true);
-    if (isConnected) {
+    if (isConnected && !klimaTalerOnlyMap) {
       refetch();
     }
     setRefreshing(false);
-  }, [isConnected, setRefreshing, refetch]);
+  }, [isConnected, klimaTalerOnlyMap, setRefreshing, refetch]);
 
   useFocusEffect(
     useCallback(() => {
-      if (!isConnected || !query) {
+      if (!isConnected || !query || klimaTalerOnlyMap) {
         return undefined;
       }
 
       refetch?.();
 
       return undefined;
-    }, [isConnected, query, refetch])
+    }, [isConnected, klimaTalerOnlyMap, query, refetch])
   );
 
   const filterTypes = useMemo(() => {
@@ -529,13 +532,14 @@ export const Overviews = ({ navigation, route }) => {
   ]);
 
   useEffect(() => {
+    if (klimaTalerOnlyMap) return;
     updateResourceFiltersStateHelper({
       query: filterQuery,
       queryVariables,
       resourceFiltersDispatch,
       resourceFiltersState
     });
-  }, [query, queryVariables]);
+  }, [klimaTalerOnlyMap, query, queryVariables]);
 
   useEffect(() => {
     // we want to ensure when changing from one index screen to another of the same resource, that
@@ -651,11 +655,11 @@ export const Overviews = ({ navigation, route }) => {
     !Object.prototype.hasOwnProperty.call(queryVariables, 'dataProvider') &&
     !Object.prototype.hasOwnProperty.call(queryVariables, 'refetch');
 
-  const isShowMapSwitchButton = query === QUERY_TYPES.POINTS_OF_INTEREST;
+  const isShowMapSwitchButton = query === QUERY_TYPES.POINTS_OF_INTEREST && !klimaTalerOnlyMap;
   const canShowFloatingMapSwitch =
     isShowMapSwitchButton && (!!listItems?.length || hasNestedPoiCategories);
 
-  if ((loading && (!data || initialNewsItemsFetch)) || loadingPosition) {
+  if ((!klimaTalerOnlyMap && loading && (!data || initialNewsItemsFetch)) || loadingPosition) {
     return (
       <LoadingContainer>
         <ActivityIndicator color={colors.refreshControl} />
@@ -668,7 +672,7 @@ export const Overviews = ({ navigation, route }) => {
 
   return (
     <SafeAreaViewFlex>
-      {!hideModalFilter && (
+      {!klimaTalerOnlyMap && !hideModalFilter && (
         <Filter
           countInitialFilter={
             isParticipationProjectOverview ? PARTICIPATION_PROJECT_STATUS_FILTER : undefined
@@ -688,7 +692,7 @@ export const Overviews = ({ navigation, route }) => {
             <Divider />
           </>
         )}
-      {isShowMapSwitchButton && showMap ? (
+      {(isShowMapSwitchButton || klimaTalerOnlyMap) && showMap ? (
         <LocationOverview
           currentPosition={currentPosition}
           navigation={navigation}
