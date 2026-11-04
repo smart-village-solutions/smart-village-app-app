@@ -1,7 +1,8 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Platform, StyleSheet, Text, View } from 'react-native';
 import { render } from '@testing-library/react-native';
 
+import { ConfigurationsContext } from '../../src/ConfigurationsProvider';
 import { SueStatus } from '../../src/components/SUE/SueStatus';
 
 jest.mock('../../src/config', () => ({
@@ -57,5 +58,77 @@ describe('SueStatus tags', () => {
     const screen = render(<SueStatus status="Geschlossen" />);
     expect(screen.getByText('Geschlossen')).toBeTruthy();
     expect(screen.UNSAFE_getAllByType(View)).toHaveLength(1);
+  });
+});
+
+describe('SUE label font metrics', () => {
+  afterEach(() => jest.restoreAllMocks());
+
+  const useAndroidStyles = () =>
+    jest
+      .spyOn(Platform, 'select')
+      .mockImplementation((styles) => (styles.android ?? styles.default)!);
+
+  it('uses Android font metrics for tags and regular status badges', () => {
+    useAndroidStyles();
+    const screen = render(<SueStatus status="In Bearbeitung" tagName="Rückfrage" />);
+    expect(StyleSheet.flatten(screen.getByText('Rückfrage').props.style) || {}).toHaveProperty(
+      'lineHeight',
+      undefined
+    );
+    expect(StyleSheet.flatten(screen.getByText('In Bearbeitung').props.style) || {}).toHaveProperty(
+      'lineHeight',
+      undefined
+    );
+  });
+
+  it('also fixes regular Android status badges without tags', () => {
+    useAndroidStyles();
+    const screen = render(<SueStatus status="In Bearbeitung" />);
+    expect(StyleSheet.flatten(screen.getByText('In Bearbeitung').props.style) || {}).toHaveProperty(
+      'lineHeight',
+      undefined
+    );
+  });
+
+  it.each([{ small: true }, { isFilter: true }])(
+    'preserves Android compact and filter typography: %p',
+    (props) => {
+      useAndroidStyles();
+      const screen = render(<SueStatus status="In Bearbeitung" {...props} />);
+      expect(
+        StyleSheet.flatten(screen.getByText('In Bearbeitung').props.style) || {}
+      ).not.toHaveProperty('lineHeight');
+    }
+  );
+
+  it('preserves an explicitly configured customer status line height', () => {
+    useAndroidStyles();
+    const screen = render(
+      <ConfigurationsContext.Provider
+        value={
+          {
+            appDesignSystem: { sueStatus: { textStyle: { lineHeight: 24 } } }
+          } as React.ContextType<typeof ConfigurationsContext>
+        }
+      >
+        <SueStatus status="In Bearbeitung" />
+      </ConfigurationsContext.Provider>
+    );
+    expect(StyleSheet.flatten(screen.getByText('In Bearbeitung').props.style)).toHaveProperty(
+      'lineHeight',
+      24
+    );
+  });
+
+  it('does not override iOS line heights', () => {
+    jest.spyOn(Platform, 'select').mockImplementation((styles) => styles.default!);
+    const screen = render(<SueStatus status="In Bearbeitung" tagName="Rückfrage" />);
+    expect(StyleSheet.flatten(screen.getByText('Rückfrage').props.style) || {}).not.toHaveProperty(
+      'lineHeight'
+    );
+    expect(
+      StyleSheet.flatten(screen.getByText('In Bearbeitung').props.style) || {}
+    ).not.toHaveProperty('lineHeight');
   });
 });

@@ -1,6 +1,6 @@
 import _upperFirst from 'lodash/upperFirst';
 import React, { useContext } from 'react';
-import { View } from 'react-native';
+import { Platform, View } from 'react-native';
 
 import { ConfigurationsContext } from '../../ConfigurationsProvider';
 import { Icon, device, normalize, texts } from '../../config';
@@ -100,6 +100,7 @@ export const SueStatus = ({
       <BoldText
         smallest
         style={[
+          !small && !isFilter && styles.labelText,
           !!textStyle && textStyle,
           small && styles.smallFontSize,
           !!tags.length && styles.tagStatusText,
@@ -118,7 +119,9 @@ export const SueStatus = ({
       <View style={styles.tags}>
         {tags.map((tag, index) => (
           <View key={`${index}-${tag}`} style={[styles.tag, { borderColor: colors.primary }]}>
-            <RegularText smallest>{tag}</RegularText>
+            <RegularText smallest style={styles.labelText}>
+              {tag}
+            </RegularText>
           </View>
         ))}
       </View>
@@ -129,6 +132,12 @@ export const SueStatus = ({
 /* eslint-enable complexity */
 
 const createStyles = () => ({
+  // Android needs natural font metrics to avoid clipping descenders.
+  labelText: Platform.select({
+    android: { lineHeight: undefined },
+    default: {}
+  }),
+
   tagsRow: {
     alignItems: 'flex-end',
     flexDirection: 'row',
