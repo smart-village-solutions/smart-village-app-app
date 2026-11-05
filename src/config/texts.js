@@ -1751,11 +1751,14 @@ export const texts = {
         street: 'Bitte geben Sie die Straße an',
         terms: 'Bitte akzeptieren Sie die Datenschutzbestimmung und Nutzungsbedingung.',
         title: 'Bitte kurz beschreiben, worum es geht.',
+        textTooLong: (field, limit) =>
+          `Bitte kürzen Sie „${field}“ auf höchstens ${limit} Zeichen.`,
         yes: 'Ja',
         postalCode: 'Bitte geben Sie die Postleitzahl an',
         postalCodeLength: 'Postleitzahl muss 5-stellig sein.'
       },
       back: 'Zurück',
+      characterCount: (count, limit) => `${count} von ${limit} Zeichen`,
       city: 'Ort',
       description: 'Ausführliche Beschreibung',
       descriptionPlaceholder: 'Weitere Hinweise',

@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- added server-configured title and description limits with character counters to the SUE report form
 - added themed SUE keyword badges in report lists and details with five-minute refreshes for saved reports including closed and invalid reports
 
 ### Fixed

@@ -124,3 +124,24 @@ export const getSueTags = (tagName?: unknown): string[] =>
         .map((tag) => tag.trim())
         .filter(Boolean)
     : [];
+
+const parseSueTextLimit = (value: unknown) => {
+  if (typeof value !== 'string' && typeof value !== 'number') return undefined;
+  const limit = Number(value);
+  return Number.isInteger(limit) && limit > 0 && limit <= 2_147_483_647 ? limit : undefined;
+};
+
+export const getSueReportTextLimits = (limitation?: Record<string, { value?: unknown }>) => ({
+  title: parseSueTextLimit(limitation?.reportTitleMaxLength?.value),
+  description: parseSueTextLimit(limitation?.reportDescriptionMaxLength?.value)
+});
+
+export const getExceededSueReportTextField = (
+  values: { title?: string; description?: string },
+  limits: ReturnType<typeof getSueReportTextLimits>
+) => {
+  if (limits.title !== undefined && (values.title?.length ?? 0) > limits.title) return 'title';
+  if (limits.description !== undefined && (values.description?.length ?? 0) > limits.description) {
+    return 'description';
+  }
+};

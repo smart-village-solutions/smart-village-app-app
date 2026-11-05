@@ -1,10 +1,12 @@
 import * as Location from 'expo-location';
 import React, { memo, useMemo, useRef } from 'react';
-import { Controller, UseFormSetValue } from 'react-hook-form';
+import { Controller, useWatch, UseFormSetValue } from 'react-hook-form';
 import { StyleSheet, View } from 'react-native';
 
 import { consts, normalize, texts } from '../../../config';
+import { getSueReportTextLimits } from '../../../helpers/sueHelper';
 import { TValues } from '../../../screens';
+import { RegularText } from '../../Text';
 import { Wrapper } from '../../Wrapper';
 import { Input } from '../../form';
 import { MultiImageSelector } from '../../selectors';
@@ -40,6 +42,11 @@ export const SueReportDescription = ({
 }) => {
   const titleRef = useRef();
   const descriptionRef = useRef();
+  const limits = getSueReportTextLimits(configuration?.limitation);
+  const [title, description] = useWatch({
+    control,
+    name: [INPUT_KEYS.SUE.TITLE, INPUT_KEYS.SUE.DESCRIPTION]
+  });
 
   const imageSelectorProps = useMemo(
     () => ({
@@ -93,9 +100,15 @@ export const SueReportDescription = ({
           label={texts.sue.report.title + ' *'}
           placeholder={texts.sue.report.titlePlaceholder}
           control={control}
+          maxLength={limits.title}
           ref={titleRef}
           onSubmitEditing={() => descriptionRef.current?.focus()}
         />
+        {limits.title !== undefined && (
+          <RegularText right small error={(title?.length ?? 0) > limits.title}>
+            {texts.sue.report.characterCount(title?.length ?? 0, limits.title)}
+          </RegularText>
+        )}
       </Wrapper>
 
       <Wrapper noPaddingTop>
@@ -110,8 +123,14 @@ export const SueReportDescription = ({
           placeholder={texts.sue.report.descriptionPlaceholder}
           multiline
           control={control}
+          maxLength={limits.description}
           ref={descriptionRef}
         />
+        {limits.description !== undefined && (
+          <RegularText right small error={(description?.length ?? 0) > limits.description}>
+            {texts.sue.report.characterCount(description?.length ?? 0, limits.description)}
+          </RegularText>
+        )}
       </Wrapper>
 
       <Wrapper noPaddingTop>
