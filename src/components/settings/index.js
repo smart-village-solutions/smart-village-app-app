@@ -1,4 +1,5 @@
 export * from './AccessibilitySettings';
+export * from './LanguageSettings';
 export * from './ListSettings';
 export * from './LocationSettings';
 export * from './MowasRegionSettings';

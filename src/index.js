@@ -13,9 +13,10 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import appJson from '../app.json';
 
 import { AccessibilityProvider } from './AccessibilityProvider';
+import { AppLanguagesProvider } from './AppLanguagesProvider';
 import { auth } from './auth';
 import { BookmarkProvider } from './BookmarkProvider';
-import { consts, namespace, secrets } from './config';
+import { consts } from './config';
 import { ConfigurationsProvider } from './ConfigurationsProvider';
 import {
   createEndOfDayExpiringStorage,
@@ -24,7 +25,9 @@ import {
   parsedImageAspectRatio,
   storageHelper
 } from './helpers';
-import { AUTH_MODE_PUBLIC, getGraphqlAuthHeaders } from './graphqlAuth';
+import { AUTH_MODE_PUBLIC, getGraphqlAuthHeaders, getGraphqlCacheScope } from './graphqlAuth';
+import { APOLLO_CACHE_PERSIST_KEY } from './helpers/cacheHelper';
+import { getMainServerConfig, getMainServerUrl } from './helpers/mainServerHelper';
 import { IconProvider } from './IconProvider';
 import { Navigator } from './navigation/Navigator';
 import { NetworkContext, NetworkProvider } from './NetworkProvider';
@@ -88,7 +91,7 @@ const MainAppWithApolloProvider = () => {
   const setupApolloClient = async () => {
     // https://www.apollographql.com/docs/react/recipes/authentication/#header
     const httpLink = createHttpLink({
-      uri: `${secrets[namespace].serverUrl}${secrets[namespace].graphqlEndpoint}`
+      uri: `${getMainServerUrl()}${getMainServerConfig().graphqlEndpoint}`
     });
     const authLink = setContext(async (operation, previousContext = {}) => {
       const authMode = previousContext?.authMode ?? AUTH_MODE_PUBLIC;
@@ -107,7 +110,10 @@ const MainAppWithApolloProvider = () => {
     // const link = ApolloLink.from([authLink, restLink, errorLink, retryLink, httpLink]);
     const link = ApolloLink.from([authLink, httpLink]);
     const cache = new InMemoryCache();
+    const scope = await getGraphqlCacheScope(await getGraphqlAuthHeaders());
+    const cacheKey = `${APOLLO_CACHE_PERSIST_KEY}:${scope}`;
     const storage = createEndOfDayExpiringStorage(AsyncStorage, {
+      cacheKey,
       getGlobalSettings: storageHelper.globalSettings
     });
 
@@ -115,6 +121,7 @@ const MainAppWithApolloProvider = () => {
       // await before instantiating ApolloClient,
       // else queries might run before the cache is persisted
       await persistCache({
+        key: cacheKey,
         cache,
         storage
       });
@@ -249,7 +256,9 @@ const MainAppWithApolloProvider = () => {
           initialConversationSettings
         }}
       >
-        <MainAppWithSettings />
+        <AppLanguagesProvider client={client}>
+          <MainAppWithSettings />
+        </AppLanguagesProvider>
       </SettingsProvider>
     </ApolloProvider>
   );

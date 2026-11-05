@@ -2,6 +2,8 @@
 
 Detailed documentation of the app's code will grow here.
 
+- [Manual multilingual texts.js installation](MULTILINGUAL_TEXTS.md)
+
 ## Codebase Overview
 
 The Smart Village App is an open source React Native application built with Expo for Android and iOS. This repository contains application code, documentation, test cases and example configurations.

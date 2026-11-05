@@ -69,3 +69,22 @@ describe('getNativeSpeechRate', () => {
     expect(getNativeSpeechRate(0.5)).toBeCloseTo(0.45);
   });
 });
+
+it.each(['en', 'fr', 'pt-PT'])('reads a message with its served language %s', async (language) => {
+  let hook: ReturnType<typeof useDetailSpeech>;
+  const Harness = () => {
+    hook = useDetailSpeech([{ id: 'title', text: 'Open Mondays', language }]);
+    return null;
+  };
+  let tree: renderer.ReactTestRenderer;
+  await renderer.act(async () => {
+    tree = renderer.create(<Harness />);
+  });
+  await renderer.act(async () => {
+    await hook.start();
+  });
+  expect(Speech.speak).toHaveBeenCalledWith('Open Mondays', expect.objectContaining({ language }));
+  await renderer.act(async () => {
+    tree.unmount();
+  });
+});

@@ -47,15 +47,16 @@ export const About = ({ navigation, publicJsonFile = 'about', withHomeRefresh, w
       </LoadingContainer>
     );
 
-  if (!data?.length) return <VersionNumber />;
+  const entries = Array.isArray(data) ? data : [];
+  if (!entries.length && !withSettings) return <VersionNumber />;
 
-  data.forEach((item) => (item.isHeadlineTitle = false));
+  entries.forEach((item) => (item.isHeadlineTitle = false));
 
   const { sections = {} } = globalSettings;
   const { headlineAbout = texts.homeTitles.about } = sections;
 
-  if (withSettings && !data.find((item) => item.routeName === 'Settings')) {
-    data.push({
+  if (withSettings && !entries.find((item) => item.routeName === 'Settings')) {
+    entries.push({
       bottomDivider: true,
       isHeadlineTitle: false,
       routeName: 'Settings',
@@ -66,7 +67,7 @@ export const About = ({ navigation, publicJsonFile = 'about', withHomeRefresh, w
   const sectionData = [
     {
       title: headlineAbout,
-      data
+      data: entries
     }
   ];
 

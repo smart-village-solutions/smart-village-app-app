@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires, react/prop-types */
 import React from 'react';
-import { Alert, TouchableOpacity } from 'react-native';
+import { Alert, SectionList, TouchableOpacity } from 'react-native';
 import renderer, { act } from 'react-test-renderer';
 
 jest.mock('../../src/components', () => {
@@ -17,7 +17,10 @@ jest.mock('../../src/components', () => {
   };
 });
 
+jest.mock('../../src/config/texts', () => ({ textsByLocale: { de: {} } }));
+
 jest.mock('../../src/components/settings', () => ({
+  LanguageSettings: () => null,
   ListSettings: () => null,
   LocationSettings: () => null,
   MowasRegionSettings: () => null,
@@ -73,6 +76,7 @@ jest.mock('../../src/config', () => ({
       resetPersistentCachesError: 'Persistente Caches konnten nicht zurückgesetzt werden.'
     },
     settingsTitles: {
+      language: 'Sprache',
       analytics: 'Matomo Analytics',
       onboarding: 'Onboarding',
       pushNotifications: 'Push-Benachrichtigungen',
@@ -84,6 +88,7 @@ jest.mock('../../src/config', () => ({
 jest.mock('../../src/helpers', () => ({
   addToStore: jest.fn(),
   createMatomoUserId: jest.fn(),
+  getAccessibilitySettingsEntryEnabled: jest.fn(() => false),
   matomoSettings: jest.fn(),
   readFromStore: jest.fn(),
   removeMatomoUserId: jest.fn()
@@ -111,8 +116,13 @@ jest.mock('../../src/ReactQueryProvider', () => ({
 }));
 
 import { clearPersistentCaches } from '../../src/ReactQueryProvider';
-import { SettingsScreen, confirmResetPersistentCaches } from '../../src/screens/SettingsScreen';
+import {
+  SettingsScreen,
+  SETTINGS_SCREENS,
+  confirmResetPersistentCaches
+} from '../../src/screens/SettingsScreen';
 import { SettingsContext, initialContext } from '../../src/SettingsProvider';
+import { LanguageSettings } from '../../src/components/settings';
 
 describe('SettingsScreen', () => {
   const navigation = { navigate: jest.fn() };
@@ -121,6 +131,29 @@ describe('SettingsScreen', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+  });
+
+  it('always offers a dedicated language settings screen', async () => {
+    let tree;
+    const renderScreen = (route = {}) => (
+      <SettingsContext.Provider value={initialContext}>
+        <SettingsScreen navigation={navigation} route={route} />
+      </SettingsContext.Provider>
+    );
+    await act(async () => {
+      tree = renderer.create(renderScreen());
+    });
+    const settingsEntries = () =>
+      tree.root.findByType(SectionList).props.sections.flatMap((section) => section.data);
+    expect(settingsEntries()).toContain(SETTINGS_SCREENS.LANGUAGE);
+    await act(async () => {
+      tree.update(renderScreen({ params: { setting: SETTINGS_SCREENS.LANGUAGE } }));
+    });
+    expect(tree.root.findAllByType(LanguageSettings)).toHaveLength(1);
+    expect(tree.root.findAllByType(SectionList)).toHaveLength(0);
+    await act(async () => {
+      tree.unmount();
+    });
   });
 
   it('shows a dev-only persistent cache reset link and clears caches after confirmation', async () => {

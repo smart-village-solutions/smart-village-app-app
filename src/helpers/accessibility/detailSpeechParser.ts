@@ -10,6 +10,7 @@ type DetailRecord = Record<string, unknown>;
 export type DetailSpeechItem = {
   id: string;
   text: string;
+  language?: string;
 };
 
 type DetailSpeechParseParams = {

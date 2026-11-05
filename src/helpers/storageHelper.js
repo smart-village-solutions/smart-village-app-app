@@ -22,7 +22,9 @@ export const storageHelper = {
   setConversationSettings: (conversationSettings) =>
     addToStore('conversationSettings', conversationSettings),
   configurations: () => readFromStore('configurations'),
-  setConfigurations: (configurations) => addToStore('configurations', configurations)
+  setConfigurations: (configurations) => addToStore('configurations', configurations),
+  textsLocale: () => readFromStore('textsLocale'),
+  setTextsLocale: (locale) => addToStore('textsLocale', locale)
 };
 
 export const logCurrentStorage = (withoutApollo = false) => {

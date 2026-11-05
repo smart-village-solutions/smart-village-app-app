@@ -1,6 +1,10 @@
 import * as SecureStore from 'expo-secure-store';
 
-import { namespace, secrets } from './config';
+import {
+  getMainServerConfig,
+  getMainServerTokenKey,
+  getMainServerUrl
+} from './helpers/mainServerHelper';
 
 const ACCESS_TOKEN_EXPIRE_TIME = 'ACCESS_TOKEN_EXPIRE_TIME';
 
@@ -10,16 +14,17 @@ const ACCESS_TOKEN_EXPIRE_TIME = 'ACCESS_TOKEN_EXPIRE_TIME';
  * we need to divide Date.now() by 1000, which otherwise would return miliseconds.
  */
 const isTokenValid = async () => {
+  const expiresAtKey = await getMainServerTokenKey(ACCESS_TOKEN_EXPIRE_TIME);
   let accessTokenExpireTime = null;
 
   // The reason for the problem of staying in SplashScreen that occurs after the application is
   // updated on the Android side is the inability to obtain the token here.
   // For this reason, try/catch is used here and the problem of getting stuck in SplashScreen is solved.
   try {
-    accessTokenExpireTime = await SecureStore.getItemAsync(ACCESS_TOKEN_EXPIRE_TIME);
+    accessTokenExpireTime = await SecureStore.getItemAsync(expiresAtKey);
   } catch {
     // Token deleted here so that it can be recreated
-    await SecureStore.deleteItemAsync(ACCESS_TOKEN_EXPIRE_TIME);
+    await SecureStore.deleteItemAsync(expiresAtKey);
   }
 
   if (!accessTokenExpireTime) return false;
@@ -41,6 +46,7 @@ export const auth = async (callback, forceNewToken = false) => {
   if (!forceNewToken && (await isTokenValid())) return callback && callback();
 
   // otherwise fetch a new access token and expire time
+  const config = getMainServerConfig();
   const fetchObj = {
     method: 'POST',
     headers: {
@@ -48,20 +54,23 @@ export const auth = async (callback, forceNewToken = false) => {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      client_id: secrets[namespace].oAuthClientId,
-      client_secret: secrets[namespace].oAuthClientSecret,
-      grant_type: secrets[namespace].oAuthGrantType
+      client_id: config.oAuthClientId,
+      client_secret: config.oAuthClientSecret,
+      grant_type: config.oAuthGrantType
     })
   };
 
-  const response = await fetch(
-    `${secrets[namespace].serverUrl}${secrets[namespace].oAuthTokenEndpoint}`,
-    fetchObj
-  );
+  const response = await fetch(`${getMainServerUrl()}${config.oAuthTokenEndpoint}`, fetchObj);
   const json = await response.json();
+  if (!response.ok || typeof json.access_token !== 'string' || !json.access_token.trim()) {
+    throw new Error('Main-Server authentication failed');
+  }
 
-  await SecureStore.setItemAsync('ACCESS_TOKEN', json.access_token);
+  await SecureStore.setItemAsync(await getMainServerTokenKey('ACCESS_TOKEN'), json.access_token);
   // save the time when the token will expire, calculated from the creation time in seconds
   // added by the expire duration in seconds
-  await SecureStore.setItemAsync(ACCESS_TOKEN_EXPIRE_TIME, `${json.created_at + json.expires_in}`);
+  await SecureStore.setItemAsync(
+    await getMainServerTokenKey(ACCESS_TOKEN_EXPIRE_TIME),
+    `${json.created_at + json.expires_in}`
+  );
 };

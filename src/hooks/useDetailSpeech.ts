@@ -5,6 +5,7 @@ import * as Speech from 'expo-speech';
 import { DetailSpeechItem } from '../helpers/accessibility/detailSpeechParser';
 
 type SpeechChunk = {
+  language?: string;
   sourceCharStart: number;
   sourceIndex: number;
   text: string;
@@ -75,6 +76,7 @@ const buildQueue = (items: DetailSpeechItem[]) => {
     const chunks = splitIntoChunks(item.text, maxLength);
     chunks.forEach((chunk) => {
       acc.push({
+        language: item.language,
         sourceCharStart: chunk.start,
         sourceIndex: index,
         text: chunk.text
@@ -86,7 +88,10 @@ const buildQueue = (items: DetailSpeechItem[]) => {
 
 export const useDetailSpeech = (items: DetailSpeechItem[], enabled = true, speechRate = 1) => {
   const queue = useMemo(() => (enabled ? buildQueue(items) : []), [enabled, items]);
-  const queueKey = useMemo(() => items.map((item) => `${item.id}:${item.text}`).join('|'), [items]);
+  const queueKey = useMemo(
+    () => items.map((item) => `${item.id}:${item.language}:${item.text}`).join('|'),
+    [items]
+  );
   const generationRef = useRef(0);
   const activeChunkIndexRef = useRef(0);
   const activeChunkResumeOffsetRef = useRef(0);
@@ -177,7 +182,7 @@ export const useDetailSpeech = (items: DetailSpeechItem[], enabled = true, speec
         }
 
         Speech.speak(speechText, {
-          language: DEFAULT_TTS_LANGUAGE,
+          language: currentChunk.language || DEFAULT_TTS_LANGUAGE,
           rate: getNativeSpeechRate(speechRate),
           onBoundary: (event: { charIndex?: number; charLength?: number }) => {
             if (generationRef.current !== generation || !mountedRef.current) return;

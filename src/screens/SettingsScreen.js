@@ -14,6 +14,7 @@ import {
 } from '../components';
 import {
   AccessibilitySettings,
+  LanguageSettings,
   ListSettings,
   LocationSettings,
   MowasRegionSettings,
@@ -54,6 +55,7 @@ const keyExtractor = (item, index) => `index${index}-item${item.title || item}`;
 export const SETTINGS_SCREENS = {
   ACCESSIBILITY: 'accessibilitySettings',
   AR: 'augmentedRealitySettings',
+  LANGUAGE: 'languageSettings',
   LIST: 'listSettings',
   LOCATION: 'locationSettings',
   MOWAS_REGION: 'mowasRegionSettings',
@@ -101,6 +103,19 @@ const renderItem = ({ item, navigation, listsWithoutArrows, settingsScreenListIt
           params: { setting: item, title: title || texts.settingsContents.mowasRegion.setting },
           routeName: ScreenName.Settings,
           title: title || texts.settingsContents.mowasRegion.setting
+        }}
+        listsWithoutArrows={listsWithoutArrows}
+        navigation={navigation}
+      />
+    );
+  } else if (item === SETTINGS_SCREENS.LANGUAGE) {
+    component = (
+      <TextListItem
+        item={{
+          isHeadlineTitle: false,
+          params: { setting: item, title: title || texts.settingsTitles.language },
+          routeName: ScreenName.Settings,
+          title: title || texts.settingsTitles.language
         }}
         listsWithoutArrows={listsWithoutArrows}
         navigation={navigation}
@@ -442,6 +457,8 @@ export const SettingsScreen = ({ navigation, route }) => {
         });
       }
 
+      settingsList.push({ data: [SETTINGS_SCREENS.LANGUAGE] });
+
       settingsList.push({
         data: [SETTINGS_SCREENS.PERMANENT_FILTER]
       });
@@ -499,6 +516,9 @@ export const SettingsScreen = ({ navigation, route }) => {
       break;
     case SETTINGS_SCREENS.MOWAS_REGION:
       Component = <MowasRegionSettings mowasRegionalKeys={mowas?.regionalKeys} />;
+      break;
+    case SETTINGS_SCREENS.LANGUAGE:
+      Component = <LanguageSettings />;
       break;
     case SETTINGS_SCREENS.LIST:
       Component = <ListSettings />;

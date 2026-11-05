@@ -1,5 +1,4 @@
 import * as Sentry from '@sentry/react-native';
-import * as SplashScreen from 'expo-splash-screen';
 import React, { useEffect, useRef } from 'react';
 import { AppState } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -17,9 +16,6 @@ if (sentryApi?.dsn) {
     // debug: __DEV__ // NOTE: If `true`, Sentry will try to print out useful debugging information if something goes wrong with sending the event.
   });
 }
-
-// Keep the splash screen visible while we fetch resources
-SplashScreen.preventAutoHideAsync();
 
 const App = () => {
   const appState = useRef(AppState.currentState);

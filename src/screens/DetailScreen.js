@@ -34,6 +34,9 @@ import {
 import { SettingsContext } from '../SettingsProvider';
 import { GenericType } from '../types';
 import { useTheme } from '../hooks/useTheme';
+import { AppLanguagesContext } from '../AppLanguagesProvider';
+import { useTranslatedNews } from '../hooks/translatedNews';
+import { getTextsLocale } from '../helpers/textsLocaleHelper';
 
 import { DefectReportFormScreen } from './DefectReport';
 import { NoticeboardFormScreen } from './Noticeboard';
@@ -110,21 +113,16 @@ export const DetailScreen = ({ navigation, route }) => {
   const authMode = route.params?.authMode ?? AUTH_MODE_PUBLIC;
   const details = route.params?.details ?? {};
   const hasValidDetailParams = !!query && !!queryVariables?.id;
-  const isSueDetail = query === QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID;
+  const isSueDetail = [
+    QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID,
+    QUERY_TYPES.SUE.MY_REQUEST_WITH_SERVICE_REQUEST_ID
+  ].includes(query);
 
   const [refreshing, setRefreshing] = useState(false);
   const refreshTime = useRefreshTime(`${query}-${queryVariables.id}`, getRefreshInterval(query));
   const scrollContentContainerStyle = useReadAloudScrollContentContainerStyle();
 
   useRootRouteByCategory(details, navigation);
-
-  // Render SUE detail screen without the need of processing the rest of the code here
-  if (
-    query === QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID ||
-    query === QUERY_TYPES.SUE.MY_REQUEST_WITH_SERVICE_REQUEST_ID
-  ) {
-    return <SueDetailScreen navigation={navigation} route={route} />;
-  }
 
   const refresh = async (refetch) => {
     setRefreshing(true);
@@ -143,25 +141,51 @@ export const DetailScreen = ({ navigation, route }) => {
     refreshTime
   });
 
+  const appLanguages = useContext(AppLanguagesContext);
+  const activeLocale = getTextsLocale();
+  const newsLocale = appLanguages.includes(activeLocale) ? activeLocale : 'de';
+  const isNews = query === QUERY_TYPES.NEWS_ITEM;
+  const translatedNewsEnabled = isNews && newsLocale !== 'de';
+  const translatedNews = useTranslatedNews({
+    enabled: translatedNewsEnabled && !!refreshTime && hasValidDetailParams,
+    id: queryVariables.id,
+    authMode,
+    locale: newsLocale,
+    online: isConnected && isMainserverUp,
+    refreshTime
+  });
+  const queryResult = useQuery(
+    [query, { id: queryVariables.id }, authMode, refreshTime, ...(isNews ? [newsLocale] : [])],
+    async () => {
+      const client = await ReactQueryClient();
+      return client.request(
+        getQuery(query),
+        { id: queryVariables.id },
+        {
+          authMode,
+          locale: isNews ? newsLocale : undefined
+        }
+      );
+    },
+    {
+      enabled: !translatedNewsEnabled && !!refreshTime && hasValidDetailParams && !isSueDetail
+    }
+  );
   const {
     data,
     isLoading: loading,
     isRefetching,
     refetch
-  } = useQuery(
-    [query, { id: queryVariables.id }, authMode, refreshTime],
-    async () => {
-      const client = await ReactQueryClient();
-      return await client.request(getQuery(query), { id: queryVariables.id }, { authMode });
-    },
-    {
-      enabled: !!refreshTime && hasValidDetailParams && !isSueDetail
-    }
-  );
-  const detailData = (data && data[query]) || details;
+  } = translatedNewsEnabled ? translatedNews : queryResult;
+  const detailData = (data && data[query]) || (translatedNewsEnabled ? {} : details);
+  const servedLocale = translatedNewsEnabled ? translatedNews.servedLocale : 'de';
   const detailSpeechItems = useMemo(
-    () => getDetailSpeechItems({ detail: detailData, query }),
-    [detailData, query]
+    () =>
+      getDetailSpeechItems({ detail: detailData, query }).map((item) => ({
+        ...item,
+        language: servedLocale && servedLocale !== 'de' ? servedLocale : 'de-DE'
+      })),
+    [detailData, query, servedLocale]
   );
   useRegisterReadAloudContent(
     `detail-${queryVariables.id}`,
@@ -190,6 +214,10 @@ export const DetailScreen = ({ navigation, route }) => {
         <ActivityIndicator color={colors.refreshControl} />
       </LoadingContainer>
     );
+  }
+
+  if (translatedNewsEnabled && !data?.[query]) {
+    return <EmptyMessage title={texts.empty.content} />;
   }
 
   // we can have `data` from GraphQL or `details` from the previous list view.
