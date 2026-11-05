@@ -75,7 +75,6 @@ describe('news list translations', () => {
     rawRequest.mockResolvedValue(response('ready', 'City library', 'other-scope'));
     await act(async () => list.observe(response('unavailable')));
     await act(async () => DeviceEventEmitter.emit(NEWS_TRANSLATION_READY, '21'));
-    await act(async () => jest.advanceTimersByTimeAsync(1500));
 
     expect(rawRequest).toHaveBeenCalledTimes(1);
     expect(applyNewsListTitles(existingRows, list.titles)).toBe(existingRows);

@@ -110,7 +110,10 @@ export const useNewsListTranslations = (enabled, authMode) => {
       if (!seen.has(id) || seen.get(id).state === 'ready') return;
 
       pending.set(id, Date.now() + 5000);
-      schedule();
+      if (running) return;
+
+      clearTimeout(timer);
+      void refresh();
     });
     return () => {
       active = false;
