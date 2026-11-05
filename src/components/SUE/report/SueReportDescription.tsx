@@ -101,11 +101,16 @@ export const SueReportDescription = ({
           placeholder={texts.sue.report.titlePlaceholder}
           control={control}
           maxLength={limits.title}
+          renderErrorMessage={limits.title === undefined}
           ref={titleRef}
           onSubmitEditing={() => descriptionRef.current?.focus()}
         />
         {limits.title !== undefined && (
-          <RegularText small error={(title?.length ?? 0) > limits.title}>
+          <RegularText
+            small
+            style={styles.characterCount}
+            error={(title?.length ?? 0) > limits.title}
+          >
             {texts.sue.report.characterCount(title?.length ?? 0, limits.title)}
           </RegularText>
         )}
@@ -124,10 +129,15 @@ export const SueReportDescription = ({
           multiline
           control={control}
           maxLength={limits.description}
+          renderErrorMessage={limits.description === undefined}
           ref={descriptionRef}
         />
         {limits.description !== undefined && (
-          <RegularText small error={(description?.length ?? 0) > limits.description}>
+          <RegularText
+            small
+            style={styles.characterCount}
+            error={(description?.length ?? 0) > limits.description}
+          >
             {texts.sue.report.characterCount(description?.length ?? 0, limits.description)}
           </RegularText>
         )}
@@ -145,6 +155,9 @@ export const SueReportDescription = ({
 };
 
 const styles = StyleSheet.create({
+  characterCount: {
+    marginTop: normalize(2)
+  },
   container: {
     paddingTop: normalize(16),
     width: '100%'
