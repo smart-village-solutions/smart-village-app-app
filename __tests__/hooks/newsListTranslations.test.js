@@ -71,12 +71,30 @@ describe('news list translations', () => {
     expect(rawRequest).toHaveBeenCalledTimes(2);
   });
 
-  it('rechecks a known row after the detail reports readiness and rejects another auth scope', async () => {
-    rawRequest.mockResolvedValue(response('ready', 'City library', 'other-scope'));
-    await act(async () => list.observe(response('unavailable')));
-    await act(async () => DeviceEventEmitter.emit(NEWS_TRANSLATION_READY, '21'));
+  const openTranslatedDetail = (scope = 'current-scope', sourceDigest = 'a'.repeat(64)) =>
+    DeviceEventEmitter.emit(NEWS_TRANSLATION_READY, {
+      id: '21',
+      title: 'City library',
+      scope,
+      sourceDigest
+    });
 
-    expect(rawRequest).toHaveBeenCalledTimes(1);
+  it('updates a cached list row from the English detail without waiting for another request', async () => {
+    await act(async () => openTranslatedDetail());
+
+    expect(rawRequest).not.toHaveBeenCalled();
+    expect(applyNewsListTitles(existingRows, list.titles).newsItems).toEqual([
+      existingRows.newsItems[0],
+      { ...item, mainTitle: 'City library' }
+    ]);
+  });
+
+  it('rejects detail titles for a different auth scope or source revision', async () => {
+    await act(async () => list.observe(response('unavailable')));
+    await act(async () => openTranslatedDetail('other-scope'));
+    await act(async () => openTranslatedDetail('current-scope', 'b'.repeat(64)));
+
+    expect(rawRequest).not.toHaveBeenCalled();
     expect(applyNewsListTitles(existingRows, list.titles)).toBe(existingRows);
   });
 });

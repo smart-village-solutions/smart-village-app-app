@@ -106,15 +106,30 @@ export const useNewsListTranslations = (enabled, authMode) => {
       });
       schedule();
     };
-    const subscription = DeviceEventEmitter.addListener(NEWS_TRANSLATION_READY, (id) => {
-      if (!seen.has(id) || seen.get(id).state === 'ready') return;
+    const subscription = DeviceEventEmitter.addListener(
+      NEWS_TRANSLATION_READY,
+      ({ id, title, scope, sourceDigest }) => {
+        const applyTitle = async () => {
+          const client = await ReactQueryClient();
+          const currentScope = await client.cacheScope(authMode);
+          const observedDigest = seen.get(id)?.sourceDigest;
+          if (
+            !active ||
+            scope !== currentScope ||
+            (observedDigest && observedDigest !== sourceDigest)
+          )
+            return;
 
-      pending.set(id, Date.now() + 5000);
-      if (running) return;
-
-      clearTimeout(timer);
-      void refresh();
-    });
+          pending.delete(id);
+          // Discard any older list poll that was already in flight for this row.
+          seen.set(id, { sourceDigest });
+          setTitles((previous) =>
+            previous.get(id) === title ? previous : new Map(previous).set(id, title)
+          );
+        };
+        void applyTitle().catch(() => {});
+      }
+    );
     return () => {
       active = false;
       clearTimeout(timer);

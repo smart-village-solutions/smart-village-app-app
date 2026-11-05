@@ -98,7 +98,12 @@ export const loadTranslatedNews = async ({
     if (cached?.data?.newsItem?.id == id) {
       const metadata = newsTranslation(cached, locale);
       if (metadata) {
-        fallback = { data: cached.data, servedLocale: metadata.servedLocale };
+        fallback = {
+          data: cached.data,
+          servedLocale: metadata.servedLocale,
+          scope,
+          sourceDigest: metadata.sourceDigest
+        };
         if (!online) return settle(fallback);
       }
     }
@@ -131,11 +136,13 @@ export const loadTranslatedNews = async ({
         if (response.data?.newsItem?.id != id) return settle({ denied: true });
         const metadata = newsTranslation(response, locale);
         if (!metadata) return await readGerman(response);
-        const { servedLocale } = metadata;
-        const value = { data: response.data, servedLocale };
-        if (servedLocale === 'de') fallback = value;
+        const { servedLocale, sourceDigest } = metadata;
+        const value = { data: response.data, servedLocale, scope, sourceDigest };
         // Persist data and its language/source metadata together, outside normalized entity caches.
-        await persistResponse(storage, cacheKey, response, metadata);
+        const persisted = persistResponse(storage, cacheKey, response, metadata);
+        if (metadata.state === 'ready') return settle(value);
+        fallback = value;
+        await persisted;
         if (!isActive()) return settle();
         if (metadata.state !== 'pending') return settle(value);
         retryTimeout = setTimeout(() => {

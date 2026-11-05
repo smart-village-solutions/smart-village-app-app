@@ -55,7 +55,12 @@ describe('news translations', () => {
       .mockResolvedValueOnce(response('ready', 'en'));
     const result = open();
     await tick(500);
-    expect(await result).toEqual({ data: response('ready', 'en').data, servedLocale: 'en' });
+    expect(await result).toEqual({
+      data: response('ready', 'en').data,
+      servedLocale: 'en',
+      scope: 'municipality-principal-en',
+      sourceDigest: digest
+    });
     expect(client.rawRequest).toHaveBeenNthCalledWith(
       2,
       'query News',
@@ -63,6 +68,17 @@ describe('news translations', () => {
       { authMode: 'public', locale: 'en' }
     );
     expect((await open(false)).servedLocale).toBe('en');
+  });
+
+  it('shows ready English even when saving it takes longer than the view deadline', async () => {
+    AsyncStorage.setItem.mockImplementationOnce(
+      () => new Promise((resolve) => setTimeout(resolve, 6000))
+    );
+    client.rawRequest.mockResolvedValue(response('ready', 'en'));
+    const result = open();
+    await tick(5000);
+    expect(await result).toMatchObject({ data: response('ready', 'en').data, servedLocale: 'en' });
+    await tick(1000);
   });
 
   it('settles in German at five seconds and ignores a late English response', async () => {
@@ -75,7 +91,7 @@ describe('news translations', () => {
     );
     const result = open();
     await tick(5000);
-    expect(await result).toEqual({ data: response().data, servedLocale: 'de' });
+    expect(await result).toMatchObject({ data: response().data, servedLocale: 'de' });
     resolve(response('ready', 'en'));
     await tick();
     expect((await open(false)).servedLocale).toBe('de');
@@ -142,7 +158,7 @@ describe('news translations', () => {
     const updated = response('unavailable', 'de', 'b'.repeat(64));
     updated.data.newsItem.mainTitle = 'Neue Nachricht';
     client.rawRequest.mockResolvedValue(updated);
-    expect(await open()).toEqual({ data: updated.data, servedLocale: 'de' });
+    expect(await open()).toMatchObject({ data: updated.data, servedLocale: 'de' });
     expect((await open(false)).data.newsItem.mainTitle).toBe('Neue Nachricht');
   });
 

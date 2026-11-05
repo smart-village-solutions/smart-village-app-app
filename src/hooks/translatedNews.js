@@ -8,6 +8,22 @@ import { GET_NEWS_ITEM } from '../queries/newsItems';
 
 import { NEWS_TRANSLATION_READY } from './newsListTranslations';
 
+const shareNewsTitle = (response) => {
+  if (response?.servedLocale !== 'en') return;
+
+  const { data, scope, sourceDigest } = response;
+  const { id, mainTitle, contentBlocks } = data.newsItem;
+  const title = mainTitle || contentBlocks?.[0]?.title;
+  if (id && title && scope) {
+    DeviceEventEmitter.emit(NEWS_TRANSLATION_READY, {
+      id: String(id),
+      title,
+      scope,
+      sourceDigest
+    });
+  }
+};
+
 export const useTranslatedNews = ({ enabled, id, authMode, locale, online, refreshTime }) => {
   const { currentUserData, isLoggedIn } = useContext(ProfileContext);
   const [revision, setRevision] = useState(0);
@@ -39,7 +55,7 @@ export const useTranslatedNews = ({ enabled, id, authMode, locale, online, refre
         isCurrent: () => current
       });
       if (current) {
-        if (response?.servedLocale === 'en') DeviceEventEmitter.emit(NEWS_TRANSLATION_READY, id);
+        shareNewsTitle(response);
         session.current.settled = true;
         setResult({ key, response });
       }
