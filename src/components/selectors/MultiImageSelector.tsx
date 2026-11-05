@@ -215,7 +215,13 @@ export const MultiImageSelector = ({
         />
 
         {!!infoText && (
-          <RegularText small style={styles.sueInfoText}>
+          <RegularText
+            small
+            style={[
+              styles.uploadInfoText,
+              selectorType === IMAGE_SELECTOR_TYPES.SUE && styles.sueInfoText
+            ]}
+          >
             {infoText}
           </RegularText>
         )}
@@ -431,9 +437,13 @@ const createStyles = (colors) => ({
     width: normalize(88)
   },
 
-  sueInfoText: {
+  uploadInfoText: {
     marginTop: normalize(-7),
     marginBottom: normalize(5)
+  },
+
+  sueInfoText: {
+    marginTop: normalize(-14)
   },
 
   volunteerContainer: {
