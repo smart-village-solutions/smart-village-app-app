@@ -5,12 +5,14 @@ import { useQuery } from 'react-query';
 import { CACHE_SCOPES, millisecondsUntilCacheExpires } from '../helpers/cacheHelper';
 import { eventDate } from '../helpers/dateTimeHelper';
 import { subtitle } from '../helpers/textHelper';
+import { getTextsLocale } from '../helpers/textsLocaleHelper';
 import {
   useGenericItemEvents,
   useHomePointsOfInterestAndToursRefresh,
   useHomeRefresh,
   useVolunteerData
 } from '../hooks';
+import { applyNewsListTitles, useNewsListTranslations } from '../hooks/newsListTranslations';
 import { getQuery, QUERY_TYPES } from '../queries';
 import { ReactQueryClient } from '../ReactQueryClient';
 import { SettingsContext } from '../SettingsProvider';
@@ -58,13 +60,24 @@ export const HomeSection = ({
   const genericItemEventSources =
     globalSettings?.settings?.eventCalendar?.genericItemEventSources || [];
   const isPointsOfInterestAndTours = query === QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS;
+  const refreshNewsTitles = query === QUERY_TYPES.NEWS_ITEMS && getTextsLocale() === 'en';
+  const { observe, titles } = useNewsListTranslations(refreshNewsTitles);
   // `dataUpdatedAt` is provided by react-query and changes whenever a successful fetch updates data.
-  const { data, dataUpdatedAt, isLoading, refetch } = useQuery(
+  const {
+    data: listData,
+    dataUpdatedAt,
+    isLoading,
+    refetch
+  } = useQuery(
     [query, queryVariables],
     async () => {
       const client = await ReactQueryClient();
 
-      return await client.request(getQuery(query), queryVariables);
+      if (!refreshNewsTitles) return client.request(getQuery(query), queryVariables);
+
+      const response = await client.rawRequest(getQuery(query), queryVariables);
+      observe(response);
+      return response.data;
     },
     isPointsOfInterestAndTours
       ? {
@@ -76,6 +89,7 @@ export const HomeSection = ({
         }
       : undefined
   );
+  const data = applyNewsListTitles(listData, titles);
 
   const isCalendarWithVolunteerEvents = query === QUERY_TYPES.EVENT_RECORDS && showVolunteerEvents;
 

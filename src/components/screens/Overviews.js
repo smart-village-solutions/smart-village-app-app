@@ -43,6 +43,7 @@ import {
   sortPOIsByDistanceFromPosition
 } from '../../helpers';
 import { compareParticipationProjects } from '../../helpers/participationProjectSortHelper';
+import { getTextsLocale } from '../../helpers/textsLocaleHelper';
 import { updateResourceFiltersStateHelper } from '../../helpers/updateResourceFiltersStateHelper';
 import {
   useLastKnownPosition,
@@ -53,6 +54,7 @@ import {
   useStaticContent,
   useSystemPermission
 } from '../../hooks';
+import { applyNewsListTitles, useNewsListTranslations } from '../../hooks/newsListTranslations';
 import { useTheme } from '../../hooks/useTheme';
 import { NetworkContext } from '../../NetworkProvider';
 import { PermanentFilterContext } from '../../PermanentFilterProvider';
@@ -342,8 +344,19 @@ export const Overviews = ({ navigation, route }) => {
     return participationQueryVariables;
   }, [isParticipationProjectOverview, queryVariables]);
 
-  const { data, loading, fetchMore, refetch } = useQuery(getQuery(query, { showNewsFilter }), {
-    ...(authMode ? getApolloAuthContext(authMode) : {}),
+  const refreshNewsTitles =
+    isConnected && query === QUERY_TYPES.NEWS_ITEMS && getTextsLocale() === 'en';
+  const { observe, titles } = useNewsListTranslations(refreshNewsTitles, authMode);
+  const {
+    data: listData,
+    loading,
+    fetchMore,
+    refetch
+  } = useQuery(getQuery(query, { showNewsFilter }), {
+    context: {
+      ...(authMode ? getApolloAuthContext(authMode).context : {}),
+      onNewsListResponse: refreshNewsTitles ? observe : undefined
+    },
     fetchPolicy,
     variables: {
       ...networkQueryVariables,
@@ -359,6 +372,7 @@ export const Overviews = ({ navigation, route }) => {
           : route.params?.queryVariables?.limit
     }
   });
+  const data = useMemo(() => applyNewsListTitles(listData, titles), [listData, titles]);
 
   const participationProjectStatusCounts = useMemo(
     () =>

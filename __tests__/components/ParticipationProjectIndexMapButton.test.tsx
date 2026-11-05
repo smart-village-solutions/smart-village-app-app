@@ -13,6 +13,11 @@ import { GenericType, ScreenName } from '../../src/types';
 const DETAIL_ROUTE_NAME = 'Detail';
 const mockFilterTypes = jest.fn();
 
+jest.mock('../../src/hooks/newsListTranslations', () => ({
+  applyNewsListTitles: (data: unknown) => data,
+  useNewsListTranslations: () => ({})
+}));
+
 jest.mock('expo-location', () => ({
   PermissionStatus: {
     GRANTED: 'granted'

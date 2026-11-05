@@ -1,9 +1,12 @@
 import { useContext, useEffect, useRef, useState } from 'react';
+import { DeviceEventEmitter } from 'react-native';
 
 import { ProfileContext } from '../ProfileProvider';
 import { loadTranslatedNews } from '../helpers/newsTranslationHelper';
 import { ReactQueryClient } from '../ReactQueryClient';
 import { GET_NEWS_ITEM } from '../queries/newsItems';
+
+import { NEWS_TRANSLATION_READY } from './newsListTranslations';
 
 export const useTranslatedNews = ({ enabled, id, authMode, locale, online, refreshTime }) => {
   const { currentUserData, isLoggedIn } = useContext(ProfileContext);
@@ -36,6 +39,7 @@ export const useTranslatedNews = ({ enabled, id, authMode, locale, online, refre
         isCurrent: () => current
       });
       if (current) {
+        if (response?.servedLocale === 'en') DeviceEventEmitter.emit(NEWS_TRANSLATION_READY, id);
         session.current.settled = true;
         setResult({ key, response });
       }

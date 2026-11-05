@@ -209,7 +209,7 @@ const parseNewsItems = (data, skipLastDivider, titleDetail, bookmarkable, dateTi
         momentFormatUtcToLocal(newsItem.publishedAt, dateTimeFormat),
         newsItem.dataProvider?.name
       ),
-      title: newsItem.contentBlocks?.[0]?.title,
+      title: newsItem.mainTitle || newsItem.contentBlocks?.[0]?.title,
       picture: {
         url:
           newsItem.contentBlocks?.[0]?.mediaContents?.length &&

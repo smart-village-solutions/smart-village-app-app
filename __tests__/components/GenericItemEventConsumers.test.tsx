@@ -27,6 +27,11 @@ const mockSubListRefetch = jest.fn(async () => undefined);
 const mockGenericRefetch = jest.fn(async () => undefined);
 const mockVolunteerRefetch = jest.fn(async () => undefined);
 
+jest.mock('../../src/hooks/newsListTranslations', () => ({
+  applyNewsListTitles: (data: unknown) => data,
+  useNewsListTranslations: () => ({})
+}));
+
 jest.mock('../../src/NetworkProvider', () => {
   const ReactInMock = require('react');
   return {

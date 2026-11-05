@@ -108,7 +108,13 @@ const MainAppWithApolloProvider = () => {
     //       state & context links should happen before (to the left of) restLink.
     //       https://www.apollographql.com/docs/link/links/rest/#link-order
     // const link = ApolloLink.from([authLink, restLink, errorLink, retryLink, httpLink]);
-    const link = ApolloLink.from([authLink, httpLink]);
+    const observeNewsList = new ApolloLink((operation, forward) =>
+      forward(operation).map((response) => {
+        operation.getContext().onNewsListResponse?.(response);
+        return response;
+      })
+    );
+    const link = ApolloLink.from([authLink, observeNewsList, httpLink]);
     const cache = new InMemoryCache();
     const scope = await getGraphqlCacheScope(await getGraphqlAuthHeaders());
     const cacheKey = `${APOLLO_CACHE_PERSIST_KEY}:${scope}`;
