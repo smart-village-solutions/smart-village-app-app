@@ -100,6 +100,19 @@ export const materialcommunityiconsIconMapping: Record<string, string> = {
   play: 'play',
   pause: 'pause',
 
+  // Accessibility & Read Aloud
+  music: 'music',
+  'player-stop': 'stop',
+  accessible: 'human',
+  volume: 'volume-high',
+  'player-play': 'play',
+  'player-pause': 'pause',
+  'player-skip-back': 'skip-previous',
+  'player-skip-forward': 'skip-next',
+  eye: 'eye',
+  'eye-off': 'eye-off',
+  'chevron-down': 'chevron-down',
+
   // Visibility
   visible: 'eye',
   unvisible: 'eye-off',

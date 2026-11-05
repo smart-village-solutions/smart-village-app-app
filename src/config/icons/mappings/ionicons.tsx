@@ -99,6 +99,19 @@ export const ioniconsIconMapping: Record<string, string> = {
   play: 'play',
   pause: 'pause',
 
+  // Accessibility & Read Aloud
+  music: 'musical-notes-outline',
+  'player-stop': 'stop',
+  accessible: 'accessibility-outline',
+  volume: 'volume-high-outline',
+  'player-play': 'play',
+  'player-pause': 'pause',
+  'player-skip-back': 'play-skip-back',
+  'player-skip-forward': 'play-skip-forward',
+  eye: 'eye',
+  'eye-off': 'eye-off',
+  'chevron-down': 'chevron-down',
+
   // Visibility
   visible: 'eye',
   unvisible: 'eye-off',

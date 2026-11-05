@@ -99,6 +99,19 @@ export const fontawesomeIconMapping: Record<string, string> = {
   play: 'play',
   pause: 'pause',
 
+  // Accessibility & Read Aloud
+  music: 'music',
+  'player-stop': 'stop',
+  accessible: 'universal-access',
+  volume: 'volume-up',
+  'player-play': 'play',
+  'player-pause': 'pause',
+  'player-skip-back': 'step-backward',
+  'player-skip-forward': 'step-forward',
+  eye: 'eye',
+  'eye-off': 'eye-slash',
+  'chevron-down': 'chevron-down',
+
   // Visibility
   visible: 'eye',
   unvisible: 'eye-slash',
