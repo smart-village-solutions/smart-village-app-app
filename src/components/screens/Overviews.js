@@ -9,6 +9,7 @@ import React, {
   useEffect,
   useLayoutEffect,
   useMemo,
+  useRef,
   useState
 } from 'react';
 import { useQuery } from 'react-apollo';
@@ -476,9 +477,19 @@ export const Overviews = ({ navigation, route }) => {
     setRefreshing(false);
   }, [isConnected, setRefreshing, refetch]);
 
+  const newsPageSize = route.params?.queryVariables?.limit;
+  const hasPaginatedNews = useRef(false);
+  useLayoutEffect(() => {
+    hasPaginatedNews.current =
+      query === QUERY_TYPES.NEWS_ITEMS &&
+      newsPageSize > 0 &&
+      (data?.[query]?.length ?? 0) > newsPageSize;
+  }, [data, newsPageSize, query]);
+
   useFocusEffect(
     useCallback(() => {
-      if (!isConnected || !query) {
+      // Refetch uses the first-page variables and would discard the loaded pages.
+      if (!isConnected || !query || hasPaginatedNews.current) {
         return undefined;
       }
 
