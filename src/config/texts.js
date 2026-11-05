@@ -1758,7 +1758,7 @@ export const texts = {
         postalCodeLength: 'Postleitzahl muss 5-stellig sein.'
       },
       back: 'Zurück',
-      characterCount: (count, limit) => `${count} von ${limit} Zeichen`,
+      characterCount: (count, limit) => `ⓘ ${count} von ${limit} Zeichen`,
       city: 'Ort',
       description: 'Ausführliche Beschreibung',
       descriptionPlaceholder: 'Weitere Hinweise',

@@ -105,7 +105,7 @@ export const SueReportDescription = ({
           onSubmitEditing={() => descriptionRef.current?.focus()}
         />
         {limits.title !== undefined && (
-          <RegularText right small error={(title?.length ?? 0) > limits.title}>
+          <RegularText small error={(title?.length ?? 0) > limits.title}>
             {texts.sue.report.characterCount(title?.length ?? 0, limits.title)}
           </RegularText>
         )}
@@ -127,7 +127,7 @@ export const SueReportDescription = ({
           ref={descriptionRef}
         />
         {limits.description !== undefined && (
-          <RegularText right small error={(description?.length ?? 0) > limits.description}>
+          <RegularText small error={(description?.length ?? 0) > limits.description}>
             {texts.sue.report.characterCount(description?.length ?? 0, limits.description)}
           </RegularText>
         )}
