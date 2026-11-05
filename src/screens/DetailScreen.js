@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, DeviceEventEmitter, RefreshControl, ScrollView } from 'react-native';
+import { DeviceEventEmitter, RefreshControl, ScrollView } from 'react-native';
 import { useQuery } from 'react-query';
 
 import { AccessibilityContext } from '../AccessibilityProvider';
@@ -8,7 +8,7 @@ import {
   DetailActions,
   EmptyMessage,
   EventRecord,
-  LoadingContainer,
+  LoadingSpinner,
   NewsItem,
   NoticeboardDetail,
   Offer,
@@ -177,16 +177,16 @@ export const DetailScreen = ({ navigation, route }) => {
     isRefetching,
     refetch
   } = translatedNewsEnabled ? translatedNews : queryResult;
-  const detailData = (data && data[query]) || (translatedNewsEnabled ? {} : details);
+  const detailData = data?.[query] || (translatedNewsEnabled ? undefined : details);
   const servedLocale = translatedNewsEnabled ? translatedNews.servedLocale : 'de';
-  const detailSpeechItems = useMemo(
-    () =>
-      getDetailSpeechItems({ detail: detailData, query }).map((item) => ({
-        ...item,
-        language: servedLocale && servedLocale !== 'de' ? servedLocale : 'de-DE'
-      })),
-    [detailData, query, servedLocale]
-  );
+  const detailSpeechItems = useMemo(() => {
+    if (!detailData) return [];
+
+    return getDetailSpeechItems({ detail: detailData, query }).map((item) => ({
+      ...item,
+      language: servedLocale && servedLocale !== 'de' ? servedLocale : 'de-DE'
+    }));
+  }, [detailData, query, servedLocale]);
   useRegisterReadAloudContent(
     `detail-${queryVariables.id}`,
     detailSpeechItems,
@@ -200,20 +200,8 @@ export const DetailScreen = ({ navigation, route }) => {
     return <SueDetailScreen navigation={navigation} route={route} />;
   }
 
-  if (!refreshTime) {
-    return (
-      <LoadingContainer>
-        <ActivityIndicator color={colors.refreshControl} />
-      </LoadingContainer>
-    );
-  }
-
-  if (loading && !isRefetching) {
-    return (
-      <LoadingContainer>
-        <ActivityIndicator color={colors.refreshControl} />
-      </LoadingContainer>
-    );
+  if (!refreshTime || (loading && !isRefetching)) {
+    return <LoadingSpinner loading />;
   }
 
   if (translatedNewsEnabled && !data?.[query]) {

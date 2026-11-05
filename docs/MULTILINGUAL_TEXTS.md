@@ -291,6 +291,8 @@ Implemented on `feature/SVAK-212-mehrsprachigkeit`, without changing the fixed c
   budget including the first request. At expiry the view settles on the available
   German response, or shows unavailable if none exists. Offline reads use only this
   scoped cache. Explicit refresh starts a new budget.
+- The detail screen shows an accessible loading indicator while waiting and registers
+  read-aloud text only after article data arrives.
 - Missing metadata is German legacy data. `unavailable/de`, including unsupported
   payload/media news, remains wholly German. HTTP/GraphQL rejection hides cached
   fallback in the current view; transient transport/storage failures preserve it.

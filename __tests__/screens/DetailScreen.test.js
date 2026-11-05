@@ -1,8 +1,13 @@
 import React from 'react';
+import { ActivityIndicator } from 'react-native';
 import renderer, { act } from 'react-test-renderer';
 import { useQuery } from 'react-query';
 
+import { AccessibilityContext } from '../../src/AccessibilityProvider';
+import { AppLanguagesContext } from '../../src/AppLanguagesProvider';
+import { setTextsLocale } from '../../src/config/texts';
 import { ReactQueryClient } from '../../src/ReactQueryClient';
+import { useRegisterReadAloudContent } from '../../src/ReadAloudAvailabilityProvider';
 import { DetailScreen } from '../../src/screens/DetailScreen';
 
 jest.mock('react-query', () => ({
@@ -81,6 +86,32 @@ describe('DetailScreen', () => {
       { id: 'hidden-noticeboard-entry' },
       { authMode: 'user' }
     );
+  });
+
+  it('shows loading without registering speech before translated news has arrived', async () => {
+    setTextsLocale('en');
+    ReactQueryClient.mockReturnValueOnce(new Promise(() => {}));
+    let component;
+    try {
+      await act(async () => {
+        component = renderer.create(
+          <AccessibilityContext.Provider value={{ features: { readAloud: true } }}>
+            <AppLanguagesContext.Provider value={['de', 'en']}>
+              <DetailScreen
+                navigation={navigation}
+                route={{ params: { query: 'newsItem', id: '123' } }}
+              />
+            </AppLanguagesContext.Provider>
+          </AccessibilityContext.Provider>
+        );
+      });
+
+      expect(component.root.findByType(ActivityIndicator)).toBeTruthy();
+      expect(useRegisterReadAloudContent).toHaveBeenLastCalledWith('detail-123', [], false);
+    } finally {
+      await act(async () => component?.unmount());
+      setTextsLocale('de');
+    }
   });
 
   it.skip('must contain a left header element (for going back)', () => {
