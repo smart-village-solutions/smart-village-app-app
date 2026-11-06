@@ -32,6 +32,7 @@ export const VerticalList = ({
   navigation,
   noOvertitle = false,
   noSubtitle = false,
+  onViewableItemsChanged,
   openWebScreen,
   query,
   queryVariables,
@@ -138,6 +139,7 @@ export const VerticalList = ({
       }
       onEndReachedThreshold={0.5}
       onEndReached={onEndReached}
+      onViewableItemsChanged={onViewableItemsChanged}
       refreshControl={refreshControl}
       keyboardShouldPersistTaps="handled"
       contentContainerStyle={styles.contentContainerStyle}
@@ -179,6 +181,7 @@ VerticalList.propTypes = {
   navigation: PropTypes.object,
   noOvertitle: PropTypes.bool,
   noSubtitle: PropTypes.bool,
+  onViewableItemsChanged: PropTypes.func,
   openWebScreen: PropTypes.func,
   query: PropTypes.string,
   queryVariables: PropTypes.object,

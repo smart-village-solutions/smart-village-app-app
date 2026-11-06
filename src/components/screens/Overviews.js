@@ -346,7 +346,7 @@ export const Overviews = ({ navigation, route }) => {
 
   const refreshNewsTitles =
     isConnected && query === QUERY_TYPES.NEWS_ITEMS && getTextsLocale() === 'en';
-  const { observe, titles } = useNewsListTranslations(refreshNewsTitles, authMode);
+  const { observe, observeVisible, titles } = useNewsListTranslations(refreshNewsTitles, authMode);
   const {
     data: listData,
     loading,
@@ -788,6 +788,7 @@ export const Overviews = ({ navigation, route }) => {
             query={query}
             queryVariables={queryVariables}
             fetchMoreData={isParticipationProjectOverview ? undefined : fetchMoreData}
+            onViewableItemsChanged={observeVisible}
             refreshControl={
               <RefreshControl
                 refreshing={refreshing}

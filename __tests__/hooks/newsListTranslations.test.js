@@ -71,6 +71,25 @@ describe('news list translations', () => {
     expect(rawRequest).toHaveBeenCalledTimes(2);
   });
 
+  it('updates a previously loaded row when it scrolls into view', async () => {
+    rawRequest.mockResolvedValue(response('ready', 'City library'));
+    await act(async () => list.observe(response('unavailable')));
+    await act(async () => {
+      list.observeVisible({ changed: [{ item, isViewable: true }] });
+      await jest.advanceTimersByTimeAsync(0);
+    });
+
+    expect(rawRequest).toHaveBeenCalledTimes(1);
+    expect(applyNewsListTitles(existingRows, list.titles).newsItems[1].mainTitle).toBe(
+      'City library'
+    );
+    await act(async () => {
+      list.observeVisible({ changed: [{ item, isViewable: true }] });
+      await jest.advanceTimersByTimeAsync(5000);
+    });
+    expect(rawRequest).toHaveBeenCalledTimes(1);
+  });
+
   const openTranslatedDetail = (
     scope = 'current-scope',
     sourceDigest = 'a'.repeat(64),

@@ -33,12 +33,14 @@ export const useNewsListTranslations = (enabled, authMode) => {
     currentUserData?.member?.municipality_id ?? currentUserData?.user?.municipality_id;
   const [titles, setTitles] = useState(() => new Map());
   const observer = useRef(null);
+  const visibleObserver = useRef(null);
 
   useEffect(() => {
     if (!enabled) return;
 
     const pending = new Map();
     const seen = new Map();
+    const lastVisibleCheck = new Map();
     let timer;
     let running = false;
     let active = true;
@@ -95,8 +97,12 @@ export const useNewsListTranslations = (enabled, authMode) => {
 
       setTitles((previous) => {
         const next = new Map(previous);
-        entries.forEach(({ item }) => next.delete(item.id));
-        return next.size === previous.size ? previous : next;
+        entries.forEach(({ item, servedLocale }) => {
+          const title = item.mainTitle || item.contentBlocks?.[0]?.title;
+          if (servedLocale === 'en' && title) next.set(item.id, title);
+          else next.delete(item.id);
+        });
+        return next;
       });
       entries.forEach((entry) => {
         const { item, state } = entry;
@@ -105,6 +111,22 @@ export const useNewsListTranslations = (enabled, authMode) => {
         else pending.delete(item.id);
       });
       schedule();
+    };
+    visibleObserver.current = ({ changed }) => {
+      const now = Date.now();
+      const pendingBefore = pending.size;
+      for (const { item, isViewable } of changed) {
+        const id = item?.id;
+        if (!isViewable || !id || seen.get(id)?.state === 'ready' || pending.has(id)) continue;
+        if ((lastVisibleCheck.get(id) ?? -Infinity) + 5000 > now) continue;
+
+        lastVisibleCheck.set(id, now);
+        pending.set(id, now + 5000);
+      }
+      if (!running && pending.size > pendingBefore) {
+        clearTimeout(timer);
+        timer = setTimeout(refresh, 0);
+      }
     };
     const subscription = DeviceEventEmitter.addListener(
       NEWS_TRANSLATION_READY,
@@ -118,7 +140,7 @@ export const useNewsListTranslations = (enabled, authMode) => {
 
           pending.delete(id);
           // Discard any older list poll that was already in flight for this row.
-          seen.set(id, { sourceDigest });
+          seen.set(id, { sourceDigest, state: 'ready' });
           setTitles((previous) =>
             previous.get(id) === title ? previous : new Map(previous).set(id, title)
           );
@@ -131,10 +153,12 @@ export const useNewsListTranslations = (enabled, authMode) => {
       clearTimeout(timer);
       subscription.remove();
       observer.current = null;
+      visibleObserver.current = null;
       setTitles((previous) => (previous.size ? new Map() : previous));
     };
   }, [authMode, enabled, isLoggedIn, memberId, municipalityId, userId]);
 
   const observe = useCallback((response) => observer.current?.(response), []);
-  return { observe, titles };
+  const observeVisible = useCallback((event) => visibleObserver.current?.(event), []);
+  return { observe, observeVisible, titles };
 };

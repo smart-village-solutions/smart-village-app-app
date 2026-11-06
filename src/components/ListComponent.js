@@ -68,6 +68,7 @@ export const ListComponent = ({
   navigation,
   noSubtitle,
   noOvertitle,
+  onViewableItemsChanged,
   listType,
   openWebScreen,
   query,
@@ -107,6 +108,7 @@ export const ListComponent = ({
       navigation={navigation}
       noSubtitle={noSubtitle}
       noOvertitle={noOvertitle}
+      onViewableItemsChanged={onViewableItemsChanged}
       listType={listType}
       openWebScreen={openWebScreen}
       query={query}
@@ -126,6 +128,7 @@ ListComponent.propTypes = {
   estimatedItemSize: PropTypes.number,
   fetchMoreData: PropTypes.func,
   hasNextPage: PropTypes.bool,
+  onViewableItemsChanged: PropTypes.func,
   horizontal: PropTypes.bool,
   isIndexStartingAt1: PropTypes.bool,
   isLoading: PropTypes.bool,
