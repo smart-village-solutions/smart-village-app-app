@@ -4,6 +4,7 @@ import { DevSettings } from 'react-native';
 import { texts, textsByLocale, setTextsLocale } from '../../src/config/texts';
 import { storageHelper } from '../../src/helpers/storageHelper';
 import {
+  getTextsLocale,
   initializeTextsLocale,
   saveTextsLocaleAndReload
 } from '../../src/helpers/textsLocaleHelper';
@@ -37,9 +38,16 @@ it('selects the exact saved locale before module-level labels are captured', asy
   expect(storageHelper.setTextsLocale).not.toHaveBeenCalled();
 });
 
-it.each([null, 'unknown', 'pt-BR', '__proto__'])('falls back as a whole for %s', async (locale) => {
+it.each([null, 'not_a_language', '__proto__'])('falls back as a whole for %s', async (locale) => {
   storageHelper.textsLocale.mockResolvedValue(locale);
   expect(await initializeTextsLocale()).toBe('de');
+  expect(texts).toBe(textsByLocale.de);
+});
+
+it('retains the content locale when only a German interface catalog is bundled', async () => {
+  storageHelper.textsLocale.mockResolvedValue('es');
+  expect(await initializeTextsLocale()).toBe('es');
+  expect(getTextsLocale()).toBe('es');
   expect(texts).toBe(textsByLocale.de);
 });
 

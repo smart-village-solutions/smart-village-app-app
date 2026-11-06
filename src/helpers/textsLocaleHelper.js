@@ -5,8 +5,16 @@ import { setTextsLocale, texts, textsByLocale } from '../config/texts';
 
 import { storageHelper } from './storageHelper';
 
+const localePattern = /^[a-z]{2,8}(?:-[A-Za-z0-9]{2,8})*$/;
+export const isTextsLocale = (locale) =>
+  typeof locale === 'string' && locale.length <= 32 && localePattern.test(locale);
+
+let contentLocale;
+
 export const getTextsLocale = () =>
-  Object.keys(textsByLocale).find((locale) => textsByLocale[locale] === texts) || 'de';
+  contentLocale ??
+  Object.keys(textsByLocale).find((locale) => textsByLocale[locale] === texts) ??
+  'de';
 
 export const initializeTextsLocale = async () => {
   let locale;
@@ -16,7 +24,10 @@ export const initializeTextsLocale = async () => {
     // Keep the saved preference intact if storage is temporarily unavailable.
     console.warn('Unable to restore text locale', error);
   }
-  return setTextsLocale(locale);
+  const preferred = isTextsLocale(locale) ? locale : 'de';
+  const catalogLocale = setTextsLocale(preferred);
+  contentLocale = preferred === catalogLocale ? undefined : preferred;
+  return preferred;
 };
 
 export const saveTextsLocaleAndReload = async (locale) => {

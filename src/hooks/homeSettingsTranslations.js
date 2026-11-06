@@ -3,6 +3,7 @@ import gql from 'graphql-tag';
 import { useCallback, useContext, useMemo, useState } from 'react';
 
 import appJson from '../../app.json';
+import { AppLanguagesContext } from '../AppLanguagesProvider';
 import { getTextsLocale } from '../helpers/textsLocaleHelper';
 import { ProfileContext } from '../ProfileProvider';
 import { ReactQueryClient } from '../ReactQueryClient';
@@ -50,12 +51,13 @@ const applyHomeSettingsTranslations = (settings, entries) =>
 
 export const useHomeSettingsTranslations = (settings, online) => {
   const locale = getTextsLocale();
+  const translationEnabled = useContext(AppLanguagesContext).includes(locale) && locale !== 'de';
   const { currentUserData, isLoggedIn } = useContext(ProfileContext);
   const [snapshot, setSnapshot] = useState(null);
 
   useFocusEffect(
     useCallback(() => {
-      if (!online || locale !== 'en') return;
+      if (!online || !translationEnabled) return;
 
       let active = true;
       let timer;
@@ -63,14 +65,18 @@ export const useHomeSettingsTranslations = (settings, online) => {
       const load = async () => {
         try {
           const client = await ReactQueryClient();
-          const response = await client.rawRequest(QUERY, { version: appJson.expo.version });
-          const scope = await client.cacheScope();
+          const response = await client.rawRequest(
+            QUERY,
+            { version: appJson.expo.version },
+            { locale }
+          );
+          const scope = await client.cacheScope(undefined, locale);
           if (!active || scope !== response.scope || getTextsLocale() !== locale) return;
 
           const entries = response.data?.homeSettingsTranslations;
           if (!Array.isArray(entries)) return;
 
-          setSnapshot({ settings, currentUserData, isLoggedIn, entries });
+          setSnapshot({ locale, settings, currentUserData, isLoggedIn, entries });
           if (entries.some((entry) => entry?.state === 'pending') && Date.now() < deadline) {
             timer = setTimeout(load, 1000);
           }
@@ -84,11 +90,12 @@ export const useHomeSettingsTranslations = (settings, online) => {
         active = false;
         clearTimeout(timer);
       };
-    }, [settings, online, locale, currentUserData, isLoggedIn])
+    }, [settings, online, locale, translationEnabled, currentUserData, isLoggedIn])
   );
 
   const entries =
-    locale === 'en' &&
+    translationEnabled &&
+    snapshot?.locale === locale &&
     snapshot?.settings === settings &&
     snapshot?.currentUserData === currentUserData &&
     snapshot?.isLoggedIn === isLoggedIn

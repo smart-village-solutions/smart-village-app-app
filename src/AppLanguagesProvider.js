@@ -4,9 +4,12 @@ import React, { createContext, useContext, useEffect } from 'react';
 import { AppState } from 'react-native';
 import { useQuery } from 'react-query';
 
-import { textsByLocale } from './config/texts';
 import { getMainServerConfig, getMainServerUrl } from './helpers/mainServerHelper';
-import { getTextsLocale, saveTextsLocaleAndReload } from './helpers/textsLocaleHelper';
+import {
+  getTextsLocale,
+  isTextsLocale,
+  saveTextsLocaleAndReload
+} from './helpers/textsLocaleHelper';
 import { NetworkContext } from './NetworkProvider';
 
 const GERMAN_ONLY = ['de'];
@@ -19,13 +22,10 @@ const APP_TRANSLATION_LOCALES = gql`
 `;
 
 const selectAppLanguages = (locales) => {
-  if (!Array.isArray(locales) || locales.some((locale) => typeof locale !== 'string')) {
+  if (!Array.isArray(locales) || locales.some((locale) => !isTextsLocale(locale))) {
     throw new Error('Invalid Mainserver language list');
   }
-  return [
-    'de',
-    ...Object.keys(textsByLocale).filter((locale) => locale !== 'de' && locales.includes(locale))
-  ];
+  return [...new Set(['de', ...locales])];
 };
 
 export const AppLanguagesProvider = ({ client, children }) => {
@@ -44,6 +44,7 @@ export const AppLanguagesProvider = ({ client, children }) => {
       enabled: online,
       retry: false,
       refetchOnMount: true,
+      refetchInterval: 60000,
       onSuccess: (locales) => {
         if (!locales.includes(getTextsLocale())) {
           void saveTextsLocaleAndReload('de').catch(() => {

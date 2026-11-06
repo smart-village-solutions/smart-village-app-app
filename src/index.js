@@ -95,7 +95,7 @@ const MainAppWithApolloProvider = () => {
     });
     const authLink = setContext(async (operation, previousContext = {}) => {
       const authMode = previousContext?.authMode ?? AUTH_MODE_PUBLIC;
-      const authHeaders = await getGraphqlAuthHeaders(authMode);
+      const authHeaders = await getGraphqlAuthHeaders(authMode, previousContext.locale);
 
       return {
         headers: {

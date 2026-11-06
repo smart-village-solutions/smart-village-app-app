@@ -5,6 +5,7 @@ import { useQuery } from 'react-query';
 import { CACHE_SCOPES, millisecondsUntilCacheExpires } from '../helpers/cacheHelper';
 import { eventDate } from '../helpers/dateTimeHelper';
 import { subtitle } from '../helpers/textHelper';
+import { AppLanguagesContext } from '../AppLanguagesProvider';
 import { getTextsLocale } from '../helpers/textsLocaleHelper';
 import {
   useGenericItemEvents,
@@ -60,8 +61,12 @@ export const HomeSection = ({
   const genericItemEventSources =
     globalSettings?.settings?.eventCalendar?.genericItemEventSources || [];
   const isPointsOfInterestAndTours = query === QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS;
-  const refreshNewsTitles = query === QUERY_TYPES.NEWS_ITEMS && getTextsLocale() === 'en';
-  const { observe, titles } = useNewsListTranslations(refreshNewsTitles);
+  const activeLocale = getTextsLocale();
+  const appLanguages = useContext(AppLanguagesContext);
+  const newsLocale = appLanguages.includes(activeLocale) ? activeLocale : 'de';
+  const isNews = query === QUERY_TYPES.NEWS_ITEMS;
+  const refreshNewsTitles = isNews && newsLocale !== 'de';
+  const { observe, titles } = useNewsListTranslations(refreshNewsTitles, undefined, newsLocale);
   // `dataUpdatedAt` is provided by react-query and changes whenever a successful fetch updates data.
   const {
     data: listData,
@@ -69,13 +74,18 @@ export const HomeSection = ({
     isLoading,
     refetch
   } = useQuery(
-    [query, queryVariables],
+    [query, queryVariables, ...(isNews ? [newsLocale] : [])],
     async () => {
       const client = await ReactQueryClient();
 
-      if (!refreshNewsTitles) return client.request(getQuery(query), queryVariables);
+      if (!refreshNewsTitles)
+        return client.request(getQuery(query), queryVariables, {
+          locale: isNews ? newsLocale : undefined
+        });
 
-      const response = await client.rawRequest(getQuery(query), queryVariables);
+      const response = await client.rawRequest(getQuery(query), queryVariables, {
+        locale: newsLocale
+      });
       observe(response);
       return response.data;
     },
