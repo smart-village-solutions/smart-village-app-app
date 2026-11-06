@@ -31,6 +31,7 @@ import {
   HOME_FORCE_REFRESH_POINTS_OF_INTEREST_AND_TOURS_EVENT,
   HOME_REFRESH_EVENT
 } from '../hooks/HomeRefresh';
+import { useHomeSettingsTranslations } from '../hooks/homeSettingsTranslations';
 import { useTheme } from '../hooks/useTheme';
 import { QUERY_TYPES } from '../queries';
 import { ScreenName } from '../types';
@@ -174,35 +175,37 @@ const renderItem = ({ item }) => {
           rootRouteName
         },
         index
-      ) => (
-        <HomeSection
-          key={`${categoryId}-${index}`}
-          {...{
-            buttonTitle: categoryButton,
-            categoryId,
-            dateTimeFormat,
-            fetchPolicy,
-            navigation,
-            navigate: () =>
-              navigation.navigate(
-                NAVIGATION.NEWS_ITEMS_INDEX({
-                  categoryId,
-                  indexCategoryIds,
-                  rootRouteName,
-                  title,
-                  titleDetail
-                })
-              ),
-            placeholder: <NewsSectionPlaceholder navigation={navigation} title={title} />,
-            query,
-            queryVariables: { ...queryVariables, categoryId },
-            showVolunteerEvents,
-            skipLastDivider,
-            title,
-            titleDetail
-          }}
-        />
-      )
+      ) => {
+        return (
+          <HomeSection
+            key={`${categoryId}-${index}`}
+            {...{
+              buttonTitle: categoryButton,
+              categoryId,
+              dateTimeFormat,
+              fetchPolicy,
+              navigation,
+              navigate: () =>
+                navigation.navigate(
+                  NAVIGATION.NEWS_ITEMS_INDEX({
+                    categoryId,
+                    indexCategoryIds,
+                    rootRouteName,
+                    title,
+                    titleDetail
+                  })
+                ),
+              placeholder: <NewsSectionPlaceholder navigation={navigation} title={title} />,
+              query,
+              queryVariables: { ...queryVariables, categoryId },
+              showVolunteerEvents,
+              skipLastDivider,
+              title,
+              titleDetail
+            }}
+          />
+        );
+      }
     );
   }
 
@@ -229,7 +232,11 @@ export const HomeScreen = ({ navigation, route }) => {
 
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
-  const { globalSettings } = useContext(SettingsContext);
+  const { globalSettings: originalSettings } = useContext(SettingsContext);
+  const globalSettings = useHomeSettingsTranslations(
+    originalSettings,
+    isConnected && isMainserverUp
+  );
   const {
     hdvt = {},
     homeScreenConfig = [],

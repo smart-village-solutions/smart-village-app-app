@@ -35,7 +35,11 @@ export const DailyWeather = ({ date, description, icon, temperatures, index }: P
       <WrapperRow spaceBetween itemsCenter>
         <View style={styles.textWrapper}>
           {index === 0 && <RegularText>{texts.weather.today}</RegularText>}
-          {index === 1 && <RegularText>{texts.weather.tomorrow}</RegularText>}
+          {index === 1 && (
+            <RegularText numberOfLines={1} adjustsFontSizeToFit>
+              {texts.weather.tomorrow}
+            </RegularText>
+          )}
           {index > 1 && <RegularText>{momentFormat(date * 1000, 'DD.MM.', 'x')}</RegularText>}
         </View>
         <Image
