@@ -44,7 +44,6 @@ export const AppLanguagesProvider = ({ client, children }) => {
       enabled: online,
       retry: false,
       refetchOnMount: true,
-      refetchInterval: 60000,
       onSuccess: (locales) => {
         if (!locales.includes(getTextsLocale())) {
           void saveTextsLocaleAndReload('de').catch(() => {
