@@ -31,6 +31,7 @@ import {
   HOME_FORCE_REFRESH_POINTS_OF_INTEREST_AND_TOURS_EVENT,
   HOME_REFRESH_EVENT
 } from '../hooks/HomeRefresh';
+import { useHomeSettingsTranslations } from '../hooks/homeSettingsTranslations';
 import { useTheme } from '../hooks/useTheme';
 import { QUERY_TYPES } from '../queries';
 import { ScreenName } from '../types';
@@ -47,22 +48,6 @@ const DEFAULT_HOME_SCREEN_SECTIONS = {
   HOME_SERVICE: 'homeService',
   HOME_BUTTONS: 'homeButtons',
   ABOUT: 'about'
-};
-
-const sectionLabelKeys = new Map([
-  ['Nachrichten', ['homeCategoriesNews', 'categoryTitle']],
-  ['Nachricht', ['homeCategoriesNews', 'categoryTitleDetail']],
-  ['Alle Nachrichten anzeigen', ['homeButtons', 'news']],
-  ['Meldungen', ['homeNotices', 'categoryTitle']],
-  ['Meldung', ['homeNotices', 'categoryTitleDetail']],
-  ['Alle Meldungen anzeigen', ['homeButtons', 'notices']],
-  ['Sehenswürdigkeiten & Touren', ['homeTitles', 'sightsAndTours']],
-  ['Alle Sehenswürdigkeiten & Touren anzeigen', ['homeButtons', 'sightsAndTours']]
-]);
-
-const localizeSectionLabel = (label) => {
-  const keys = sectionLabelKeys.get(label);
-  return keys ? texts[keys[0]]?.[keys[1]] ?? label : label;
 };
 
 /* eslint-disable complexity */
@@ -184,21 +169,18 @@ const renderItem = ({ item }) => {
         {
           categoryButton,
           categoryId,
-          categoryTitle,
-          categoryTitleDetail,
+          categoryTitle: title,
+          categoryTitleDetail: titleDetail,
           indexCategoryIds,
           rootRouteName
         },
         index
       ) => {
-        const title = localizeSectionLabel(categoryTitle);
-        const titleDetail = localizeSectionLabel(categoryTitleDetail);
-
         return (
           <HomeSection
             key={`${categoryId}-${index}`}
             {...{
-              buttonTitle: localizeSectionLabel(categoryButton),
+              buttonTitle: categoryButton,
               categoryId,
               dateTimeFormat,
               fetchPolicy,
@@ -250,7 +232,11 @@ export const HomeScreen = ({ navigation, route }) => {
 
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
-  const { globalSettings } = useContext(SettingsContext);
+  const { globalSettings: originalSettings } = useContext(SettingsContext);
+  const globalSettings = useHomeSettingsTranslations(
+    originalSettings,
+    isConnected && isMainserverUp
+  );
   const {
     hdvt = {},
     homeScreenConfig = [],
@@ -340,7 +326,7 @@ export const HomeScreen = ({ navigation, route }) => {
       showData: showNews
     },
     {
-      buttonTitle: localizeSectionLabel(buttonPointsOfInterestAndTours),
+      buttonTitle: buttonPointsOfInterestAndTours,
       fetchPolicy,
       limit: limitPointsOfInterestAndTours,
       navigate: 'CATEGORIES_INDEX',
@@ -348,7 +334,7 @@ export const HomeScreen = ({ navigation, route }) => {
       query: QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS,
       queryVariables: { limit: 10, orderPoi: 'RAND', orderTour: 'RAND', onlyWithImage: true },
       showData: showPointsOfInterestAndTours,
-      title: localizeSectionLabel(headlinePointsOfInterestAndTours)
+      title: headlinePointsOfInterestAndTours
     },
     {
       buttonTitle: buttonEvents,
@@ -402,9 +388,7 @@ export const HomeScreen = ({ navigation, route }) => {
               };
             case QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS:
               return {
-                buttonTitle: localizeSectionLabel(
-                  section.buttonTitle || buttonPointsOfInterestAndTours
-                ),
+                buttonTitle: section.buttonTitle || buttonPointsOfInterestAndTours,
                 fetchPolicy,
                 limit: section.limitPointsOfInterestAndTours ?? limitPointsOfInterestAndTours,
                 navigate: 'CATEGORIES_INDEX',
@@ -419,7 +403,7 @@ export const HomeScreen = ({ navigation, route }) => {
                 },
                 showData: section.show !== false,
                 skipLastDivider: section.skipLastDivider === true,
-                title: localizeSectionLabel(section.title || headlinePointsOfInterestAndTours)
+                title: section.title || headlinePointsOfInterestAndTours
               };
             case QUERY_TYPES.EVENT_RECORDS:
               return {
