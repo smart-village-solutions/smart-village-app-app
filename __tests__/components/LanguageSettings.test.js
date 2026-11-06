@@ -3,7 +3,7 @@ import React from 'react';
 import { Alert } from 'react-native';
 import renderer, { act } from 'react-test-renderer';
 
-import { AppLanguagesContext } from '../../src/AppLanguagesProvider';
+import { AppLanguageNamesContext, AppLanguagesContext } from '../../src/AppLanguagesProvider';
 import { LanguageSettings } from '../../src/components/settings/LanguageSettings';
 import { Radiobutton } from '../../src/components/Radiobutton';
 import { texts, setTextsLocale } from '../../src/config/texts';
@@ -31,9 +31,11 @@ jest.mock('../../src/helpers/textsLocaleHelper', () => ({
   saveTextsLocaleAndReload: jest.fn()
 }));
 
-const menu = (locales = ['de', 'en', 'fr', 'pt-PT']) => (
+const menu = (locales = ['de', 'en', 'fr', 'pt-PT'], names = {}) => (
   <AppLanguagesContext.Provider value={locales}>
-    <LanguageSettings />
+    <AppLanguageNamesContext.Provider value={names}>
+      <LanguageSettings />
+    </AppLanguageNamesContext.Provider>
   </AppLanguagesContext.Provider>
 );
 
@@ -58,11 +60,23 @@ it('shows the languages by name even without Intl.DisplayNames', async () => {
   const descriptor = Object.getOwnPropertyDescriptor(Intl, 'DisplayNames');
   Object.defineProperty(Intl, 'DisplayNames', { configurable: true, value: undefined });
   try {
-    await act(async () => tree.update(menu()));
+    await act(async () =>
+      tree.update(
+        menu(['de', 'en', 'fr', 'hu', 'pt-PT'], {
+          de: 'Deutsch',
+          en: 'English',
+          fr: 'Français',
+          hu: 'Magyar',
+          'pt-PT': 'Português (Portugal)',
+          es: 'Español'
+        })
+      )
+    );
     expect(tree.root.findAllByType(Radiobutton).map(({ props }) => props.title)).toEqual([
       'Deutsch',
       'English',
       'Français',
+      'Magyar',
       'Português (Portugal)'
     ]);
   } finally {

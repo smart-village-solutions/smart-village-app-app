@@ -13,11 +13,20 @@ import {
 import { NetworkContext } from './NetworkProvider';
 
 const GERMAN_ONLY = ['de'];
+const NO_NAMES = {};
+export const AppLanguageNamesContext = createContext(NO_NAMES);
 export const AppLanguagesContext = createContext(GERMAN_ONLY);
 
 const APP_TRANSLATION_LOCALES = gql`
   query AppTranslationLocales {
     appTranslationLocales
+  }
+`;
+
+const APP_TRANSLATION_LANGUAGES = gql`
+  query AppTranslationLanguages {
+    appTranslationLocales
+    appTranslationLanguageNames
   }
 `;
 
@@ -34,17 +43,31 @@ export const AppLanguagesProvider = ({ client, children }) => {
   const { data, refetch } = useQuery(
     ['appTranslationLocales', getMainServerUrl(), getMainServerConfig().oAuthClientId],
     async () => {
-      const result = await client.query({
-        query: APP_TRANSLATION_LOCALES,
-        fetchPolicy: 'no-cache'
-      });
-      return selectAppLanguages(result.data?.appTranslationLocales);
+      let result;
+      try {
+        result = await client.query({ query: APP_TRANSLATION_LANGUAGES, fetchPolicy: 'no-cache' });
+      } catch (error) {
+        const missingNamesField = error.graphQLErrors?.some(
+          ({ extensions }) =>
+            extensions?.code === 'undefinedField' &&
+            extensions.fieldName === 'appTranslationLanguageNames'
+        );
+        if (!missingNamesField) throw error;
+        result = await client.query({ query: APP_TRANSLATION_LOCALES, fetchPolicy: 'no-cache' });
+      }
+      const locales = selectAppLanguages(result.data?.appTranslationLocales);
+      const names = Object.fromEntries(
+        locales
+          .map((locale) => [locale, result.data?.appTranslationLanguageNames?.[locale]])
+          .filter(([, name]) => typeof name === 'string' && name.trim())
+      );
+      return { locales, names };
     },
     {
       enabled: online,
       retry: false,
       refetchOnMount: true,
-      onSuccess: (locales) => {
+      onSuccess: ({ locales }) => {
         if (!locales.includes(getTextsLocale())) {
           void saveTextsLocaleAndReload('de').catch(() => {
             console.warn('Unable to apply the German fallback locale');
@@ -63,8 +86,10 @@ export const AppLanguagesProvider = ({ client, children }) => {
   }, [online, refetch]);
 
   return (
-    <AppLanguagesContext.Provider value={data || GERMAN_ONLY}>
-      {children}
+    <AppLanguagesContext.Provider value={data?.locales ?? GERMAN_ONLY}>
+      <AppLanguageNamesContext.Provider value={data?.names ?? NO_NAMES}>
+        {children}
+      </AppLanguageNamesContext.Provider>
     </AppLanguagesContext.Provider>
   );
 };

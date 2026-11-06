@@ -1,28 +1,21 @@
 import React, { useContext, useLayoutEffect, useRef, useState } from 'react';
 import { Alert } from 'react-native';
 
-import { AppLanguagesContext } from '../../AppLanguagesProvider';
+import { AppLanguageNamesContext, AppLanguagesContext } from '../../AppLanguagesProvider';
 import { texts } from '../../config/texts';
 import { getTextsLocale, saveTextsLocaleAndReload } from '../../helpers/textsLocaleHelper';
 import { WrapperHorizontal } from '../Wrapper';
 
 import { SettingsRadioGroup } from './SettingsRadioGroup';
 
-const languageLabels = {
-  de: 'Deutsch',
-  en: 'English',
-  fr: 'Français',
-  'pt-PT': 'Português (Portugal)'
-};
-
 const languageLabel = (locale) =>
-  languageLabels[locale] ??
-  (typeof Intl.DisplayNames === 'function'
+  typeof Intl.DisplayNames === 'function'
     ? new Intl.DisplayNames([locale], { type: 'language' }).of(locale)
-    : locale);
+    : locale;
 
 export const LanguageSettings = () => {
   const locales = useContext(AppLanguagesContext);
+  const names = useContext(AppLanguageNamesContext);
   const latestLocales = useRef(locales);
   useLayoutEffect(() => {
     latestLocales.current = locales;
@@ -55,7 +48,10 @@ export const LanguageSettings = () => {
     <WrapperHorizontal>
       <SettingsRadioGroup
         title={texts.settingsTitles.language}
-        options={locales.map((language) => ({ value: language, label: languageLabel(language) }))}
+        options={locales.map((language) => ({
+          value: language,
+          label: names[language] ?? languageLabel(language)
+        }))}
         value={locale}
         disabled={changingLocale}
         onChange={confirmLanguageChange}

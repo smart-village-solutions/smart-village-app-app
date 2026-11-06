@@ -3,7 +3,11 @@ import { AppState } from 'react-native';
 import renderer, { act } from 'react-test-renderer';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
-import { AppLanguagesContext, AppLanguagesProvider } from '../src/AppLanguagesProvider';
+import {
+  AppLanguageNamesContext,
+  AppLanguagesContext,
+  AppLanguagesProvider
+} from '../src/AppLanguagesProvider';
 import { getTextsLocale, saveTextsLocaleAndReload } from '../src/helpers/textsLocaleHelper';
 
 jest.mock('../src/NetworkProvider', () => ({
@@ -23,7 +27,8 @@ jest.mock('../src/helpers/textsLocaleHelper', () => ({
 
 const Probe = () => {
   const locales = useContext(AppLanguagesContext);
-  return <probe locales={locales} />;
+  const names = useContext(AppLanguageNamesContext);
+  return <probe locales={locales} names={names} />;
 };
 
 let tree;
@@ -102,4 +107,32 @@ it('retains the last release on failure and treats a successful empty list as a 
   await flush();
   expect(locales()).toEqual(['de']);
   expect(saveTextsLocaleAndReload).toHaveBeenCalledWith('de');
+});
+
+it('uses server display names only for the enabled locales', async () => {
+  await mount(
+    jest.fn().mockResolvedValue({
+      data: {
+        appTranslationLocales: ['hu'],
+        appTranslationLanguageNames: { de: 'Deutsch', hu: 'Magyar', fr: 'Français' }
+      }
+    })
+  );
+  expect(tree.root.findByType('probe').props.names).toEqual({ de: 'Deutsch', hu: 'Magyar' });
+});
+
+it('falls back to the locale query on an older Mainserver', async () => {
+  const query = jest
+    .fn()
+    .mockRejectedValueOnce({
+      graphQLErrors: [
+        {
+          extensions: { code: 'undefinedField', fieldName: 'appTranslationLanguageNames' }
+        }
+      ]
+    })
+    .mockResolvedValueOnce(response(['fr']));
+  await mount(query);
+  expect(locales()).toEqual(['de', 'fr']);
+  expect(query).toHaveBeenCalledTimes(2);
 });
