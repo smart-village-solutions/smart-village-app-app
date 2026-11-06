@@ -49,6 +49,22 @@ const DEFAULT_HOME_SCREEN_SECTIONS = {
   ABOUT: 'about'
 };
 
+const sectionLabelKeys = new Map([
+  ['Nachrichten', ['homeCategoriesNews', 'categoryTitle']],
+  ['Nachricht', ['homeCategoriesNews', 'categoryTitleDetail']],
+  ['Alle Nachrichten anzeigen', ['homeButtons', 'news']],
+  ['Meldungen', ['homeNotices', 'categoryTitle']],
+  ['Meldung', ['homeNotices', 'categoryTitleDetail']],
+  ['Alle Meldungen anzeigen', ['homeButtons', 'notices']],
+  ['Sehenswürdigkeiten & Touren', ['homeTitles', 'sightsAndTours']],
+  ['Alle Sehenswürdigkeiten & Touren anzeigen', ['homeButtons', 'sightsAndTours']]
+]);
+
+const localizeSectionLabel = (label) => {
+  const keys = sectionLabelKeys.get(label);
+  return keys ? texts[keys[0]]?.[keys[1]] ?? label : label;
+};
+
 /* eslint-disable complexity */
 const renderItem = ({ item }) => {
   const {
@@ -168,41 +184,46 @@ const renderItem = ({ item }) => {
         {
           categoryButton,
           categoryId,
-          categoryTitle: title,
-          categoryTitleDetail: titleDetail,
+          categoryTitle,
+          categoryTitleDetail,
           indexCategoryIds,
           rootRouteName
         },
         index
-      ) => (
-        <HomeSection
-          key={`${categoryId}-${index}`}
-          {...{
-            buttonTitle: categoryButton,
-            categoryId,
-            dateTimeFormat,
-            fetchPolicy,
-            navigation,
-            navigate: () =>
-              navigation.navigate(
-                NAVIGATION.NEWS_ITEMS_INDEX({
-                  categoryId,
-                  indexCategoryIds,
-                  rootRouteName,
-                  title,
-                  titleDetail
-                })
-              ),
-            placeholder: <NewsSectionPlaceholder navigation={navigation} title={title} />,
-            query,
-            queryVariables: { ...queryVariables, categoryId },
-            showVolunteerEvents,
-            skipLastDivider,
-            title,
-            titleDetail
-          }}
-        />
-      )
+      ) => {
+        const title = localizeSectionLabel(categoryTitle);
+        const titleDetail = localizeSectionLabel(categoryTitleDetail);
+
+        return (
+          <HomeSection
+            key={`${categoryId}-${index}`}
+            {...{
+              buttonTitle: localizeSectionLabel(categoryButton),
+              categoryId,
+              dateTimeFormat,
+              fetchPolicy,
+              navigation,
+              navigate: () =>
+                navigation.navigate(
+                  NAVIGATION.NEWS_ITEMS_INDEX({
+                    categoryId,
+                    indexCategoryIds,
+                    rootRouteName,
+                    title,
+                    titleDetail
+                  })
+                ),
+              placeholder: <NewsSectionPlaceholder navigation={navigation} title={title} />,
+              query,
+              queryVariables: { ...queryVariables, categoryId },
+              showVolunteerEvents,
+              skipLastDivider,
+              title,
+              titleDetail
+            }}
+          />
+        );
+      }
     );
   }
 
@@ -319,7 +340,7 @@ export const HomeScreen = ({ navigation, route }) => {
       showData: showNews
     },
     {
-      buttonTitle: buttonPointsOfInterestAndTours,
+      buttonTitle: localizeSectionLabel(buttonPointsOfInterestAndTours),
       fetchPolicy,
       limit: limitPointsOfInterestAndTours,
       navigate: 'CATEGORIES_INDEX',
@@ -327,7 +348,7 @@ export const HomeScreen = ({ navigation, route }) => {
       query: QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS,
       queryVariables: { limit: 10, orderPoi: 'RAND', orderTour: 'RAND', onlyWithImage: true },
       showData: showPointsOfInterestAndTours,
-      title: headlinePointsOfInterestAndTours
+      title: localizeSectionLabel(headlinePointsOfInterestAndTours)
     },
     {
       buttonTitle: buttonEvents,
@@ -381,7 +402,9 @@ export const HomeScreen = ({ navigation, route }) => {
               };
             case QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS:
               return {
-                buttonTitle: section.buttonTitle || buttonPointsOfInterestAndTours,
+                buttonTitle: localizeSectionLabel(
+                  section.buttonTitle || buttonPointsOfInterestAndTours
+                ),
                 fetchPolicy,
                 limit: section.limitPointsOfInterestAndTours ?? limitPointsOfInterestAndTours,
                 navigate: 'CATEGORIES_INDEX',
@@ -396,7 +419,7 @@ export const HomeScreen = ({ navigation, route }) => {
                 },
                 showData: section.show !== false,
                 skipLastDivider: section.skipLastDivider === true,
-                title: section.title || headlinePointsOfInterestAndTours
+                title: localizeSectionLabel(section.title || headlinePointsOfInterestAndTours)
               };
             case QUERY_TYPES.EVENT_RECORDS:
               return {
