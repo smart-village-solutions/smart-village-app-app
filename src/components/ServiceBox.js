@@ -29,6 +29,12 @@ export const ServiceBox = styled.View`
     `};
 
   ${(props) =>
+    props.gridWidth !== undefined &&
+    css`
+      flex-shrink: 1;
+    `};
+
+  ${(props) =>
     (props.bigTile || props.hasTileStyle) &&
     css`
       margin: 0 0 ${props.gridGap ?? normalize(1)}px 0;

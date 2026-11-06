@@ -46,5 +46,6 @@ describe('ServiceBox', () => {
 
     expect(style.flexBasis * columns + gap * (columns - 1)).toBeCloseTo(gridWidth);
     expect(style.marginBottom).toBe(gap);
+    expect(style.flexShrink).toBe(1);
   });
 });
