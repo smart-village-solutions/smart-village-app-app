@@ -9,7 +9,10 @@ import {
 } from '../../src/hooks/newsListTranslations';
 import { ReactQueryClient } from '../../src/ReactQueryClient';
 
-jest.mock('../../src/ReactQueryClient');
+jest.mock('../../src/ReactQueryClient', () => ({ ReactQueryClient: jest.fn() }));
+jest.mock('../../src/ProfileProvider', () => ({
+  ProfileContext: jest.requireActual('react').createContext({})
+}));
 
 const item = { id: '21', mainTitle: 'Stadtbibliothek' };
 const existingRows = { newsItems: [{ id: '20', mainTitle: 'Other' }, item] };
@@ -20,7 +23,7 @@ const response = (state, title = item.mainTitle, scope = 'current-scope') => ({
     appTranslations: [
       {
         path: ['newsItems', 0],
-        servedLocale: state === 'ready' ? 'en' : 'de',
+        servedLocale: state === 'ready' ? 'es' : 'de',
         sourceDigest: 'a'.repeat(64),
         state
       }
@@ -33,7 +36,7 @@ describe('news list translations', () => {
   let list;
   const rawRequest = jest.fn();
   const Probe = () => {
-    list = useNewsListTranslations(true);
+    list = useNewsListTranslations(true, undefined, 'es');
     return null;
   };
 
@@ -62,7 +65,11 @@ describe('news list translations', () => {
     await act(async () => jest.advanceTimersByTimeAsync(3000));
 
     expect(rawRequest).toHaveBeenCalledTimes(2);
-    expect(rawRequest).toHaveBeenCalledWith(expect.anything(), { ids: ['21'], limit: 1 }, {});
+    expect(rawRequest).toHaveBeenCalledWith(
+      expect.anything(),
+      { ids: ['21'], limit: 1 },
+      { locale: 'es' }
+    );
     expect(applyNewsListTitles(existingRows, list.titles).newsItems).toEqual([
       existingRows.newsItems[0],
       { ...item, mainTitle: 'City library' }
@@ -103,7 +110,7 @@ describe('news list translations', () => {
       fromCache
     });
 
-  it('updates a cached list row from the English detail without waiting for another request', async () => {
+  it('updates a cached list row from the translated detail without waiting for another request', async () => {
     await act(async () => openTranslatedDetail());
 
     expect(rawRequest).not.toHaveBeenCalled();

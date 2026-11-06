@@ -1,6 +1,7 @@
 import React from 'react';
 import renderer, { act } from 'react-test-renderer';
 
+import { AppLanguagesContext } from '../../src/AppLanguagesProvider';
 import { getTextsLocale } from '../../src/helpers/textsLocaleHelper';
 import { useHomeSettingsTranslations } from '../../src/hooks/homeSettingsTranslations';
 import { ReactQueryClient } from '../../src/ReactQueryClient';
@@ -8,7 +9,10 @@ import { ReactQueryClient } from '../../src/ReactQueryClient';
 jest.mock('expo-router/react-navigation', () => ({
   useFocusEffect: (callback) => jest.requireActual('react').useEffect(callback, [callback])
 }));
-jest.mock('../../src/ReactQueryClient');
+jest.mock('../../src/ReactQueryClient', () => ({ ReactQueryClient: jest.fn() }));
+jest.mock('../../src/AppLanguagesProvider', () => ({
+  AppLanguagesContext: jest.requireActual('react').createContext(['de'])
+}));
 jest.mock('../../src/ProfileProvider', () => ({
   ProfileContext: jest.requireActual('react').createContext({})
 }));
@@ -27,7 +31,7 @@ const result = (entries) => ({
 
 it('keeps originals while pending and applies each matching ready label separately', async () => {
   jest.useFakeTimers();
-  getTextsLocale.mockReturnValue('en');
+  getTextsLocale.mockReturnValue('es');
   let finishPoll;
   const pollResponse = new Promise((resolve) => {
     finishPoll = resolve;
@@ -47,7 +51,11 @@ it('keeps originals while pending and applies each matching ready label separate
   let tree;
   try {
     await act(async () => {
-      tree = renderer.create(<Probe />);
+      tree = renderer.create(
+        <AppLanguagesContext.Provider value={['de', 'es']}>
+          <Probe />
+        </AppLanguagesContext.Provider>
+      );
     });
     expect(displayed).toBe(settings);
     await act(async () => {
@@ -66,7 +74,11 @@ it('keeps originals while pending and applies each matching ready label separate
     });
     getTextsLocale.mockReturnValue('de');
     await act(async () => {
-      tree.update(<Probe />);
+      tree.update(
+        <AppLanguagesContext.Provider value={['de', 'es']}>
+          <Probe />
+        </AppLanguagesContext.Provider>
+      );
     });
     expect(displayed).toBe(settings);
   } finally {

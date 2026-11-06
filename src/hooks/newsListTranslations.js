@@ -8,9 +8,9 @@ import { ReactQueryClient } from '../ReactQueryClient';
 
 export const NEWS_TRANSLATION_READY = 'newsTranslationReady';
 
-const readEntries = (response) =>
+const readEntries = (response, locale) =>
   (response?.data?.newsItems ?? []).flatMap((item, index) => {
-    const metadata = getAppTranslation(response, ['newsItems', index], 'en');
+    const metadata = getAppTranslation(response, ['newsItems', index], locale);
     return item?.id && metadata ? [{ item, ...metadata }] : [];
   });
 
@@ -25,7 +25,7 @@ export const applyNewsListTitles = (data, titles) => {
   };
 };
 
-export const useNewsListTranslations = (enabled, authMode) => {
+export const useNewsListTranslations = (enabled, authMode, locale) => {
   const { currentUserData, isLoggedIn } = useContext(ProfileContext);
   const memberId = currentUserData?.member?.id;
   const userId = currentUserData?.user?.id;
@@ -66,12 +66,12 @@ export const useNewsListTranslations = (enabled, authMode) => {
         const response = await client.rawRequest(
           GET_NEWS_ITEMS,
           { ids, limit: ids.length },
-          { authMode }
+          { authMode, locale }
         );
-        const scope = await client.cacheScope(authMode);
+        const scope = await client.cacheScope(authMode, locale);
         if (!active || scope !== response.scope) return;
 
-        const ready = readEntries(response).flatMap((entry) => {
+        const ready = readEntries(response, locale).flatMap((entry) => {
           const { item, servedLocale, state } = entry;
           const deadline = deadlines.get(item.id);
           if (!deadline || seen.get(item.id) !== snapshots.get(item.id)) return [];
@@ -80,7 +80,7 @@ export const useNewsListTranslations = (enabled, authMode) => {
           }
           seen.set(item.id, entry);
           const title = item.mainTitle || item.contentBlocks?.[0]?.title;
-          return servedLocale === 'en' && title ? [[item.id, title]] : [];
+          return servedLocale === locale && title ? [[item.id, title]] : [];
         });
         if (ready.length) setTitles((previous) => new Map([...previous, ...ready]));
       } catch {
@@ -92,14 +92,14 @@ export const useNewsListTranslations = (enabled, authMode) => {
     };
 
     observer.current = (response) => {
-      const entries = readEntries(response);
+      const entries = readEntries(response, locale);
       if (!entries.length) return;
 
       setTitles((previous) => {
         const next = new Map(previous);
         entries.forEach(({ item, servedLocale }) => {
           const title = item.mainTitle || item.contentBlocks?.[0]?.title;
-          if (servedLocale === 'en' && title) next.set(item.id, title);
+          if (servedLocale === locale && title) next.set(item.id, title);
           else next.delete(item.id);
         });
         return next;
@@ -133,7 +133,7 @@ export const useNewsListTranslations = (enabled, authMode) => {
       ({ id, title, scope, sourceDigest, fromCache }) => {
         const applyTitle = async () => {
           const client = await ReactQueryClient();
-          const currentScope = await client.cacheScope(authMode);
+          const currentScope = await client.cacheScope(authMode, locale);
           const observedDigest = seen.get(id)?.sourceDigest;
           if (!active || scope !== currentScope) return;
           if (fromCache && observedDigest && observedDigest !== sourceDigest) return;
@@ -156,7 +156,7 @@ export const useNewsListTranslations = (enabled, authMode) => {
       visibleObserver.current = null;
       setTitles((previous) => (previous.size ? new Map() : previous));
     };
-  }, [authMode, enabled, isLoggedIn, memberId, municipalityId, userId]);
+  }, [authMode, enabled, isLoggedIn, locale, memberId, municipalityId, userId]);
 
   const observe = useCallback((response) => observer.current?.(response), []);
   const observeVisible = useCallback((event) => visibleObserver.current?.(event), []);

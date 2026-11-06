@@ -16,6 +16,7 @@ jest.mock('../src/helpers/mainServerHelper', () => ({
   getMainServerConfig: () => ({ oAuthClientId: 'app' })
 }));
 jest.mock('../src/helpers/textsLocaleHelper', () => ({
+  ...jest.requireActual('../src/helpers/textsLocaleHelper'),
   getTextsLocale: jest.fn(),
   saveTextsLocaleAndReload: jest.fn()
 }));
@@ -64,11 +65,11 @@ const mount = async (query) => {
 const locales = () => tree.root.findByType('probe').props.locales;
 const response = (locales) => ({ data: { appTranslationLocales: locales } });
 
-it('intersects server releases with bundled catalogs and falls back after revocation', async () => {
+it('offers server languages without bundled catalogs and falls back after revocation', async () => {
   getTextsLocale.mockReturnValue('pt-PT');
-  const query = jest.fn().mockResolvedValueOnce(response(['en', 'fr', 'pt-PT', 'pt', 'xx', 'fr']));
+  const query = jest.fn().mockResolvedValueOnce(response(['en', 'fr', 'pt-PT', 'es', 'fr']));
   await mount(query);
-  expect(locales()).toEqual(['de', 'en', 'fr', 'pt-PT']);
+  expect(locales()).toEqual(['de', 'en', 'fr', 'pt-PT', 'es']);
   expect(query).toHaveBeenCalledWith(expect.objectContaining({ fetchPolicy: 'no-cache' }));
   expect(saveTextsLocaleAndReload).not.toHaveBeenCalled();
 

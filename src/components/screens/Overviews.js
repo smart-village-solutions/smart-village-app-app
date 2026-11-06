@@ -43,6 +43,7 @@ import {
   sortPOIsByDistanceFromPosition
 } from '../../helpers';
 import { compareParticipationProjects } from '../../helpers/participationProjectSortHelper';
+import { AppLanguagesContext } from '../../AppLanguagesProvider';
 import { getTextsLocale } from '../../helpers/textsLocaleHelper';
 import { updateResourceFiltersStateHelper } from '../../helpers/updateResourceFiltersStateHelper';
 import {
@@ -344,9 +345,16 @@ export const Overviews = ({ navigation, route }) => {
     return participationQueryVariables;
   }, [isParticipationProjectOverview, queryVariables]);
 
-  const refreshNewsTitles =
-    isConnected && query === QUERY_TYPES.NEWS_ITEMS && getTextsLocale() === 'en';
-  const { observe, observeVisible, titles } = useNewsListTranslations(refreshNewsTitles, authMode);
+  const activeLocale = getTextsLocale();
+  const appLanguages = useContext(AppLanguagesContext);
+  const newsLocale = appLanguages.includes(activeLocale) ? activeLocale : 'de';
+  const isNews = query === QUERY_TYPES.NEWS_ITEMS;
+  const refreshNewsTitles = isConnected && isNews && newsLocale !== 'de';
+  const { observe, observeVisible, titles } = useNewsListTranslations(
+    refreshNewsTitles,
+    authMode,
+    newsLocale
+  );
   const {
     data: listData,
     loading,
@@ -355,6 +363,7 @@ export const Overviews = ({ navigation, route }) => {
   } = useQuery(getQuery(query, { showNewsFilter }), {
     context: {
       ...(authMode ? getApolloAuthContext(authMode).context : {}),
+      locale: isNews ? newsLocale : undefined,
       onNewsListResponse: refreshNewsTitles ? observe : undefined
     },
     fetchPolicy,

@@ -9,7 +9,7 @@ import { GET_NEWS_ITEM } from '../queries/newsItems';
 import { NEWS_TRANSLATION_READY } from './newsListTranslations';
 
 const shareNewsTitle = (response) => {
-  if (response?.servedLocale !== 'en') return;
+  if (!response?.servedLocale || response.servedLocale === 'de') return;
 
   const { data, scope, sourceDigest, fromCache } = response;
   const { id, mainTitle, contentBlocks } = data.newsItem;
