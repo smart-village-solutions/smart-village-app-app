@@ -16,6 +16,13 @@ This document defines how AI agents should work in this repository.
 - Update tests/documentation when behavior changes.
 - Do not introduce unrelated refactors in the same change.
 
+### Icon library mappings (v5.0.0+)
+
+- The app supports multiple icon libraries through `src/IconProvider.tsx`. Whenever adding or renaming a shared icon (including `Icon` entries and `Icon.NamedIcon` usages in `src/config/icons/Icon.tsx` or elsewhere), update its unified name in **all eight** library mapping files under `src/config/icons/mappings/`: `tabler.tsx`, `ionicons.tsx`, `fontawesome.tsx`, `fontawesome5.tsx`, `fontawesome6.tsx`, `materialicons.tsx`, `materialcommunityicons.tsx`, and `simplelineicons.tsx`.
+- Use the same lowercase, kebab-case key in every mapping and select a valid, semantically equivalent icon from each installed library. If there is no exact equivalent, use the closest meaningful alternative. Verify the target names against the installed libraries; do not guess names or rely on the unmapped-name fallback for shared icons, even when a library uses the same name.
+- For custom SVG icons resolved by unified name, also update `src/config/icons/mappings/customSvg.tsx`; custom SVGs take priority over library mappings. Preserve this behavior.
+- Check the new or renamed icon with each supported library, including an explicit `iconSet` and the configured `iconFamilies` order, so customer-specific library choices remain supported.
+
 ## 3) Required Quality Gate
 
 For normal development tasks, run both commands before finalizing work:
