@@ -101,6 +101,11 @@ describe('AudioPlayerControls', () => {
 
     fireEvent.press(tree.getByLabelText('Audio abspielen'));
     await waitFor(() => expect(tree.getByLabelText('Zur Tour')).toBeTruthy());
+    expect(mockPlayer.setActiveForLockScreen).toHaveBeenCalledWith(
+      true,
+      { title: 'Tour' },
+      { showSeekBackward: true, showSeekForward: true }
+    );
     fireEvent.press(tree.getByLabelText('Zur Tour'));
 
     expect(mockNavigate).toHaveBeenCalledWith('Stack0', {
@@ -169,7 +174,14 @@ describe('AudioPlayerControls', () => {
 
     await waitFor(() => expect(mockPlayer.play).toHaveBeenCalledTimes(1));
     expect(mockPlayer.replace).toHaveBeenCalledWith({ uri: track.url });
-    expect(mockPlayer.setActiveForLockScreen).toHaveBeenCalledWith(true, { title: track.title });
+    expect(mockPlayer.setActiveForLockScreen).toHaveBeenCalledWith(
+      true,
+      { title: track.title },
+      { showSeekBackward: true, showSeekForward: true }
+    );
+    expect(mockPlayer.play.mock.invocationCallOrder[0]).toBeLessThan(
+      mockPlayer.setActiveForLockScreen.mock.invocationCallOrder[0]
+    );
     expect(tree.getByLabelText('Audioplayer öffnen')).toBeTruthy();
     expect(tree.getByLabelText('Audio fortsetzen')).toBeTruthy();
 
@@ -239,6 +251,33 @@ describe('AudioPlayerControls', () => {
     await waitFor(() => expect(mockPlayer.play).toHaveBeenCalledTimes(1));
     expect(tree.queryByLabelText('10 Sekunden zurück')).toBeNull();
     expect(tree.queryByLabelText('Wiedergabegeschwindigkeit 1x')).toBeNull();
+    expect(mockPlayer.setActiveForLockScreen).toHaveBeenCalledWith(
+      true,
+      { title: 'Tour' },
+      { showSeekBackward: false, showSeekForward: false }
+    );
+  });
+
+  it('shows the source title and track name in system playback controls', async () => {
+    const tree = render(
+      <AudioPlayerProvider>
+        <AudioPlayerControls
+          track={{
+            source: { id: '18954', query: 'tour', title: 'Burgenwanderweg' },
+            title: 'Etappe 1',
+            url: 'https://example.org/tour.mp3'
+          }}
+        />
+      </AudioPlayerProvider>
+    );
+
+    fireEvent.press(tree.getByLabelText('Audio abspielen'));
+    await waitFor(() => expect(mockPlayer.play).toHaveBeenCalledTimes(1));
+    expect(mockPlayer.setActiveForLockScreen).toHaveBeenCalledWith(
+      true,
+      { title: 'Etappe 1', artist: 'Burgenwanderweg' },
+      { showSeekBackward: true, showSeekForward: true }
+    );
   });
 
   it('pauses read aloud before starting MP3', async () => {

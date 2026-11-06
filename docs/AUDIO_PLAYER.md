@@ -4,6 +4,8 @@ The app shows a compact listen action for direct HTTP(S) audio media on POI, new
 
 When playback starts from a detail page, the expanded player keeps a shortcut back to that POI, tour, news or event. The shortcut is hidden while that same detail page is already open. The compact player stays centered when another floating shortcut is present; the other shortcut is temporarily hidden while the audio panel is expanded.
 
+With a compatible native build, MP3 playback registers the audio title and, when available, the source detail title with the system media controls. The native session offers play/pause, timeline seeking and 10-second skip controls. `showSkipControls` also controls the system skip buttons; Expo's native skip interval is currently fixed at 10 seconds, while `skipSeconds` configures the in-app buttons.
+
 The player uses the tenant's existing light/dark theme palette. Optional UI settings come from the versioned Main-Server `globalSettings` StaticContent record, under `settings.audioPlayer`:
 
 ```json
@@ -25,3 +27,5 @@ Merge the `audioPlayer` object into the existing `globalSettings` record; keep t
 All fields are optional. Missing settings keep the player enabled and use the built-in UI defaults. `enabled: false` hides direct MP3 actions and stops active MP3 playback. `label` changes the detail action and source tab. `skipSeconds` is rounded and limited to 5–60 seconds; the seek bar remains available when skip buttons are hidden.
 
 Changing these settings does not require a native rebuild once a compatible app version is installed. The first build containing `expo-audio` does require a new native binary for iOS and Android; an OTA update cannot add the native module to an older binary.
+
+To test background playback and system controls, install a fresh iOS/Android build made after the `expo-audio` background playback plugin was added. On iOS, verify the installed binary has `UIBackgroundModes` containing `audio`; on Android, verify the media playback foreground service is present. Start an MP3, lock the physical device, and check play/pause, seeking, and playback after navigating away from the detail. Recheck after an incoming call or another app interrupts audio. A JavaScript OTA update alone cannot add missing native background capabilities, even when the app version string remains the same.

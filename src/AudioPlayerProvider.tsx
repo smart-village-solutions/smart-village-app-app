@@ -40,10 +40,15 @@ type AudioPlayerContextValue = {
 const AudioPlayerContext = createContext<AudioPlayerContextValue | null>(null);
 const AudioPlayerPresenceContext = createContext(false);
 
+const getLockScreenMetadata = (track: AudioTrack) => ({
+  title: track.title === 'Audio' ? track.source?.title || track.title : track.title,
+  ...(track.source?.title && track.title !== 'Audio' ? { artist: track.source.title } : {})
+});
+
 export const AudioPlayerProvider = ({ children }: { children: React.ReactNode }) => {
   const player = useAudioPlayer(null);
   const status = useAudioPlayerStatus(player);
-  const { enabled } = useAudioPlayerSettings();
+  const { enabled, showSkipControls } = useAudioPlayerSettings();
   const [currentTrack, setCurrentTrack] = useState<AudioTrack | null>(null);
   const [error, setError] = useState(false);
   const [rate, setRateState] = useState(1);
@@ -92,13 +97,24 @@ export const AudioPlayerProvider = ({ children }: { children: React.ReactNode })
         }
 
         if (nextRequestId !== requestId.current) return;
-        player.setActiveForLockScreen(true, { title: track.title });
         player.play();
+        player.setActiveForLockScreen(true, getLockScreenMetadata(track), {
+          showSeekBackward: showSkipControls,
+          showSeekForward: showSkipControls
+        });
       } catch {
         if (nextRequestId === requestId.current) setError(true);
       }
     },
-    [currentTrack, player, rate, status.currentTime, status.didJustFinish, status.duration]
+    [
+      currentTrack,
+      player,
+      rate,
+      showSkipControls,
+      status.currentTime,
+      status.didJustFinish,
+      status.duration
+    ]
   );
 
   const pause = useCallback(() => player.pause(), [player]);
