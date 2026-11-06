@@ -11,7 +11,7 @@ import { NEWS_TRANSLATION_READY } from './newsListTranslations';
 const shareNewsTitle = (response) => {
   if (response?.servedLocale !== 'en') return;
 
-  const { data, scope, sourceDigest } = response;
+  const { data, scope, sourceDigest, fromCache } = response;
   const { id, mainTitle, contentBlocks } = data.newsItem;
   const title = mainTitle || contentBlocks?.[0]?.title;
   if (id && title && scope) {
@@ -19,7 +19,8 @@ const shareNewsTitle = (response) => {
       id: String(id),
       title,
       scope,
-      sourceDigest
+      sourceDigest,
+      fromCache
     });
   }
 };

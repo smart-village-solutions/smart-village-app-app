@@ -108,17 +108,13 @@ export const useNewsListTranslations = (enabled, authMode) => {
     };
     const subscription = DeviceEventEmitter.addListener(
       NEWS_TRANSLATION_READY,
-      ({ id, title, scope, sourceDigest }) => {
+      ({ id, title, scope, sourceDigest, fromCache }) => {
         const applyTitle = async () => {
           const client = await ReactQueryClient();
           const currentScope = await client.cacheScope(authMode);
           const observedDigest = seen.get(id)?.sourceDigest;
-          if (
-            !active ||
-            scope !== currentScope ||
-            (observedDigest && observedDigest !== sourceDigest)
-          )
-            return;
+          if (!active || scope !== currentScope) return;
+          if (fromCache && observedDigest && observedDigest !== sourceDigest) return;
 
           pending.delete(id);
           // Discard any older list poll that was already in flight for this row.

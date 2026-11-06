@@ -71,12 +71,17 @@ describe('news list translations', () => {
     expect(rawRequest).toHaveBeenCalledTimes(2);
   });
 
-  const openTranslatedDetail = (scope = 'current-scope', sourceDigest = 'a'.repeat(64)) =>
+  const openTranslatedDetail = (
+    scope = 'current-scope',
+    sourceDigest = 'a'.repeat(64),
+    fromCache = true
+  ) =>
     DeviceEventEmitter.emit(NEWS_TRANSLATION_READY, {
       id: '21',
       title: 'City library',
       scope,
-      sourceDigest
+      sourceDigest,
+      fromCache
     });
 
   it('updates a cached list row from the English detail without waiting for another request', async () => {
@@ -89,12 +94,22 @@ describe('news list translations', () => {
     ]);
   });
 
-  it('rejects detail titles for a different auth scope or source revision', async () => {
+  it('rejects detail titles from another auth scope or a stale detail cache', async () => {
     await act(async () => list.observe(response('unavailable')));
-    await act(async () => openTranslatedDetail('other-scope'));
+    await act(async () => openTranslatedDetail('other-scope', 'a'.repeat(64), false));
     await act(async () => openTranslatedDetail('current-scope', 'b'.repeat(64)));
 
     expect(rawRequest).not.toHaveBeenCalled();
     expect(applyNewsListTitles(existingRows, list.titles)).toBe(existingRows);
+  });
+
+  it('replaces a stale list title with the newer translation verified by the server', async () => {
+    await act(async () => list.observe(response('unavailable')));
+    await act(async () => openTranslatedDetail('current-scope', 'b'.repeat(64), false));
+
+    expect(applyNewsListTitles(existingRows, list.titles).newsItems[1].mainTitle).toBe(
+      'City library'
+    );
+    expect(rawRequest).not.toHaveBeenCalled();
   });
 });

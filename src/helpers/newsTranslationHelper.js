@@ -102,7 +102,8 @@ export const loadTranslatedNews = async ({
           data: cached.data,
           servedLocale: metadata.servedLocale,
           scope,
-          sourceDigest: metadata.sourceDigest
+          sourceDigest: metadata.sourceDigest,
+          fromCache: true
         };
         if (!online) return settle(fallback);
       }
