@@ -255,6 +255,30 @@ Defines default user preference values applied when a user has no stored accessi
 `readAloudEnabled` is retained only as a legacy stored preference field. It no longer controls TTS
 availability and should not be added to new `globalSettings` payloads.
 
+### `autoContrastEnabled`
+
+Optional boolean, defaults to `true`. Set `settings.accessibility.autoContrastEnabled` to
+`false` to disable automatic foreground contrast correction for both theme palettes. Valid
+configured colors are then preserved even when their contrast is below `4.5:1`; malformed
+colors are still ignored and legacy color aliases are still synchronized. This is separate
+from the user's `highContrastEnabled` preference and does not disable that feature.
+
+For Frankfurt's white button labels, merge the following into `settings.accessibility`
+(keep the remaining palette values):
+
+```json
+{
+  "autoContrastEnabled": false,
+  "themePalettes": {
+    "light": { "onPrimary": "#FFFFFF" },
+    "dark": { "onPrimary": "#FFFFFF" }
+  }
+}
+```
+
+This option requires an app version that supports it. Once supported, changes received
+through `globalSettings` are resolved at runtime.
+
 ### `themePalettes`
 
 Defines optional, partial palette overrides for `light` and `dark`. Each mode is merged with its built-in palette, so operators only need to provide tokens that differ from the defaults.
@@ -274,8 +298,8 @@ Palette rules:
 
 - Accepted values are CSS-style hex (`#RGB`, `#RGBA`, `#RRGGBB`, `#RRGGBBAA`), `rgb(...)`, `rgba(...)`, and `transparent`.
 - Unknown tokens, malformed colors, and values of the wrong type are ignored.
-- Critical text pairs must meet a WCAG contrast ratio of at least `4.5:1`: `text/background`, `text/surface`, `textMuted/background`, `textMuted/surface`, `onPrimary/primary`, and `error/background`.
-- If a critical pair is invalid, translucent, or below the threshold, both tokens in that pair fall back to the built-in palette for that mode. Use opaque values for critical foreground/background tokens.
+- With `autoContrastEnabled` (the default), critical text pairs are checked against a contrast ratio of at least `4.5:1`: `text/background`, `text/surface`, `textMuted/background`, `textMuted/surface`, `onPrimary/primary`, and `error/background`.
+- If a critical pair is invalid, translucent, or below the threshold, an accessible foreground is selected when available; the background color is preserved. Use opaque values for critical foreground/background tokens.
 - Palette changes received through `globalSettings` are resolved at runtime; no app rebuild is required.
 
 ### Complete remote palette example

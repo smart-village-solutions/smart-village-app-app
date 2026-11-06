@@ -54,6 +54,12 @@ export const Widgets = ({ widgetConfigs, widgetStyle }: Props) => {
   const { fontScale, width } = useWindowDimensions();
   const safeAreaInsets = useSafeAreaInsets();
   const { textScaleMultiplier = 1 } = useContext(AccessibilityContext);
+  const [labelWidths, setLabelWidths] = useState<Record<string, number>>({});
+  const onLabelWidth = useCallback((key: string, measuredWidth: number) => {
+    setLabelWidths((current) =>
+      current[key] === measuredWidth ? current : { ...current, [key]: measuredWidth }
+    );
+  }, []);
   const [containerMeasurement, setContainerMeasurement] = useState({
     measuredWidth: width,
     windowWidth: width
@@ -92,14 +98,22 @@ export const Widgets = ({ widgetConfigs, widgetStyle }: Props) => {
   const horizontalPadding = normalize(WIDGET_CONTAINER_PADDING);
   const columnPadding = normalize(WIDGET_COLUMN_PADDING);
   const rowGap = normalize(WIDGET_ROW_GAP);
-  const minItemWidth = normalize(WIDGET_MIN_WIDTH);
+  const effectiveTextScale = resolveEffectiveTextScale(fontScale, textScaleMultiplier);
+  // Native label measurements already include system and app text scaling.
+  const measuredMinItemWidth = Math.max(
+    0,
+    ...widgetComponents.map((entry) => (labelWidths[entry.key] ?? 0) + 2 * columnPadding)
+  );
+  const minItemWidth = Math.max(
+    normalize(WIDGET_MIN_WIDTH),
+    measuredMinItemWidth / effectiveTextScale
+  );
   const measuredContainerWidth =
     containerMeasurement.windowWidth === width ? containerMeasurement.measuredWidth : width;
   const availableWidth = Math.max(
     0,
     measuredContainerWidth - safeAreaInsets.left - safeAreaInsets.right - 2 * horizontalPadding
   );
-  const effectiveTextScale = resolveEffectiveTextScale(fontScale, textScaleMultiplier);
   const layout = useMemo(
     () =>
       resolveWidgetLayout({
@@ -118,8 +132,13 @@ export const Widgets = ({ widgetConfigs, widgetStyle }: Props) => {
     [columnPadding, layout.columns]
   );
   const layoutContext = useMemo(
-    () => ({ mode: layout.columns === 1 ? ('list' as const) : ('grid' as const) }),
-    [layout.columns]
+    () => ({
+      mode:
+        layout.columns === 1 && measuredMinItemWidth + normalize(108) <= availableWidth
+          ? ('list' as const)
+          : ('grid' as const)
+    }),
+    [availableWidth, layout.columns, measuredMinItemWidth]
   );
   const onLayout = useCallback(
     ({ nativeEvent }: LayoutChangeEvent) => {
@@ -151,9 +170,14 @@ export const Widgets = ({ widgetConfigs, widgetStyle }: Props) => {
         ]}
       >
         {widgetComponents.map((entry) => (
-          <View key={entry.key} style={[layout.columns > 1 && styles.gridItem, itemStyle]}>
-            {entry.component}
-          </View>
+          <WidgetLayoutContext.Provider
+            key={entry.key}
+            value={{ ...layoutContext, onLabelWidth: (value) => onLabelWidth(entry.key, value) }}
+          >
+            <View style={[layout.columns > 1 && styles.gridItem, itemStyle]}>
+              {entry.component}
+            </View>
+          </WidgetLayoutContext.Provider>
         ))}
       </View>
     </WidgetLayoutContext.Provider>

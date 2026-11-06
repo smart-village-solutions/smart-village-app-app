@@ -210,12 +210,13 @@ const applyContrastFallbacks = (palette: ThemeColorPalette, basePalette: ThemeCo
 
 export const resolveThemePalette = (
   basePalette: ThemeColorPalette,
-  overrides?: ThemePaletteOverrides
+  overrides?: ThemePaletteOverrides,
+  autoContrastEnabled = true
 ): ThemeColorPalette => {
   const validOverrides = sanitizeOverrides(basePalette, overrides);
   const palette = { ...basePalette, ...validOverrides };
 
-  applyContrastFallbacks(palette, basePalette);
+  if (autoContrastEnabled) applyContrastFallbacks(palette, basePalette);
   synchronizeLegacyAliases(palette, validOverrides);
 
   return Object.freeze(palette);
@@ -223,9 +224,11 @@ export const resolveThemePalette = (
 
 export const resolveThemePalettes = (globalSettings?: ThemeGlobalSettings | null) => {
   const configuredPalettes = globalSettings?.settings?.accessibility?.themePalettes;
+  const autoContrastEnabled =
+    globalSettings?.settings?.accessibility?.autoContrastEnabled !== false;
 
   return Object.freeze({
-    dark: resolveThemePalette(darkColors, configuredPalettes?.dark),
-    light: resolveThemePalette(lightColors, configuredPalettes?.light)
+    dark: resolveThemePalette(darkColors, configuredPalettes?.dark, autoContrastEnabled),
+    light: resolveThemePalette(lightColors, configuredPalettes?.light, autoContrastEnabled)
   }) satisfies Record<ResolvedThemeMode, ThemeColorPalette>;
 };

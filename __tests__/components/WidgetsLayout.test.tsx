@@ -52,7 +52,22 @@ jest.mock('../../src/components/widgets/LunchWidget', () => ({
   LunchWidget: () => null
 }));
 jest.mock('../../src/components/widgets/SurveyWidget', () => ({
-  SurveyWidget: () => null
+  SurveyWidget: () => {
+    const ReactLocal = jest.requireActual<typeof import('react')>('react');
+    const { WidgetLayoutContext } = jest.requireActual(
+      '../../src/components/widgets/WidgetLayoutContext'
+    );
+    const { Text } = jest.requireActual('react-native');
+    const { onLabelWidth } = ReactLocal.useContext(WidgetLayoutContext) as {
+      onLabelWidth: (width: number) => void;
+    };
+
+    return (
+      <Text testID="survey-label" onPress={() => onLabelWidth(112)}>
+        Umfragen / Ankiety
+      </Text>
+    );
+  }
 }));
 jest.mock('../../src/components/widgets/VoucherWidget', () => ({
   VoucherWidget: () => null
@@ -76,6 +91,21 @@ const getItemViewsByWidth = (views: ReturnType<typeof render>, width: string) =>
     .filter((view) => StyleSheet.flatten(view.props.style)?.width === width);
 
 describe('Widgets responsive layout', () => {
+  it('reduces columns when a measured title needs more room and adapts to container resizing', () => {
+    const tree = render(<Widgets widgetConfigs={['event', 'constructionSiteNews', 'survey']} />);
+    expect(getItemViewsByWidth(tree, `${100 / 3}%`)).toHaveLength(3);
+
+    fireEvent.press(tree.getByTestId('survey-label'));
+    expect(getItemViewsByWidth(tree, '50%')).toHaveLength(3);
+
+    const container = tree.UNSAFE_getAllByType(View).find((view) => view.props.onLayout);
+    fireEvent(container!, 'layout', { nativeEvent: { layout: { width: 240 } } });
+    expect(getItemViewsByWidth(tree, '100%')).toHaveLength(4);
+
+    fireEvent(container!, 'layout', { nativeEvent: { layout: { width: 420 } } });
+    expect(getItemViewsByWidth(tree, `${100 / 3}%`)).toHaveLength(3);
+  });
+
   it('renders four enlarged widgets as a two-by-two grid', () => {
     const tree = render(
       <AccessibilityContext.Provider value={{ textScaleMultiplier: 1.3 } as never}>
