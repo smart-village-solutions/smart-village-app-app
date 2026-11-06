@@ -4,7 +4,9 @@ The app shows a compact listen action for direct HTTP(S) audio media on POI, new
 
 When playback starts from a detail page, the expanded player keeps a shortcut back to that POI, tour, news or event. The shortcut is hidden while that same detail page is already open. The compact player stays centered when another floating shortcut is present; the other shortcut is temporarily hidden while the audio panel is expanded.
 
-With a compatible native build, MP3 playback registers the audio title and, when available, the source detail title with the system media controls. The native session offers play/pause, timeline seeking and 10-second skip controls. `showSkipControls` also controls the system skip buttons; Expo's native skip interval is currently fixed at 10 seconds, while `skipSeconds` configures the in-app buttons.
+With a compatible native build, MP3 playback registers the source detail title and, when available, the audio caption with the system media controls. The native session offers play/pause, timeline seeking and 10-second skip controls. `showSkipControls` also controls the system skip buttons; Expo's native skip interval is currently fixed at 10 seconds, while `skipSeconds` configures the in-app buttons.
+
+The system media title uses the content's actual title for tours, POIs, news and events. Its artwork uses the first available image from the detail (including news content blocks); when the detail has no image, the bundled app icon is shown. An optional audio caption appears as the secondary title.
 
 The player uses the tenant's existing light/dark theme palette. Optional UI settings come from the versioned Main-Server `globalSettings` StaticContent record, under `settings.audioPlayer`:
 

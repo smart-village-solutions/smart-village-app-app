@@ -8,7 +8,8 @@ const mockPlayer = {
   replace: jest.fn(),
   seekTo: jest.fn(async () => undefined),
   setActiveForLockScreen: jest.fn(),
-  setPlaybackRate: jest.fn()
+  setPlaybackRate: jest.fn(),
+  updateLockScreenMetadata: jest.fn()
 };
 const mockStatus = {
   currentTime: 25,
@@ -36,6 +37,14 @@ jest.mock('expo-audio', () => ({
   setAudioModeAsync: jest.fn(async () => undefined),
   useAudioPlayer: () => mockPlayer,
   useAudioPlayerStatus: () => mockStatus
+}));
+
+jest.mock('expo-asset', () => ({
+  Asset: {
+    fromModule: jest.fn(() => ({
+      downloadAsync: jest.fn(async () => ({ localUri: 'file:///app/icon.png' }))
+    }))
+  }
 }));
 
 jest.mock('../../src/config', () => ({
@@ -258,12 +267,17 @@ describe('AudioPlayerControls', () => {
     );
   });
 
-  it('shows the source title and track name in system playback controls', async () => {
+  it('shows the content title and image in system playback controls', async () => {
     const tree = render(
       <AudioPlayerProvider>
         <AudioPlayerControls
           track={{
-            source: { id: '18954', query: 'tour', title: 'Burgenwanderweg' },
+            source: {
+              id: '18954',
+              imageUrl: 'https://example.org/tour.jpg',
+              query: 'tour',
+              title: 'Burgenwanderweg'
+            },
             title: 'Etappe 1',
             url: 'https://example.org/tour.mp3'
           }}
@@ -275,8 +289,28 @@ describe('AudioPlayerControls', () => {
     await waitFor(() => expect(mockPlayer.play).toHaveBeenCalledTimes(1));
     expect(mockPlayer.setActiveForLockScreen).toHaveBeenCalledWith(
       true,
-      { title: 'Etappe 1', artist: 'Burgenwanderweg' },
+      {
+        title: 'Burgenwanderweg',
+        artist: 'Etappe 1',
+        artworkUrl: 'https://example.org/tour.jpg'
+      },
       { showSeekBackward: true, showSeekForward: true }
+    );
+  });
+
+  it('uses the app icon when the content has no image', async () => {
+    const tree = render(
+      <AudioPlayerProvider>
+        <AudioPlayerControls track={{ title: 'Audio', url: 'https://example.org/audio.mp3' }} />
+      </AudioPlayerProvider>
+    );
+
+    fireEvent.press(tree.getByLabelText('Audio abspielen'));
+    await waitFor(() =>
+      expect(mockPlayer.updateLockScreenMetadata).toHaveBeenCalledWith({
+        title: 'Audio',
+        artworkUrl: 'file:///app/icon.png'
+      })
     );
   });
 

@@ -1,3 +1,4 @@
+import { Asset } from 'expo-asset';
 import { setAudioModeAsync, useAudioPlayer, useAudioPlayerStatus } from 'expo-audio';
 import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 
@@ -5,6 +6,7 @@ import { useAudioPlayerSettings } from './AudioPlayerSettings';
 
 export type AudioTrackSource = {
   id: string;
+  imageUrl?: string;
   query: string;
   rootRouteName?: string;
   title: string;
@@ -41,9 +43,24 @@ const AudioPlayerContext = createContext<AudioPlayerContextValue | null>(null);
 const AudioPlayerPresenceContext = createContext(false);
 
 const getLockScreenMetadata = (track: AudioTrack) => ({
-  title: track.title === 'Audio' ? track.source?.title || track.title : track.title,
-  ...(track.source?.title && track.title !== 'Audio' ? { artist: track.source.title } : {})
+  title: track.source?.title || track.title,
+  ...(track.source?.title && track.title !== 'Audio' && track.title !== track.source.title
+    ? { artist: track.title }
+    : {}),
+  ...(track.source?.imageUrl ? { artworkUrl: track.source.imageUrl } : {})
 });
+
+let appIconArtworkUrl: Promise<string | undefined> | undefined;
+
+const getAppIconArtworkUrl = () => {
+  // Metro needs a static require for the bundled app icon.
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  appIconArtworkUrl ??= Asset.fromModule(require('../assets/icon.png'))
+    .downloadAsync()
+    .then((asset) => asset.localUri || asset.uri)
+    .catch(() => undefined);
+  return appIconArtworkUrl;
+};
 
 export const AudioPlayerProvider = ({ children }: { children: React.ReactNode }) => {
   const player = useAudioPlayer(null);
@@ -98,10 +115,18 @@ export const AudioPlayerProvider = ({ children }: { children: React.ReactNode })
 
         if (nextRequestId !== requestId.current) return;
         player.play();
-        player.setActiveForLockScreen(true, getLockScreenMetadata(track), {
+        const metadata = getLockScreenMetadata(track);
+        player.setActiveForLockScreen(true, metadata, {
           showSeekBackward: showSkipControls,
           showSeekForward: showSkipControls
         });
+        if (!metadata.artworkUrl) {
+          void getAppIconArtworkUrl().then((artworkUrl) => {
+            if (artworkUrl && nextRequestId === requestId.current) {
+              player.updateLockScreenMetadata({ ...metadata, artworkUrl });
+            }
+          });
+        }
       } catch {
         if (nextRequestId === requestId.current) setError(true);
       }

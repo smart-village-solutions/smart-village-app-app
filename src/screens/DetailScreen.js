@@ -5,6 +5,7 @@ import { useQuery } from 'react-query';
 
 import { AccessibilityContext } from '../AccessibilityProvider';
 import { AudioTrackSourceContext } from '../AudioPlayerProvider';
+import { getAudioSourceMetadata } from '../helpers/audioSourceMetadata';
 import {
   DetailActions,
   EmptyMessage,
@@ -228,12 +229,13 @@ export const DetailScreen = ({ navigation, route }) => {
   if (!Component) return null;
 
   const detailActions = <DetailActions data={detailData} route={route} suffix={genericType} />;
+  const { title, imageUrl } = getAudioSourceMetadata(detailData, route.params?.title);
   const audioSource = {
     id: String(queryVariables.id),
     query,
     rootRouteName: route.params?.rootRouteName,
-    title:
-      route.params?.title || detailData?.title || detailData?.name || detailData?.mainTitle || ''
+    title,
+    imageUrl
   };
 
   return (
