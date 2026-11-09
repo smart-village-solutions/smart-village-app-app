@@ -4,6 +4,7 @@ import React, { createContext, useContext, useEffect } from 'react';
 import { AppState } from 'react-native';
 import { useQuery } from 'react-query';
 
+import { refreshAppTextCatalog } from './helpers/appTextCatalog';
 import { getMainServerConfig, getMainServerUrl } from './helpers/mainServerHelper';
 import {
   getTextsLocale,
@@ -40,6 +41,11 @@ const selectAppLanguages = (locales) => {
 export const AppLanguagesProvider = ({ client, children }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const online = !!(isConnected && isMainserverUp);
+  const { refetch: refetchCatalog } = useQuery(
+    ['appTextCatalog', getMainServerUrl(), getMainServerConfig().oAuthClientId, getTextsLocale()],
+    () => refreshAppTextCatalog(client, getTextsLocale()).then(() => null),
+    { enabled: online, retry: false, refetchOnMount: 'always', refetchOnWindowFocus: false }
+  );
   const { data, refetch } = useQuery(
     ['appTranslationLocales', getMainServerUrl(), getMainServerConfig().oAuthClientId],
     async () => {
@@ -80,10 +86,13 @@ export const AppLanguagesProvider = ({ client, children }) => {
   useEffect(() => {
     if (!online) return;
     const subscription = AppState.addEventListener('change', (state) => {
-      if (state === 'active') void refetch();
+      if (state === 'active') {
+        void refetch();
+        void refetchCatalog();
+      }
     });
     return () => subscription.remove();
-  }, [online, refetch]);
+  }, [online, refetch, refetchCatalog]);
 
   return (
     <AppLanguagesContext.Provider value={data?.locales ?? GERMAN_ONLY}>

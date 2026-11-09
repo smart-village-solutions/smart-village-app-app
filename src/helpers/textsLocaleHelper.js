@@ -3,6 +3,7 @@ import { DevSettings } from 'react-native';
 
 import { setTextsLocale, texts, textsByLocale } from '../config/texts';
 
+import { readAppTextCatalog, applyAppTextCatalog } from './appTextCatalog';
 import { storageHelper } from './storageHelper';
 
 const localePattern = /^[a-z]{2,8}(?:-[A-Za-z0-9]{2,8})*$/;
@@ -25,7 +26,8 @@ export const initializeTextsLocale = async () => {
     console.warn('Unable to restore text locale', error);
   }
   const preferred = isTextsLocale(locale) ? locale : 'de';
-  const catalogLocale = setTextsLocale(preferred);
+  const stored = await readAppTextCatalog(preferred);
+  const catalogLocale = setTextsLocale(preferred, stored && applyAppTextCatalog(stored));
   contentLocale = preferred === catalogLocale ? undefined : preferred;
   return preferred;
 };

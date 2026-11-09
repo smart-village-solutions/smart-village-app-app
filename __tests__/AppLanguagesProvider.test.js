@@ -10,6 +10,10 @@ import {
 } from '../src/AppLanguagesProvider';
 import { getTextsLocale, saveTextsLocaleAndReload } from '../src/helpers/textsLocaleHelper';
 
+jest.mock('../src/helpers/appTextCatalog', () => ({
+  refreshAppTextCatalog: jest.fn().mockResolvedValue(undefined)
+}));
+
 jest.mock('../src/NetworkProvider', () => ({
   NetworkContext: jest
     .requireActual('react')
