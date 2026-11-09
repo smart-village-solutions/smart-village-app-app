@@ -9,6 +9,7 @@ import React, {
   useEffect,
   useLayoutEffect,
   useMemo,
+  useRef,
   useState
 } from 'react';
 import { useQuery } from 'react-apollo';
@@ -340,22 +341,18 @@ export const Overviews = ({ navigation, route }) => {
 
     return participationQueryVariables;
   }, [isParticipationProjectOverview, queryVariables]);
+  // Distance sorting and opening-hours filtering need the full result set.
+  const pageSize =
+    isParticipationProjectOverview || sortByDistance || queryVariables.onlyCurrentlyOpen
+      ? undefined
+      : route.params?.queryVariables?.limit;
 
   const { data, loading, fetchMore, refetch } = useQuery(getQuery(query, { showNewsFilter }), {
     ...(authMode ? getApolloAuthContext(authMode) : {}),
     fetchPolicy,
     variables: {
       ...networkQueryVariables,
-      // if we want to sort by distance, we need to fetch all the entries at once. this is not a
-      // big issue if we want to sort by distance, because getting the location usually takes longer
-      // than fetching all entries.
-      // if we filter by opening times, we need to also remove the limit as otherwise we might not
-      // have any open POIs in the next batch that would result in the list not getting any new
-      // items and not reliably triggering another `fetchMore`
-      limit:
-        isParticipationProjectOverview || sortByDistance || queryVariables.onlyCurrentlyOpen
-          ? undefined
-          : route.params?.queryVariables?.limit
+      limit: pageSize
     }
   });
 
@@ -476,9 +473,15 @@ export const Overviews = ({ navigation, route }) => {
     setRefreshing(false);
   }, [isConnected, setRefreshing, refetch]);
 
+  const hasLoadedMore = useRef(false);
+  useLayoutEffect(() => {
+    hasLoadedMore.current = pageSize > 0 && (data?.[query]?.length ?? 0) > pageSize;
+  }, [data, pageSize, query]);
+
   useFocusEffect(
     useCallback(() => {
-      if (!isConnected || !query) {
+      // Refetch uses the first-page variables and would discard the loaded pages.
+      if (!isConnected || !query || hasLoadedMore.current) {
         return undefined;
       }
 
