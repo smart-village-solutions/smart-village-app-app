@@ -105,7 +105,6 @@ export const SueReportDescription = ({
           label={texts.sue.report.title + ' *'}
           placeholder={texts.sue.report.titlePlaceholder}
           control={control}
-          errorMessage={titleTooLong ? texts.sue.report.characterLimitExceeded : undefined}
           renderErrorMessage={limits.title === undefined}
           ref={titleRef}
           onSubmitEditing={() => descriptionRef.current?.focus()}
@@ -113,6 +112,11 @@ export const SueReportDescription = ({
         {limits.title !== undefined && (
           <RegularText small style={styles.characterCount} error={titleTooLong}>
             {texts.sue.report.characterCount(titleLength, limits.title)}
+          </RegularText>
+        )}
+        {titleTooLong && (
+          <RegularText small error accessibilityLiveRegion="polite">
+            {texts.sue.report.characterLimitExceeded}
           </RegularText>
         )}
       </Wrapper>
@@ -129,13 +133,17 @@ export const SueReportDescription = ({
           placeholder={texts.sue.report.descriptionPlaceholder}
           multiline
           control={control}
-          errorMessage={descriptionTooLong ? texts.sue.report.characterLimitExceeded : undefined}
           renderErrorMessage={limits.description === undefined}
           ref={descriptionRef}
         />
         {limits.description !== undefined && (
           <RegularText small style={styles.characterCount} error={descriptionTooLong}>
             {texts.sue.report.characterCount(descriptionLength, limits.description)}
+          </RegularText>
+        )}
+        {descriptionTooLong && (
+          <RegularText small error accessibilityLiveRegion="polite">
+            {texts.sue.report.characterLimitExceeded}
           </RegularText>
         )}
       </Wrapper>
