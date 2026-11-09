@@ -32,7 +32,7 @@ export const SueReportDescription = ({
   configuration: any;
   control: any;
   errorMessage: string;
-  requiredInputs: keyof TValues[];
+  requiredInputs?: keyof TValues[];
   selectedPosition?: Location.LocationObjectCoords;
   storeReportValues: () => Promise<void>;
   setSelectedPosition: (position?: Location.LocationObjectCoords) => void;
@@ -47,6 +47,11 @@ export const SueReportDescription = ({
     control,
     name: [INPUT_KEYS.SUE.TITLE, INPUT_KEYS.SUE.DESCRIPTION]
   });
+  const titleLength = title?.length ?? 0;
+  const descriptionLength = description?.length ?? 0;
+  const titleTooLong = limits.title !== undefined && titleLength > limits.title;
+  const descriptionTooLong =
+    limits.description !== undefined && descriptionLength > limits.description;
 
   const imageSelectorProps = useMemo(
     () => ({
@@ -100,18 +105,14 @@ export const SueReportDescription = ({
           label={texts.sue.report.title + ' *'}
           placeholder={texts.sue.report.titlePlaceholder}
           control={control}
-          maxLength={limits.title}
+          errorMessage={titleTooLong ? texts.sue.report.characterLimitExceeded : undefined}
           renderErrorMessage={limits.title === undefined}
           ref={titleRef}
           onSubmitEditing={() => descriptionRef.current?.focus()}
         />
         {limits.title !== undefined && (
-          <RegularText
-            small
-            style={styles.characterCount}
-            error={(title?.length ?? 0) > limits.title}
-          >
-            {texts.sue.report.characterCount(title?.length ?? 0, limits.title)}
+          <RegularText small style={styles.characterCount} error={titleTooLong}>
+            {texts.sue.report.characterCount(titleLength, limits.title)}
           </RegularText>
         )}
       </Wrapper>
@@ -128,17 +129,13 @@ export const SueReportDescription = ({
           placeholder={texts.sue.report.descriptionPlaceholder}
           multiline
           control={control}
-          maxLength={limits.description}
+          errorMessage={descriptionTooLong ? texts.sue.report.characterLimitExceeded : undefined}
           renderErrorMessage={limits.description === undefined}
           ref={descriptionRef}
         />
         {limits.description !== undefined && (
-          <RegularText
-            small
-            style={styles.characterCount}
-            error={(description?.length ?? 0) > limits.description}
-          >
-            {texts.sue.report.characterCount(description?.length ?? 0, limits.description)}
+          <RegularText small style={styles.characterCount} error={descriptionTooLong}>
+            {texts.sue.report.characterCount(descriptionLength, limits.description)}
           </RegularText>
         )}
       </Wrapper>

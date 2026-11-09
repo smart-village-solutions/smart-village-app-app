@@ -1759,6 +1759,7 @@ export const texts = {
       },
       back: 'Zurück',
       characterCount: (count, limit) => `ⓘ ${count} von ${limit} Zeichen`,
+      characterLimitExceeded: 'Erlaubte Zeichenzahl überschritten.',
       city: 'Ort',
       description: 'Ausführliche Beschreibung',
       descriptionPlaceholder: 'Weitere Hinweise',
