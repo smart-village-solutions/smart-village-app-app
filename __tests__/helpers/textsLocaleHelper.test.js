@@ -3,6 +3,7 @@ import { DevSettings } from 'react-native';
 
 import { texts, textsByLocale, setTextsLocale } from '../../src/config/texts';
 import { storageHelper } from '../../src/helpers/storageHelper';
+import { readAppTextCatalog } from '../../src/helpers/appTextCatalog';
 import {
   getTextsLocale,
   initializeTextsLocale,
@@ -17,11 +18,16 @@ jest.mock('react-native/Libraries/Utilities/DevSettings', () => ({
 jest.mock('../../src/helpers/storageHelper', () => ({
   storageHelper: { textsLocale: jest.fn(), setTextsLocale: jest.fn() }
 }));
+jest.mock('../../src/helpers/appTextCatalog', () => ({
+  readAppTextCatalog: jest.fn(),
+  applyAppTextCatalog: (catalog) => catalog.values
+}));
 
 beforeEach(() => {
   jest.clearAllMocks();
   textsByLocale['pt-PT'] = { ...textsByLocale.de, close: 'Fechar' };
   setTextsLocale('de');
+  readAppTextCatalog.mockResolvedValue(null);
   storageHelper.textsLocale.mockResolvedValue(null);
   storageHelper.setTextsLocale.mockResolvedValue();
 });
@@ -36,6 +42,14 @@ it('selects the exact saved locale before module-level labels are captured', asy
   expect(await initializeTextsLocale()).toBe('pt-PT');
   expect(texts.close).toBe('Fechar');
   expect(storageHelper.setTextsLocale).not.toHaveBeenCalled();
+});
+
+it('reports the selected locale when the downloaded catalog replaces the bundled object', async () => {
+  storageHelper.textsLocale.mockResolvedValue('pt-PT');
+  readAppTextCatalog.mockResolvedValue({ values: { close: 'Encerrar' } });
+  await initializeTextsLocale();
+  expect(texts.close).toBe('Encerrar');
+  expect(getTextsLocale()).toBe('pt-PT');
 });
 
 it.each([null, 'not_a_language', '__proto__'])('falls back as a whole for %s', async (locale) => {

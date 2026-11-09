@@ -27,8 +27,8 @@ export const initializeTextsLocale = async () => {
   }
   const preferred = isTextsLocale(locale) ? locale : 'de';
   const stored = await readAppTextCatalog(preferred);
-  const catalogLocale = setTextsLocale(preferred, stored && applyAppTextCatalog(stored));
-  contentLocale = preferred === catalogLocale ? undefined : preferred;
+  setTextsLocale(preferred, stored && applyAppTextCatalog(stored));
+  contentLocale = preferred;
   return preferred;
 };
 
