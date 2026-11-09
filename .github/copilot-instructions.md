@@ -91,7 +91,7 @@ For executing linters run `npm run lint` or `yarn lint`.
 - Deployment/Releases → municipality-specific branches like `release/bb/demo`
 
 ### Branch Naming
-- New feature branch from `master` named like `feature/{TICKET_ID}-{SHORT_DESCRIPTION}`
+- Create feature branches from `master`. Use `feature/{SHORT_DESCRIPTION}` for work without a ticket and `feature/{TICKET_ID}-{SHORT_DESCRIPTION}` when a ticket number is available. Follow `AGENTS.md` for commit and pull request references.
 
 ### Build & Deployment
 - `yarn prebuild` to prepare the app for building (e.g., generating icons)

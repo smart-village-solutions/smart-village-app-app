@@ -38,13 +38,12 @@ yarn test
 
 For AI-assisted development work, commits are required and must follow these rules:
 
-1. **Before every commit, determine the ticket number**. First inspect the current branch name for a ticket pattern such as `SVA-1723`, `SVAK-183`, `SVASD-537`, or `MQGB-208`. If the branch name contains a ticket, use it. If not, ask the user for one before committing.
-2. Use **Conventional Commit** format in the subject:
+1. Use **Conventional Commit** format in the subject:
    - `type(scope): short summary`
    - or `type: short summary` when scope is not needed
-3. Allowed `type` values: `feat`, `fix`, `refactor`, `chore`, `docs`, `test`, `style`.
-4. Add a commit body with concise bullet points explaining what changed (and why when needed).
-5. Put the ticket number in the commit body (usually as the last line).
+2. Allowed `type` values: `feat`, `fix`, `refactor`, `chore`, `docs`, `test`, `style`.
+3. Add a commit body with concise bullet points explaining what changed (and why when needed).
+4. If the task already has a ticket number, put it on the last line of the commit body. Use the number supplied with the task or take it from the current branch name if it refers to the same task (for example, `SVAK-183`). If neither provides a number, proceed without one or a follow-up question.
 
 Example:
 
@@ -53,20 +52,15 @@ feat(map): upgrade marker clustering behavior
 
 - refactored cluster source options to improve stability on zoom
 - aligned marker rendering with MapLibre v11 layer configuration
-
-SVAK-183
 ```
-
-If no ticket number can be found in the branch name and the user has not provided one, do not guess one. Ask the user first.
 
 ## 5) Branch and PR Expectations
 
-- Prefer ticket-based branch names (examples from this repo):
-  - `feature/SVAK-183-short-description`
-  - `fix/SVA-1610-short-description`
-- Follow `PULL_REQUEST_TEMPLATE.md`:
+- Use descriptive branch names, such as `feature/map-clustering` or `fix/map-loading`.
+- When creating a branch for a task with a known ticket number, include it in the branch name, such as `feature/SVAK-183-map-clustering`.
+- Follow the [pull request template](.github/pull_request_template.md):
   - include testing notes
-  - reference issue/ticket
+  - reference the ticket if one exists
   - add screenshots when UI changes
 
 ## 6) Security and Secrets
