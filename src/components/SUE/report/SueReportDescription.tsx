@@ -105,6 +105,7 @@ export const SueReportDescription = ({
           label={texts.sue.report.title + ' *'}
           placeholder={texts.sue.report.titlePlaceholder}
           control={control}
+          invalid={titleTooLong}
           renderErrorMessage={limits.title === undefined}
           ref={titleRef}
           onSubmitEditing={() => descriptionRef.current?.focus()}
@@ -133,6 +134,7 @@ export const SueReportDescription = ({
           placeholder={texts.sue.report.descriptionPlaceholder}
           multiline
           control={control}
+          invalid={descriptionTooLong}
           renderErrorMessage={limits.description === undefined}
           ref={descriptionRef}
         />

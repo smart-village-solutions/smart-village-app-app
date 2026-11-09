@@ -22,20 +22,24 @@ jest.mock('../../src/components/form', () => {
   return {
     Input: ({
       control,
+      invalid,
       maxLength,
       name
     }: {
       control: Control;
+      invalid?: boolean;
       maxLength?: number;
       name: string;
     }) => {
       const { field } = useController({ control, name });
+      const accessibilityState = { disabled: false, invalid };
       return (
         <TextInput
           testID={name}
           value={field.value}
           onChangeText={field.onChange}
           maxLength={maxLength}
+          accessibilityState={accessibilityState}
         />
       );
     }
@@ -77,6 +81,7 @@ it.each([
 
   fireEvent.changeText(getByTestId(field), 'a'.repeat(limit + 3));
 
+  expect(getByTestId(field).props.accessibilityState.invalid).toBe(true);
   expect(getAllByTestId('length-error').map((node) => node.props.children)).toEqual([
     `ⓘ ${limit + 3} von ${limit} Zeichen`,
     message
@@ -84,6 +89,7 @@ it.each([
 
   fireEvent.changeText(getByTestId(field), 'a'.repeat(limit));
 
+  expect(getByTestId(field).props.accessibilityState.invalid).toBe(false);
   expect(getByText(`ⓘ ${limit} von ${limit} Zeichen`)).toBeTruthy();
   expect(queryByTestId('length-error')).toBeNull();
   expect(queryByText(message)).toBeNull();

@@ -62,6 +62,7 @@ type Props = InputProps &
   UseControllerProps & {
     validate?: boolean;
     hidden?: boolean;
+    invalid?: boolean;
     row?: boolean;
     chat?: boolean;
     boldLabel?: boolean;
@@ -81,6 +82,7 @@ export const Input = forwardRef(
       disabled = false,
       hidden = false,
       errorMessage,
+      invalid = false,
       row = false,
       multiline = false,
       rightIcon,
@@ -129,9 +131,10 @@ export const Input = forwardRef(
       }
     }, []);
 
+    const hasError = invalid || !!errorMessage;
     const inputAccessibilityState = {
       disabled,
-      ...(errorMessage ? { invalid: true } : {})
+      ...(hasError ? { invalid: true } : {})
     };
 
     if (richText) {
@@ -189,7 +192,7 @@ export const Input = forwardRef(
       );
     }
 
-    const isValid = !disabled && validate && !!field.value && !errorMessage;
+    const isValid = !disabled && validate && !!field.value && !hasError;
 
     return (
       <RNEInput
@@ -214,7 +217,7 @@ export const Input = forwardRef(
           rightIcon ||
           (isValid ? (
             <Icon.Ok color={colors.primary} />
-          ) : !isValid && !!errorMessage ? (
+          ) : hasError ? (
             <Icon.AlertHexagonFilled color={colors.error} size={normalize(16)} />
           ) : undefined)
         }
@@ -231,7 +234,7 @@ export const Input = forwardRef(
           multiline && styles.inputContainerMultiline,
           isActive && styles.inputContainerSuccess,
           isValid && styles.inputContainerSuccess,
-          !isValid && !!errorMessage && styles.inputContainerError,
+          hasError && styles.inputContainerError,
           isReduceTransparencyEnabled && styles.inputAccessibilityBorderContrast,
           inputContainerStyle
         ]}
@@ -239,7 +242,7 @@ export const Input = forwardRef(
         inputStyle={[
           styles.input,
           multiline && device.platform === 'ios' && styles.multiline,
-          !isValid && !!errorMessage && styles.inputError,
+          hasError && styles.inputError,
           inputStyle
         ]}
         errorStyle={[styles.inputError, !errorMessage && styles.inputErrorHeight]}
