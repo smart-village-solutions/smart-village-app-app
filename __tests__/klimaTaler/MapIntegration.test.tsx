@@ -54,6 +54,7 @@ const mockToggle = jest.fn();
 const mockRefetch = jest.fn();
 const mockQueries = jest.fn();
 const mockMap = jest.fn();
+const mockPreviewRows = jest.fn();
 const mockSourceIcon = jest.fn();
 jest.mock('../../src/klimaTaler/useMapOffers', () => ({
   useMapOffers: (eligible: boolean) => ({
@@ -149,12 +150,20 @@ jest.mock('../../src/components/map/MapLibre', () => ({
   }
 }));
 jest.mock('../../src/components/TextListItem', () => ({
-  TextListItem: ({ item }: { item: { title: string; onPress?: () => void } }) => {
+  TextListItem: (props: {
+    item: { title: string; accessibilityLabel?: string; onPress?: () => void };
+  }) => {
+    mockPreviewRows(props);
+    const { item } = props;
     const React = jest.requireActual('react');
     const { Text } = jest.requireActual('react-native');
     return React.createElement(
       Text,
-      { onPress: item.onPress, accessibilityRole: 'button' },
+      {
+        onPress: item.onPress,
+        accessibilityRole: 'button',
+        accessibilityLabel: item.accessibilityLabel
+      },
       item.title
     );
   }
@@ -268,8 +277,59 @@ test('multiple offers require an explicit selection and retain the map preview o
   );
   fireEvent.press(screen.getByText('Klima Café'));
   expect(openKlimaTaler).not.toHaveBeenCalled();
-  fireEvent.press(screen.getByRole('button', { name: 'Kuchen, Angebot in Klima-Taler öffnen' }));
+  fireEvent.press(screen.getByRole('button', { name: /Kuchen, .*Angebot in Klima-Taler öffnen/ }));
   expect(openKlimaTaler).toHaveBeenCalledWith(11);
   screen.rerender(<LocationOverview {...props} />);
   expect(screen.getByText('Klima Café')).toBeTruthy();
+});
+
+test.each([0, 9, 10, 11, 50])(
+  'offer rows show their image and cap availability at 10+ (%i)',
+  (remaining) => {
+    mockLocations = [
+      {
+        ...location,
+        offers: [
+          { ...location.offers[0], remaining, image: 'https://example.org/coffee.jpg' },
+          location.offers[1]
+        ]
+      }
+    ];
+    const screen = render(<LocationOverview {...props} />);
+    act(() =>
+      mockMap.mock.calls[mockMap.mock.calls.length - 1][0].onMarkerPress(klimaTalerMarkerId(1))
+    );
+    fireEvent.press(screen.getByText('Klima Café'));
+    const row = mockPreviewRows.mock.calls.map(([p]) => p).find((p) => p.item.title === 'Kaffee');
+    expect(row.item.picture).toEqual({ url: 'https://example.org/coffee.jpg' });
+    expect(row.leftImage).toBe(true);
+    expect(row.item.subtitle).toBe(
+      `2 Klima-Taler · ${remaining > 10 ? '10+' : remaining} verfügbar`
+    );
+    fireEvent.press(screen.getByText('Kaffee'));
+    expect(openKlimaTaler).toHaveBeenCalledWith(10);
+  }
+);
+
+test('single-offer preview prefers the offer image and falls back to the partner image', () => {
+  mockLocations = [
+    {
+      ...location,
+      image: 'https://example.org/partner.jpg',
+      offers: [{ ...location.offers[0], image: 'https://example.org/offer.jpg', remaining: 50 }]
+    }
+  ];
+  const screen = render(<LocationOverview {...props} />);
+  act(() =>
+    mockMap.mock.calls[mockMap.mock.calls.length - 1][0].onMarkerPress(klimaTalerMarkerId(1))
+  );
+  expect(mockPreviewRows.mock.calls.at(-1)?.[0].item).toMatchObject({
+    picture: { url: 'https://example.org/offer.jpg' },
+    subtitle: 'Kaffee\n2 Klima-Taler · 10+ verfügbar'
+  });
+  mockLocations = [{ ...mockLocations[0], offers: [{ ...location.offers[0], image: null }] }];
+  screen.rerender(<LocationOverview {...props} />);
+  expect(mockPreviewRows.mock.calls.at(-1)?.[0].item.picture).toEqual({
+    url: 'https://example.org/partner.jpg'
+  });
 });

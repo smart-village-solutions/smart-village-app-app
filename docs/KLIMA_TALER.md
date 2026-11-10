@@ -285,6 +285,12 @@ web app. Its Bool is not a navigation-success acknowledgement. The adapter delib
 ignores that result for its validated offer URL; it must not reject or close the modal.
 The native offer-link harness covers both SDK results and the target-free dashboard case.
 
+Changers 4.3.0 retains `isWebAppReadyForDeepLinks` on its singleton after dismissal.
+Before constructing a fresh provider web controller, the adapter resets this public flag
+so the SDK queues the target until the new web app signals readiness. Reusing an already
+presented controller does not reset it. Without this reset, the first offer can open
+correctly while subsequent presentations lose their target and remain on the dashboard.
+
 The central entry coordinator still prepares the existing session before presenting.
 Repeated taps share a request; retries retain the selected ID. Cancellation during
 session preparation prevents late target delivery. The SDK is responsible for deferring
@@ -312,8 +318,12 @@ and category filters through an ordinary POI map entry. Check dark mode/large te
 An empty staging feed should show `Klima-Taler (0)` without unrelated POI pins.
 Automated fixtures cover populated pins/previews; actual populated device testing requires
 Changers to supply public staging partners.
-The integration reuses the existing `MapLibre`, `ChipFilter` and location preview
-components. The separate SVA wallet in the design reference is not a Klima-Taler balance
+The integration reuses the existing `MapLibre` and `ChipFilter` components. Normal POIs
+and Klima-Taler locations share `MapPreview`, extracted from the existing location preview,
+with consistent inset image/text spacing. Klima-Taler only adds offer selection and provider
+navigation as optional preview content. Offer rows reuse `TextListItem` and show the
+offer image when supplied. A single-offer preview prefers that image over the partner
+image. Availability is displayed as `10+` above ten and as the exact count at ten or below. The separate SVA wallet in the design reference is not a Klima-Taler balance
 or an SDK wallet target.
 
 ### Remaining provider contracts

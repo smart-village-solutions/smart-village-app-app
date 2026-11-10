@@ -50,6 +50,7 @@ export type ItemData = {
 type Props = {
   accessibilityLabel?: string;
   containerStyle?: ViewStyle;
+  disabled?: boolean;
   imageContainerStyle?: ViewStyle;
   imageContentPosition?: ImageContentPosition;
   imageStyle?: ImageStyle;
@@ -76,6 +77,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
   ({
     accessibilityLabel,
     containerStyle,
+    disabled = false,
     imageContainerStyle,
     imageContentPosition,
     imageStyle,
@@ -200,7 +202,8 @@ export const TextListItem: NamedExoticComponent<Props> & {
           }
         }
         onPress={() => (onPress ? onPress(navigation) : navigate())}
-        disabled={!navigation}
+        disabled={disabled || !navigation}
+        accessibilityState={{ disabled: disabled || !navigation }}
         delayPressIn={0}
         Component={Touchable}
         accessibilityLabel={
@@ -328,6 +331,7 @@ TextListItem.displayName = 'TextListItem';
 TextListItem.propTypes = {
   accessibilityLabel: PropTypes.string,
   containerStyle: PropTypes.object,
+  disabled: PropTypes.bool,
   imageContainerStyle: PropTypes.object,
   imageContentPosition: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   imageStyle: PropTypes.object,

@@ -61,6 +61,9 @@ public class ExpoChangersModule: Module {
     guard presenter.presentedViewController == nil else { promise.reject("E_BUSY", "Eine andere Ansicht ist bereits geöffnet."); return }
     runtime.opening = true
     weak var presentedController: UIViewController?
+    // Changers 4.3.0 keeps readiness on its singleton after the previous view closes.
+    // A fresh web app must queue links until its own readiness callback arrives.
+    ChangersInstance.shared().isWebAppReadyForDeepLinks = false
     let provider = ChangersInstance.shared().webApp(at: page, with: {
       guard let current = presentedController, runtime.controller === current else { return }
       runtime.closeProvider()

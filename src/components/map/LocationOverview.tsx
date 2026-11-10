@@ -21,7 +21,6 @@ import { useLocationSettings } from '../../hooks';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { MapMarker } from '../../types';
 import { LoadingSpinner } from '../LoadingSpinner';
-import { TextListItem } from '../TextListItem';
 import {
   KNOWN_ICON_STATUS_NAMES,
   VehicleStatusFeature,
@@ -41,6 +40,7 @@ import { texts } from '../../config/texts';
 import { ChipFilter } from './ChipFilter';
 import { KlimaTalerPreview } from './KlimaTalerPreview';
 import { MapLibre } from './MapLibre';
+import { MapPreview } from './MapPreview';
 
 const { MAP } = consts;
 
@@ -396,18 +396,8 @@ export const LocationOverview = ({
               stale={!!offers.error}
             />
           ) : (
-            <TextListItem
-              containerStyle={styles.textListItemContainer}
-              imageContainerStyle={styles.imageRadius}
-              imageStyle={styles.imageStyle}
-              item={{
-                ...item,
-                bottomDivider: false,
-                picture: item?.picture?.url ? item.picture : undefined
-              }}
-              leftImage={!!item?.picture?.url}
-              listItemStyle={styles.listItem}
-              listsWithoutArrows
+            <MapPreview
+              item={item}
               navigation={isPreviewWithoutNavigation ? undefined : navigation}
             />
           )}
@@ -428,18 +418,6 @@ const createStyles = (colors) => ({
     justifyContent: 'center'
   },
 
-  imageStyle: {
-    borderBottomRightRadius: 0,
-    borderTopRightRadius: 0,
-    height: normalize(96),
-    width: normalize(96)
-  },
-
-  imageRadius: {
-    borderBottomLeftRadius: normalize(12),
-    borderTopLeftRadius: normalize(12)
-  },
-
   listItemContainer: {
     backgroundColor: colors.surface,
     borderRadius: normalize(8),
@@ -458,19 +436,9 @@ const createStyles = (colors) => ({
     shadowRadius: 3
   },
 
-  listItem: {
-    marginVertical: normalize(16)
-  },
-
   map: {
     height: '100%',
     width: '100%'
-  },
-
-  textListItemContainer: {
-    alignItems: 'flex-start',
-    paddingVertical: 0,
-    padding: 0
   }
 });
 
