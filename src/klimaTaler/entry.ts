@@ -17,10 +17,10 @@ export const klimaTalerEntry = createEntry(changers, isKlimaTalerEnabled, async 
 let opening: Promise<void> | undefined;
 
 // Present above the current screen; never push an intermediate SVA route.
-export const openKlimaTaler = (): Promise<void> => {
+export const openKlimaTaler = (offerId?: number): Promise<void> => {
   if (opening) return opening;
   if (!isKlimaTalerEnabled()) return Promise.resolve();
-  opening = klimaTalerEntry.open().then(() => {
+  opening = klimaTalerEntry.open(offerId).then(() => {
     opening = undefined;
     const state = klimaTalerEntry.getSnapshot();
     if (state.phase !== 'error' || !isKlimaTalerEnabled()) return;
@@ -31,7 +31,7 @@ export const openKlimaTaler = (): Promise<void> => {
       { text: texts.accessibilityLabels.actions.cancel, style: 'cancel' },
       ...(state.errorCode === 'E_REGISTRATION_UNCERTAIN'
         ? []
-        : [{ text: texts.klimaTaler.retry, onPress: () => void openKlimaTaler() }])
+        : [{ text: texts.klimaTaler.retry, onPress: () => void openKlimaTaler(offerId) }])
     ]);
   });
   return opening;

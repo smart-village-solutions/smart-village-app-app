@@ -84,3 +84,29 @@ test('unsupported simulator errors remain distinguishable from missing credentia
     code: 'E_SIMULATOR_UNSUPPORTED'
   });
 });
+
+test.each([
+  0,
+  -1,
+  1.5,
+  NaN,
+  Infinity,
+  Number.MAX_SAFE_INTEGER + 1,
+  '10',
+  'https://example.org/offers/10'
+])('invalid offer target %s does not reach native code', async (id) => {
+  const openOffer = jest.fn();
+  const client = createChangers({ openOffer } as unknown as ChangersNative, 'ios');
+  await expect(client.openOffer(id as number)).rejects.toMatchObject({
+    code: 'E_INVALID_ARGUMENT'
+  });
+  expect(openOffer).not.toHaveBeenCalled();
+});
+
+test.each(['ios', 'android'])('only an offer ID crosses the %s bridge', async (platform) => {
+  const openOffer = jest.fn().mockResolvedValue(undefined);
+  const client = createChangers({ openOffer } as unknown as ChangersNative, platform);
+  expect(client.capabilities.offerDetails.supported).toBe(true);
+  await client.openOffer(10);
+  expect(openOffer).toHaveBeenCalledWith('10');
+});

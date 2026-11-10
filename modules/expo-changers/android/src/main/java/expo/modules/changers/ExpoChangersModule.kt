@@ -8,6 +8,7 @@ import expo.modules.kotlin.Promise
 import expo.modules.kotlin.functions.Queues
 import android.os.Handler
 import android.os.Looper
+import android.net.Uri
 import java.util.concurrent.atomic.AtomicBoolean
 
 class ExpoChangersModule : Module() {
@@ -115,6 +116,22 @@ class ExpoChangersModule : Module() {
     AsyncFunction("getUserUUID") { p: Promise -> resolve(p) { ChangersRuntime.requireReady(); if (Changers.isUserAuthenticated(ChangersRuntime.application)) Changers.uuid.takeIf { it.isNotBlank() } else null } }
     AsyncFunction("openProvider") { p: Promise -> resolve(p) { openProvider() } }.runOnQueue(Queues.MAIN)
     AsyncFunction("closeProvider") { ChangersRuntime.providerActivity?.finish(); null }.runOnQueue(Queues.MAIN)
+    AsyncFunction("openOffer") { offerId: String, p: Promise -> resolve(p) {
+      val url = changersOfferLink(offerId) ?: error("E_INVALID_ARGUMENT")
+      ChangersRuntime.requireReady()
+      check(!ChangersRuntime.networkBusy.get() && !ChangersRuntime.opening) { "E_BUSY" }
+      val activity = ChangersRuntime.providerActivity ?: appContext.currentActivity ?: error("E_NO_ACTIVITY")
+      if (ChangersRuntime.providerActivity != null) {
+        Changers.handleDeepLink(Uri.parse(url))
+      } else {
+        ChangersRuntime.opening = true
+        try {
+          // The SDK holds the offer while its own onboarding/web app becomes ready.
+          Changers.openLink(activity, Uri.parse(url))
+        } catch (e: Exception) { ChangersRuntime.opening = false; throw e }
+      }
+      null
+    } }.runOnQueue(Queues.MAIN)
     AsyncFunction("loginUser") { uuid: String, p: Promise -> loginUser(uuid, p) }
     AsyncFunction("registerUser") { p: Promise -> p.reject("E_UNSUPPORTED", "Unter Android erfolgt die Registrierung neuer Benutzer in der Anbieteroberfläche.", null) }
     AsyncFunction("fetchStatistics") { p: Promise -> fetchStatistics(p) }.runOnQueue(Queues.MAIN)

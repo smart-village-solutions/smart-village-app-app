@@ -18,6 +18,10 @@ public class ExpoChangersModule: Module {
       p.resolve(ChangersInstance.shared().userUUID)
     }.runOnQueue(.main)
     AsyncFunction("openProvider") { (p: Promise) in self.openProvider(.main, promise: p) }.runOnQueue(.main)
+    AsyncFunction("openOffer") { (offerId: String, p: Promise) in
+      guard let url = changersOfferLink(offerId) else { p.reject("E_INVALID_ARGUMENT", "Ungültiges Angebot."); return }
+      self.openProvider(.main, promise: p, offerURL: url)
+    }.runOnQueue(.main)
     AsyncFunction("openTarget") { (target: String, p: Promise) in
       guard target == "marketplace" else { p.reject("E_UNSUPPORTED", "Nur das Ziel Marktplatz ist bestätigt."); return }
       self.openProvider(.marketplace, promise: p)
@@ -36,11 +40,23 @@ public class ExpoChangersModule: Module {
       p.resolve(nil)
     }.runOnQueue(.main)
   }
-  private func openProvider(_ page: ChangersPageEnum, promise: Promise) {
+  private func routeOffer(_ url: URL?) {
+    forwardChangersOffer(url) { ChangersInstance.shared().handleDeepLink($0) }
+  }
+  private func openProvider(_ page: ChangersPageEnum, promise: Promise, offerURL: URL? = nil) {
     let runtime = ChangersRuntime.shared
     guard runtime.requireReady(promise) else { return }
     guard ChangersInstance.shared().isLoggedIn else { promise.reject("E_AUTHENTICATION", "Bitte zuerst ein Konto erstellen oder anmelden."); return }
-    if runtime.opening || runtime.controller?.presentingViewController != nil { promise.resolve(nil); return }
+    if runtime.opening {
+      if offerURL != nil { promise.reject("E_BUSY", "Die Anbieteroberfläche wird bereits geöffnet.") }
+      else { promise.resolve(nil) }
+      return
+    }
+    if runtime.controller?.presentingViewController != nil {
+      routeOffer(offerURL)
+      promise.resolve(nil)
+      return
+    }
     guard let presenter = appContext?.utilities?.currentViewController() else { promise.reject("E_NO_ACTIVITY", "Keine aktive Ansicht gefunden."); return }
     guard presenter.presentedViewController == nil else { promise.reject("E_BUSY", "Eine andere Ansicht ist bereits geöffnet."); return }
     runtime.opening = true
@@ -70,6 +86,9 @@ public class ExpoChangersModule: Module {
         if runtime.controller === controller { runtime.providerClosed() }
       } else if runtime.controller === controller {
         runtime.opening = false
+        // Let the SDK defer the target until its web app/onboarding is ready.
+        // Only hand it over after our own presentation has succeeded.
+        self.routeOffer(offerURL)
       }
       promise.resolve(nil)
     }

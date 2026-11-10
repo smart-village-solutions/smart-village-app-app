@@ -3,6 +3,16 @@ import { act, fireEvent, render } from '@testing-library/react-native';
 
 import { LocationOverview } from '../../src/components/map/LocationOverview';
 import { klimaTalerMarkerId, offersToMapMarkers } from '../../src/klimaTaler/mapOffers';
+import { openKlimaTaler } from '../../src/klimaTaler/entry';
+
+const mockIdle = { phase: 'idle' };
+jest.mock('../../src/klimaTaler/entry', () => ({
+  openKlimaTaler: jest.fn().mockResolvedValue(undefined),
+  klimaTalerEntry: {
+    subscribe: () => () => undefined,
+    getSnapshot: () => mockIdle
+  }
+}));
 
 const location = {
   id: 1,
@@ -236,4 +246,30 @@ test('ordinary POI maps do not add the external source', () => {
   const screen = render(<LocationOverview {...props} route={{ ...props.route, params: {} }} />);
   expect(screen.queryByRole('button', { name: /Klima-Taler/ })).toBeNull();
   expect(mockMap.mock.calls[mockMap.mock.calls.length - 1][0].locations).toHaveLength(1);
+});
+
+test('single-offer preview opens the offer ID, never the location ID or backend detail', () => {
+  mockLocations = [{ ...location, offers: [location.offers[0]] }];
+  const screen = render(<LocationOverview {...props} />);
+  act(() =>
+    mockMap.mock.calls[mockMap.mock.calls.length - 1][0].onMarkerPress(klimaTalerMarkerId(1))
+  );
+  expect(openKlimaTaler).not.toHaveBeenCalled();
+  fireEvent.press(screen.getByText('Klima Café'));
+  expect(openKlimaTaler).toHaveBeenCalledWith(10);
+  expect(rawProps.navigation.navigate).not.toHaveBeenCalled();
+  expect(screen.queryByText('Markt 1 32756 Detmold')).toBeNull();
+});
+
+test('multiple offers require an explicit selection and retain the map preview on return', () => {
+  const screen = render(<LocationOverview {...props} />);
+  act(() =>
+    mockMap.mock.calls[mockMap.mock.calls.length - 1][0].onMarkerPress(klimaTalerMarkerId(1))
+  );
+  fireEvent.press(screen.getByText('Klima Café'));
+  expect(openKlimaTaler).not.toHaveBeenCalled();
+  fireEvent.press(screen.getByRole('button', { name: 'Kuchen, Angebot in Klima-Taler öffnen' }));
+  expect(openKlimaTaler).toHaveBeenCalledWith(11);
+  screen.rerender(<LocationOverview {...props} />);
+  expect(screen.getByText('Klima Café')).toBeTruthy();
 });

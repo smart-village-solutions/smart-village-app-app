@@ -1,4 +1,4 @@
-import { ChangersError, createChangers } from '../../modules/expo-changers/src/api';
+import { ChangersError, createChangers, isOfferId } from '../../modules/expo-changers/src/api';
 import type { Status } from '../../modules/expo-changers/src/types';
 
 type Client = ReturnType<typeof createChangers>;
@@ -55,11 +55,21 @@ export const createEntry = (
       );
     }
   };
-  const open = (): Promise<void> => {
-    if (pending) return state.phase === 'idle' ? pending.then(open) : pending;
-    if (state.phase === 'open') return Promise.resolve();
+  const open = (offerId?: number): Promise<void> => {
+    if (pending) return state.phase === 'idle' ? pending.then(() => open(offerId)) : pending;
+    if (state.phase === 'open' && offerId === undefined) return Promise.resolve();
     if (!isEnabled()) {
       set({ phase: 'error', errorCode: 'E_DISABLED' });
+      return Promise.resolve();
+    }
+    if (
+      offerId !== undefined &&
+      (!isOfferId(offerId) || !client.capabilities.offerDetails.supported)
+    ) {
+      set({
+        phase: 'error',
+        errorCode: isOfferId(offerId) ? 'E_NATIVE_UNAVAILABLE' : 'E_INVALID_ARGUMENT'
+      });
       return Promise.resolve();
     }
     const requestGeneration = ++generation;
@@ -68,7 +78,8 @@ export const createEntry = (
       try {
         await ensureSession(requestGeneration);
         if (requestGeneration !== generation || !isEnabled()) return;
-        await client.openProvider();
+        if (offerId === undefined) await client.openProvider();
+        else await client.openOffer(offerId);
         if (requestGeneration === generation && isEnabled()) set({ phase: 'open' });
         else await client.closeProvider();
       } catch (error) {

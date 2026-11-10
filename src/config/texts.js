@@ -8,6 +8,8 @@ export const texts = {
       unconfigured: 'Klima-Taler: Suchgebiet fehlt',
       stale: 'Diese Angebote können veraltet sein.',
       showOffers: 'Angebote anzeigen oder ausblenden',
+      chooseOffer: 'Angebot auswählen',
+      openOffer: 'Angebot in Klima-Taler öffnen',
       available: 'verfügbar'
     },
     title: 'Klima-Taler',

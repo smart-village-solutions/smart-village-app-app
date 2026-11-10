@@ -119,7 +119,7 @@ Credentials are consumed by native build mods and are not serialized in Expo `ex
 
 ## Compatibility
 
-- OTA runtime: `<app version>-changers-5-<environment>`. This pins the upgraded native SDKs and must not share updates with app-version-only, `changers-1`, `changers-2`, `changers-3` or `changers-4` binaries. Existing activation and registration journals are retained. Install a new native build before publishing matching updates.
+- OTA runtime: `<app version>-changers-6-<environment>`. This isolates the native offer-link entry point and must not share updates with app-version-only or `changers-1` through `changers-5` binaries. Existing activation and registration journals are retained. Install a new native build before publishing matching updates.
 - iOS: Changers 4.3.0 / MotionTag 6.3.4, pinned to vendor commit `4bcbd85dcf3d303fd262b2165d5f57fa6c620ad0`.
 - Android: `com.github.Changers.Android-SDK:sdk:1.20.7` for production or `sdkstaging:1.20.7` for stage / MotionTag 7.2.5.
 - The provider environment is independent of the SVA customer slug. Production uses iOS `.production`, Android `sdk`, and `https://activity.changers.com/api/statistics/sdk`. Stage uses iOS `.stage`, Android `sdkstaging`, and `https://activity.maroshi.de/api/statistics/sdk`. The config plugin writes the same selected environment to native configuration and Android's `expo.changers.environment` Gradle property. Android fails closed if generated credentials and the compiled environment disagree. Production and staging OTA runtimes are isolated.
@@ -170,7 +170,7 @@ The dedicated HTTP client has no logging interceptors, shared cookies or cache. 
 
 `ChangersStatisticsSession.java` uses environment-specific `ChangersSdkAccess.java` sources to read the matching SDK session without reflection. Production and stage expose different JVM accessor names. Revalidate those accessors, headers, endpoint and response fields when upgrading the vendor SDK. This adapter protects the widget request path; it does not change every logging path inside the vendor SDK.
 
-Android statistics require the native `safeStatistics: true` capability. Older binaries retain the unavailable state even with newer JavaScript. Rebuilding Android enables the balance; the capability was introduced in the `changers-2` runtime; current builds use `changers-5-<environment>`.
+Android statistics require the native `safeStatistics: true` capability. Older binaries retain the unavailable state even with newer JavaScript. Rebuilding Android enables the balance; the capability was introduced in the `changers-2` runtime; current builds use `changers-6-<environment>`.
 
 ## Testing and limitations
 
@@ -268,8 +268,32 @@ entries keep their existing sources. The existing map's chip
 filter includes a Klima-Taler source toggle. External pins share MapLibre clustering and
 use an existing fallback marker image. They have namespaced `klima-taler:<id>` IDs; selecting
 them never issues a backend POI-detail request. The existing bottom preview shows the partner;
-tapping it expands all public offers and their cost/remaining vouchers. SDK redemption and
-external detail links remain a separate follow-up step.
+tapping a single-offer partner opens that offer inside the existing Klima-Taler provider.
+For multiple offers, tapping the partner reveals an accessible offer selector; an explicit
+selection opens that offer, rather than choosing the first one silently. No host POI-detail
+page is built and no voucher is redeemed automatically.
+
+Only a positive safe-integer offer ID crosses the new `openOffer` bridge. Both native
+platforms independently construct `https://open.klima-taler.com/offers/<id>`; arbitrary
+URLs, a location ID and credentials are not passed. iOS uses `handleDeepLink` after the
+existing wrapped modal is presented. Android uses `openLink`, or `handleDeepLink` when
+its provider activity already exists. External browser navigation and OS-level universal
+link registration are not needed for this internal entry.
+
+On iOS 4.3.0, `handleDeepLink` can return `false` after handing an ordinary offer to the
+web app. Its Bool is not a navigation-success acknowledgement. The adapter deliberately
+ignores that result for its validated offer URL; it must not reject or close the modal.
+The native offer-link harness covers both SDK results and the target-free dashboard case.
+
+The central entry coordinator still prepares the existing session before presenting.
+Repeated taps share a request; retries retain the selected ID. Cancellation during
+session preparation prevents late target delivery. The SDK is responsible for deferring
+a handed-over offer until its own web app/onboarding is ready. This requires native device
+acceptance: especially initial onboarding, closing before completion, reopening the normal
+widget, selecting a different offer and remote disable. Host tests cannot prove vendor
+queue consumption or cancellation. No target is persisted by the host across process death.
+Older binaries fail with the existing app-update message before activation or signup.
+Build runtime `changers-6-<environment>` before distributing this step.
 
 The search defaults to the existing `mapSettings.mapCenterPosition` and German content.
 Radius is omitted unless configured; the API currently defaults to 10 km. An optional `settings["klima-taler"].offers` object can supply `area`,
@@ -283,7 +307,7 @@ filters. Remote module disable hides pins and preview immediately and ignores la
 Feed errors and empty results are indicated in the source chip without replacing the map.
 
 Acceptance: open Karte in the Klima-Taler widget, check that only Klima-Taler pins appear,
-toggle the source, then select a partner and expand its offers. Check normal POI selection
+toggle the source, then open a single-offer partner or select one of multiple offers. Check normal POI selection
 and category filters through an ordinary POI map entry. Check dark mode/large text.
 An empty staging feed should show `Klima-Taler (0)` without unrelated POI pins.
 Automated fixtures cover populated pins/previews; actual populated device testing requires
@@ -298,7 +322,7 @@ Do not synthesize badge values or assume that generic provider navigation opens 
 
 For badges, obtain stable IDs, labels, images, acquisition state and update signals. For map integration, obtain the public feed's customer/source identification, stable partner/site/offer IDs, coordinates, title, image fallback, validity/deletion rules, pagination and synchronization behavior, plus a verified provider detail target for each platform. Preserve the selected target across onboarding or session recovery. A public POI feed must not contain personal tracking or account data.
 
-Use the existing SVA map and preview components once these contracts are available. Generic backend POI fields or test fixtures alone do not establish a working provider integration.
+Use the existing SVA map and preview components once these contracts are available. Generic backend POI fields or test fixtures alone do not establish a working provider integration. The current contract targets offers; a general partner/location detail link remains unconfirmed.
 
 ## Device acceptance checklist
 

@@ -6,6 +6,7 @@ export type Capabilities = Record<
   | 'stopTracking'
   | 'logout'
   | 'marketplace'
+  | 'offerDetails'
   | 'badgeList'
   | 'poiDetails',
   Capability
@@ -38,6 +39,7 @@ export interface ChangersNative {
   activate(): Promise<Status>;
   getUserUUID(): Promise<string | null>;
   openProvider(): Promise<void>;
+  openOffer(offerId: string): Promise<void>;
   closeProvider(): Promise<void>;
   registerUser(): Promise<string | null>;
   loginUser(uuid: string): Promise<string | null>;
