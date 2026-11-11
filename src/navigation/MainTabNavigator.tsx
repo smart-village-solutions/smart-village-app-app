@@ -28,6 +28,7 @@ import { renderThemeAwareBottomTabBar } from './ThemeAwareBottomTabBar';
 const { REFRESH_INTERVALS } = consts;
 type ResolvedTabRoutes = Omit<TabNavigatorConfig, 'tabConfigs'> & { tabConfigs: TabConfig[] };
 type ScreenOptionsProps = Parameters<ReturnType<typeof getScreenOptions>>[0];
+type ConfiguredTitleParams = { title?: unknown; __svaConfiguredTitle?: string };
 
 const isTabConfig = (
   tabConfig: CustomTab | TabConfig | string | undefined
@@ -35,27 +36,28 @@ const isTabConfig = (
   !!tabConfig && typeof tabConfig !== 'string' && 'stackConfig' in tabConfig;
 
 const initialTitle = (screen?: ScreenConfig) =>
-  (screen?.initialParams as { title?: unknown } | undefined)?.title;
+  (screen?.initialParams as ConfiguredTitleParams | undefined)?.title;
 
 const withTranslatedTitle = (
   screen: ScreenConfig,
   original: unknown,
   translated: unknown
 ): ScreenConfig => {
-  if (typeof original !== 'string' || typeof translated !== 'string' || original === translated) {
-    return screen;
-  }
+  if (typeof original !== 'string') return screen;
 
   const { screenOptions } = screen;
+  const title = typeof translated === 'string' ? translated : original;
   return {
     ...screen,
-    // initialParams only seeds the route on mount, so update the header via options.
-    screenOptions: (props: ScreenOptionsProps) => ({
-      ...(typeof screenOptions === 'function' ? screenOptions(props) : screenOptions),
-      ...((props.route.params as { title?: string } | undefined)?.title === original && {
-        title: translated
-      })
-    })
+    initialParams: { ...screen.initialParams, __svaConfiguredTitle: original },
+    screenOptions: (props: ScreenOptionsProps) => {
+      const options =
+        (typeof screenOptions === 'function' ? screenOptions(props) : screenOptions) || {};
+      const params = props.route.params as ConfiguredTitleParams | undefined;
+      // Keep identifying the original title after a static-content refresh has changed it.
+      const initial = params?.__svaConfiguredTitle ?? original;
+      return params?.title === initial && title !== initial ? { ...options, title } : options;
+    }
   };
 };
 
@@ -95,18 +97,19 @@ export const useTabRoutes = (translate = false) => {
               defaultTab.stackConfig.initialRouteName === tabConfig
           );
         } else if ('stackConfig' in tabConfig) {
+          if (!translate || !tabRoutesData) return tabConfig;
           const translated = translatedRoutes?.tabConfigs[index];
-          if (!isTabConfig(translated) || translated === tabConfig) return tabConfig;
+          const localized = isTabConfig(translated) ? translated : tabConfig;
 
           return {
-            tabOptions: translated.tabOptions,
+            tabOptions: localized.tabOptions,
             stackConfig: {
               ...tabConfig.stackConfig,
               screenConfigs: tabConfig.stackConfig.screenConfigs.map((screen, screenIndex) =>
                 withTranslatedTitle(
                   screen,
                   initialTitle(screen),
-                  initialTitle(translated.stackConfig.screenConfigs[screenIndex])
+                  initialTitle(localized.stackConfig.screenConfigs[screenIndex])
                 )
               )
             }
@@ -123,7 +126,8 @@ export const useTabRoutes = (translate = false) => {
             themeMode: mode,
             totalCount: tabConfigs.length
           });
-          if (!translated || translated === tabConfig) return config;
+          const originalTitle = tabConfig.params?.title;
+          if (!translate || typeof originalTitle !== 'string') return config;
 
           return {
             ...config,
@@ -131,7 +135,7 @@ export const useTabRoutes = (translate = false) => {
               ...config.stackConfig,
               screenConfigs: config.stackConfig.screenConfigs.map((screen) =>
                 screen.routeName === config.stackConfig.initialRouteName
-                  ? withTranslatedTitle(screen, tabConfig.params?.title, translated.params?.title)
+                  ? withTranslatedTitle(screen, originalTitle, translated?.params?.title)
                   : screen
               )
             }
@@ -144,7 +148,7 @@ export const useTabRoutes = (translate = false) => {
       ...tabBarColors,
       tabConfigs: dynamicTabs.filter(isTabConfig)
     };
-  }, [colors, defaultTabRoutes, mode, tabRoutesData, translatedRoutes]);
+  }, [colors, defaultTabRoutes, mode, tabRoutesData, translate, translatedRoutes]);
 
   useEffect(() => {
     // Keep the navigator mounted when a background tab configuration request starts.

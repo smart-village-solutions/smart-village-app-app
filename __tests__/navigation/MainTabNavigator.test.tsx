@@ -124,7 +124,7 @@ describe('useTabRoutes', () => {
     const localizedScreen = tab.stackConfig.screenConfigs[0];
     expect(mockStackMount).toHaveBeenCalledTimes(1);
     expect(tab.tabOptions).toEqual({ tabBarLabel: 'More' });
-    expect(localizedScreen.initialParams).toBe(screen.initialParams);
+    expect(localizedScreen.initialParams).toMatchObject(screen.initialParams);
     expect(typeof localizedScreen.screenOptions).toBe('function');
     if (typeof localizedScreen.screenOptions !== 'function') throw new Error('expected options');
     expect(
@@ -139,6 +139,35 @@ describe('useTabRoutes', () => {
         route: { name: 'About', key: 'about', params: { title: 'Explicit route title' } }
       })
     ).toEqual({});
+
+    const refreshedConfig = (label: string, title: string) => ({
+      tabConfigs: [
+        {
+          tabOptions: { tabBarLabel: label },
+          stackConfig: {
+            initialRouteName: 'About',
+            screenConfigs: [{ ...screen, initialParams: { title } }]
+          }
+        }
+      ]
+    });
+    mockUseStaticContent.mockReturnValue({
+      loading: false,
+      data: refreshedConfig('Stadtinfo', 'Stadtverwaltung')
+    });
+    mockUseTabNavigationTranslations.mockReturnValue(refreshedConfig('City info', 'City council'));
+    await act(async () => tree.update(<Navigation />));
+    const refreshedTab = latestRoutes.tabRoutes?.tabConfigs[0];
+    const options = refreshedTab?.stackConfig.screenConfigs[0].screenOptions;
+    expect(mockStackMount).toHaveBeenCalledTimes(1);
+    expect(refreshedTab?.tabOptions).toEqual({ tabBarLabel: 'City info' });
+    if (typeof options !== 'function') throw new Error('expected refreshed options');
+    expect(
+      options({
+        navigation: {},
+        route: { name: 'About', key: 'about', params: localizedScreen.initialParams }
+      })
+    ).toEqual({ title: 'City council' });
     await act(async () => tree.unmount());
   });
 });
