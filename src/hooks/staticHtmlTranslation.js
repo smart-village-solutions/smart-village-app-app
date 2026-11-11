@@ -10,6 +10,14 @@ import { ReactQueryClient } from '../ReactQueryClient';
 const INITIAL_POLL_WINDOW_MS = 5000;
 const POLL_WINDOW_MS = 45000;
 
+const schedulePoll = (load, startedAt) => {
+  const elapsed = Date.now() - startedAt;
+  if (elapsed >= POLL_WINDOW_MS) return;
+
+  const interval = elapsed < INITIAL_POLL_WINDOW_MS ? 1000 : 3000;
+  return setTimeout(load, Math.min(interval, POLL_WINDOW_MS - elapsed));
+};
+
 export const useStaticHtmlTranslation = (name, file, fetchPolicy, skip) => {
   const original = file?.content;
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
@@ -44,11 +52,7 @@ export const useStaticHtmlTranslation = (name, file, fetchPolicy, skip) => {
         if (state === 'ready' && typeof content === 'string' && content.trim()) {
           setReady({ name, locale, original, content });
         } else if (state === 'pending') {
-          const elapsed = Date.now() - startedAt;
-          if (elapsed < POLL_WINDOW_MS) {
-            const interval = elapsed < INITIAL_POLL_WINDOW_MS ? 1000 : 3000;
-            timer = setTimeout(load, Math.min(interval, POLL_WINDOW_MS - elapsed));
-          }
+          timer = schedulePoll(load, startedAt);
         }
       } catch {
         // Keep showing the original when the translation lookup fails.
