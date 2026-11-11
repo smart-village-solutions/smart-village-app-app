@@ -46,7 +46,9 @@ export type ThemePalettesConfig = Partial<Record<ResolvedThemeMode, ThemePalette
 export type ThemeGlobalSettings = {
   settings?: {
     accessibility?: {
-      autoContrastEnabled?: boolean;
+      enabledFeatures?: {
+        autoContrastEnabled?: boolean;
+      };
       themePalettes?: ThemePalettesConfig;
     };
   };

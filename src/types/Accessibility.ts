@@ -37,6 +37,7 @@ export type AccessibilityUserSettings = {
 };
 
 export type AccessibilityFeatureKey =
+  | 'autoContrastEnabled'
   | 'isGrayscaleEnabled'
   | 'textScaling'
   | 'boldText'

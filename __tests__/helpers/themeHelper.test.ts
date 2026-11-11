@@ -73,12 +73,11 @@ describe('themeHelper', () => {
   });
 
   it('ignores malformed colors and repairs foreground contrast without replacing brand colors', () => {
-    const palette = resolveThemePalette(lightColors, {
-      border: 'not-a-color',
-      onPrimary: '#FFFFFF',
-      primary: '#FFFFFF',
-      text: '#FFFFFF'
-    });
+    const palette = resolveThemePalette(
+      lightColors,
+      { border: 'not-a-color', onPrimary: '#FFFFFF', primary: '#FFFFFF', text: '#FFFFFF' },
+      true
+    );
 
     expect(palette.border).toBe(lightColors.border);
     expect(palette.primary).toBe('#FFFFFF');
@@ -90,7 +89,7 @@ describe('themeHelper', () => {
     const palettes = resolveThemePalettes({
       settings: {
         accessibility: {
-          autoContrastEnabled: false,
+          enabledFeatures: { autoContrastEnabled: false },
           themePalettes: {
             light: {
               primary: '#0091db',
@@ -117,22 +116,55 @@ describe('themeHelper', () => {
     expect(palettes.light.border).toBe(lightColors.border);
   });
 
-  it.each([undefined, true, 'false', null, 0])(
-    'keeps automatic contrast enabled unless explicitly false (%s)',
+  it.each([undefined, false, 'true', 'false', null, 0, 1])(
+    'keeps automatic contrast disabled unless explicitly true (%s)',
     (autoContrastEnabled) => {
       const palettes = resolveThemePalettes({
         settings: {
           accessibility: {
-            autoContrastEnabled: autoContrastEnabled as never,
+            enabledFeatures: { autoContrastEnabled: autoContrastEnabled as never },
             themePalettes: { light: { primary: '#0091db', onPrimary: '#FFFFFF' } }
           }
         }
       });
 
-      expect(palettes.light.onPrimary).toBe('#141414');
-      expect(palettes.light.lightestText).toBe('#141414');
+      expect(palettes.light.onPrimary).toBe('#FFFFFF');
+      expect(palettes.light.lightestText).toBe('#FFFFFF');
     }
   );
+
+  it('enables automatic contrast for both palettes through enabledFeatures', () => {
+    const palettes = resolveThemePalettes({
+      settings: {
+        accessibility: {
+          enabledFeatures: { autoContrastEnabled: true },
+          themePalettes: {
+            light: { primary: '#FFFFFF', onPrimary: '#FFFFFF' },
+            dark: { primary: '#FFFFFF', onPrimary: '#FFFFFF' }
+          }
+        }
+      }
+    });
+
+    [palettes.light, palettes.dark].forEach((palette) => {
+      expect(getContrastRatio(palette.onPrimary, palette.primary)).toBeGreaterThanOrEqual(4.5);
+      expect(palette.lightestText).toBe(palette.onPrimary);
+    });
+  });
+
+  it('ignores the old accessibility-level flag and preserves colors by default', () => {
+    const palettes = resolveThemePalettes({
+      settings: {
+        accessibility: {
+          autoContrastEnabled: true,
+          themePalettes: { light: { primary: '#FFFFFF', onPrimary: '#FFFFFF' } }
+        }
+      }
+    } as never);
+
+    expect(palettes.light.onPrimary).toBe('#FFFFFF');
+    expect(resolveThemePalette(lightColors, { text: '#FFFFFF' }).text).toBe('#FFFFFF');
+  });
 
   it('keeps Magdeburg GlobalSettings colors instead of reverting to the base palette', () => {
     const palettes = resolveThemePalettes({
@@ -168,9 +200,7 @@ describe('themeHelper', () => {
       text: '#F5F5F5',
       textMuted: '#C7C7CC'
     });
-    expect(getContrastRatio(palettes.dark.onPrimary, palettes.dark.primary)).toBeGreaterThanOrEqual(
-      4.5
-    );
+    expect(palettes.dark.onPrimary).toBe('#141414');
   });
 
   it('resolves light and dark overrides from GlobalSettings independently', () => {

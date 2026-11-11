@@ -211,7 +211,7 @@ const applyContrastFallbacks = (palette: ThemeColorPalette, basePalette: ThemeCo
 export const resolveThemePalette = (
   basePalette: ThemeColorPalette,
   overrides?: ThemePaletteOverrides,
-  autoContrastEnabled = true
+  autoContrastEnabled = false
 ): ThemeColorPalette => {
   const validOverrides = sanitizeOverrides(basePalette, overrides);
   const palette = { ...basePalette, ...validOverrides };
@@ -225,7 +225,7 @@ export const resolveThemePalette = (
 export const resolveThemePalettes = (globalSettings?: ThemeGlobalSettings | null) => {
   const configuredPalettes = globalSettings?.settings?.accessibility?.themePalettes;
   const autoContrastEnabled =
-    globalSettings?.settings?.accessibility?.autoContrastEnabled !== false;
+    globalSettings?.settings?.accessibility?.enabledFeatures?.autoContrastEnabled === true;
 
   return Object.freeze({
     dark: resolveThemePalette(darkColors, configuredPalettes?.dark, autoContrastEnabled),
