@@ -1,9 +1,10 @@
 import PropTypes from 'prop-types';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 import { ActivityIndicator, RefreshControl, SectionList } from 'react-native';
 
 import { normalize, texts } from '../../config';
 import { useHomeRefresh, useRenderItem, useStaticContent } from '../../hooks';
+import { useAboutTranslations } from '../../hooks/homeSettingsTranslations';
 import { NetworkContext } from '../../NetworkProvider';
 import { QUERY_TYPES } from '../../queries';
 import { SettingsContext } from '../../SettingsProvider';
@@ -12,6 +13,8 @@ import { SectionHeader } from '../SectionHeader';
 import { VersionNumber } from '../VersionNumber';
 import { useThemeStyles } from '../../hooks/useThemeStyles';
 import { useTheme } from '../../hooks/useTheme';
+
+const EMPTY_ENTRIES = [];
 
 export const About = ({ navigation, publicJsonFile = 'about', withHomeRefresh, withSettings }) => {
   const { colors: colors } = useTheme();
@@ -22,9 +25,16 @@ export const About = ({ navigation, publicJsonFile = 'about', withHomeRefresh, w
     type: 'json',
     refreshTimeKey: `publicJsonFile-${publicJsonFile}`
   });
-  const { isConnected } = useContext(NetworkContext);
+  const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
   const [refreshing, setRefreshing] = useState(false);
+  const sourceEntries = Array.isArray(data) ? data : EMPTY_ENTRIES;
+  const headlineAbout = globalSettings.sections?.headlineAbout;
+  const source = useMemo(
+    () => ({ entries: sourceEntries, headlineAbout }),
+    [sourceEntries, headlineAbout]
+  );
+  const translated = useAboutTranslations(source, isMainserverUp, publicJsonFile);
 
   useHomeRefresh(withHomeRefresh ? refetch : undefined);
 
@@ -47,13 +57,8 @@ export const About = ({ navigation, publicJsonFile = 'about', withHomeRefresh, w
       </LoadingContainer>
     );
 
-  const entries = Array.isArray(data) ? data : [];
+  const entries = translated.entries.map((item) => ({ ...item, isHeadlineTitle: false }));
   if (!entries.length && !withSettings) return <VersionNumber />;
-
-  entries.forEach((item) => (item.isHeadlineTitle = false));
-
-  const { sections = {} } = globalSettings;
-  const { headlineAbout = texts.homeTitles.about } = sections;
 
   if (withSettings && !entries.find((item) => item.routeName === 'Settings')) {
     entries.push({
@@ -66,7 +71,8 @@ export const About = ({ navigation, publicJsonFile = 'about', withHomeRefresh, w
 
   const sectionData = [
     {
-      title: headlineAbout,
+      title:
+        translated.headlineAbout === undefined ? texts.homeTitles.about : translated.headlineAbout,
       data: entries
     }
   ];
@@ -87,7 +93,7 @@ export const About = ({ navigation, publicJsonFile = 'about', withHomeRefresh, w
         !!title && <SectionHeader title={title} containerStyle={styles.sectionHeader} />
       }
       renderItem={renderItem}
-      keyExtractor={(item) => item.title}
+      keyExtractor={(item, index) => `${sourceEntries[index]?.title ?? item.title}:${index}`}
       ListFooterComponent={<VersionNumber />}
       style={styles.container}
     />

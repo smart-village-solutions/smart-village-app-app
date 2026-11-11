@@ -3,6 +3,7 @@ import renderer, { act } from 'react-test-renderer';
 
 import { About } from '../../../src/components/screens/About';
 import { useStaticContent } from '../../../src/hooks';
+import { useAboutTranslations } from '../../../src/hooks/homeSettingsTranslations';
 
 jest.mock('../../../src/config', () => ({
   normalize: (value) => value,
@@ -20,6 +21,9 @@ jest.mock('../../../src/components/VersionNumber', () => ({ VersionNumber: () =>
 jest.mock('../../../src/components/LoadingContainer', () => ({ LoadingContainer: () => null }));
 jest.mock('../../../src/hooks/useTheme', () => ({ useTheme: () => ({ colors: {} }) }));
 jest.mock('../../../src/hooks/useThemeStyles', () => ({ useThemeStyles: (factory) => factory() }));
+jest.mock('../../../src/hooks/homeSettingsTranslations', () => ({
+  useAboutTranslations: jest.fn((source) => source)
+}));
 
 jest.mock('../../../src/hooks', () => ({
   useHomeRefresh: jest.fn(),
@@ -29,6 +33,7 @@ jest.mock('../../../src/hooks', () => ({
     ({ item }) =>
       jest.requireActual('react').createElement('about-entry', {
         route: item.routeName,
+        title: item.title,
         onPress: () => navigation.navigate(item.routeName)
       })
 }));
@@ -52,3 +57,23 @@ it.each([undefined, [], {}])(
     });
   }
 );
+
+it('renders localized About items without modifying the original menu', async () => {
+  const data = [{ title: 'Kontakt', routeName: 'Contact' }];
+  useStaticContent.mockReturnValue({ data, loading: false });
+  useAboutTranslations.mockReturnValue({
+    entries: [{ title: 'Contact', routeName: 'Contact' }]
+  });
+  const navigation = { navigate: jest.fn() };
+  let tree;
+  await act(async () => {
+    tree = renderer.create(
+      <About navigation={navigation} publicJsonFile="homeAbout" withSettings />
+    );
+  });
+  const entry = tree.root.findByProps({ route: 'Contact' });
+  expect(entry.props.title).toBe('Contact');
+  expect(useAboutTranslations).toHaveBeenCalledWith({ entries: data }, undefined, 'homeAbout');
+  expect(data).toEqual([{ title: 'Kontakt', routeName: 'Contact' }]);
+  await act(async () => tree.unmount());
+});

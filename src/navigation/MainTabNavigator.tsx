@@ -10,10 +10,18 @@ import {
 } from '../config/navigation/tabConfig';
 import { resolveTabBarColors } from '../helpers/tabNavigationHelper';
 import { useStaticContent, useTheme } from '../hooks';
+import { useTabNavigationTranslations } from '../hooks/homeSettingsTranslations';
+import { NetworkContext } from '../NetworkProvider';
 import { OrientationContext } from '../OrientationProvider';
-import { CustomTab, TabConfig, TabNavigationStaticContent, TabNavigatorConfig } from '../types';
+import {
+  CustomTab,
+  ScreenConfig,
+  TabConfig,
+  TabNavigationStaticContent,
+  TabNavigatorConfig
+} from '../types';
 
-import { createStackNavigatorResolver } from './AppStackNavigator';
+import { AppStackNavigator } from './AppStackNavigator';
 import { renderThemeAwareBottomTabBar } from './ThemeAwareBottomTabBar';
 
 const { REFRESH_INTERVALS } = consts;
@@ -23,8 +31,34 @@ const isTabConfig = (
 ): tabConfig is TabConfig =>
   !!tabConfig && typeof tabConfig !== 'string' && 'stackConfig' in tabConfig;
 
-export const useTabRoutes = () => {
+const initialTitle = (screen?: ScreenConfig) =>
+  (screen?.initialParams as { title?: unknown } | undefined)?.title;
+
+const withTranslatedTitle = (
+  screen: ScreenConfig,
+  original: unknown,
+  translated: unknown
+): ScreenConfig => {
+  if (typeof original !== 'string' || typeof translated !== 'string' || original === translated) {
+    return screen;
+  }
+
+  const { screenOptions } = screen;
+  return {
+    ...screen,
+    // initialParams only seeds the route on mount, so update the header via options.
+    screenOptions: (props) => ({
+      ...(typeof screenOptions === 'function' ? screenOptions(props) : screenOptions),
+      ...((props.route.params as { title?: string } | undefined)?.title === original && {
+        title: translated
+      })
+    })
+  };
+};
+
+export const useTabRoutes = (translate = false) => {
   const { colors, mode } = useTheme();
+  const { isMainserverUp } = useContext(NetworkContext);
   const defaultTabRoutes = useMemo(() => createDefaultTabNavigatorConfig(colors), [colors]);
   const [lastTabRoutes, setLastTabRoutes] = useState<TabNavigatorConfig>();
   const { data: tabRoutesData, loading } = useStaticContent<TabNavigationStaticContent>({
@@ -32,6 +66,10 @@ export const useTabRoutes = () => {
     refreshInterval: REFRESH_INTERVALS.ONCE_PER_MINUTE,
     type: 'json'
   });
+  const translatedRoutes = useTabNavigationTranslations(
+    translate ? tabRoutesData : undefined,
+    isMainserverUp
+  ) as typeof tabRoutesData;
 
   const freshTabRoutes = useMemo(() => {
     const { tabConfigs } = tabRoutesData || defaultTabRoutes;
@@ -54,16 +92,47 @@ export const useTabRoutes = () => {
               defaultTab.stackConfig.initialRouteName === tabConfig
           );
         } else if ('stackConfig' in tabConfig) {
-          return tabConfig;
+          const translated = translatedRoutes?.tabConfigs[index];
+          if (!isTabConfig(translated) || translated === tabConfig) return tabConfig;
+
+          return {
+            tabOptions: translated.tabOptions,
+            stackConfig: {
+              ...tabConfig.stackConfig,
+              screenConfigs: tabConfig.stackConfig.screenConfigs.map((screen, screenIndex) =>
+                withTranslatedTitle(
+                  screen,
+                  initialTitle(screen),
+                  initialTitle(translated.stackConfig.screenConfigs[screenIndex])
+                )
+              )
+            }
+          };
         } else {
-          return createDynamicTabConfig({
+          const translated = translatedRoutes?.tabConfigs[index] as CustomTab | undefined;
+          const config = createDynamicTabConfig({
             ...tabConfig,
+            label: translated?.label ?? tabConfig.label,
+            accessibilityLabel: translated?.accessibilityLabel ?? tabConfig.accessibilityLabel,
             colors,
             index,
             tabBarIconFillOnFocus: tabConfig.tabBarIconFillOnFocus ?? defaultIconFillOnFocus,
             themeMode: mode,
             totalCount: tabConfigs.length
           });
+          if (!translated || translated === tabConfig) return config;
+
+          return {
+            ...config,
+            stackConfig: {
+              ...config.stackConfig,
+              screenConfigs: config.stackConfig.screenConfigs.map((screen) =>
+                screen.routeName === config.stackConfig.initialRouteName
+                  ? withTranslatedTitle(screen, tabConfig.params?.title, translated.params?.title)
+                  : screen
+              )
+            }
+          };
         }
       }
     );
@@ -72,7 +141,7 @@ export const useTabRoutes = () => {
       ...tabBarColors,
       tabConfigs: dynamicTabs.filter(isTabConfig)
     };
-  }, [colors, defaultTabRoutes, mode, tabRoutesData]);
+  }, [colors, defaultTabRoutes, mode, tabRoutesData, translatedRoutes]);
 
   useEffect(() => {
     // Keep the navigator mounted when a background tab configuration request starts.
@@ -88,8 +157,7 @@ export const useTabRoutes = () => {
 const Tab = createBottomTabNavigator();
 
 export const MainTabNavigator = () => {
-  const resolveStackNavigator = useMemo(() => createStackNavigatorResolver(), []);
-  const { defaultTabRoutes, tabRoutes } = useTabRoutes();
+  const { defaultTabRoutes, tabRoutes } = useTabRoutes(true);
   const { orientation } = useContext(OrientationContext);
   const isPortrait = orientation === 'portrait';
 
@@ -119,12 +187,9 @@ export const MainTabNavigator = () => {
         const stackName = `Stack${index}`;
 
         return (
-          <Tab.Screen
-            key={stackName}
-            name={stackName}
-            component={resolveStackNavigator(stackName, tabConfig.stackConfig)}
-            options={tabConfig.tabOptions}
-          />
+          <Tab.Screen key={stackName} name={stackName} options={tabConfig.tabOptions}>
+            {() => <AppStackNavigator stackConfig={tabConfig.stackConfig} />}
+          </Tab.Screen>
         );
       })}
     </Tab.Navigator>
