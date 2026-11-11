@@ -3,7 +3,11 @@ import { StyleSheet, type StyleProp, type ViewStyle } from 'react-native';
 
 export type WidgetLayoutMode = 'grid' | 'list';
 
-export const WidgetLayoutContext = createContext<{ mode: WidgetLayoutMode }>({ mode: 'grid' });
+export const WidgetLayoutContext = createContext<{
+  mode: WidgetLayoutMode;
+  measurementKey?: string;
+  onLabelWidth?: (width: number) => void;
+}>({ mode: 'grid' });
 
 export const omitResponsiveDimensions = (style: StyleProp<ViewStyle>): StyleProp<ViewStyle> => {
   const flattenedStyle = StyleSheet.flatten(style);

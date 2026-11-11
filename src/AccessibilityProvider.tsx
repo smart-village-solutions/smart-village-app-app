@@ -43,6 +43,7 @@ const defaultAccessibility: AccessibilityContextValue = {
     themeMode: 'system'
   },
   features: {
+    balanceWidgetRows: false,
     boldText: false,
     headerEntry: false,
     highContrast: false,
