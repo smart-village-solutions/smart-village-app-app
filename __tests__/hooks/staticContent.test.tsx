@@ -21,6 +21,9 @@ jest.mock('../../src/queries', () => ({
 jest.mock('../../src/AppLanguagesProvider', () => ({
   AppLanguagesContext: jest.requireActual('react').createContext(['de'])
 }));
+jest.mock('../../src/NetworkProvider', () => ({
+  NetworkContext: jest.requireActual('react').createContext({})
+}));
 jest.mock('../../src/helpers/textsLocaleHelper');
 jest.mock('../../src/ReactQueryClient');
 
@@ -158,10 +161,7 @@ describe('useStaticContent', () => {
       data: { publicHtmlFile: { content: original } },
       loading: false
     });
-    const rawRequest = jest
-      .fn()
-      .mockResolvedValueOnce(result('pending'))
-      .mockResolvedValueOnce(result('ready', translated));
+    const rawRequest = jest.fn(async () => result('pending'));
     mockedReactQueryClient.mockResolvedValue({
       rawRequest,
       cacheScope: async () => 'demo-en',
@@ -188,12 +188,21 @@ describe('useStaticContent', () => {
         { locale: 'en' }
       );
 
+      for (let seconds = 0; seconds < 5; seconds += 1) {
+        await act(async () => jest.advanceTimersByTime(1000));
+      }
+      expect(latestResult).toMatchObject({ data: original, loading: false });
+      expect(rawRequest).toHaveBeenCalledTimes(6);
+
+      rawRequest.mockResolvedValueOnce(result('ready', translated));
+      await act(async () => jest.advanceTimersByTime(2000));
+      expect(rawRequest).toHaveBeenCalledTimes(6);
       await act(async () => jest.advanceTimersByTime(1000));
       expect(latestResult).toMatchObject({ data: translated, loading: false });
 
       await act(async () => tree?.update(renderPage(false)));
       expect(latestResult?.data).toBe(translated);
-      expect(rawRequest).toHaveBeenCalledTimes(2);
+      expect(rawRequest).toHaveBeenCalledTimes(7);
 
       mockedGetTextsLocale.mockReturnValue('de');
       await act(async () => tree?.update(renderPage(false)));

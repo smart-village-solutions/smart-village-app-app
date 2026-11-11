@@ -7,8 +7,8 @@ import { NetworkContext } from '../NetworkProvider';
 import { GET_PUBLIC_HTML_TRANSLATION } from '../queries/publicHtmlFiles';
 import { ReactQueryClient } from '../ReactQueryClient';
 
-const RETRY_INTERVAL_MS = 1000;
-const RETRY_WINDOW_MS = 5000;
+const INITIAL_POLL_WINDOW_MS = 5000;
+const POLL_WINDOW_MS = 45000;
 
 export const useStaticHtmlTranslation = (name, file, fetchPolicy, skip) => {
   const original = file?.content;
@@ -24,7 +24,7 @@ export const useStaticHtmlTranslation = (name, file, fetchPolicy, skip) => {
 
     let active = true;
     let timer;
-    const deadline = Date.now() + RETRY_WINDOW_MS;
+    const startedAt = Date.now();
 
     const load = async () => {
       try {
@@ -38,17 +38,17 @@ export const useStaticHtmlTranslation = (name, file, fetchPolicy, skip) => {
         if (!active || scope !== response.scope || getTextsLocale() !== locale) return;
 
         const file = response.data?.publicHtmlFile;
-        const translation = file?.translation;
-        if (file?.content !== original) return;
+        if (file?.content !== original || !file.translation) return;
+        const { state, content } = file.translation;
 
-        if (
-          translation?.state === 'ready' &&
-          typeof translation.content === 'string' &&
-          translation.content.trim()
-        ) {
-          setReady({ name, locale, original, content: translation.content });
-        } else if (translation?.state === 'pending' && Date.now() < deadline) {
-          timer = setTimeout(load, RETRY_INTERVAL_MS);
+        if (state === 'ready' && typeof content === 'string' && content.trim()) {
+          setReady({ name, locale, original, content });
+        } else if (state === 'pending') {
+          const elapsed = Date.now() - startedAt;
+          if (elapsed < POLL_WINDOW_MS) {
+            const interval = elapsed < INITIAL_POLL_WINDOW_MS ? 1000 : 3000;
+            timer = setTimeout(load, Math.min(interval, POLL_WINDOW_MS - elapsed));
+          }
         }
       } catch {
         // Keep showing the original when the translation lookup fails.
