@@ -7,3 +7,15 @@ export const GET_PUBLIC_HTML_FILE = gql`
     }
   }
 `;
+
+export const GET_PUBLIC_HTML_TRANSLATION = gql`
+  query PublicHtmlTranslation($name: String!, $version: String) {
+    publicHtmlFile(name: $name, version: $version) {
+      content
+      translation {
+        state
+        content
+      }
+    }
+  }
+`;

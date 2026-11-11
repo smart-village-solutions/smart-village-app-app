@@ -8,6 +8,7 @@ import { graphqlFetchPolicy } from '../helpers';
 import { NetworkContext } from '../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../queries';
 
+import { useStaticHtmlTranslation } from './staticHtmlTranslation';
 import { useRefreshTime } from './TimeHooks';
 
 type StaticContentArgs<T = unknown> = {
@@ -76,12 +77,14 @@ export const useStaticContent = <T>({
     return await refetch?.();
   }, [refetch]);
 
+  const displayedHtml = useStaticHtmlTranslation(name, data?.publicHtmlFile, fetchPolicy, skip);
+
   const { data: publicFileData, parseError } = useMemo(() => {
     let nextParseError = false;
 
     if (type === 'html') {
       return {
-        data: data?.publicHtmlFile?.content,
+        data: displayedHtml,
         parseError: false
       };
     }
@@ -105,7 +108,7 @@ export const useStaticContent = <T>({
       data: undefined,
       parseError: nextParseError
     };
-  }, [type, data, parseFromJson, loading]);
+  }, [type, data, displayedHtml, parseFromJson, loading]);
 
   return {
     data: publicFileData,
