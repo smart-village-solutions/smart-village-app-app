@@ -1,5 +1,6 @@
 export * from './areaService';
 export * from './configurations';
+export * from './feedback';
 export * from './location';
 export * from './priorities';
 export * from './requests';
