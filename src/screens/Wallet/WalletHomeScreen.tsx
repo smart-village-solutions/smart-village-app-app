@@ -56,7 +56,6 @@ const Footer = ({
           <Icon.NamedIcon name={infoIcon} style={styles.infoIcon} />
 
           <View style={styles.infoTextContainer}>
-            <ReadAloudContent content={infoText as string} contentId="wallet-home-info-content" />
             <HtmlView html={infoText as string} />
           </View>
         </WrapperRow>
@@ -144,6 +143,7 @@ export const WalletHomeScreen = () => {
   if (!savedCards?.length) {
     return (
       <SafeAreaViewFlex style={{ paddingBottom: readAloudPlayerBottomSpacing }}>
+        <ReadAloudContent content={infoText as string} contentId="wallet-home-info-content" />
         <WrapperVertical>
           <WalletHeader
             description={description}
@@ -193,20 +193,23 @@ export const WalletHomeScreen = () => {
     });
 
   return (
-    <WalletList
-      contentContainerStyle={listContentContainerStyle}
-      items={listItem}
-      ListFooterComponent={() => (
-        <WrapperVertical>
-          <Footer
-            buttonText={buttonText}
-            infoIcon={infoIcon}
-            infoText={infoText}
-            navigation={navigation}
-          />
-        </WrapperVertical>
-      )}
-    />
+    <>
+      <ReadAloudContent content={infoText as string} contentId="wallet-home-info-content" />
+      <WalletList
+        contentContainerStyle={listContentContainerStyle}
+        items={listItem}
+        ListFooterComponent={() => (
+          <WrapperVertical>
+            <Footer
+              buttonText={buttonText}
+              infoIcon={infoIcon}
+              infoText={infoText}
+              navigation={navigation}
+            />
+          </WrapperVertical>
+        )}
+      />
+    </>
   );
 };
 
