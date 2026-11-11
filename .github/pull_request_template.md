@@ -20,4 +20,5 @@
 
 ## Notes
 
-- 
+- For municipality-specific changes, note the instance setting and the default behavior.
+- For changes made on a release or staging branch, link the corresponding `master` change or describe what is still open.
