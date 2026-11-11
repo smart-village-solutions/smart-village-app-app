@@ -18,20 +18,11 @@ import { VoucherListItem } from '../components/vouchers/VoucherListItem';
 import { WasteCollectionListItem } from '../components/waste/WasteCollectionListItem';
 import { consts, normalize, texts } from '../config';
 import { momentFormat } from '../helpers';
+import { resolveListType } from '../helpers/listTypeSettings';
 import { QUERY_TYPES } from '../queries';
 import { GenericType, ScreenName } from '../types';
 
 const { LIST_TYPES, ROOT_ROUTE_NAMES } = consts;
-
-const getListType = (query, listTypesSettings) => {
-  switch (query) {
-    case QUERY_TYPES.POINTS_OF_INTEREST:
-    case QUERY_TYPES.TOURS:
-      return listTypesSettings[QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS];
-    default:
-      return listTypesSettings[query];
-  }
-};
 
 const EventSectionHeader = ({ item, navigation, options, query }) => (
   <SectionHeader
@@ -96,7 +87,7 @@ export const useRenderItem = (query, navigation, options = {}) => {
   const { globalSettings, listTypesSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { listsWithoutArrows = false } = settings;
-  const listType = options.listType || getListType(query, listTypesSettings);
+  const listType = resolveListType(query, globalSettings, listTypesSettings, options.listType);
   let renderItem;
 
   const calculateBottomDivider = (item, index, section) => {
