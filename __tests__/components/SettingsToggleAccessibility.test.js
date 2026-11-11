@@ -1,5 +1,6 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
+import { StyleSheet } from 'react-native';
 
 jest.mock('react-native-elements', () => {
   const ReactLocal = require('react');
@@ -146,6 +147,42 @@ describe('SettingsToggle accessibility', () => {
     )[0];
 
     expect(loadingSlot).toBeDefined();
+  });
+
+  it('preserves the compact control gap while the loading indicator is visible', () => {
+    jest.useFakeTimers();
+    const tree = renderWithAct(
+      <SettingsToggle needsConnection={false} item={{ title: 'Test option', value: false }} />
+    );
+    const loadingStyle = () =>
+      StyleSheet.flatten(
+        tree.root.findAll(
+          (node) =>
+            node.props.color === '#107821' &&
+            Array.isArray(node.props.style) &&
+            node.props.style.some((style) => style?.width === 18)
+        )[0].props.style
+      );
+    const controlsStyle = () =>
+      tree.root
+        .findAllByType('mock-wrapper-row')
+        .map((node) => StyleSheet.flatten(node.props.style))
+        .find((style) => style?.columnGap !== undefined);
+
+    try {
+      expect(controlsStyle().columnGap).toBe(8);
+      expect(loadingStyle().opacity).toBe(0);
+      renderer.act(() => tree.root.findByType('mock-list-item').props.onPress());
+      expect(loadingStyle().opacity).toBeUndefined();
+      expect(loadingStyle().width).toBe(18);
+      expect(loadingStyle().marginRight).toBeUndefined();
+      expect(controlsStyle().columnGap).toBe(8);
+      renderer.act(() => jest.advanceTimersByTime(1300));
+      expect(loadingStyle().opacity).toBe(0);
+    } finally {
+      renderer.act(() => tree.unmount());
+      jest.useRealTimers();
+    }
   });
 
   it('forwards the permanent switch-label preview to the switch control', () => {
