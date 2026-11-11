@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
-import { useMutation } from 'react-apollo';
+import { useMutation, useQuery } from 'react-apollo';
 import { Alert, FlatList, StyleSheet, View } from 'react-native';
 
 import { NetworkContext } from '../../NetworkProvider';
@@ -7,11 +7,19 @@ import { useProfileContext } from '../../ProfileProvider';
 import { SettingsContext } from '../../SettingsProvider';
 import { Icon, consts, normalize, texts } from '../../config';
 import { AUTH_MODE_USER, getApolloAuthContext } from '../../graphqlAuth';
-import { isValidGeoLocation, matomoTrackingString, parseListItemsFromQuery } from '../../helpers';
+import {
+  graphqlFetchPolicy,
+  isValidGeoLocation,
+  matomoTrackingString,
+  parseListItemsFromQuery
+} from '../../helpers';
 import { useDetailRefresh, useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
 import { useTheme } from '../../hooks/useTheme';
 import { QUERY_TYPES } from '../../queries';
-import { DELETE_POINT_OF_INTEREST } from '../../queries/pointsOfInterest';
+import {
+  DELETE_POINT_OF_INTEREST,
+  GET_POINT_OF_INTEREST_MAP_MARKERS
+} from '../../queries/pointsOfInterest';
 import { ScreenName } from '../../types';
 import { Button } from '../Button';
 import { DataProviderButton } from '../DataProviderButton';
@@ -38,6 +46,10 @@ import { OperatingCompany } from './OperatingCompany';
 import { PriceCard } from './PriceCard';
 import { TravelTimes } from './TravelTimes';
 import { isOpeningTimesGroupingEnabled } from './openingTimesSettings';
+import {
+  getPointOfInterestMapCategoryIds,
+  getPointOfInterestMapMarkers
+} from './pointOfInterestMapHelper';
 
 const { MAP, MATOMO_TRACKING } = consts;
 export const INITIAL_VOUCHER_COUNT = 3;
@@ -96,6 +108,34 @@ export const PointOfInterest = ({
   const hasGeoCoordinates = isValidGeoLocation(geoLocation);
   const latitude = geoLocation?.latitude;
   const longitude = geoLocation?.longitude;
+  const categoryName = route.params?.queryVariables?.categoryName;
+  const categoryIds = useMemo(
+    () => getPointOfInterestMapCategoryIds(categories, categoryName),
+    [categories, categoryName]
+  );
+  const { data: mapMarkerData, loading: mapMarkerLoading } = useQuery(
+    GET_POINT_OF_INTEREST_MAP_MARKERS,
+    {
+      fetchPolicy: graphqlFetchPolicy({ isConnected, isMainserverUp }),
+      skip:
+        hideMap ||
+        !hasGeoCoordinates ||
+        !isConnected ||
+        !isMainserverUp ||
+        (!categoryName && !categoryIds.length),
+      variables: {
+        category: categoryName || undefined,
+        categoryIds: categoryName ? undefined : categoryIds
+      }
+    }
+  );
+  const currentMapMarker = useMemo(
+    () => ({
+      id,
+      position: { latitude, longitude }
+    }),
+    [id, latitude, longitude]
+  );
 
   // action to open source urls
   const openWebScreen = useOpenWebScreen('Ort', undefined, route.params?.rootRouteName);
@@ -172,10 +212,9 @@ export const PointOfInterest = ({
     refetch?.();
   });
 
-  const categoryName = route.params?.queryVariables?.categoryName;
   let nestedCategory;
   if (categoryName) {
-    nestedCategory = categories.find((category) => category.name === categoryName);
+    nestedCategory = categories?.find((category) => category.name === categoryName);
   }
 
   const status = availableVehiclesData?.length
@@ -208,6 +247,11 @@ export const PointOfInterest = ({
     typeof status === 'string' && KNOWN_ICON_STATUS_NAMES.has(status)
       ? status
       : payload?.activeIconName || vehicleActiveIconName || fallbackActiveIconName;
+
+  const mapMarkers = getPointOfInterestMapMarkers(
+    { ...currentMapMarker, iconName, activeIconName },
+    mapMarkerData?.pointsOfInterest
+  );
 
   return (
     <WrapperVertical>
@@ -366,20 +410,29 @@ export const PointOfInterest = ({
       {!hideMap && hasGeoCoordinates && isConnected && isMainserverUp && (
         <WrapperVertical>
           <SectionHeader title={texts.pointOfInterest.location} />
-          <MapLibre
-            isMultipleMarkersMap={false}
-            isMyLocationButtonVisible={false}
-            locations={[
-              {
-                iconName,
-                activeIconName,
-                id,
-                position: { latitude, longitude }
-              }
-            ]}
-            mapStyle={styles.mapStyle}
-            selectedMarker={id}
-          />
+          {mapMarkerLoading ? (
+            <View style={styles.mapStyle}>
+              <LoadingSpinner loading />
+            </View>
+          ) : (
+            <MapLibre
+              isMultipleMarkersMap={false}
+              isMyLocationButtonVisible={false}
+              locations={mapMarkers}
+              mapStyle={styles.mapStyle}
+              onMarkerPress={(markerId) => {
+                if (!markerId || markerId === id) return;
+
+                navigation.push(ScreenName.Detail, {
+                  title: texts.detailTitles.pointOfInterest,
+                  query: QUERY_TYPES.POINT_OF_INTEREST,
+                  queryVariables: { id: markerId, categoryName },
+                  rootRouteName: route.params?.rootRouteName
+                });
+              }}
+              selectedMarker={id}
+            />
+          )}
         </WrapperVertical>
       )}
 
