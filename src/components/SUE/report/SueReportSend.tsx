@@ -1,6 +1,5 @@
 /* eslint-disable complexity */
 import React, { useContext, useRef, useState } from 'react';
-import { useMutation } from 'react-apollo';
 import { Controller, useForm } from 'react-hook-form';
 import { Alert, Keyboard, ScrollView, View } from 'react-native';
 import { Divider, Rating } from 'react-native-elements';
@@ -8,7 +7,7 @@ import { Divider, Rating } from 'react-native-elements';
 import { ConfigurationsContext } from '../../../ConfigurationsProvider';
 import { device, normalize, texts } from '../../../config';
 import { useAppInfo, useKeyboardHeight } from '../../../hooks';
-import { QUERY_TYPES, createQuery } from '../../../queries';
+import { sendUserFeedback } from '../../../queries/SUE';
 import { ScreenName } from '../../../types';
 import { Button } from '../../Button';
 import { DefaultKeyboardAvoidingView } from '../../DefaultKeyboardAvoidingView';
@@ -50,12 +49,14 @@ export const SueReportSend = ({
   const { feedbackHeader, ratingTitle, messageTitle, messagePlaceholder } = feedbackFormTexts;
   const [showFeedbackSection, setShowFeedbackSection] = useState(feedbackSection);
   const [rating, setRating] = useState(defaultRating);
+  const [loading, setLoading] = useState(false);
+  const submitting = useRef(false);
 
   const appInfo = useAppInfo();
   const keyboardHeight = useKeyboardHeight();
   const scrollViewRef = useRef(null);
 
-  const { control, reset, handleSubmit, getValues } = useForm({
+  const { control, reset, handleSubmit } = useForm({
     defaultValues: {
       message: '',
       rating
@@ -65,25 +66,14 @@ export const SueReportSend = ({
   const title = isDone ? doneTitle : loadingTitle;
   const subtitle = isDone ? doneSubtitle : loadingSubtitle;
 
-  const [createAppUserContent, { loading }] = useMutation(
-    createQuery(QUERY_TYPES.APP_USER_CONTENT)
-  );
-
-  const onSubmit = async (createAppUserContentNewData: TNewContent) => {
+  const onSubmit = async (data: TNewContent) => {
+    if (submitting.current) return;
+    submitting.current = true;
+    setLoading(true);
     Keyboard.dismiss();
 
-    const formData = {
-      dataType: 'json',
-      dataSource: 'form',
-      content: JSON.stringify({
-        action: 'notify_and_destroy',
-        appInfo,
-        ...createAppUserContentNewData
-      })
-    };
-
     try {
-      await createAppUserContent({ variables: formData });
+      await sendUserFeedback({ ...data, appVersion: appInfo.appVersion });
 
       Alert.alert(texts.feedbackScreen.alert.title, texts.feedbackScreen.alert.message, [
         {
@@ -94,7 +84,10 @@ export const SueReportSend = ({
         }
       ]);
     } catch (error) {
-      console.error(error);
+      Alert.alert(texts.feedbackScreen.alert.errorTitle, texts.feedbackScreen.alert.errorMessage);
+    } finally {
+      submitting.current = false;
+      setLoading(false);
     }
   };
 
@@ -182,7 +175,7 @@ export const SueReportSend = ({
 
                   <Button
                     disabled={loading || rating === 0}
-                    onPress={handleSubmit(onSubmit)}
+                    onPress={() => handleSubmit(onSubmit)()}
                     title={
                       loading
                         ? texts.feedbackScreen.sendButton.disabled

@@ -91,6 +91,7 @@ export const fetchSueEndpoints = async (serviceRequestId?: number | string) => {
 
   const sueLocationsUrl = `${serverUrl}/locations`;
   const suePostRequest = `${serverUrl}/requests`;
+  const sueUserFeedbackUrl = `${serverUrl?.replace(/\/+$/, '')}/support/sendUserFeedback`;
   const suePrioritiesUrl = `${serverUrl}/priorities`;
   const sueRequestsUrl = `${serverUrl}/requests`;
   const sueRequestsUrlWithServiceId = `${serverUrl}/requests/${encodeURIComponent(
@@ -115,6 +116,7 @@ export const fetchSueEndpoints = async (serviceRequestId?: number | string) => {
     sueRequestsUrl,
     sueRequestsUrlWithServiceId,
     sueServicesUrl,
-    sueStatusesUrl
+    sueStatusesUrl,
+    sueUserFeedbackUrl
   };
 };
