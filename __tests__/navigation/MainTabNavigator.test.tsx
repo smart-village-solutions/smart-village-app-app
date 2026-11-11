@@ -60,7 +60,7 @@ const Probe = ({ translate = false }) => {
 
 describe('useTabRoutes', () => {
   beforeEach(() => {
-    mockUseTabNavigationTranslations.mockImplementation((source) => source);
+    mockUseTabNavigationTranslations.mockImplementation((source: unknown) => source);
     mockStackMount.mockClear();
   });
 

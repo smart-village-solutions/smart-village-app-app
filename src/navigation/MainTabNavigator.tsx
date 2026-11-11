@@ -22,9 +22,12 @@ import {
 } from '../types';
 
 import { AppStackNavigator } from './AppStackNavigator';
+import type { getScreenOptions } from './screenOptions';
 import { renderThemeAwareBottomTabBar } from './ThemeAwareBottomTabBar';
 
 const { REFRESH_INTERVALS } = consts;
+type ResolvedTabRoutes = Omit<TabNavigatorConfig, 'tabConfigs'> & { tabConfigs: TabConfig[] };
+type ScreenOptionsProps = Parameters<ReturnType<typeof getScreenOptions>>[0];
 
 const isTabConfig = (
   tabConfig: CustomTab | TabConfig | string | undefined
@@ -47,7 +50,7 @@ const withTranslatedTitle = (
   return {
     ...screen,
     // initialParams only seeds the route on mount, so update the header via options.
-    screenOptions: (props) => ({
+    screenOptions: (props: ScreenOptionsProps) => ({
       ...(typeof screenOptions === 'function' ? screenOptions(props) : screenOptions),
       ...((props.route.params as { title?: string } | undefined)?.title === original && {
         title: translated
@@ -60,7 +63,7 @@ export const useTabRoutes = (translate = false) => {
   const { colors, mode } = useTheme();
   const { isMainserverUp } = useContext(NetworkContext);
   const defaultTabRoutes = useMemo(() => createDefaultTabNavigatorConfig(colors), [colors]);
-  const [lastTabRoutes, setLastTabRoutes] = useState<TabNavigatorConfig>();
+  const [lastTabRoutes, setLastTabRoutes] = useState<ResolvedTabRoutes>();
   const { data: tabRoutesData, loading } = useStaticContent<TabNavigationStaticContent>({
     name: 'tabNavigation',
     refreshInterval: REFRESH_INTERVALS.ONCE_PER_MINUTE,
