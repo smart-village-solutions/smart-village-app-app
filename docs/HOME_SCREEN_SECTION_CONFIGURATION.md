@@ -172,6 +172,9 @@ For data-driven sections (`query`-based entries), the following fields are **opt
 | `eventRecords`             | `buttonTitle`                   | `sections.buttonEvents`                                  |
 | `eventRecords`             | `limitEvents`                   | `sections.limitEvents` (default: `15`)                   |
 
+Set `sections.eventDetailTitle` in `globalSettings` to override the header title on event detail
+screens. The usual detail title applies when this setting is omitted.
+
 All query-based sections support `skipLastDivider: true`. It removes the divider below the last
 visible item after all sources have been merged and the configured limit has been applied.
 
