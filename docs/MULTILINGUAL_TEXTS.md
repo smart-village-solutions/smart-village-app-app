@@ -1,5 +1,16 @@
 # Manual multilingual texts.js installation
 
+## Translated HTML screens
+
+When an online screen loads static HTML in an enabled target language, the app
+shows an accessible loading indicator while waiting for the translated content.
+The app gives the translation lookup up to 10 seconds after the source HTML is
+available. If the lookup fails or expires, the screen displays the German
+original and keeps it for that visit. Reopening the screen can pick up a
+translation that finished in the background.
+
+## Bundled text catalog
+
 Download a complete, sealed municipal `texts.js` from SVA Studio and replace
 `src/config/texts.js` in the customer app checkout. Review the German customer
 texts and included languages before building. The download does not change any

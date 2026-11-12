@@ -1,7 +1,7 @@
 import React from 'react';
 import { ActivityIndicator, View } from 'react-native';
 
-import { consts } from '../config';
+import { consts, texts } from '../config';
 import { useTheme } from '../hooks/useTheme';
 
 import { LoadingContainer } from './LoadingContainer';
@@ -16,11 +16,17 @@ export const LoadingSpinner = ({ loading }: Props) => {
   return loading ? (
     <LoadingContainer>
       <View
-        accessibilityLabel={consts.a11yLabel.loading}
+        accessibilityLabel={texts.defectReport?.wait ?? consts.a11yLabel.loading}
+        accessibilityLiveRegion="polite"
         accessibilityRole="progressbar"
+        accessibilityState={{ busy: true }}
         accessible
       >
-        <ActivityIndicator color={colors.refreshControl} />
+        <ActivityIndicator
+          color={colors.refreshControl}
+          accessibilityElementsHidden
+          importantForAccessibility="no"
+        />
       </View>
     </LoadingContainer>
   ) : null;

@@ -19,20 +19,21 @@ jest.mock('../../src/queries', () => ({
 }));
 
 jest.mock('../../src/AppLanguagesProvider', () => ({
-  AppLanguagesContext: jest.requireActual('react').createContext(['de'])
+  AppLanguagesContext: jest.requireActual('react').createContext(['de']),
+  AppLanguagesLoadingContext: jest.requireActual('react').createContext(false)
 }));
 jest.mock('../../src/NetworkProvider', () => ({
   NetworkContext: jest.requireActual('react').createContext({})
 }));
-jest.mock('../../src/helpers/textsLocaleHelper');
-jest.mock('../../src/ReactQueryClient');
+jest.mock('../../src/helpers/textsLocaleHelper', () => ({ getTextsLocale: jest.fn() }));
+jest.mock('../../src/ReactQueryClient', () => ({ ReactQueryClient: jest.fn() }));
 
 import React from 'react';
 import renderer, { act } from 'react-test-renderer';
 import { useQuery } from 'react-apollo';
 
 import { graphqlFetchPolicy } from '../../src/helpers';
-import { AppLanguagesContext } from '../../src/AppLanguagesProvider';
+import { AppLanguagesContext, AppLanguagesLoadingContext } from '../../src/AppLanguagesProvider';
 import { getTextsLocale } from '../../src/helpers/textsLocaleHelper';
 import { NetworkContext } from '../../src/NetworkProvider';
 import { getQuery } from '../../src/queries';
@@ -148,7 +149,7 @@ describe('useStaticContent', () => {
     expect(latestResult?.loading).toBe(false);
   });
 
-  it('shows cached HTML immediately and switches to a ready translation of that source', async () => {
+  it('keeps the original hidden while pending and shows the ready translation directly', async () => {
     jest.useFakeTimers();
     const original = '<p>Datenschutz</p>';
     const translated = '<p>Privacy policy</p>';
@@ -168,30 +169,33 @@ describe('useStaticContent', () => {
       request: jest.fn()
     });
 
-    const renderPage = (online: boolean) => (
+    const renderPage = (online: boolean, languagesLoading = false) => (
       <NetworkContext.Provider value={{ isConnected: online, isMainserverUp: online }}>
-        <AppLanguagesContext.Provider value={['de', 'en']}>
-          <Probe name="privacy" type="html" onResult={(result) => (latestResult = result)} />
-        </AppLanguagesContext.Provider>
+        <AppLanguagesLoadingContext.Provider value={languagesLoading}>
+          <AppLanguagesContext.Provider value={languagesLoading ? ['de'] : ['de', 'en']}>
+            <Probe name="privacy" type="html" onResult={(result) => (latestResult = result)} />
+          </AppLanguagesContext.Provider>
+        </AppLanguagesLoadingContext.Provider>
       </NetworkContext.Provider>
     );
 
     let tree: renderer.ReactTestRenderer | undefined;
     try {
       await act(async () => {
-        tree = renderer.create(renderPage(true));
+        tree = renderer.create(renderPage(true, true));
       });
-      expect(latestResult).toMatchObject({ data: original, loading: false, error: false });
+      expect(latestResult).toMatchObject({ data: undefined, loading: true, error: false });
       expect(rawRequest).toHaveBeenCalledWith(
         expect.anything(),
         expect.objectContaining({ name: 'privacy' }),
         { locale: 'en' }
       );
+      await act(async () => tree?.update(renderPage(true)));
 
       for (let seconds = 0; seconds < 5; seconds += 1) {
         await act(async () => jest.advanceTimersByTime(1000));
       }
-      expect(latestResult).toMatchObject({ data: original, loading: false });
+      expect(latestResult).toMatchObject({ data: undefined, loading: true });
       expect(rawRequest).toHaveBeenCalledTimes(6);
 
       rawRequest.mockResolvedValueOnce(result('ready', translated));
@@ -207,6 +211,55 @@ describe('useStaticContent', () => {
       mockedGetTextsLocale.mockReturnValue('de');
       await act(async () => tree?.update(renderPage(false)));
       expect(latestResult?.data).toBe(original);
+    } finally {
+      await act(async () => tree?.unmount());
+      jest.useRealTimers();
+    }
+  });
+
+  it('shows the original at the deadline even if the request hangs and ignores a late translation', async () => {
+    jest.useFakeTimers();
+    const original = '<p>Datenschutz</p>';
+    mockedGetTextsLocale.mockReturnValue('en');
+    mockedUseQuery.mockReturnValue({
+      data: { publicHtmlFile: { content: original } },
+      loading: false
+    });
+    const rawRequest = jest.fn(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 11000));
+      return {
+        scope: 'demo-en',
+        data: {
+          publicHtmlFile: {
+            content: original,
+            translation: { state: 'ready', content: '<p>Privacy policy</p>' }
+          }
+        }
+      };
+    });
+    mockedReactQueryClient.mockResolvedValue({
+      rawRequest,
+      cacheScope: async () => 'demo-en',
+      request: jest.fn()
+    });
+
+    let tree: renderer.ReactTestRenderer | undefined;
+    try {
+      await act(async () => {
+        tree = renderer.create(
+          <NetworkContext.Provider value={{ isConnected: true, isMainserverUp: true }}>
+            <AppLanguagesContext.Provider value={['de', 'en']}>
+              <Probe name="privacy" type="html" onResult={(result) => (latestResult = result)} />
+            </AppLanguagesContext.Provider>
+          </NetworkContext.Provider>
+        );
+      });
+      expect(latestResult).toMatchObject({ data: undefined, loading: true });
+      await act(async () => jest.advanceTimersByTime(10000));
+      expect(latestResult).toMatchObject({ data: original, loading: false });
+      await act(async () => jest.advanceTimersByTime(1000));
+      expect(latestResult).toMatchObject({ data: original, loading: false });
+      expect(rawRequest).toHaveBeenCalledTimes(1);
     } finally {
       await act(async () => tree?.unmount());
       jest.useRealTimers();

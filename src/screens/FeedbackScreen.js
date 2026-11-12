@@ -16,6 +16,7 @@ import {
   Wrapper
 } from '../components';
 import { Icon, consts, device, normalize, texts } from '../config';
+import { LoadingSpinner } from '../components/LoadingSpinner';
 import { collectDeviceInfo } from '../helpers/appUserContentHelper';
 import { useAppInfo, useMatomoTrackScreenView, useStaticContent } from '../hooks';
 import { QUERY_TYPES, createQuery } from '../queries';
@@ -30,8 +31,9 @@ const getFeedbackContentName = (htmlContentName) =>
   htmlContentName || DEFAULT_FEEDBACK_CONTENT_NAME;
 
 const FeedbackContent = ({ name }) => {
-  const { data } = useStaticContent({ name, type: 'html' });
+  const { data, translationLoading } = useStaticContent({ name, type: 'html' });
 
+  if (translationLoading) return <LoadingSpinner loading />;
   if (!data) return null;
 
   return (

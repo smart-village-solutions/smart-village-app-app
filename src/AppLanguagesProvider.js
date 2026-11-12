@@ -17,6 +17,7 @@ const GERMAN_ONLY = ['de'];
 const NO_NAMES = {};
 export const AppLanguageNamesContext = createContext(NO_NAMES);
 export const AppLanguagesContext = createContext(GERMAN_ONLY);
+export const AppLanguagesLoadingContext = createContext(false);
 
 const APP_TRANSLATION_LOCALES = gql`
   query AppTranslationLocales {
@@ -46,7 +47,7 @@ export const AppLanguagesProvider = ({ client, children }) => {
     () => refreshAppTextCatalog(client, getTextsLocale()).then(() => null),
     { enabled: online, retry: false, refetchOnMount: 'always', refetchOnWindowFocus: false }
   );
-  const { data, refetch } = useQuery(
+  const { data, isLoading, refetch } = useQuery(
     ['appTranslationLocales', getMainServerUrl(), getMainServerConfig().oAuthClientId],
     async () => {
       let result;
@@ -97,7 +98,9 @@ export const AppLanguagesProvider = ({ client, children }) => {
   return (
     <AppLanguagesContext.Provider value={data?.locales ?? GERMAN_ONLY}>
       <AppLanguageNamesContext.Provider value={data?.names ?? NO_NAMES}>
-        {children}
+        <AppLanguagesLoadingContext.Provider value={isLoading}>
+          {children}
+        </AppLanguagesLoadingContext.Provider>
       </AppLanguageNamesContext.Provider>
     </AppLanguagesContext.Provider>
   );

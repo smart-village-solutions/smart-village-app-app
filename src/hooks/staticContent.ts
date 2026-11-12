@@ -45,6 +45,7 @@ export const useStaticContent = <T>({
   data?: T;
   error: boolean;
   loading: boolean;
+  translationLoading: boolean;
   refetch: () => Promise<unknown>;
 } => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
@@ -77,7 +78,12 @@ export const useStaticContent = <T>({
     return await refetch?.();
   }, [refetch]);
 
-  const displayedHtml = useStaticHtmlTranslation(name, data?.publicHtmlFile, fetchPolicy, skip);
+  const { content: displayedHtml, loading: translationLoading } = useStaticHtmlTranslation(
+    name,
+    data?.publicHtmlFile,
+    fetchPolicy,
+    skip
+  );
 
   const { data: publicFileData, parseError } = useMemo(() => {
     let nextParseError = false;
@@ -116,7 +122,11 @@ export const useStaticContent = <T>({
     // add the extra condition to avoid weird rendering states, where `loading` is false, but the
     // `publicFileData` is not yet set. this way we can safely manipulate `data` and then update the
     // `publicFileData` with it, after the query has finished loading.
-    loading: loading || (publicFileData === undefined && !parseError && !queryError && !skip),
+    loading:
+      loading ||
+      translationLoading ||
+      (publicFileData === undefined && !parseError && !queryError && !skip),
+    translationLoading,
     refetch: refetchCallback
   };
 };
