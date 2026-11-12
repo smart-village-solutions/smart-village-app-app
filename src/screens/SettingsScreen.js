@@ -168,7 +168,6 @@ const renderItem = ({ item, navigation, listsWithoutArrows, settingsScreenListIt
     component = (
       <TextListItem
         item={{
-          bottomDivider: false,
           isHeadlineTitle: false,
           params: {
             setting: item,
