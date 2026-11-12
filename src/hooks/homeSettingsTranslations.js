@@ -3,7 +3,7 @@ import gql from 'graphql-tag';
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 import appJson from '../../app.json';
-import { AppLanguagesContext } from '../AppLanguagesProvider';
+import { AppLanguagesContext, AppLanguagesLoadingContext } from '../AppLanguagesProvider';
 import { getTextsLocale } from '../helpers/textsLocaleHelper';
 import { ProfileContext } from '../ProfileProvider';
 import { ReactQueryClient } from '../ReactQueryClient';
@@ -24,6 +24,16 @@ const tabNavigationPath =
   /^tabConfigs\.\d+\.(label|accessibilityLabel|params\.title|tabOptions\.(tabBarLabel|tabBarAccessibilityLabel)|stackConfig\.screenConfigs\.\d+\.initialParams\.title)$/;
 const aboutPath =
   /^(headlineAbout|entries\.\d+\.(title|subtitle|overtitle|statustitle|accessibilityLabel|teaserTitle|statusLabel|params\.title))$/;
+const registrationPath = /^(headline|title|description|subQuery\.(buttons\.\d+\.)?buttonTitle)$/;
+const registrationNavigationPath = /^\d+\.params\.title$/;
+
+const isReadyLabel = (entry, allowedPath) =>
+  entry?.state === 'ready' &&
+  Array.isArray(entry.path) &&
+  allowedPath.test(entry.path.join('.')) &&
+  typeof entry.original === 'string' &&
+  typeof entry.text === 'string' &&
+  !!entry.text.trim();
 
 const overlay = (source, [key, ...rest], original, text) => {
   if (!source || !Object.hasOwn(source, key)) return source;
@@ -42,22 +52,19 @@ const overlay = (source, [key, ...rest], original, text) => {
 
 const applyTranslations = (settings, entries, allowedPath) =>
   entries.reduce((result, entry) => {
-    if (
-      entry?.state !== 'ready' ||
-      !Array.isArray(entry.path) ||
-      !allowedPath.test(entry.path.join('.')) ||
-      typeof entry.original !== 'string' ||
-      typeof entry.text !== 'string' ||
-      !entry.text.trim()
-    ) {
-      return result;
-    }
+    if (!isReadyLabel(entry, allowedPath)) return result;
     return overlay(result, entry.path, entry.original, entry.text);
   }, settings);
 
-const useConfiguredTranslations = (settings, online, allowedPath, name) => {
+const matchingSnapshot = (snapshot, scope) =>
+  snapshot && Object.keys(scope).every((key) => snapshot[key] === scope[key]) ? snapshot : null;
+
+const useConfiguredTranslations = (settings, online, name, waitForTranslation = false) => {
   const locale = getTextsLocale();
-  const translationEnabled = useContext(AppLanguagesContext).includes(locale) && locale !== 'de';
+  const languages = useContext(AppLanguagesContext);
+  const languagesLoading = useContext(AppLanguagesLoadingContext);
+  const translationEnabled =
+    locale !== 'de' && (languages.includes(locale) || (waitForTranslation && languagesLoading));
   const { currentUserData, isLoggedIn } = useContext(ProfileContext);
   const [snapshot, setSnapshot] = useState(null);
 
@@ -66,7 +73,18 @@ const useConfiguredTranslations = (settings, online, allowedPath, name) => {
 
     let active = true;
     let timer;
-    const deadline = Date.now() + 5000;
+    let entries = EMPTY;
+    const timeout = waitForTranslation ? 10000 : 5000;
+    const deadline = Date.now() + timeout;
+    const save = (finished) =>
+      setSnapshot({ locale, settings, name, currentUserData, isLoggedIn, entries, finished });
+    const finish = () => {
+      active = false;
+      clearTimeout(timer);
+      clearTimeout(deadlineTimer);
+      save(true);
+    };
+    const deadlineTimer = waitForTranslation ? setTimeout(finish, timeout) : undefined;
     const load = async () => {
       try {
         const client = await ReactQueryClient();
@@ -78,15 +96,21 @@ const useConfiguredTranslations = (settings, online, allowedPath, name) => {
         const scope = await client.cacheScope(undefined, locale);
         if (!active || scope !== response.scope || getTextsLocale() !== locale) return;
 
-        const entries = response.data?.publicJsonFile?.translations;
-        if (!Array.isArray(entries)) return;
+        const labels = response.data?.publicJsonFile?.translations;
+        if (!Array.isArray(labels)) {
+          if (waitForTranslation) finish();
+          return;
+        }
 
-        setSnapshot({ locale, settings, name, currentUserData, isLoggedIn, entries });
+        entries = labels;
         if (entries.some((entry) => entry?.state === 'pending') && Date.now() < deadline) {
+          save(false);
           timer = setTimeout(load, 1000);
+        } else {
+          finish();
         }
       } catch {
-        // Older servers and failed requests leave the original settings usable.
+        if (active && waitForTranslation) finish();
       }
     };
     void load();
@@ -94,54 +118,80 @@ const useConfiguredTranslations = (settings, online, allowedPath, name) => {
     return () => {
       active = false;
       clearTimeout(timer);
+      clearTimeout(deadlineTimer);
     };
-  }, [settings, online, name, locale, translationEnabled, currentUserData, isLoggedIn]);
+  }, [
+    settings,
+    online,
+    name,
+    locale,
+    translationEnabled,
+    currentUserData,
+    isLoggedIn,
+    waitForTranslation
+  ]);
 
-  const entries =
-    translationEnabled &&
-    snapshot?.locale === locale &&
-    snapshot?.settings === settings &&
-    snapshot?.name === name &&
-    snapshot?.currentUserData === currentUserData &&
-    snapshot?.isLoggedIn === isLoggedIn
-      ? snapshot.entries
-      : EMPTY;
-  const translated = useMemo(
-    () => applyTranslations(settings, entries, allowedPath),
-    [settings, entries, allowedPath]
-  );
-  return { loadTranslations, translated };
+  const current = translationEnabled
+    ? matchingSnapshot(snapshot, { locale, settings, name, currentUserData, isLoggedIn })
+    : null;
+  return {
+    loadTranslations,
+    entries: current?.entries ?? EMPTY,
+    loading: !!(
+      settings &&
+      online &&
+      translationEnabled &&
+      waitForTranslation &&
+      !current?.finished
+    )
+  };
 };
 
 export const useHomeSettingsTranslations = (settings, online) => {
-  const { loadTranslations, translated } = useConfiguredTranslations(
+  const { loadTranslations, entries } = useConfiguredTranslations(
     settings,
     online,
-    homeSettingsPath,
     'globalSettings'
   );
   useFocusEffect(loadTranslations);
-  return translated;
+  return useMemo(() => applyTranslations(settings, entries, homeSettingsPath), [settings, entries]);
 };
 
 export const useTabNavigationTranslations = (settings, online) => {
-  const { loadTranslations, translated } = useConfiguredTranslations(
+  const { loadTranslations, entries } = useConfiguredTranslations(
     settings,
     online,
-    tabNavigationPath,
     'tabNavigation'
   );
   useEffect(loadTranslations, [loadTranslations]);
-  return translated;
+  return useMemo(
+    () => applyTranslations(settings, entries, tabNavigationPath),
+    [settings, entries]
+  );
 };
 
 export const useAboutTranslations = (settings, online, name) => {
-  const { loadTranslations, translated } = useConfiguredTranslations(
-    settings,
-    online,
-    aboutPath,
-    name
-  );
+  const { loadTranslations, entries } = useConfiguredTranslations(settings, online, name);
   useFocusEffect(loadTranslations);
-  return translated;
+  return useMemo(() => applyTranslations(settings, entries, aboutPath), [settings, entries]);
+};
+
+export const useRegistrationTranslations = (settings, online, name, sourceName, screenTitle) => {
+  const content = useConfiguredTranslations(settings, online, name, true);
+  const navigation = useConfiguredTranslations(sourceName && screenTitle, online, sourceName, true);
+  useFocusEffect(content.loadTranslations);
+  useFocusEffect(navigation.loadTranslations);
+
+  const data = useMemo(
+    () => applyTranslations(settings, content.entries, registrationPath),
+    [settings, content.entries]
+  );
+  const title = navigation.entries.find(
+    (entry) => isReadyLabel(entry, registrationNavigationPath) && entry.original === screenTitle
+  )?.text;
+  return {
+    data,
+    title: navigation.loading ? '' : title ?? screenTitle,
+    loading: content.loading || navigation.loading
+  };
 };

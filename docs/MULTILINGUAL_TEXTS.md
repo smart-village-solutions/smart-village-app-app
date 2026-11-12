@@ -9,6 +9,15 @@ available. If the lookup fails or expires, the screen displays the German
 original and keeps it for that visit. Reopening the screen can pick up a
 translation that finished in the background.
 
+## Configured registration screens
+
+The registration introduction and its configured buttons use translations from
+`publicJsonFile.translations`. The navigation title uses the same field on the
+source service-tile configuration. Both lookups are scoped to the current
+instance and app version. The screen waits up to 10 seconds for translations and
+keeps the original text for fields without a usable translation. Destinations,
+URLs and technical settings stay in the original configuration.
+
 ## Bundled text catalog
 
 Download a complete, sealed municipal `texts.js` from SVA Studio and replace

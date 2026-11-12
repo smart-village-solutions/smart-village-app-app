@@ -1,6 +1,6 @@
 import { useFocusEffect } from 'expo-router/react-navigation';
 import { StackScreenProps } from 'expo-router/js-stack';
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useLayoutEffect, useState } from 'react';
 import { RefreshControl, ScrollView } from 'react-native';
 
 import { NetworkContext } from '../../NetworkProvider';
@@ -19,6 +19,7 @@ import { LoadingSpinner } from '../../components/LoadingSpinner';
 import { consts, normalize, texts } from '../../config';
 import { profileAuthToken } from '../../helpers';
 import { useStaticContent, useTrackScreenViewAsync } from '../../hooks';
+import { useRegistrationTranslations } from '../../hooks/homeSettingsTranslations';
 import { ScreenName } from '../../types';
 import { useThemeStyles } from '../../hooks/useThemeStyles';
 import { useTheme } from '../../hooks/useTheme';
@@ -33,17 +34,44 @@ export const ProfileHomeScreen = ({ navigation, route }: StackScreenProps<any, s
 
   const styles = useThemeStyles(createStyles);
   const { refresh, isLoading, isLoggedIn } = useProfileContext();
-  const { isConnected } = useContext(NetworkContext);
+  const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const [refreshing, setRefreshing] = useState(false);
   const [isProfileLoggedIn, setIsProfileLoggedIn] = useState(isLoggedIn);
   const trackScreenViewAsync = useTrackScreenViewAsync();
-  const { query, queryVariables = {}, rootRouteName, title: screenTitle } = route.params || {};
+  const {
+    query,
+    queryVariables = {},
+    rootRouteName,
+    title: screenTitle,
+    navigationSourceStaticJsonName
+  } = route.params || {};
 
-  const { data, loading, refetch } = useStaticContent({
+  const {
+    data: original,
+    loading,
+    refetch
+  } = useStaticContent({
     name: queryVariables.name,
     type: 'json',
     refreshTimeKey: `${query}-${queryVariables.name}`
   });
+  const {
+    data,
+    title: navigationTitle,
+    loading: translationLoading
+  } = useRegistrationTranslations(
+    original,
+    isConnected && isMainserverUp,
+    queryVariables.name,
+    navigationSourceStaticJsonName,
+    screenTitle
+  );
+
+  useLayoutEffect(() => {
+    if (navigationSourceStaticJsonName && screenTitle) {
+      navigation.setOptions({ title: navigationTitle });
+    }
+  }, [navigation, navigationSourceStaticJsonName, navigationTitle, screenTitle]);
 
   // NOTE: we cannot use the `useMatomoTrackScreenView` hook here, as we need the `title` dependency
   useEffect(() => {
@@ -79,7 +107,7 @@ export const ProfileHomeScreen = ({ navigation, route }: StackScreenProps<any, s
 
   if (!query || !queryVariables?.name) return <EmptyMessage title={texts.empty.content} />;
 
-  if (loading || isLoading) {
+  if (loading || isLoading || translationLoading) {
     return <LoadingSpinner loading />;
   }
 

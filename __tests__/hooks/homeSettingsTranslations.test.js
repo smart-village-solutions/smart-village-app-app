@@ -6,6 +6,7 @@ import { getTextsLocale } from '../../src/helpers/textsLocaleHelper';
 import {
   useAboutTranslations,
   useHomeSettingsTranslations,
+  useRegistrationTranslations,
   useTabNavigationTranslations
 } from '../../src/hooks/homeSettingsTranslations';
 import { ReactQueryClient } from '../../src/ReactQueryClient';
@@ -15,12 +16,13 @@ jest.mock('expo-router/react-navigation', () => ({
 }));
 jest.mock('../../src/ReactQueryClient', () => ({ ReactQueryClient: jest.fn() }));
 jest.mock('../../src/AppLanguagesProvider', () => ({
-  AppLanguagesContext: jest.requireActual('react').createContext(['de'])
+  AppLanguagesContext: jest.requireActual('react').createContext(['de']),
+  AppLanguagesLoadingContext: jest.requireActual('react').createContext(false)
 }));
 jest.mock('../../src/ProfileProvider', () => ({
   ProfileContext: jest.requireActual('react').createContext({})
 }));
-jest.mock('../../src/helpers/textsLocaleHelper');
+jest.mock('../../src/helpers/textsLocaleHelper', () => ({ getTextsLocale: jest.fn() }));
 
 const titlePath = ['homeScreenConfig', 0, 'title'];
 const buttonPath = ['homeScreenConfig', 0, 'buttonTitle'];
@@ -31,6 +33,72 @@ const settings = {
 const result = (entries) => ({
   scope: 'demo',
   data: { publicJsonFile: { translations: entries } }
+});
+
+it('waits for French registration copy and navigation while preserving configured destinations', async () => {
+  getTextsLocale.mockReturnValue('fr');
+  const button = {
+    buttonTitle: 'Registrieren',
+    routeName: 'ProfileRegistration',
+    webUrl: 'https://example.com'
+  };
+  const profile = { title: 'Registrierung', subQuery: { buttons: [button] } };
+  const ready = (path, original, text) => ({ path, original, text, state: 'ready' });
+  let resolveNavigation;
+  const pendingNavigation = new Promise((resolve) => {
+    resolveNavigation = resolve;
+  });
+  ReactQueryClient.mockResolvedValue({
+    cacheScope: async () => 'demo',
+    rawRequest: async (_query, { name }) =>
+      name === 'service'
+        ? pendingNavigation
+        : result([
+            ready(['title'], 'Registrierung', 'Inscription'),
+            ready(['subQuery', 'buttons', 0, 'buttonTitle'], 'Registrieren', 'Inscrivez-vous'),
+            ready(['subQuery', 'buttons', 0, 'webUrl'], button.webUrl, 'Changed')
+          ])
+  });
+  let displayed;
+  const Probe = () => {
+    displayed = useRegistrationTranslations(
+      profile,
+      true,
+      'customProfile',
+      'service',
+      'Inhalt erstellen'
+    );
+    return null;
+  };
+  let tree;
+  try {
+    await act(async () => {
+      tree = renderer.create(
+        <AppLanguagesContext.Provider value={['de', 'fr']}>
+          <Probe />
+        </AppLanguagesContext.Provider>
+      );
+    });
+    expect(displayed).toMatchObject({ loading: true, title: '' });
+    await act(async () => {
+      resolveNavigation(
+        result([
+          ready([1, 'params', 'title'], 'Anderer Text', 'Other'),
+          ready([3, 'params', 'title'], 'Inhalt erstellen', 'Créer du contenu')
+        ])
+      );
+    });
+    expect(displayed).toEqual({
+      loading: false,
+      title: 'Créer du contenu',
+      data: {
+        title: 'Inscription',
+        subQuery: { buttons: [{ ...button, buttonTitle: 'Inscrivez-vous' }] }
+      }
+    });
+  } finally {
+    await act(async () => tree?.unmount());
+  }
 });
 
 it('translates configured navigation text by file and leaves routes and links alone', async () => {
