@@ -201,7 +201,14 @@ const parseGenericItems = (
   });
 };
 
-const parseNewsItems = (data, skipLastDivider, titleDetail, bookmarkable, dateTimeFormat) => {
+const parseNewsItems = (
+  data,
+  skipLastDivider,
+  titleDetail,
+  bookmarkable,
+  dateTimeFormat,
+  bookmarkSuffix
+) => {
   return _uniqBy(
     data?.map((newsItem, index) => ({
       id: newsItem.id,
@@ -227,7 +234,8 @@ const parseNewsItems = (data, skipLastDivider, titleDetail, bookmarkable, dateTi
         queryVariables: { id: `${newsItem.id}` },
         rootRouteName: ROOT_ROUTE_NAMES.NEWS_ITEMS,
         shareContent: { message: shareMessage(newsItem, QUERY_TYPES.NEWS_ITEM) },
-        suffix: newsItem.categories?.[0]?.parent?.id || newsItem.categories?.[0]?.id,
+        suffix:
+          bookmarkSuffix ?? (newsItem.categories?.[0]?.parent?.id || newsItem.categories?.[0]?.id),
         title: titleDetail
       },
       bottomDivider: !skipLastDivider || index !== data.length - 1
@@ -422,6 +430,7 @@ export const parseListItemsFromQuery = (query, data, titleDetail = '', options =
   const {
     appDesignSystem,
     authMode,
+    bookmarkSuffix,
     bookmarkable = true,
     dateTimeFormat,
     filterTypes,
@@ -452,7 +461,8 @@ export const parseListItemsFromQuery = (query, data, titleDetail = '', options =
         skipLastDivider,
         titleDetail,
         bookmarkable,
-        dateTimeFormat
+        dateTimeFormat,
+        bookmarkSuffix
       );
     case QUERY_TYPES.POINT_OF_INTEREST:
     case QUERY_TYPES.POINTS_OF_INTEREST:

@@ -49,14 +49,14 @@ export const BookmarkScreen = ({ navigation, route }) => {
   const volunteerEventBookmarkIds = bookmarks?.[QUERY_TYPES.VOLUNTEER.CALENDAR_ALL] || [];
 
   const getSection = useCallback(
-    (itemType, categoryTitle, suffix, categoryTitleDetail, parentCategoryId) => {
-      const bookmarkKey = getKeyFromTypeAndSuffix(itemType, parentCategoryId || suffix);
+    (itemType, categoryTitle, suffix, categoryTitleDetail) => {
+      const bookmarkKey = getKeyFromTypeAndSuffix(itemType, suffix);
 
       if (!bookmarks[bookmarkKey]?.length || (!!query && query !== bookmarkKey)) return null;
 
       return (
         <BookmarkSection
-          suffix={parentCategoryId || suffix}
+          suffix={suffix}
           categoryTitleDetail={categoryTitleDetail}
           ids={bookmarks[bookmarkKey]}
           key={bookmarkKey}
@@ -86,6 +86,22 @@ export const BookmarkScreen = ({ navigation, route }) => {
     );
   }
 
+  const newsSections = new Map(
+    categoriesNews?.map((category) => [
+      String(category.parentCategoryId || category.categoryId || ''),
+      category
+    ])
+  );
+  const defaultNewsCategory = newsSections.get('') ?? texts.homeCategoriesNews;
+  const newsPrefix = `${QUERY_TYPES.NEWS_ITEMS}-`;
+
+  for (const key of Object.keys(bookmarks)) {
+    if (key !== QUERY_TYPES.NEWS_ITEMS && !key.startsWith(newsPrefix)) continue;
+
+    const suffix = key.slice(newsPrefix.length);
+    if (!newsSections.has(suffix)) newsSections.set(suffix, defaultNewsCategory);
+  }
+
   return (
     <SafeAreaViewFlex>
       <ScrollView
@@ -98,15 +114,8 @@ export const BookmarkScreen = ({ navigation, route }) => {
           />
         }
       >
-        {categoriesNews?.map(
-          ({ categoryId, categoryTitle, categoryTitleDetail, parentCategoryId }) =>
-            getSection(
-              QUERY_TYPES.NEWS_ITEMS,
-              categoryTitle,
-              categoryId,
-              categoryTitleDetail,
-              parentCategoryId
-            )
+        {Array.from(newsSections, ([suffix, { categoryTitle, categoryTitleDetail }]) =>
+          getSection(QUERY_TYPES.NEWS_ITEMS, categoryTitle, suffix, categoryTitleDetail)
         )}
         {getSection(QUERY_TYPES.POINTS_OF_INTEREST, bookmarkCategoryTitlesPointsOfInterest)}
         {getSection(QUERY_TYPES.TOURS, bookmarkCategoryTitlesTours)}
