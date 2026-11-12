@@ -31,6 +31,26 @@ const getBookmarkCount = (bookmarks, isLoggedIn) => {
   return count;
 };
 
+const getNewsSections = (bookmarks, categoriesNews) => {
+  const sections = new Map(
+    categoriesNews?.map((category) => [
+      String(category.parentCategoryId || category.categoryId || ''),
+      category
+    ])
+  );
+  const defaultCategory = sections.get('') ?? texts.homeCategoriesNews;
+  const prefix = `${QUERY_TYPES.NEWS_ITEMS}-`;
+
+  for (const key of Object.keys(bookmarks)) {
+    if (key !== QUERY_TYPES.NEWS_ITEMS && !key.startsWith(prefix)) continue;
+
+    const suffix = key.slice(prefix.length);
+    if (!sections.has(suffix)) sections.set(suffix, defaultCategory);
+  }
+
+  return sections;
+};
+
 export const BookmarkScreen = ({ navigation, route }) => {
   const { colors } = useTheme();
 
@@ -86,21 +106,7 @@ export const BookmarkScreen = ({ navigation, route }) => {
     );
   }
 
-  const newsSections = new Map(
-    categoriesNews?.map((category) => [
-      String(category.parentCategoryId || category.categoryId || ''),
-      category
-    ])
-  );
-  const defaultNewsCategory = newsSections.get('') ?? texts.homeCategoriesNews;
-  const newsPrefix = `${QUERY_TYPES.NEWS_ITEMS}-`;
-
-  for (const key of Object.keys(bookmarks)) {
-    if (key !== QUERY_TYPES.NEWS_ITEMS && !key.startsWith(newsPrefix)) continue;
-
-    const suffix = key.slice(newsPrefix.length);
-    if (!newsSections.has(suffix)) newsSections.set(suffix, defaultNewsCategory);
-  }
+  const newsSections = getNewsSections(bookmarks, categoriesNews);
 
   return (
     <SafeAreaViewFlex>

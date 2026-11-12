@@ -104,7 +104,7 @@ export const BookmarkCategoryScreen = ({ navigation, route }) => {
         query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL ? data.results : data,
         categoryTitleDetail,
         {
-          bookmarkSuffix: query === QUERY_TYPES.NEWS_ITEMS ? suffix : undefined,
+          bookmarkSuffix: suffix,
           withDate:
             (query === QUERY_TYPES.EVENT_RECORDS &&
               (isCombinedEventCategory || !queryVariables?.onlyUniqEvents)) ||
