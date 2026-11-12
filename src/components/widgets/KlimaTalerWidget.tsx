@@ -32,6 +32,8 @@ export const KlimaTalerWidget = ({ text, additionalProps }: WidgetProps) => {
     if (!action.enabled) return;
     if (action.target === 'provider') {
       void openKlimaTaler();
+    } else if (action.target === 'badges') {
+      void openKlimaTaler('badges');
     } else if (action.target === 'map') {
       const importedMap = resolveImportedOffersMap(globalSettings.settings?.['klima-taler']);
       if (importedMap && !importedMap.queryVariables) {

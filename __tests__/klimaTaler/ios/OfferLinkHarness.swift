@@ -10,19 +10,24 @@ struct OfferLinkHarness {
     }
     // The real SDK returns false on the ordinary web-offer path. Both results
     // must leave the modal lifecycle to the caller rather than signal a failure.
-    let target = changersOfferLink("10")!
-    for sdkResult in [false, true] {
-      var delivered: [URL] = []
-      forwardChangersOffer(target) { url in
-        delivered.append(url)
-        return sdkResult
-      }
-      assert(delivered == [target], "The offer was not handed to the provider exactly once")
+    assert(changersPageLink("badges")?.absoluteString == "https://open.klima-taler.com/badges")
+    for invalid in ["", "app", "map", "teams", "offers", "Badges", "/badges", "badges?token=private", "https://open.klima-taler.com/badges"] {
+      assert(changersPageLink(invalid) == nil)
     }
-    forwardChangersOffer(nil) { _ in
+    for target in [changersOfferLink("10")!, changersPageLink("badges")!] {
+      for sdkResult in [false, true] {
+        var delivered: [URL] = []
+        forwardChangersLink(target) { url in
+          delivered.append(url)
+          return sdkResult
+        }
+        assert(delivered == [target], "The target was not handed to the provider exactly once")
+      }
+    }
+    forwardChangersLink(nil) { _ in
       assertionFailure("A normal dashboard entry must not hand over an offer")
       return false
     }
-    print("Offer link validation and SDK handoff passed")
+    print("Offer/page link validation and SDK handoff passed")
   }
 }

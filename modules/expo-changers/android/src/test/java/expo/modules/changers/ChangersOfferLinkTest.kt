@@ -14,4 +14,11 @@ class ChangersOfferLinkTest {
       assertNull(changersOfferLink(invalid))
     }
   }
+  @Test fun onlyTheConfirmedBadgePageIsAccepted() {
+    assertEquals("https://open.klima-taler.com/badges", changersPageLink("badges"))
+    for (invalid in listOf("", "app", "offers", "teams", "map", "Badges", "/badges", "badges?token=private", "https://open.klima-taler.com/badges")) {
+      assertNull(changersPageLink(invalid))
+    }
+  }
+
 }

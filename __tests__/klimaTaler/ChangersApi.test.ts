@@ -110,3 +110,25 @@ test.each(['ios', 'android'])('only an offer ID crosses the %s bridge', async (p
   await client.openOffer(10);
   expect(openOffer).toHaveBeenCalledWith('10');
 });
+
+test.each(['ios', 'android'])(
+  'badge routing is gated by the new %s native capability',
+  async (platform) => {
+    const openTarget = jest.fn().mockResolvedValue(undefined);
+    const old = createChangers({ openTarget } as unknown as ChangersNative, platform);
+    expect(old.capabilities.badgeList.supported).toBe(false);
+    await expect(old.openTarget('badges')).rejects.toMatchObject({ code: 'E_UNSUPPORTED' });
+    expect(openTarget).not.toHaveBeenCalled();
+    const current = createChangers(
+      { badgeLinks: true, openTarget } as unknown as ChangersNative,
+      platform
+    );
+    expect(current.capabilities.badgeList.supported).toBe(true);
+    await current.openTarget('badges');
+    expect(openTarget).toHaveBeenCalledWith('badges');
+    await expect(current.openTarget('https://example.org/badges' as never)).rejects.toMatchObject({
+      code: 'E_INVALID_ARGUMENT'
+    });
+    expect(openTarget).toHaveBeenCalledTimes(1);
+  }
+);

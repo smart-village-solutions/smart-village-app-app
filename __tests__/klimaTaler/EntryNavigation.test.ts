@@ -29,3 +29,19 @@ test('the retry action retains the exact offer and repeated taps share one reque
     alert.mockRestore();
   }
 });
+
+test('badge error retry keeps the badge destination', async () => {
+  jest.clearAllMocks();
+  mockState = { phase: 'error', errorCode: 'E_NETWORK' };
+  const alert = jest.spyOn(Alert, 'alert').mockImplementation(() => undefined);
+  try {
+    await openKlimaTaler('badges');
+    const buttons = alert.mock.calls[0][2];
+    mockState = { phase: 'open', errorCode: '' };
+    buttons?.find((button) => button.text === 'Erneut versuchen')?.onPress?.();
+    await Promise.resolve();
+    expect(mockOpen.mock.calls).toEqual([['badges'], ['badges']]);
+  } finally {
+    alert.mockRestore();
+  }
+});

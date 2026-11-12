@@ -191,7 +191,7 @@ test('native runtime is isolated and credentials are not serialized in public co
       }
     }
   );
-  expect(config.runtimeVersion).toBe('5.0.0-changers-7-production');
+  expect(config.runtimeVersion).toBe('5.0.0-changers-8-production');
   expect(config.extra).toEqual({ customer: 'fixture' });
   expect(JSON.stringify(config)).not.toContain('test-only-provider-value');
 });
@@ -205,7 +205,7 @@ test('provider environments are explicit and never inferred from the customer sl
     { name: 'Fixture', slug: 'detmold', version: '5.0.0', sdkVersion: '57.0.27' },
     { configuration: { environment: 'stage' } }
   );
-  expect(config.runtimeVersion).toBe('5.0.0-changers-7-stage');
+  expect(config.runtimeVersion).toBe('5.0.0-changers-8-stage');
 });
 
 test.each(['production', 'stage'])(

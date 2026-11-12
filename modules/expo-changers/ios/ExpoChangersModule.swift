@@ -5,6 +5,7 @@ import UIKit
 public class ExpoChangersModule: Module {
   public func definition() -> ModuleDefinition {
     Name("ExpoChangers")
+    Constants(["badgeLinks": true])
     Events("onProviderClosed")
     OnCreate { [weak self] in
       ChangersRuntime.shared.onProviderClosed = { [weak self] in self?.sendEvent("onProviderClosed", [:]) }
@@ -20,11 +21,16 @@ public class ExpoChangersModule: Module {
     AsyncFunction("openProvider") { (p: Promise) in self.openProvider(.main, promise: p) }.runOnQueue(.main)
     AsyncFunction("openOffer") { (offerId: String, p: Promise) in
       guard let url = changersOfferLink(offerId) else { p.reject("E_INVALID_ARGUMENT", "Ungültiges Angebot."); return }
-      self.openProvider(.main, promise: p, offerURL: url)
+      self.openProvider(.main, promise: p, targetURL: url)
     }.runOnQueue(.main)
     AsyncFunction("openTarget") { (target: String, p: Promise) in
-      guard target == "marketplace" else { p.reject("E_UNSUPPORTED", "Nur das Ziel Marktplatz ist bestätigt."); return }
-      self.openProvider(.marketplace, promise: p)
+      if target == "marketplace" {
+        self.openProvider(.marketplace, promise: p)
+      } else if let url = changersPageLink(target) {
+        self.openProvider(.main, promise: p, targetURL: url)
+      } else {
+        p.reject("E_UNSUPPORTED", "Dieses Ziel wird nicht unterstützt.")
+      }
     }.runOnQueue(.main)
     AsyncFunction("closeProvider") { ChangersRuntime.shared.closeProvider() }.runOnQueue(.main)
     AsyncFunction("registerUser") { (p: Promise) in ChangersRuntime.shared.authenticate(nil, promise: p) }.runOnQueue(.main)
@@ -40,20 +46,20 @@ public class ExpoChangersModule: Module {
       p.resolve(nil)
     }.runOnQueue(.main)
   }
-  private func routeOffer(_ url: URL?) {
-    forwardChangersOffer(url) { ChangersInstance.shared().handleDeepLink($0) }
+  private func routeLink(_ url: URL?) {
+    forwardChangersLink(url) { ChangersInstance.shared().handleDeepLink($0) }
   }
-  private func openProvider(_ page: ChangersPageEnum, promise: Promise, offerURL: URL? = nil) {
+  private func openProvider(_ page: ChangersPageEnum, promise: Promise, targetURL: URL? = nil) {
     let runtime = ChangersRuntime.shared
     guard runtime.requireReady(promise) else { return }
     guard ChangersInstance.shared().isLoggedIn else { promise.reject("E_AUTHENTICATION", "Bitte zuerst ein Konto erstellen oder anmelden."); return }
     if runtime.opening {
-      if offerURL != nil { promise.reject("E_BUSY", "Die Anbieteroberfläche wird bereits geöffnet.") }
+      if targetURL != nil { promise.reject("E_BUSY", "Die Anbieteroberfläche wird bereits geöffnet.") }
       else { promise.resolve(nil) }
       return
     }
     if runtime.controller?.presentingViewController != nil {
-      routeOffer(offerURL)
+      routeLink(targetURL)
       promise.resolve(nil)
       return
     }
@@ -87,7 +93,7 @@ public class ExpoChangersModule: Module {
         runtime.opening = false
         // Let the SDK defer the target until its web app/onboarding is ready.
         // Only hand it over after our own presentation has succeeded.
-        self.routeOffer(offerURL)
+        self.routeLink(targetURL)
       }
       promise.resolve(nil)
     }

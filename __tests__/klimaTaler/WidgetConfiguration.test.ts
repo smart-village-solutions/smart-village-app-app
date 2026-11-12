@@ -103,6 +103,6 @@ test('shortcut visibility preserves explicit customer configuration and hides ab
   );
   expect(config.actions.wallet.enabled).toBe(true);
   expect(config.actions.map).toMatchObject({ enabled: true, target: 'provider' });
-  expect(config.actions.badges).toMatchObject({ enabled: true, target: 'comingSoon' });
+  expect(config.actions.badges).toMatchObject({ enabled: true, target: 'badges' });
   expect(config.actions.settings.enabled).toBe(false);
 });

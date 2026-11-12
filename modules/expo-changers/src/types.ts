@@ -33,6 +33,7 @@ export interface Statistics {
 }
 export interface ChangersNative {
   readonly safeStatistics?: boolean;
+  readonly badgeLinks?: boolean;
   addListener(event: 'onProviderClosed', listener: () => void): { remove(): void };
   getStatus(): Promise<Status>;
   setEnabled(enabled: boolean): Promise<void>;

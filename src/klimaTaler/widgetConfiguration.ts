@@ -115,7 +115,14 @@ export const resolveKlimaTalerWidget = (
               actions[name] === true ||
               Object.keys(configurationObject(actions[name])).length > 0,
             showInPromo: name === 'main' || name === 'map',
-            target: name === 'main' ? 'provider' : name === 'map' ? 'map' : 'comingSoon',
+            target:
+              name === 'main'
+                ? 'provider'
+                : name === 'map'
+                ? 'map'
+                : name === 'badges'
+                ? 'badges'
+                : 'comingSoon',
             alertTitle: '',
             alertMessage: ''
           },

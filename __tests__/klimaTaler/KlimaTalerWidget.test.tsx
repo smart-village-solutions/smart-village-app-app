@@ -186,7 +186,7 @@ test('configured map opens the existing POI map and remote settings can hide eac
   ['Wallet', 'Karte', 'Abzeichen', 'Einstellungen'].forEach((name) => {
     fireEvent.press(screen.getByRole('button', { name }));
   });
-  expect(alert).toHaveBeenCalledTimes(3);
+  expect(alert).toHaveBeenCalledTimes(2);
   expect(mockNavigation.navigate).toHaveBeenCalledWith(
     'Index',
     expect.objectContaining({
@@ -198,7 +198,7 @@ test('configured map opens the existing POI map and remote settings can hide eac
     })
   );
   expect(alert).toHaveBeenLastCalledWith('Bald verfügbar', 'Diese Funktion wird bald ergänzt.');
-  expect(openKlimaTaler).not.toHaveBeenCalled();
+  expect(openKlimaTaler).toHaveBeenCalledWith('badges');
   screen.rerender(
     configured({
       actions: {
@@ -213,7 +213,7 @@ test('configured map opens the existing POI map and remote settings can hide eac
   expect(screen.queryByRole('button', { name: 'Wallet' })).toBeNull();
   expect(screen.getAllByRole('button')).toHaveLength(1);
   fireEvent.press(screen.getByRole('button', { name: 'Öffnen' }));
-  expect(openKlimaTaler).toHaveBeenCalledTimes(1);
+  expect(openKlimaTaler).toHaveBeenCalledTimes(2);
   alert.mockRestore();
 });
 
@@ -431,4 +431,19 @@ test('incomplete imported-map configuration cannot open an unfiltered map', () =
   expect(mockNavigation.navigate).not.toHaveBeenCalled();
   expect(alert).toHaveBeenCalled();
   alert.mockRestore();
+});
+
+test('enabled badges open the SDK badge target without adding an SVA route', () => {
+  mockState = { phase: 'ready', coins: 42 };
+  const screen = render(<KlimaTalerWidget additionalProps={{ actions: { badges: true } }} />);
+  const button = screen.getByRole('button', { name: 'Abzeichen' });
+  expect(button.props.accessibilityHint).toBeUndefined();
+  fireEvent.press(button);
+  expect(openKlimaTaler).toHaveBeenCalledWith('badges');
+  expect(mockNavigation.navigate).not.toHaveBeenCalled();
+  mockOpening = true;
+  screen.rerender(<KlimaTalerWidget additionalProps={{ actions: { badges: true } }} />);
+  expect(
+    screen.getAllByRole('button').every((item) => item.props.accessibilityState.disabled)
+  ).toBe(true);
 });

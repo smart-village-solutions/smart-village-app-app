@@ -83,7 +83,7 @@ Configure the card through `additionalProps` on its entry in `globalSettings.wid
 | `styles`      | React Native JSON style objects for `card`, `summary`, `logo`, `title`, `description`, `balance`, `status`, `actions`, `button`, `buttonText`, `shortcut`. Dimensions use density-independent pixels. Styles override color/layout defaults; balance typography still adapts to available width. The compact status indicator uses only `status.color`; legacy status text layout and typography overrides no longer apply. |
 | `actions`     | `main`, `wallet`, `map`, `badges`, `settings`. Each accepts `false` or an object with the fields below.                                                                                                                                                                                                                                                                                                                     |
 
-Action fields are `enabled`, `label`, `promoLabel`, `icon`, `showInPromo`, `target`, `alertTitle`, and `alertMessage`. Main is visible in both card states and opens the provider by default. Other actions are hidden by default until their destinations are available. Explicit action objects or `true` enable a shortcut. Karte defaults to the public map target and is visible before onboarding as well; other shortcuts retain their configured promotional visibility and show a configurable coming-soon alert unless assigned a supported target. Use `false` or `enabled: false` to hide them. Explicit placeholders remain unsupported product functions, not completed deep links. Their individual `alertTitle`/`alertMessage` override the shared alert copy when nonempty. `target: "provider"` opens the general provider screen; `"comingSoon"` (and unknown targets) shows the alert. `target: "map"` opens the existing POI map with Klima-Taler locations. Wallet, badge and settings deep links are not implemented. In particular, the wallet shortcut does not open an unrelated SVA wallet. Each shortcut can be hidden independently without affecting the others.
+Action fields are `enabled`, `label`, `promoLabel`, `icon`, `showInPromo`, `target`, `alertTitle`, and `alertMessage`. Main is visible in both card states and opens the provider by default. Other actions are hidden by default until explicitly enabled. Explicit action objects or `true` enable a shortcut. Karte defaults to the public map target and is visible before onboarding as well; other shortcuts retain their configured promotional visibility and show a configurable coming-soon alert unless assigned a supported target. Use `false` or `enabled: false` to hide them. Explicit placeholders remain unsupported product functions, not completed deep links. Their individual `alertTitle`/`alertMessage` override the shared alert copy when nonempty. `target: "provider"` opens the general provider screen; `"comingSoon"` (and unknown targets) shows the alert. `target: "map"` opens the existing POI map with Klima-Taler locations. The badge shortcut defaults to `target: "badges"`, opening the SDK badge page on a compatible native build. Wallet and settings deep links are not implemented. In particular, the wallet shortcut does not open an unrelated SVA wallet. Each shortcut can be hidden independently without affecting the others.
 
 Explicit `additionalProps.texts` values override `text` on the widget entry. Appearance settings under `settings["klima-taler"]` are not read. Settings updates apply on refresh without a native rebuild. Wrong scalar types and unknown fields are ignored. Customer styles should retain readable contrast, text scaling and at least 48-point touch targets.
 
@@ -119,7 +119,7 @@ Credentials are consumed by native build mods and are not serialized in Expo `ex
 
 ## Compatibility
 
-- OTA runtime: `<app version>-changers-7-<environment>`. This isolates the full-screen iOS presentation and must not share updates with app-version-only or `changers-1` through `changers-6` binaries. Existing activation and registration journals are retained. Install a new native build before publishing matching updates.
+- OTA runtime: `<app version>-changers-8-<environment>`. This isolates native badge-link support and must not share updates with app-version-only or `changers-1` through `changers-7` binaries. Existing activation and registration journals are retained. Install a new native build before publishing matching updates.
 - iOS: Changers 4.3.0 / MotionTag 6.3.4, pinned to vendor commit `4bcbd85dcf3d303fd262b2165d5f57fa6c620ad0`.
 - Android: `com.github.Changers.Android-SDK:sdk:1.20.7` for production or `sdkstaging:1.20.7` for stage / MotionTag 7.2.5.
 - The provider environment is independent of the SVA customer slug. Production uses iOS `.production`, Android `sdk`, and `https://activity.changers.com/api/statistics/sdk`. Stage uses iOS `.stage`, Android `sdkstaging`, and `https://activity.maroshi.de/api/statistics/sdk`. The config plugin writes the same selected environment to native configuration and Android's `expo.changers.environment` Gradle property. Android fails closed if generated credentials and the compiled environment disagree. Production and staging OTA runtimes are isolated.
@@ -170,7 +170,7 @@ The dedicated HTTP client has no logging interceptors, shared cookies or cache. 
 
 `ChangersStatisticsSession.java` uses environment-specific `ChangersSdkAccess.java` sources to read the matching SDK session without reflection. Production and stage expose different JVM accessor names. Revalidate those accessors, headers, endpoint and response fields when upgrading the vendor SDK. This adapter protects the widget request path; it does not change every logging path inside the vendor SDK.
 
-Android statistics require the native `safeStatistics: true` capability. Older binaries retain the unavailable state even with newer JavaScript. Rebuilding Android enables the balance; the capability was introduced in the `changers-2` runtime; current builds use `changers-7-<environment>`.
+Android statistics require the native `safeStatistics: true` capability. Older binaries retain the unavailable state even with newer JavaScript. Rebuilding Android enables the balance; the capability was introduced in the `changers-2` runtime; current builds use `changers-8-<environment>`.
 
 ## Testing and limitations
 
@@ -192,7 +192,7 @@ cd android
 
 The plugin tests cover removal of the legacy simulator workaround. Run the UIKit presentation harness on a booted Apple Silicon simulator with `sh __tests__/klimaTaler/ios/run-presentation-tests.sh <UDID>`.
 
-Device acceptance should cover initial consent, denied and granted permissions, opening/closing, session restoration, widget refresh, disabling the module, and tracking lifecycle. Account deletion, actual background journey collection, buffered data handling and reboot recovery require separate provider/device validation. Map/POI navigation and badge data remain pending contracts. SVA profiles are not synchronized with provider accounts.
+Device acceptance should cover initial consent, denied and granted permissions, opening/closing, session restoration, widget refresh, disabling the module, and tracking lifecycle. Account deletion, actual background journey collection, buffered data handling and reboot recovery require separate provider/device validation. A separately rendered native badge list and general provider POI details still need data/target contracts. SVA profiles are not synchronized with provider accounts.
 
 ### Registration recovery
 
@@ -328,9 +328,9 @@ or an SDK wallet target.
 
 ### Remaining provider contracts
 
-Do not synthesize badge values or assume that generic provider navigation opens a wallet, badge or POI detail. These features require confirmed provider contracts before implementation.
+Badges use the confirmed provider page link described below; the app does not fetch or synthesize badge records. A separately rendered SVA badge list would still require a JSON contract with stable IDs, labels, images, acquisition state and update signals. The other supplied page links (`app`, `offers`, `teams`, `map`) are reserved for future provider navigation; they do not replace the existing SVA map or wallet flows.
 
-For badges, obtain stable IDs, labels, images, acquisition state and update signals. For map integration, obtain the public feed's customer/source identification, stable partner/site/offer IDs, coordinates, title, image fallback, validity/deletion rules, pagination and synchronization behavior, plus a verified provider detail target for each platform. Preserve the selected target across onboarding or session recovery. A public POI feed must not contain personal tracking or account data.
+For general partner/location details, a provider target remains unconfirmed. Preserve selected targets across onboarding or session recovery. A public POI feed must not contain personal tracking or account data.
 
 Use the existing SVA map and preview components once these contracts are available. Generic backend POI fields or test fixtures alone do not establish a working provider integration. The current contract targets offers; a general partner/location detail link remains unconfirmed.
 
@@ -404,3 +404,24 @@ The Mainserver `preserveVouchers` opt-in must be deployed before ongoing imports
 update existing POIs or append coupons. This app change does not deploy that API.
 It reuses the existing native bridge and requires the compatible Changers binary
 from the SDK feature branch; it adds no new native API or runtime requirement.
+
+
+## Badge shortcut
+
+Enable the existing widget shortcut through `additionalProps.actions`:
+
+```json
+{ "actions": { "badges": true } }
+```
+
+Existing explicit action options remain supported, for example `"badges": { "enabled": true, "label": "Deine Badges", "target": "badges" }`. Remove a previously configured `target: "comingSoon"` override to use the new default destination. The shortcut stays opt-in and is hidden before onboarding by default, like the existing customer configuration. Set `showInPromo: true` explicitly if it should also start onboarding.
+
+The medal shortcut opens the existing full-screen SDK modal at `https://open.klima-taler.com/badges`. These are provider page links, not a public JSON badge API. The authenticated SDK renders badge data, progress and images; the host supplies no example badge artwork or invented achievements. Provider styling may differ from the design reference.
+
+Both platforms use the same session coordinator as dashboard/offer entry. iOS resets web readiness for each new modal, then forwards the link after presentation. Android opens the link through `Changers.openLink` or forwards it to the current provider activity. Only the fixed `badges` target is accepted for this feature; arbitrary URLs, query strings and unimplemented page names are rejected. Existing marketplace behavior is retained.
+
+The native `badgeLinks` capability and `changers-8-<environment>` runtime require a new iOS/Android binary. Older binaries report unavailable rather than opening the dashboard. The JavaScript bridge preserves the badge target on retries and after closing/reopening, and disabling the module uses the existing close/cancellation flow without discarding the account.
+
+Device acceptance: enable the shortcut, open Badges, verify the SDK list, close with the SDK control and reopen twice. Then open an imported coupon and dashboard to verify independent destinations. Check an existing signed-out session and an explicitly enabled promotional shortcut; onboarding must precede badge display and existing accounts must not be replaced. Test Android separately on a matching native build.
+
+Provider references: [iOS deep links](https://github.com/Changers/changers-ios-sdk#5-deep-links), [Android deep links](https://github.com/Changers/Sample-Android-SDK#5-deep-links).

@@ -18,6 +18,8 @@ const status = (overrides: Partial<Status> = {}): Status => ({
 const setup = (platform = 'ios', enabled = true) => {
   let onClosed = () => undefined;
   const native = {
+    badgeLinks: true,
+    openTarget: jest.fn().mockResolvedValue(undefined),
     getStatus: jest.fn().mockResolvedValue(status()),
     activate: jest.fn().mockResolvedValue(status({ authenticated: false })),
     getUserUUID: jest.fn().mockResolvedValue(null),
@@ -328,4 +330,58 @@ test('invalid targets and older binaries never initialize or register an account
   expect(native.openProvider).not.toHaveBeenCalled();
   await entry.open(10);
   expect(native.openOffer).toHaveBeenCalledWith('10');
+});
+
+test.each(['ios', 'android'])(
+  'badge entry retains its target across closure and repeated %s taps',
+  async (platform) => {
+    const { native, entry, close } = setup(platform);
+    const unsubscribe = entry.subscribe(() => undefined);
+    await Promise.all([entry.open('badges'), entry.open('badges')]);
+    expect(native.openTarget).toHaveBeenCalledTimes(1);
+    expect(native.openTarget).toHaveBeenCalledWith('badges');
+    expect(native.openProvider).not.toHaveBeenCalled();
+    expect(native.registerUser).not.toHaveBeenCalled();
+    close();
+    await entry.open('badges');
+    expect(native.openTarget).toHaveBeenCalledTimes(2);
+    expect(entry.getSnapshot().phase).toBe('open');
+    unsubscribe();
+  }
+);
+
+test('badge entry restores the existing account without creating another one', async () => {
+  const { native, entry } = setup();
+  native.getStatus.mockResolvedValue(
+    status({ authenticated: false, registrationState: 'existing' })
+  );
+  native.getUserUUID.mockResolvedValue('existing-fixture' as never);
+  await entry.open('badges');
+  expect(native.loginUser).toHaveBeenCalledWith('existing-fixture');
+  expect(native.registerUser).not.toHaveBeenCalled();
+  expect(native.openTarget).toHaveBeenCalledWith('badges');
+});
+
+test('a failed badge handoff retries the badge page rather than the dashboard', async () => {
+  const { native, entry } = setup();
+  native.openTarget.mockRejectedValueOnce(new Error('fixture'));
+  await entry.open('badges');
+  expect(entry.getSnapshot().phase).toBe('error');
+  await entry.open('badges');
+  expect(native.openTarget.mock.calls).toEqual([['badges'], ['badges']]);
+  expect(native.openProvider).not.toHaveBeenCalled();
+});
+
+test('old binaries reject badge entry before changing activation or session state', async () => {
+  const native = {
+    openTarget: jest.fn(),
+    getStatus: jest.fn(),
+    activate: jest.fn()
+  } as unknown as ChangersNative;
+  const entry = createEntry(createChangers(native, 'ios'), () => true);
+  await entry.open('badges');
+  expect(entry.getSnapshot()).toEqual({ phase: 'error', errorCode: 'E_NATIVE_UNAVAILABLE' });
+  expect(native.getStatus).not.toHaveBeenCalled();
+  expect(native.activate).not.toHaveBeenCalled();
+  expect(native.openTarget).not.toHaveBeenCalled();
 });
