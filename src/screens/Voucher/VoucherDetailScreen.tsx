@@ -22,6 +22,8 @@ import {
   Wrapper
 } from '../../components';
 import { texts } from '../../config';
+import { KlimaTalerVoucherRedeem } from '../../components/vouchers/KlimaTalerVoucherRedeem';
+import { isImportedKlimaTalerVoucher } from '../../klimaTaler/importedVoucher';
 import { dateOfAvailabilityText, parseListItemsFromQuery } from '../../helpers';
 import { getActiveVoucherDateRange } from '../../helpers/voucherAvailability';
 import { getVoucherPartnerAddress } from '../../helpers/voucherAddress';
@@ -34,7 +36,6 @@ import { useTheme } from '../../hooks/useTheme';
 
 /* eslint-disable complexity */
 export const VoucherDetailScreen = ({ navigation, route }: StackScreenProps<any>) => {
-  const { autoLogin, isLoading: isVoucherSessionLoading, isLoggedIn, memberId } = useVoucher();
   const { colors } = useTheme();
   const scrollContentContainerStyle = useReadAloudScrollContentContainerStyle();
   const [refreshing, setRefreshing] = useState(false);
@@ -47,14 +48,38 @@ export const VoucherDetailScreen = ({ navigation, route }: StackScreenProps<any>
   const openWebScreen = useOpenWebScreen('Anbieter', undefined, route.params?.rootRouteName);
 
   const {
-    data,
+    data: publicData,
     isLoading: loading,
     refetch
-  } = RQuseQuery([query, { memberId, ...queryVariables }], async () => {
+  } = RQuseQuery([query, queryVariables], async () => {
     const client = await ReactQueryClient();
 
-    return await client.request(getQuery(query), { memberId, ...queryVariables });
+    return await client.request(getQuery(query), queryVariables);
   });
+
+  // Classify public metadata before starting a local SVA voucher session. Only
+  // ordinary vouchers subsequently request personalized quota information.
+  const importedKlimaTalerVoucher = isImportedKlimaTalerVoucher(
+    publicData?.[QUERY_TYPES.GENERIC_ITEM]?.payload
+  );
+  const {
+    autoLogin,
+    isLoading: isVoucherSessionLoading,
+    isLoggedIn,
+    memberId
+  } = useVoucher(!!publicData && !importedKlimaTalerVoucher);
+  const personalize = !!publicData && !importedKlimaTalerVoucher && !!memberId;
+  const { data: memberData, refetch: memberRefetch } = RQuseQuery(
+    [query, { memberId, ...queryVariables }],
+    async () => {
+      const client = await ReactQueryClient();
+      return await client.request(getQuery(query), { memberId, ...queryVariables });
+    },
+    { enabled: personalize }
+  );
+  // Never enable local redemption with a public quota while the member-specific
+  // request is pending or has failed.
+  const data = personalize ? memberData : publicData;
 
   const {
     contentBlocks,
@@ -96,10 +121,14 @@ export const VoucherDetailScreen = ({ navigation, route }: StackScreenProps<any>
 
   const refresh = useCallback(async () => {
     setRefreshing(true);
-    await refetch();
-    await actualVouchersRefetch();
-    setRefreshing(false);
-  }, [actualVouchersRefetch, refetch, setRefreshing]);
+    try {
+      await refetch();
+      if (personalize) await memberRefetch();
+      if (ids.length) await actualVouchersRefetch();
+    } finally {
+      setRefreshing(false);
+    }
+  }, [actualVouchersRefetch, ids.length, memberRefetch, personalize, refetch]);
 
   if (!data || loading) {
     return <LoadingSpinner loading />;
@@ -138,7 +167,7 @@ export const VoucherDetailScreen = ({ navigation, route }: StackScreenProps<any>
       <ImageSection mediaContents={mediaContents} />
 
       <Wrapper>
-        {!!quota && !shouldHideQuota && (
+        {!!quota && !importedKlimaTalerVoucher && !shouldHideQuota && (
           <>
             {maxQuantity && frequency ? (
               <>
@@ -169,7 +198,7 @@ export const VoucherDetailScreen = ({ navigation, route }: StackScreenProps<any>
         )}
       </Wrapper>
 
-      {!!discountType && (
+      {!!discountType && !importedKlimaTalerVoucher && (
         <Wrapper noPaddingTop>
           <Discount
             discount={discountType}
@@ -208,18 +237,24 @@ export const VoucherDetailScreen = ({ navigation, route }: StackScreenProps<any>
           </Wrapper>
         ))}
 
-      {(!!quota || hasVoucherDiscount(discountType)) && (
+      {importedKlimaTalerVoucher ? (
         <Wrapper noPaddingTop>
-          <VoucherRedeem
-            autoLogin={autoLogin}
-            dates={dates}
-            isLoggedIn={isLoggedIn}
-            isSessionLoading={isVoucherSessionLoading}
-            memberId={memberId}
-            quota={quota}
-            voucherId={id}
-          />
+          <KlimaTalerVoucherRedeem payload={payload} />
         </Wrapper>
+      ) : (
+        (!!quota || hasVoucherDiscount(discountType)) && (
+          <Wrapper noPaddingTop>
+            <VoucherRedeem
+              autoLogin={autoLogin}
+              dates={dates}
+              isLoggedIn={isLoggedIn}
+              isSessionLoading={isVoucherSessionLoading}
+              memberId={memberId}
+              quota={quota}
+              voucherId={id}
+            />
+          </Wrapper>
+        )
       )}
 
       {!!pointOfInterest && (

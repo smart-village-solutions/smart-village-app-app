@@ -3,10 +3,13 @@ import React, { useCallback, useContext, useSyncExternalStore } from 'react';
 import { Alert, AppState } from 'react-native';
 
 import { AccessibilityContext } from '../../AccessibilityProvider';
+import { SettingsContext } from '../../SettingsProvider';
+import { texts } from '../../config/texts';
 import { accessibleKlimaTalerConfiguration } from '../../klimaTaler/appearance';
 import { useHomeRefresh } from '../../hooks';
 import { klimaTalerEntry, openKlimaTaler } from '../../klimaTaler/entry';
 import { klimaTalerSummary } from '../../klimaTaler/summary';
+import { resolveImportedOffersMap } from '../../klimaTaler/offersConfiguration';
 import { QUERY_TYPES } from '../../queries';
 import { ScreenName, WidgetProps } from '../../types';
 import { useTheme } from '../../hooks/useTheme';
@@ -15,6 +18,7 @@ import { resolveKlimaTalerWidget, KlimaTalerAction } from '../../klimaTaler/widg
 import { KlimaTalerCard } from './KlimaTalerCard';
 
 export const KlimaTalerWidget = ({ text, additionalProps }: WidgetProps) => {
+  const { globalSettings } = useContext(SettingsContext);
   const navigation = useNavigation();
   const { colors, mode } = useTheme();
   const accessibility = useContext(AccessibilityContext);
@@ -29,12 +33,17 @@ export const KlimaTalerWidget = ({ text, additionalProps }: WidgetProps) => {
     if (action.target === 'provider') {
       void openKlimaTaler();
     } else if (action.target === 'map') {
+      const importedMap = resolveImportedOffersMap(globalSettings.settings?.['klima-taler']);
+      if (importedMap && !importedMap.queryVariables) {
+        Alert.alert(texts.klimaTaler.title, texts.klimaTaler.errors.E_CONFIGURATION);
+        return;
+      }
       navigation.navigate(ScreenName.Index, {
         title: action.label,
         query: QUERY_TYPES.POINTS_OF_INTEREST,
-        queryVariables: { initialFilter: 'map' },
+        queryVariables: { initialFilter: 'map', ...importedMap?.queryVariables },
         skipResourceFilters: true,
-        includeKlimaTaler: true
+        includeKlimaTaler: !importedMap
       });
     } else {
       Alert.alert(

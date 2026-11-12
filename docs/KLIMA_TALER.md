@@ -119,7 +119,7 @@ Credentials are consumed by native build mods and are not serialized in Expo `ex
 
 ## Compatibility
 
-- OTA runtime: `<app version>-changers-6-<environment>`. This isolates the native offer-link entry point and must not share updates with app-version-only or `changers-1` through `changers-5` binaries. Existing activation and registration journals are retained. Install a new native build before publishing matching updates.
+- OTA runtime: `<app version>-changers-7-<environment>`. This isolates the full-screen iOS presentation and must not share updates with app-version-only or `changers-1` through `changers-6` binaries. Existing activation and registration journals are retained. Install a new native build before publishing matching updates.
 - iOS: Changers 4.3.0 / MotionTag 6.3.4, pinned to vendor commit `4bcbd85dcf3d303fd262b2165d5f57fa6c620ad0`.
 - Android: `com.github.Changers.Android-SDK:sdk:1.20.7` for production or `sdkstaging:1.20.7` for stage / MotionTag 7.2.5.
 - The provider environment is independent of the SVA customer slug. Production uses iOS `.production`, Android `sdk`, and `https://activity.changers.com/api/statistics/sdk`. Stage uses iOS `.stage`, Android `sdkstaging`, and `https://activity.maroshi.de/api/statistics/sdk`. The config plugin writes the same selected environment to native configuration and Android's `expo.changers.environment` Gradle property. Android fails closed if generated credentials and the compiled environment disagree. Production and staging OTA runtimes are isolated.
@@ -152,7 +152,7 @@ Changing credentials alone does not switch the SDK server. A native rebuild with
 
 ## Provider entry and widget lifecycle
 
-Provider entry presents above the originating screen without an intermediate SVA route. Repeated taps share one pending request. iOS provides an accessible close control over the provider content; Android uses the provider activity and system Back. Closing preserves the account and tracking preference. Failed restoration of an existing session does not silently create another account.
+Provider entry presents above the originating screen without an intermediate SVA route. Repeated taps share one pending request. iOS presents the provider full screen without a host close overlay. The SDK’s own close action/callback returns to the originating app screen; Android uses the existing provider activity and system Back. Closing preserves the account and tracking preference. Failed restoration of an existing session does not silently create another account.
 
 The widget reads iOS `user.coins` or Android `user.recoins`. It distinguishes an actual zero balance from missing, unsupported or failed data. Without a provider session it shows a promotional card. The card uses SVA typography and accessibility text scaling.
 
@@ -170,7 +170,7 @@ The dedicated HTTP client has no logging interceptors, shared cookies or cache. 
 
 `ChangersStatisticsSession.java` uses environment-specific `ChangersSdkAccess.java` sources to read the matching SDK session without reflection. Production and stage expose different JVM accessor names. Revalidate those accessors, headers, endpoint and response fields when upgrading the vendor SDK. This adapter protects the widget request path; it does not change every logging path inside the vendor SDK.
 
-Android statistics require the native `safeStatistics: true` capability. Older binaries retain the unavailable state even with newer JavaScript. Rebuilding Android enables the balance; the capability was introduced in the `changers-2` runtime; current builds use `changers-6-<environment>`.
+Android statistics require the native `safeStatistics: true` capability. Older binaries retain the unavailable state even with newer JavaScript. Rebuilding Android enables the balance; the capability was introduced in the `changers-2` runtime; current builds use `changers-7-<environment>`.
 
 ## Testing and limitations
 
@@ -221,7 +221,7 @@ For an iOS launch failure mentioning `UIApplicationEvaluateRuntimeIssueForNoScen
 
 ### Offline provider content
 
-The provider sheet can display only `Loading...` while offline, without a specific network error. Content may recover when connectivity returns; this is not a guarantee of bounded timeout recovery. The host close control remains separate from the provider content. Test offline entry and reconnect with the SDK version and customer configuration being shipped. A wireless development client also depends on Metro for JavaScript reloads, so distinguish a lost development-server connection from provider request failures.
+The provider modal can display only `Loading...` while offline, without a specific network error. Content may recover when connectivity returns; this is not a guarantee of bounded timeout recovery. The SDK owns the visible close controls; test its close action while content is still loading. Test offline entry and reconnect with the SDK version and customer configuration being shipped. A wireless development client also depends on Metro for JavaScript reloads, so distinguish a lost development-server connection from provider request failures.
 
 ### Tracking status
 
@@ -299,7 +299,7 @@ acceptance: especially initial onboarding, closing before completion, reopening 
 widget, selecting a different offer and remote disable. Host tests cannot prove vendor
 queue consumption or cancellation. No target is persisted by the host across process death.
 Older binaries fail with the existing app-update message before activation or signup.
-Build runtime `changers-6-<environment>` before distributing this step.
+Build runtime `changers-7-<environment>` before distributing the current native presentation changes.
 
 The search defaults to the existing `mapSettings.mapCenterPosition` and German content.
 Radius is omitted unless configured; the API currently defaults to 10 km. An optional `settings["klima-taler"].offers` object can supply `area`,
@@ -346,3 +346,61 @@ Use a native binary with the matching runtime and customer-issued configuration.
 6. Complete provider consent and test real route recording after backgrounding, OS process recreation, reboot and package update. Test Android force-stop separately and reopen manually. Revoke permissions and provider consent, confirming that the host does not silently restore them.
 7. Validate logout, consent withdrawal, account deletion and buffered data separately using disposable accounts where necessary. Never infer deletion from hiding the module or stopping tracking.
 8. Review sanitized device logs for sensitive data, verify native/OTA compatibility, and resolve the repository quality gates before release. Badge and POI acceptance additionally require the contracts described above.
+
+## Imported POIs and provider coupons
+
+Instances that import the public feed into Mainserver can use the ordinary POI map,
+preview, POI detail and voucher detail instead of the live provider overlay. This is
+an explicit instance setting; existing instances retain their current map behavior.
+Merge these fields into the existing module configuration:
+
+```json
+{
+  "settings": {
+    "klima-taler": {
+      "offers": {
+        "source": "mainserver",
+        "dataProviderId": "<instance-provider-id>",
+        "categoryId": "<instance-category-id>"
+      }
+    }
+  }
+}
+```
+
+Keep the widget's existing `additionalProps.actions.map: true` setting. Both IDs
+must be positive numeric IDs from the same Mainserver instance. Missing filters
+stop navigation rather than opening an unrestricted map. For the current demo
+staging import they are provider **601**, category **6013**; these values are not
+shared application defaults. Changing `secrets.js` alone does not enable this map
+source; configure these non-secret global settings on the matching instance.
+
+Flow: Karte → normal Mainserver map → normal preview → normal POI detail → its
+imported vouchers → normal voucher detail → **In Klima-Taler nutzen** → native
+SDK offer detail. Only that final button opens the SDK. The database coupon ID
+remains the SVA route/cache identity; the validated `payload.klimaTaler.offerId`
+is the provider destination. The native runtime environment must match the
+coupon's imported environment. No user credentials are stored in this payload.
+
+The importer writes schema version 1 with `redemptionMode: "provider"`, environment,
+location/offer IDs, cost, remaining stock and canonical provider deeplink. Imported
+coupons have no SVA quota/discount fields, require no local voucher login and do
+not call local quota redemption. Invalid provider metadata cannot fall back to
+local redemption. Lists display `10+` above ten remaining coupons and exact values
+at ten or below; depleted imported coupons are excluded from available lists.
+Provider stock is a database snapshot and Changers remains authoritative at use time.
+Ordinary SVA coupons retain their existing login, quota and redemption flow.
+
+Test on the matching staging instance:
+
+1. Enable the imported source and both filters. Open Karte and verify only imported POIs.
+2. Tap a pin, then its preview. The ordinary POI detail must open without the SDK.
+3. Select a coupon. Verify its image/title/coin cost and the use button; SDK stays closed.
+4. Press use. Verify the correct SDK offer, close it, then repeat with the same and another coupon.
+5. Verify an ordinary SVA coupon still follows its existing redemption flow.
+6. Disable the override and verify the existing direct provider map remains available.
+
+The Mainserver `preserveVouchers` opt-in must be deployed before ongoing imports
+update existing POIs or append coupons. This app change does not deploy that API.
+It reuses the existing native bridge and requires the compatible Changers binary
+from the SDK feature branch; it adds no new native API or runtime requirement.

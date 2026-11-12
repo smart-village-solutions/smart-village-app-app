@@ -45,7 +45,7 @@ while [ ! -f "$container_dir/Documents/result.txt" ] && [ "$attempt" -lt 30 ]; d
   attempt=$((attempt + 1))
 done
 cp "$container_dir/Documents/result.txt" "$output_dir/result.txt"
-cp "$container_dir/Documents/close-button.png" "$output_dir/close-button.png"
+cp "$container_dir/Documents/full-screen.png" "$output_dir/full-screen.png"
 cat "$output_dir/result.txt"
 printf '\nArtifacts: %s\n' "$output_dir"
 rg -q '^PASSED:' "$output_dir/result.txt"

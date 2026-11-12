@@ -2,6 +2,11 @@ import appJson from '../../app.json';
 
 export const texts = {
   klimaTaler: {
+    voucher: {
+      use: 'In Klima-Taler nutzen',
+      unavailable: 'Nicht verfügbar',
+      unavailableMessage: 'Dieses Angebot ist zurzeit in dieser App nicht verfügbar.'
+    },
     map: {
       loading: 'Klima-Taler lädt …',
       unavailable: 'Klima-Taler nicht verfügbar',

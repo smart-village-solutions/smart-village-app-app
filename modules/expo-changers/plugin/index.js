@@ -186,7 +186,7 @@ function withChangers(config, options = {}) {
   const provider = options.configuration || {};
   const environment = resolveEnvironment(provider);
   if (!config.version) throw new Error('Changers requires an app version for OTA isolation.');
-  config.runtimeVersion = `${config.version}-changers-6-${environment}`;
+  config.runtimeVersion = `${config.version}-changers-7-${environment}`;
 
   config = withBuildProperties(config, { ios: { enableSceneSupport: true } });
   config = withPodfile(config, (c) => {

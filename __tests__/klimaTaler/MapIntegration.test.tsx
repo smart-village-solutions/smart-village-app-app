@@ -333,3 +333,23 @@ test('single-offer preview prefers the offer image and falls back to the partner
     url: 'https://example.org/partner.jpg'
   });
 });
+
+test('imported KT mode reads filtered Mainserver POIs and uses the ordinary backend preview', () => {
+  const screen = render(
+    <LocationOverview
+      {...props}
+      route={{ ...props.route, params: { includeKlimaTaler: false } }}
+      queryVariables={{ dataProviderId: '601', categoryId: '6013' }}
+    />
+  );
+  expect(mockQueries.mock.calls.find(([query]) => query === 'pois')[1]).toMatchObject({
+    skip: false,
+    variables: { dataProviderId: '601', categoryId: '6013' }
+  });
+  const map = mockMap.mock.calls.at(-1)[0];
+  expect(map.locations.map((item: { id: string }) => item.id)).toEqual(['1']);
+  act(() => map.onMarkerPress('1'));
+  expect(screen.getByText('Our POI')).toBeTruthy();
+  expect(screen.queryByText('Klima Café')).toBeNull();
+  expect(openKlimaTaler).not.toHaveBeenCalled();
+});

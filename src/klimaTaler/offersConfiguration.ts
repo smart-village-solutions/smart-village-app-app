@@ -4,6 +4,20 @@ import { configurationObject } from './widgetConfiguration';
 const inRange = (value: unknown, min: number, max: number): value is number =>
   typeof value === 'number' && Number.isFinite(value) && value >= min && value <= max;
 
+export const resolveImportedOffersMap = (moduleSettings: unknown) => {
+  const offers = configurationObject(configurationObject(moduleSettings).offers);
+  if (offers.source !== 'mainserver') return undefined;
+  const id = (value: unknown) =>
+    (typeof value === 'string' || typeof value === 'number') && /^[1-9]\d*$/.test(String(value));
+  return {
+    // Both filters prevent incomplete instance settings from showing unrelated POIs.
+    queryVariables:
+      id(offers.dataProviderId) && id(offers.categoryId)
+        ? { dataProviderId: String(offers.dataProviderId), categoryId: String(offers.categoryId) }
+        : undefined
+  };
+};
+
 // Use customer configuration or the existing town map center, never the device location.
 export const resolveOffersQuery = (
   moduleSettings: unknown,

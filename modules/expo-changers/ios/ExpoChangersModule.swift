@@ -70,10 +70,6 @@ public class ExpoChangersModule: Module {
     })
     let controller = ChangersProviderViewController(provider: provider)
     presentedController = controller
-    controller.onClose = { [weak controller] in
-      guard let controller, runtime.controller === controller else { return }
-      runtime.closeProvider()
-    }
     controller.onDismiss = { [weak controller] in
       guard let controller, runtime.controller === controller else { return }
       runtime.providerClosed()

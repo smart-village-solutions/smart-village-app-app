@@ -4,6 +4,7 @@ import { ActivityIndicator, Alert, Image, StyleSheet, View } from 'react-native'
 
 import { darkColors, lightColors } from '../../src/config/colors';
 import { ThemeContext } from '../../src/ThemeContext';
+import { SettingsContext } from '../../src/SettingsProvider';
 import { AccessibilityContext } from '../../src/AccessibilityProvider';
 import { KlimaTalerWidget } from '../../src/components/widgets/KlimaTalerWidget';
 import { openKlimaTaler } from '../../src/klimaTaler/entry';
@@ -373,4 +374,61 @@ test('configured Karte is available before onboarding without opening the SDK', 
   expect(openKlimaTaler).not.toHaveBeenCalled();
   screen.rerender(configured({ actions: { map: { showInPromo: false } } }));
   expect(screen.queryByRole('button', { name: 'Karte' })).toBeNull();
+});
+
+test('imported offers use the normal filtered POI map, with no public API overlay or SDK entry', () => {
+  mockState = { phase: 'noSession' };
+  const settings = {
+    globalSettings: {
+      settings: {
+        'klima-taler': {
+          offers: {
+            source: 'mainserver',
+            dataProviderId: '601',
+            categoryId: '6013'
+          }
+        }
+      }
+    }
+  } as unknown as React.ContextType<typeof SettingsContext>;
+  const screen = render(
+    <SettingsContext.Provider value={settings}>
+      <KlimaTalerWidget additionalProps={{ actions: { map: true } }} />
+    </SettingsContext.Provider>
+  );
+  fireEvent.press(screen.getByRole('button', { name: 'Karte' }));
+  expect(mockNavigation.navigate).toHaveBeenCalledWith(
+    'Index',
+    expect.objectContaining({
+      includeKlimaTaler: false,
+      skipResourceFilters: true,
+      queryVariables: { initialFilter: 'map', dataProviderId: '601', categoryId: '6013' }
+    })
+  );
+  expect(openKlimaTaler).not.toHaveBeenCalled();
+});
+
+test('incomplete imported-map configuration cannot open an unfiltered map', () => {
+  const alert = jest.spyOn(Alert, 'alert').mockImplementation(() => undefined);
+  const settings = {
+    globalSettings: {
+      settings: {
+        'klima-taler': {
+          offers: {
+            source: 'mainserver',
+            categoryId: '6013'
+          }
+        }
+      }
+    }
+  } as unknown as React.ContextType<typeof SettingsContext>;
+  const screen = render(
+    <SettingsContext.Provider value={settings}>
+      <KlimaTalerWidget additionalProps={{ actions: { map: true } }} />
+    </SettingsContext.Provider>
+  );
+  fireEvent.press(screen.getByRole('button', { name: 'Karte' }));
+  expect(mockNavigation.navigate).not.toHaveBeenCalled();
+  expect(alert).toHaveBeenCalled();
+  alert.mockRestore();
 });

@@ -16,7 +16,9 @@ import {
 import { profileLogIn } from '../queries/profile';
 import { REDEEM_QUOTA_OF_VOUCHER } from '../queries/vouchers';
 
-export const useVoucher = (): {
+export const useVoucher = (
+  enabled = true
+): {
   autoLogin: () => Promise<void>;
   refresh: () => Promise<void>;
   isLoading: boolean;
@@ -68,8 +70,8 @@ export const useVoucher = (): {
   }, [mutateLogIn]);
 
   useEffect(() => {
-    isConnected && autoLogin();
-  }, [isConnected, autoLogin]);
+    enabled && isConnected && autoLogin();
+  }, [enabled, isConnected, autoLogin]);
 
   return {
     autoLogin,
