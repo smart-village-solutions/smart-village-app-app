@@ -70,6 +70,7 @@ global feature gate is enabled.
   "settings": {
     "accessibility": {
       "enabledFeatures": {
+        "autoContrastEnabled": false,
         "settingsEntry": true,
         "headerEntry": true,
         "textScaling": true,
@@ -217,6 +218,9 @@ Any omitted key in `enabledFeatures` defaults to `false`.
   - Enables/disables an in-app bold text toggle.
 - `isGrayscaleEnabled`
   - Enables/disables the in-app grayscale preference and filter behavior.
+- `autoContrastEnabled`
+  - Enables automatic foreground contrast correction for both theme palettes; defaults to `false`.
+  - Controlled only through `globalSettings`, without a user-facing toggle.
 - `highContrast`
   - Enables/disables the in-app higher-contrast preference.
 - `reduceMotion`
@@ -255,6 +259,33 @@ Defines default user preference values applied when a user has no stored accessi
 `readAloudEnabled` is retained only as a legacy stored preference field. It no longer controls TTS
 availability and should not be added to new `globalSettings` payloads.
 
+### `enabledFeatures.autoContrastEnabled`
+
+Optional boolean, defaults to `false`. Set
+`globalSettings.settings.accessibility.enabledFeatures.autoContrastEnabled` to `true` to enable
+automatic foreground contrast correction for both theme palettes. When omitted or `false`, valid
+configured colors are preserved even when their contrast is below `4.5:1`; malformed colors are
+still ignored and legacy color aliases are still synchronized. Only the boolean `true` enables
+correction. This is separate from the user's `highContrastEnabled` preference and adds no UI toggle.
+
+To enable automatic contrast correction, merge this into `globalSettings`:
+
+```json
+{
+  "settings": {
+    "accessibility": {
+      "enabledFeatures": {
+        "autoContrastEnabled": true
+      }
+    }
+  }
+}
+```
+
+The former `settings.accessibility.autoContrastEnabled` key is no longer read. Move existing
+configuration into `enabledFeatures` to opt in. This option requires an app version that supports
+the new location. Once supported, changes received through `globalSettings` are resolved at runtime.
+
 ### `themePalettes`
 
 Defines optional, partial palette overrides for `light` and `dark`. Each mode is merged with its built-in palette, so operators only need to provide tokens that differ from the defaults.
@@ -274,8 +305,8 @@ Palette rules:
 
 - Accepted values are CSS-style hex (`#RGB`, `#RGBA`, `#RRGGBB`, `#RRGGBBAA`), `rgb(...)`, `rgba(...)`, and `transparent`.
 - Unknown tokens, malformed colors, and values of the wrong type are ignored.
-- Critical text pairs must meet a WCAG contrast ratio of at least `4.5:1`: `text/background`, `text/surface`, `textMuted/background`, `textMuted/surface`, `onPrimary/primary`, and `error/background`.
-- If a critical pair is invalid, translucent, or below the threshold, both tokens in that pair fall back to the built-in palette for that mode. Use opaque values for critical foreground/background tokens.
+- With `enabledFeatures.autoContrastEnabled: true`, critical text pairs are checked against a contrast ratio of at least `4.5:1`: `text/background`, `text/surface`, `textMuted/background`, `textMuted/surface`, `onPrimary/primary`, and `error/background`.
+- When automatic correction is enabled and a critical pair is invalid, translucent, or below the threshold, an accessible foreground is selected when available; the background color is preserved. Use opaque values for critical foreground/background tokens.
 - Palette changes received through `globalSettings` are resolved at runtime; no app rebuild is required.
 
 ### Complete remote palette example
