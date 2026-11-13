@@ -668,7 +668,10 @@ export const Overviews = ({ navigation, route }) => {
   }
 
   const hasMultipleMapCategories = (locationOverviewQueryVariables?.categoryIds?.length || 0) > 1;
-  const hideModalFilter = isShowMapSwitchButton && showMap && hasMultipleMapCategories;
+  const hideModalFilter =
+    isShowMapSwitchButton &&
+    showMap &&
+    (hasMultipleMapCategories || route.params?.showAllPoiCategories === true);
 
   return (
     <SafeAreaViewFlex>

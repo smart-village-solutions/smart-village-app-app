@@ -402,7 +402,8 @@ test('imported offers use the normal filtered POI map, with no public API overla
     expect.objectContaining({
       includeKlimaTaler: false,
       skipResourceFilters: true,
-      queryVariables: { initialFilter: 'map', dataProviderId: '601', categoryId: '6013' }
+      queryVariables: { initialFilter: 'map', categoryIds: ['6013'] },
+      showAllPoiCategories: true
     })
   );
   expect(openKlimaTaler).not.toHaveBeenCalled();

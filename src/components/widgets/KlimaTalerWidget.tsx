@@ -45,7 +45,8 @@ export const KlimaTalerWidget = ({ text, additionalProps }: WidgetProps) => {
         query: QUERY_TYPES.POINTS_OF_INTEREST,
         queryVariables: { initialFilter: 'map', ...importedMap?.queryVariables },
         skipResourceFilters: true,
-        includeKlimaTaler: !importedMap
+        includeKlimaTaler: !importedMap,
+        ...(importedMap && { showAllPoiCategories: true })
       });
     } else {
       Alert.alert(

@@ -56,6 +56,7 @@ const mockQueries = jest.fn();
 const mockMap = jest.fn();
 const mockPreviewRows = jest.fn();
 const mockSourceIcon = jest.fn();
+const mockIconUrl = jest.fn();
 jest.mock('../../src/klimaTaler/useMapOffers', () => ({
   useMapOffers: (eligible: boolean) => ({
     enabled: eligible && mockEnabled,
@@ -92,6 +93,7 @@ jest.mock('../../src/queries', () => ({
   },
   getQuery: (type: string) => type
 }));
+jest.mock('../../src/queries/categories', () => ({ GET_MAP_POI_CATEGORIES: 'allPoiCategories' }));
 jest.mock('react-apollo', () => ({
   useQuery: (query: string, options: unknown) => {
     mockQueries(query, options);
@@ -109,12 +111,24 @@ jest.mock('react-apollo', () => ({
         loading: false,
         refetch: mockRefetch
       };
+    if (query === 'allPoiCategories')
+      return {
+        data: {
+          categories: [
+            { id: '1', name: 'Kultur', pointsOfInterestTreeCount: 3 },
+            { id: '2', name: 'Freizeit', pointsOfInterestTreeCount: 2 },
+            { id: '6013', name: 'Klima-Taler', pointsOfInterestTreeCount: 0 },
+            { id: '999', name: 'News only', pointsOfInterestTreeCount: 0 }
+          ]
+        },
+        loading: false
+      };
     if (query === 'poi') return { data: { poi: { id: '1', title: 'Our POI' } }, loading: false };
     return {
       data: {
         categories: [
           { id: '1', name: 'Kultur' },
-          { id: '2', name: 'Freizeit' }
+          { id: '2', name: 'Freizeit', iconName: 'unsupported-icon' }
         ]
       },
       loading: false
@@ -137,7 +151,10 @@ jest.mock('../../src/config', () => ({
       return null;
     }
   },
-  IconUrl: () => null
+  IconUrl: (props: unknown) => {
+    mockIconUrl(props);
+    return null;
+  }
 }));
 jest.mock('../../src/config/icons/Icon', () => ({ Icon: { NamedIcon: () => null } }));
 jest.mock('../../src/components/screens/AvailableVehicles', () => ({
@@ -257,6 +274,60 @@ test('ordinary POI maps do not add the external source', () => {
   expect(mockMap.mock.calls[mockMap.mock.calls.length - 1][0].locations).toHaveLength(1);
 });
 
+test('category chips omit missing icons and suppress placeholders for unavailable SVGs', () => {
+  render(
+    <LocationOverview
+      {...props}
+      route={{ ...props.route, params: {} }}
+      queryVariables={{ categoryIds: ['1', '2'] }}
+    />
+  );
+  expect(mockIconUrl).toHaveBeenCalled();
+  expect(
+    mockIconUrl.mock.calls.every(
+      ([icon]) => icon.iconName === 'unsupported-icon' && icon.fallback === null
+    )
+  ).toBe(true);
+});
+
+test.each([false, true])(
+  'ordinary category maps preserve existing scope when KT is enabled=%s',
+  (enabled) => {
+    mockEnabled = enabled;
+    const queryVariables = { categoryIds: ['1', '2'], dataProviderId: '42' };
+    const screen = render(
+      <LocationOverview
+        {...props}
+        route={{ ...props.route, params: {} }}
+        queryVariables={queryVariables}
+      />
+    );
+    expect(mockQueries.mock.calls.find(([query]) => query === 'pois')[1]).toMatchObject({
+      skip: false,
+      variables: queryVariables
+    });
+    expect(mockQueries).toHaveBeenCalledWith(
+      'categories',
+      expect.objectContaining({ variables: { ids: ['1', '2'] }, skip: false })
+    );
+    expect(mockQueries.mock.calls.some(([query]) => query === 'allPoiCategories')).toBe(false);
+    expect(
+      screen.getByRole('button', { name: 'Kultur Button' }).props.accessibilityState.selected
+    ).toBe(true);
+    expect(
+      screen.getByRole('button', { name: 'Freizeit Button' }).props.accessibilityState.selected
+    ).toBe(true);
+    expect(screen.queryByRole('button', { name: /Klima-Taler/ })).toBeNull();
+    expect(mockMap.mock.calls.at(-1)[0].locations.map((item: { id: string }) => item.id)).toEqual([
+      '1'
+    ]);
+    mockRefetch.mockClear();
+    fireEvent.press(screen.getByRole('button', { name: 'Kultur Button' }));
+    expect(mockRefetch).toHaveBeenCalledWith({ limit: undefined, categoryIds: ['2'] });
+    expect(openKlimaTaler).not.toHaveBeenCalled();
+  }
+);
+
 test('single-offer preview opens the offer ID, never the location ID or backend detail', () => {
   mockLocations = [{ ...location, offers: [location.offers[0]] }];
   const screen = render(<LocationOverview {...props} />);
@@ -351,5 +422,50 @@ test('imported KT mode reads filtered Mainserver POIs and uses the ordinary back
   act(() => map.onMarkerPress('1'));
   expect(screen.getByText('Our POI')).toBeTruthy();
   expect(screen.queryByText('Klima Café')).toBeNull();
+  expect(openKlimaTaler).not.toHaveBeenCalled();
+});
+
+test('widget map exposes other POI categories with only KT initially selected', () => {
+  const screen = render(
+    <LocationOverview
+      {...props}
+      route={{ ...props.route, params: { includeKlimaTaler: false, showAllPoiCategories: true } }}
+      queryVariables={{ categoryIds: ['6013'] }}
+    />
+  );
+  expect(mockQueries.mock.calls.find(([q]) => q === 'pois')[1]).toMatchObject({
+    skip: false,
+    variables: { categoryIds: ['6013'] }
+  });
+  expect(mockQueries.mock.calls.find(([q]) => q === 'pois')[1].variables).not.toHaveProperty(
+    'dataProviderId'
+  );
+  expect(mockQueries.mock.calls.find(([q]) => q === 'allPoiCategories')[1]).toMatchObject({
+    skip: false,
+    variables: {}
+  });
+  expect(
+    screen.getByRole('button', { name: 'Klima-Taler Button' }).props.accessibilityState.selected
+  ).toBe(true);
+  expect(
+    screen.getByRole('button', { name: 'Kultur Button' }).props.accessibilityState.selected
+  ).toBe(false);
+  expect(screen.getByRole('button', { name: 'Freizeit Button' })).toBeTruthy();
+  expect(screen.queryByRole('button', { name: 'News only Button' })).toBeNull();
+  expect(screen.getAllByRole('button')[0].props.accessibilityLabel).toBe('Klima-Taler Button');
+  mockRefetch.mockClear();
+  fireEvent.press(screen.getByRole('button', { name: 'Kultur Button' }));
+  expect(
+    mockQueries.mock.calls.filter(([q]) => q === 'pois').at(-1)[1].variables.categoryIds
+  ).toEqual(['6013', '1']);
+  fireEvent.press(screen.getByRole('button', { name: 'Klima-Taler Button' }));
+  expect(
+    mockQueries.mock.calls.filter(([q]) => q === 'pois').at(-1)[1].variables.categoryIds
+  ).toEqual(['1']);
+  fireEvent.press(screen.getByRole('button', { name: 'Kultur Button' }));
+  expect(
+    mockQueries.mock.calls.filter(([q]) => q === 'pois').at(-1)[1].variables.categoryIds
+  ).toEqual([]);
+  expect(mockRefetch).not.toHaveBeenCalled();
   expect(openKlimaTaler).not.toHaveBeenCalled();
 });

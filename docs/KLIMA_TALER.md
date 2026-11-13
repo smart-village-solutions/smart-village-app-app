@@ -369,8 +369,19 @@ Merge these fields into the existing module configuration:
 ```
 
 Keep the widget's existing `additionalProps.actions.map: true` setting. Both IDs
-must be positive numeric IDs from the same Mainserver instance. Missing filters
-stop navigation rather than opening an unrestricted map. For the current demo
+must be positive numeric IDs from the same Mainserver instance. Incomplete settings
+stop navigation rather than opening an unrestricted map. The category is the initial
+`categoryIds` selection; the provider ID is validated but does not constrain the map.
+The imported-map route opts into `showAllPoiCategories`: chips load the instance's
+active categories with positive POI tree counts, retaining the initial KT category
+also at zero count. The initial KT category is placed first so its selected state
+is visible without horizontal scrolling. Only KT starts selected; other categories
+can be added/removed. In this mode the map owns the category selection and updates
+query variables declaratively, avoiding a disposed legacy Apollo `refetch` callback.
+Changing categories clears the old selected marker/preview. Existing category
+maps retain their previous refetch behavior. The catalog uses a separate minimal query without non-null
+variable defaults for compatibility with older Mainserver GraphQL validators.
+Marktplatz category scope and the legacy public-feed map retain their defaults. For the current demo
 staging import they are provider **601**, category **6013**; these values are not
 shared application defaults. Changing `secrets.js` alone does not enable this map
 source; configure these non-secret global settings on the matching instance.
@@ -393,7 +404,10 @@ Ordinary SVA coupons retain their existing login, quota and redemption flow.
 
 Test on the matching staging instance:
 
-1. Enable the imported source and both filters. Open Karte and verify only imported POIs.
+1. Configure the imported source and both instance IDs. Open Karte and verify only
+   KT starts selected, with the other POI category chips also available. Select
+   another category and deselect KT to show ordinary POIs. Close/reopen to verify
+   the initial KT selection and compare with the unchanged Marktplatz scope.
 2. Tap a pin, then its preview. The ordinary POI detail must open without the SDK.
 3. Select a coupon. Verify its image/title/coin cost and the use button; SDK stays closed.
 4. Press use. Verify the correct SDK offer, close it, then repeat with the same and another coupon.

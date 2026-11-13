@@ -10,10 +10,11 @@ export const resolveImportedOffersMap = (moduleSettings: unknown) => {
   const id = (value: unknown) =>
     (typeof value === 'string' || typeof value === 'number') && /^[1-9]\d*$/.test(String(value));
   return {
-    // Both filters prevent incomplete instance settings from showing unrelated POIs.
+    // Validate instance settings, but keep category as an initial selection only.
+    // A provider constraint would prevent selecting other map categories.
     queryVariables:
       id(offers.dataProviderId) && id(offers.categoryId)
-        ? { dataProviderId: String(offers.dataProviderId), categoryId: String(offers.categoryId) }
+        ? { categoryIds: [String(offers.categoryId)] }
         : undefined
   };
 };

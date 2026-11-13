@@ -7,6 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { IconUrl, consts, normalize } from '../../config';
 import { QUERY_TYPES, getQuery } from '../../queries';
+import { GET_MAP_POI_CATEGORIES } from '../../queries/categories';
 import { BoldText } from '../Text';
 import { useThemeStyles } from '../../hooks/useThemeStyles';
 
@@ -18,7 +19,12 @@ type FilterItem = {
   selected?: boolean;
   onPress?: () => void;
 };
+type CategoryFilterItem = FilterItem & { pointsOfInterestTreeCount?: number | null };
+
 type Props = {
+  showAllPoiCategories?: boolean;
+  selectedCategoryIds?: string[];
+  onCategorySelectionChange?: (ids: string[]) => void;
   additionalFilters?: {
     id: string;
     name: string;
@@ -43,38 +49,67 @@ type Props = {
 };
 
 const keyExtractor = (item: FilterItem, index: number) => `index${index}-id${item.id}`;
+const initialCategoryIds = (variables: Props['queryVariables']) =>
+  variables.categoryIds?.map(String) ?? [];
 
-export const ChipFilter = ({ queryVariables, refetch, additionalFilters = [] }: Props) => {
+export const ChipFilter = ({
+  queryVariables,
+  refetch,
+  additionalFilters = [],
+  showAllPoiCategories = false,
+  selectedCategoryIds,
+  onCategorySelectionChange
+}: Props) => {
   const styles = useThemeStyles(createStyles);
-  const [categoryIds, setCategoryIds] = useState<string[]>(
-    queryVariables.categoryIds?.map((item) => item.toString()) || []
+  const [categoryIds, setCategoryIds] = useState<string[]>(() =>
+    initialCategoryIds(queryVariables)
   );
+  const activeCategoryIds = selectedCategoryIds ?? categoryIds;
   const safeAreaInsets = useSafeAreaInsets();
 
-  const { data, loading } = useQuery(getQuery(QUERY_TYPES.CATEGORIES_FILTER), {
-    skip: !queryVariables.categoryIds?.length,
-    variables: {
-      ids: queryVariables.categoryIds
+  const { data, loading } = useQuery<{ categories: CategoryFilterItem[] }>(
+    showAllPoiCategories ? GET_MAP_POI_CATEGORIES : getQuery(QUERY_TYPES.CATEGORIES_FILTER),
+    {
+      skip: !showAllPoiCategories && !queryVariables.categoryIds?.length,
+      variables: showAllPoiCategories ? {} : { ids: queryVariables.categoryIds }
     }
-  });
+  );
 
-  const categories = queryVariables.categoryIds?.length ? data?.categories || [] : [];
-  const filter: FilterItem[] = [...additionalFilters, ..._sortBy(categories, 'name')];
+  const categories = showAllPoiCategories
+    ? (data?.categories || []).filter(
+        (category) =>
+          (category.pointsOfInterestTreeCount ?? 0) > 0 ||
+          queryVariables.categoryIds?.some((id) => String(id) === String(category.id))
+      )
+    : queryVariables.categoryIds?.length
+    ? data?.categories || []
+    : [];
+  const filter: FilterItem[] = [
+    ...additionalFilters,
+    ..._sortBy(categories, [
+      (category) =>
+        showAllPoiCategories &&
+        queryVariables.categoryIds?.some((id) => String(id) === String(category.id))
+          ? 0
+          : 1,
+      'name'
+    ])
+  ];
 
   useEffect(() => {
-    if (!queryVariables.categoryIds?.length) return;
+    if (onCategorySelectionChange || !queryVariables.categoryIds?.length) return;
     refetch?.({ limit: undefined, categoryIds });
-  }, [categoryIds, queryVariables.categoryIds?.length, refetch]);
+  }, [categoryIds, queryVariables.categoryIds?.length, refetch, onCategorySelectionChange]);
 
   const onPress = (item: { id: string | number }, isActive: boolean) => {
     // exclude an active pressed items id from category ids.
     // include an inactive pressed items id in category ids.
     // as result there could be multiple active and inactive items ids in category ids.
-    setCategoryIds(
-      isActive
-        ? categoryIds.filter((id) => id !== item.id.toString())
-        : [...categoryIds, item.id.toString()]
-    );
+    const nextCategoryIds = isActive
+      ? activeCategoryIds.filter((id) => id !== item.id.toString())
+      : [...activeCategoryIds, item.id.toString()];
+    if (onCategorySelectionChange) onCategorySelectionChange(nextCategoryIds);
+    else setCategoryIds(nextCategoryIds);
   };
 
   if (loading && !additionalFilters.length) return null;
@@ -95,7 +130,9 @@ export const ChipFilter = ({ queryVariables, refetch, additionalFilters = [] }: 
         }}
         renderItem={({ item, index }) => {
           const external = typeof item.onPress === 'function';
-          const isActive = external ? !!item.selected : categoryIds.includes(item.id.toString());
+          const isActive = external
+            ? !!item.selected
+            : activeCategoryIds.includes(item.id.toString());
 
           return (
             <TouchableOpacity
@@ -113,7 +150,10 @@ export const ChipFilter = ({ queryVariables, refetch, additionalFilters = [] }: 
                   index === filter?.length - 1 && styles.lastChip
                 ]}
               >
-                {item.icon ?? <IconUrl iconName={item.iconName || consts.MAP.DEFAULT_PIN} />}
+                {item.icon ??
+                  (item.iconName?.trim() ? (
+                    <IconUrl fallback={null} iconName={item.iconName} />
+                  ) : null)}
                 <BoldText small style={styles.category}>
                   {item.name}
                 </BoldText>

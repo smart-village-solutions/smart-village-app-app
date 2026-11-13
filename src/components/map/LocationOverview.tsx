@@ -167,6 +167,14 @@ export const LocationOverview = ({
   const [vehicleStatuses, setVehicleStatuses] = useState<VehicleStatusByUrl>({});
   const isPreviewWithoutNavigation = route.params?.isPreviewWithoutNavigation ?? false;
   const klimaTalerOnly = route.params?.includeKlimaTaler === true;
+  const showAllPoiCategories = route.params?.showAllPoiCategories === true;
+  const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>(
+    () => queryVariables.categoryIds?.map(String) ?? []
+  );
+  const selectMapCategories = useCallback((ids: string[]) => {
+    setSelectedCategoryIds(ids);
+    setSelectedPointOfInterest(undefined);
+  }, []);
   const offers = useMapOffers(
     klimaTalerOnly && !filterByOpeningTimes && !queryVariables?.radiusSearch?.distance
   );
@@ -209,6 +217,7 @@ export const LocationOverview = ({
     skip: klimaTalerOnly,
     variables: {
       ...queryVariables,
+      ...(showAllPoiCategories && { categoryIds: selectedCategoryIds }),
       // if we show the map, we need to fetch all the entries at once and not a limited amount
       limit: undefined
     }
@@ -297,7 +306,9 @@ export const LocationOverview = ({
   }
 
   const showMapFilter =
-    (!klimaTalerOnly && (queryVariables?.categoryIds?.length || 0) > 1) || offers.enabled;
+    showAllPoiCategories ||
+    (!klimaTalerOnly && (queryVariables?.categoryIds?.length || 0) > 1) ||
+    offers.enabled;
   const mapMarkers = [
     ...(mapToMapMarkers(pointsOfInterest, vehicleStatuses) ?? []),
     ...offersToMapMarkers(offers.locations, MAP.DEFAULT_PIN)
@@ -344,6 +355,9 @@ export const LocationOverview = ({
           key={JSON.stringify(queryVariables.categoryIds ?? [])}
           queryVariables={klimaTalerOnly ? {} : queryVariables}
           refetch={refetch}
+          showAllPoiCategories={showAllPoiCategories}
+          selectedCategoryIds={showAllPoiCategories ? selectedCategoryIds : undefined}
+          onCategorySelectionChange={showAllPoiCategories ? selectMapCategories : undefined}
           additionalFilters={
             offers.enabled
               ? [

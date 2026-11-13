@@ -34,14 +34,14 @@ beforeEach(() => {
   jest.mocked(openKlimaTaler).mockResolvedValue(undefined);
 });
 
-test('explicit imported-map settings select the ordinary map with both instance filters', () => {
+test('imported-map settings validate both IDs and preselect the category without a provider restriction', () => {
   expect(resolveImportedOffersMap(true)).toBeUndefined();
   expect(resolveImportedOffersMap({ offers: { area: 'detmold' } })).toBeUndefined();
   expect(
     resolveImportedOffersMap({
       offers: { source: 'mainserver', dataProviderId: '601', categoryId: 6013 }
     })
-  ).toEqual({ queryVariables: { dataProviderId: '601', categoryId: '6013' } });
+  ).toEqual({ queryVariables: { categoryIds: ['6013'] } });
   expect(
     resolveImportedOffersMap({ offers: { source: 'mainserver', categoryId: '6013' } })
   ).toEqual({ queryVariables: undefined });
