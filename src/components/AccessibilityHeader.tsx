@@ -4,7 +4,7 @@ import { StyleProp, StyleSheet, ViewStyle } from 'react-native';
 import { SettingsContext } from '../SettingsProvider';
 import { consts, Icon, normalize } from '../config';
 import { getAccessibilityHeaderEntryEnabled } from '../helpers';
-import { useTheme } from '../hooks/useTheme';
+import { useHeaderForeground } from '../hooks/useHeaderForeground';
 
 import { AccessibilitySettingsModal } from './AccessibilitySettingsModal';
 import { HeaderIconButton } from './HeaderIconButton';
@@ -16,7 +16,7 @@ type Props = {
 
 export const AccessibilityHeader = ({ style }: Props) => {
   const { globalSettings } = useContext(SettingsContext);
-  const { colors } = useTheme();
+  const foreground = useHeaderForeground();
   const [isVisible, setIsVisible] = useState(false);
 
   if (!getAccessibilityHeaderEntryEnabled(globalSettings)) {
@@ -32,7 +32,7 @@ export const AccessibilityHeader = ({ style }: Props) => {
       >
         <Icon.NamedIcon
           name="accessible"
-          color={colors.darkText}
+          color={foreground}
           size={HEADER_RIGHT_ICON_SIZE}
           style={[style, styles.icon]}
           strokeWidth={HEADER_RIGHT_ICON_STROKE_WIDTH}

@@ -5,6 +5,7 @@ import { Overlay } from 'react-native-elements';
 
 import { useThemeStyles } from '../hooks/useThemeStyles';
 import { useTheme } from '../hooks/useTheme';
+import { useHeaderForeground } from '../hooks/useHeaderForeground';
 
 import { Icon, IconUrl, consts, normalize } from './../config';
 import { useStaticContent } from './../hooks';
@@ -37,6 +38,7 @@ type Props = {
 /* eslint-disable complexity */
 export const InfoHeader = ({ route, style }: Props) => {
   const { colors: colors } = useTheme();
+  const foreground = useHeaderForeground();
 
   const styles = useThemeStyles(createStyles);
   const [isVisible, setIsVisible] = useState(false);
@@ -71,7 +73,7 @@ export const InfoHeader = ({ route, style }: Props) => {
       >
         <IconUrl
           iconName={iconName}
-          color={colors.darkText}
+          color={foreground}
           size={HEADER_RIGHT_ICON_SIZE}
           style={style}
         />

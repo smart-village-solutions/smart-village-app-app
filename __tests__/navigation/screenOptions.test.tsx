@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React from 'react';
 import renderer from 'react-test-renderer';
+import type { StackHeaderProps } from 'expo-router/build/react-navigation/stack';
 
 jest.mock('../../src/components', () => {
   const ReactLocal = require('react');
@@ -19,6 +20,11 @@ jest.mock('../../src/config', () => ({
   normalize: (value: number) => value
 }));
 
+jest.mock('../../src/components/NavigationHeader', () => ({
+  NavigationHeader: (props: object) =>
+    require('react').createElement('mock-navigation-header', props)
+}));
+
 jest.mock('../../src/hooks/useTheme', () => ({
   useTheme: () => ({
     colors: {
@@ -30,37 +36,30 @@ jest.mock('../../src/hooks/useTheme', () => ({
 
 import { getScreenOptions } from '../../src/navigation/screenOptions';
 
-const renderHeaderBackground = (
-  config: Parameters<typeof getScreenOptions>[0] = {}
-): renderer.ReactTestRenderer => {
+const renderConfiguredHeader = (config: Parameters<typeof getScreenOptions>[0] = {}) => {
   const options = getScreenOptions(config)({ navigation: {} as never, route: {} as never });
-  const HeaderBackground = options.headerBackground as () => React.ReactElement;
+  const Header = options.header!;
   let tree: renderer.ReactTestRenderer;
-
   renderer.act(() => {
-    tree = renderer.create(<HeaderBackground />);
+    tree = renderer.create(<Header {...({ options } as StackHeaderProps)} />);
   });
-
-  return tree!;
+  return tree!.root.findByType('mock-navigation-header' as never);
 };
 
-describe('getScreenOptions status bar', () => {
-  it('uses the theme surface for the default header', () => {
-    const tree = renderHeaderBackground();
-
-    expect(tree.root.findByType('mock-app-status-bar' as never).props.backgroundColor).toBe(
-      '#FFFFFF'
-    );
+describe('getScreenOptions shared header', () => {
+  it('delegates default appearance to the shared navigation header', () => {
+    const header = renderConfiguredHeader();
+    expect(header.props.headerBackgroundColor).toBeUndefined();
+    expect(header.props.options.headerTitleStyle.color).toBeUndefined();
   });
 
-  it('supports theme-aware header colors and explicit status bar overrides', () => {
-    const tree = renderHeaderBackground({
-      headerBackgroundColor: (colors) => colors.primary,
-      headerStatusBarStyle: () => 'light-content'
+  it('passes app branding and explicit status bar preferences to the shared header', () => {
+    const background = (colors: { primary: string }) => colors.primary;
+    const header = renderConfiguredHeader({
+      headerBackgroundColor: background,
+      headerStatusBarStyle: 'light-content'
     });
-    const statusBar = tree.root.findByType('mock-app-status-bar' as never);
-
-    expect(statusBar.props.backgroundColor).toBe('#107821');
-    expect(statusBar.props.barStyle).toBe('light-content');
+    expect(header.props.headerBackgroundColor).toBe(background);
+    expect(header.props.headerStatusBarStyle).toBe('light-content');
   });
 });

@@ -5,7 +5,7 @@ import { StyleProp, ViewStyle } from 'react-native';
 import { consts, Icon, texts } from '../config';
 import { QUERY_TYPES } from '../queries';
 import { ScreenName } from '../types';
-import { useTheme } from '../hooks/useTheme';
+import { useHeaderForeground } from '../hooks/useHeaderForeground';
 
 import { HEADER_RIGHT_ICON_SIZE, HEADER_RIGHT_ICON_STROKE_WIDTH } from './headerIconConfig';
 import { HeaderIconButton } from './HeaderIconButton';
@@ -18,7 +18,7 @@ type Props = {
 };
 
 export const ChatHeader = ({ navigation, style }: Props) => {
-  const { colors } = useTheme();
+  const foreground = useHeaderForeground();
 
   return (
     <HeaderIconButton
@@ -36,7 +36,7 @@ export const ChatHeader = ({ navigation, style }: Props) => {
       accessibilityHint={a11yLabel.chatHint}
     >
       <Icon.Pen
-        color={colors.darkText}
+        color={foreground}
         style={style}
         size={HEADER_RIGHT_ICON_SIZE}
         strokeWidth={HEADER_RIGHT_ICON_STROKE_WIDTH}

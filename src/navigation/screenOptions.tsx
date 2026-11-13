@@ -1,20 +1,13 @@
 import { CardStyleInterpolators } from 'expo-router/build/react-navigation/stack';
 import { StackNavigationOptions } from 'expo-router/js-stack';
 import { NavigationProp, RouteProp } from 'expo-router/react-navigation';
-
 import React from 'react';
 import { StyleSheet } from 'react-native';
 
-import {
-  AppStatusBar,
-  DiagonalGradient,
-  FavoritesHeader,
-  HeaderLeft,
-  HeaderRight
-} from '../components';
+import { FavoritesHeader, HeaderLeft, HeaderRight } from '../components';
 import type { AppStatusBarProps } from '../components/AppStatusBar';
 import { normalize } from '../config';
-import { useTheme } from '../hooks/useTheme';
+import { NavigationHeader } from '../components/NavigationHeader';
 import { ThemeColorPalette } from '../types/Theme';
 
 type NavigationParams = Record<string, object | undefined>;
@@ -44,32 +37,6 @@ export type ScreenOptionConfig = {
   withShare?: boolean;
 };
 
-type HeaderBackgroundProps = Pick<
-  ScreenOptionConfig,
-  'headerBackgroundColor' | 'headerStatusBarStyle'
->;
-
-const HeaderBackground = ({
-  headerBackgroundColor,
-  headerStatusBarStyle
-}: HeaderBackgroundProps) => {
-  const { colors } = useTheme();
-  const backgroundColor =
-    typeof headerBackgroundColor === 'function'
-      ? headerBackgroundColor(colors)
-      : headerBackgroundColor || colors.surface;
-  const barStyle =
-    typeof headerStatusBarStyle === 'function'
-      ? headerStatusBarStyle(colors)
-      : headerStatusBarStyle;
-
-  return (
-    <DiagonalGradient colors={[backgroundColor, backgroundColor]}>
-      <AppStatusBar backgroundColor={backgroundColor} barStyle={barStyle} />
-    </DiagonalGradient>
-  );
-};
-
 export const getScreenOptions =
   ({
     cardStyleInterpolator,
@@ -88,10 +55,9 @@ export const getScreenOptions =
   }: ScreenOptionConfig): ((props: OptionProps) => StackNavigationOptions) =>
   ({ navigation, route }) => {
     return {
-      // header gradient:
-      // https://stackoverflow.com/questions/44924323/react-navigation-gradient-color-for-header
-      headerBackground: () => (
-        <HeaderBackground
+      header: (props) => (
+        <NavigationHeader
+          {...props}
           headerBackgroundColor={headerBackgroundColor}
           headerStatusBarStyle={headerStatusBarStyle}
         />
