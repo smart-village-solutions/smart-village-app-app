@@ -1,4 +1,3 @@
-import { Header } from 'expo-router/build/react-navigation/stack';
 import type { StackHeaderProps } from 'expo-router/build/react-navigation/stack';
 import React from 'react';
 import { StyleSheet } from 'react-native';
@@ -7,6 +6,7 @@ import type { ThemeColorPalette } from '../types/Theme';
 import { resolveHeaderForeground, resolveHeaderStatusBarStyle } from '../helpers/headerAppearance';
 import { HeaderForegroundContext } from '../hooks/useHeaderForeground';
 import { useTheme } from '../hooks/useTheme';
+import { MeasuredHeader } from '../navigation/MeasuredHeader';
 
 import { AppStatusBar } from './AppStatusBar';
 import type { AppStatusBarProps } from './AppStatusBar';
@@ -47,7 +47,7 @@ export const NavigationHeader = ({
 
   return (
     <HeaderForegroundContext.Provider value={foreground}>
-      <Header
+      <MeasuredHeader
         {...props}
         options={{
           ...props.options,
