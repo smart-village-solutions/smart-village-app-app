@@ -70,6 +70,14 @@ const serviceAtScale = (textScaleMultiplier: number) => (
 describe('Service layout changes', () => {
   beforeEach(() => mockTileMount.mockClear());
 
+  it.each([0.9, 1, 1.2])('keeps grouped rows on one native line at text scale %s', (scale) => {
+    const tree = render(serviceAtScale(scale));
+
+    for (const row of tree.UNSAFE_getAllByType(WrapperWrap)) {
+      expect(row.props.style.flexWrap).toBe('nowrap');
+    }
+  });
+
   it('centers the incomplete row with the same gap and no leading tile margin', () => {
     const tree = render(serviceAtScale(0.9));
     const rows = tree.UNSAFE_getAllByType(WrapperWrap);

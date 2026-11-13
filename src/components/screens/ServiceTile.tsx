@@ -120,6 +120,7 @@ export const ServiceTile = ({
     orientation === 'landscape'
       ? DEFAULT_TILE_GRID_COLUMNS.landscape
       : DEFAULT_TILE_GRID_COLUMNS.portrait;
+  const [contentWidth, setContentWidth] = useState<number>();
   const [isVisible, setIsVisible] = useState(item.isVisible ?? true);
   const onPress = useCallback(
     () =>
@@ -194,6 +195,11 @@ export const ServiceTile = ({
     >
       <TouchableOpacity
         style={[hasTileStyle && styles.button]}
+        onLayout={
+          item.tile && hasTileStyle
+            ? ({ nativeEvent: { layout } }) => setContentWidth(layout.width)
+            : undefined
+        }
         onPress={onPress}
         accessibilityLabel={
           item.accessibilityLabel
@@ -243,6 +249,7 @@ export const ServiceTile = ({
                 !!item.tile &&
                   stylesWithProps({
                     columns,
+                    contentWidth,
                     dimensions,
                     safeAreaInsets,
                     tileSizeFactor
@@ -270,6 +277,7 @@ export const ServiceTile = ({
                 !!item.tile &&
                   stylesWithProps({
                     columns,
+                    contentWidth,
                     dimensions,
                     safeAreaInsets,
                     tileSizeFactor
@@ -336,11 +344,13 @@ const createStyles = (colors) => ({
 /* this works properly, we do not want that warning */
 const stylesWithProps = ({
   columns,
+  contentWidth,
   dimensions,
   safeAreaInsets,
   tileSizeFactor = 1
 }: {
   columns: number;
+  contentWidth?: number;
   dimensions: { width: number; height: number };
   safeAreaInsets: EdgeInsets;
   tileSizeFactor?: number;
@@ -352,10 +362,11 @@ const stylesWithProps = ({
 
   // calculate tile sizes based on live window dimensions, safe area insets and padding
   const tileSize = Math.max(0, availableWidth) / safeColumns;
-  const computedBigTileSize = Math.min(
-    tileSize,
-    (tileSize - containerPadding / 2) * tileSizeFactor
-  );
+  // Styled image tiles use their actual content box, including any flex shrink.
+  // A fixed inset keeps the visible background equally thin in full and incomplete rows.
+  const imageBounds = contentWidth ?? tileSize;
+  const imageInset = contentWidth === undefined ? containerPadding / 2 : 2 * normalize(1);
+  const computedBigTileSize = Math.min(imageBounds, (imageBounds - imageInset) * tileSizeFactor);
   const bigTileSize = Math.max(0, computedBigTileSize);
 
   return StyleSheet.create({

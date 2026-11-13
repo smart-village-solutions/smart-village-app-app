@@ -205,7 +205,12 @@ export const Service = ({
             onLayout={({ nativeEvent: { layout } }) =>
               setGridWidth(Math.max(0, layout.width - 2 * rowHorizontalPadding))
             }
-            style={{ columnGap: gridGap, paddingHorizontal: rowHorizontalPadding }}
+            // Rows are already grouped above; native wrapping would split them a second time.
+            style={{
+              ...styles.gridRow,
+              columnGap: gridGap,
+              paddingHorizontal: rowHorizontalPadding
+            }}
           >
             {row.map((item, index) => renderItem(item, index))}
           </WrapperWrap>
@@ -218,6 +223,10 @@ export const Service = ({
 /* eslint-enable complexity */
 
 const createStyles = () => ({
+  gridRow: {
+    flexWrap: 'nowrap'
+  },
+
   diagonalGradient: {
     flex: 1
   },

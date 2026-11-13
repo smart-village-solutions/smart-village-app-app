@@ -24,8 +24,18 @@ export const ServiceBox = styled.View`
   overflow: hidden;
 
   ${(props) =>
+    props.gridWidth !== undefined && (props.bigTile || props.hasTileStyle)
+      ? css`
+          width: ${flexBasis(props)};
+        `
+      : css`
+          flex-basis: ${flexBasis(props)};
+        `};
+
+  ${(props) =>
+    props.gridWidth !== undefined &&
     css`
-      flex-basis: ${flexBasis(props)};
+      flex-shrink: 1;
     `};
 
   ${(props) =>

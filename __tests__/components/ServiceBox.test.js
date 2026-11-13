@@ -44,7 +44,9 @@ describe('ServiceBox', () => {
     );
     const style = StyleSheet.flatten(tree.props.style);
 
-    expect(style.flexBasis * columns + gap * (columns - 1)).toBeCloseTo(gridWidth);
+    expect(style.width * columns + gap * (columns - 1)).toBeCloseTo(gridWidth);
+    expect(style.flexBasis).toBeUndefined();
     expect(style.marginBottom).toBe(gap);
+    expect(style.flexShrink).toBe(1);
   });
 });
