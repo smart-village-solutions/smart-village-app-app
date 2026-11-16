@@ -261,21 +261,21 @@ availability and should not be added to new `globalSettings` payloads.
 
 ### `enabledFeatures.autoContrastEnabled`
 
-Optional boolean, defaults to `false`. Set
-`globalSettings.settings.accessibility.enabledFeatures.autoContrastEnabled` to `true` to enable
-automatic foreground contrast correction for both theme palettes. When omitted or `false`, valid
-configured colors are preserved even when their contrast is below `4.5:1`; malformed colors are
-still ignored and legacy color aliases are still synchronized. Only the boolean `true` enables
-correction. This is separate from the user's `highContrastEnabled` preference and adds no UI toggle.
+Optional boolean, defaults to `true`. Automatic foreground contrast correction remains enabled
+for existing configurations. Set
+`globalSettings.settings.accessibility.enabledFeatures.autoContrastEnabled` to `false` to preserve
+valid configured colors even when their contrast is below `4.5:1`. Malformed colors are always
+ignored and legacy aliases are synchronized. Only the boolean `false` disables correction.
+This is separate from the user's `highContrastEnabled` preference and adds no UI toggle.
 
-To enable automatic contrast correction, merge this into `globalSettings`:
+To preserve a branded palette, merge this into `globalSettings`:
 
 ```json
 {
   "settings": {
     "accessibility": {
       "enabledFeatures": {
-        "autoContrastEnabled": true
+        "autoContrastEnabled": false
       }
     }
   }
@@ -283,8 +283,8 @@ To enable automatic contrast correction, merge this into `globalSettings`:
 ```
 
 The former `settings.accessibility.autoContrastEnabled` key is no longer read. Move existing
-configuration into `enabledFeatures` to opt in. This option requires an app version that supports
-the new location. Once supported, changes received through `globalSettings` are resolved at runtime.
+configuration into `enabledFeatures`. This option requires an app version that supports the
+new location. Once supported, changes received through `globalSettings` are resolved at runtime.
 
 ### `themePalettes`
 
@@ -305,7 +305,7 @@ Palette rules:
 
 - Accepted values are CSS-style hex (`#RGB`, `#RGBA`, `#RRGGBB`, `#RRGGBBAA`), `rgb(...)`, `rgba(...)`, and `transparent`.
 - Unknown tokens, malformed colors, and values of the wrong type are ignored.
-- With `enabledFeatures.autoContrastEnabled: true`, critical text pairs are checked against a contrast ratio of at least `4.5:1`: `text/background`, `text/surface`, `textMuted/background`, `textMuted/surface`, `onPrimary/primary`, and `error/background`.
+- By default (or with `enabledFeatures.autoContrastEnabled: true`), critical text pairs are checked against a contrast ratio of at least `4.5:1`: `text/background`, `text/surface`, `textMuted/background`, `textMuted/surface`, `onPrimary/primary`, and `error/background`.
 - When automatic correction is enabled and a critical pair is invalid, translucent, or below the threshold, an accessible foreground is selected when available; the background color is preserved. Use opaque values for critical foreground/background tokens.
 - Palette changes received through `globalSettings` are resolved at runtime; no app rebuild is required.
 

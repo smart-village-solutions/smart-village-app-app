@@ -16,7 +16,7 @@ describe('accessibilitySettingsHelper', () => {
 
     expect(resolved.features).toEqual(DEFAULT_ACCESSIBILITY_FEATURES);
     expect(resolved.features.readAloud).toBe(false);
-    expect(resolved.features.autoContrastEnabled).toBe(false);
+    expect(resolved.features.autoContrastEnabled).toBe(true);
     expect(resolved.defaults).toEqual(DEFAULT_ACCESSIBILITY_USER_SETTINGS);
   });
 

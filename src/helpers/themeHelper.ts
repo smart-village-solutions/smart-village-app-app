@@ -37,7 +37,8 @@ const parseRgbColor = (value: string): RgbColor | undefined => {
   if (channels.length !== (expectsAlpha ? 4 : 3)) return undefined;
 
   const [red, green, blue, alpha = 1] = channels;
-  if (![red, green, blue].every(isByte) || alpha < 0 || alpha > 1) return undefined;
+  if (![red, green, blue].every(isByte) || !Number.isFinite(alpha) || alpha < 0 || alpha > 1)
+    return undefined;
 
   return { alpha, blue, green, red };
 };
@@ -211,7 +212,7 @@ const applyContrastFallbacks = (palette: ThemeColorPalette, basePalette: ThemeCo
 export const resolveThemePalette = (
   basePalette: ThemeColorPalette,
   overrides?: ThemePaletteOverrides,
-  autoContrastEnabled = false
+  autoContrastEnabled = true
 ): ThemeColorPalette => {
   const validOverrides = sanitizeOverrides(basePalette, overrides);
   const palette = { ...basePalette, ...validOverrides };
@@ -225,7 +226,7 @@ export const resolveThemePalette = (
 export const resolveThemePalettes = (globalSettings?: ThemeGlobalSettings | null) => {
   const configuredPalettes = globalSettings?.settings?.accessibility?.themePalettes;
   const autoContrastEnabled =
-    globalSettings?.settings?.accessibility?.enabledFeatures?.autoContrastEnabled === true;
+    globalSettings?.settings?.accessibility?.enabledFeatures?.autoContrastEnabled !== false;
 
   return Object.freeze({
     dark: resolveThemePalette(darkColors, configuredPalettes?.dark, autoContrastEnabled),

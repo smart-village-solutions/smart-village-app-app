@@ -43,7 +43,7 @@ const defaultAccessibility: AccessibilityContextValue = {
     themeMode: 'system'
   },
   features: {
-    autoContrastEnabled: false,
+    autoContrastEnabled: true,
     boldText: false,
     headerEntry: false,
     highContrast: false,

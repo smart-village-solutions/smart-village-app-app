@@ -1,6 +1,6 @@
-import { render } from '@testing-library/react-native';
+import { fireEvent, render } from '@testing-library/react-native';
 import React from 'react';
-import { Text } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 jest.mock('../../src/config', () => ({ normalize: (value: number) => value }));
 jest.mock('../../src/components/Text', () => ({
@@ -16,6 +16,7 @@ jest.mock('../../src/components/Wrapper', () => ({
 import { WidgetContent } from '../../src/components/widgets/WidgetContent';
 import { WidgetLayoutContext } from '../../src/components/widgets/WidgetLayoutContext';
 import { RegularText } from '../../src/components/Text';
+import { WrapperRow } from '../../src/components/Wrapper';
 
 describe('WidgetContent label measurements', () => {
   it('measures whole words using the label style without truncating the visible title', () => {
@@ -30,7 +31,7 @@ describe('WidgetContent label measurements', () => {
       .UNSAFE_getAllByType(RegularText)
       .find((node) => node.props.onTextLayout)!;
     expect(measurement.props.children).toBe('Umfragen\n/\nAnkiety');
-    measurement.props.onTextLayout({
+    fireEvent(measurement, 'textLayout', {
       nativeEvent: { lines: [{ width: 105.2 }, { width: 8 }, { width: 88 }] }
     });
     expect(onLabelWidth).toHaveBeenCalledWith(115);
@@ -39,5 +40,50 @@ describe('WidgetContent label measurements', () => {
     expect(visible.props.numberOfLines).toBeUndefined();
     expect(visible.props.adjustsFontSizeToFit).toBeUndefined();
     expect(tree.UNSAFE_getAllByType(Text)).toHaveLength(2);
+  });
+
+  it('keeps a wide image above the label and permits list mode only when both fit with padding', () => {
+    const tree = render(
+      <WidgetLayoutContext.Provider value={{ mode: 'list' }}>
+        <WidgetContent label="Baustellen" visual={<View />} />
+      </WidgetLayoutContext.Provider>
+    );
+    const container = tree.UNSAFE_getAllByType(View).find((node) => node.props.onLayout)!;
+    const measure = tree.UNSAFE_getAllByType(RegularText).find((node) => node.props.onTextLayout)!;
+    fireEvent(container, 'layout', { nativeEvent: { layout: { width: 300 } } });
+    fireEvent(measure, 'textLayout', { nativeEvent: { lines: [{ width: 160 }] } });
+    fireEvent(tree.UNSAFE_getByType(WrapperRow), 'layout', {
+      nativeEvent: { layout: { width: 140 } }
+    });
+    expect(StyleSheet.flatten(container.props.style).flexDirection).not.toBe('row');
+
+    fireEvent(container, 'layout', { nativeEvent: { layout: { width: 340 } } });
+    expect(StyleSheet.flatten(container.props.style).flexDirection).toBe('row');
+    fireEvent(container, 'layout', { nativeEvent: { layout: { width: 330 } } });
+    expect(StyleSheet.flatten(container.props.style).flexDirection).not.toBe('row');
+  });
+
+  it('rechecks scaled count/temperature and title measurements without getting stuck in list mode', () => {
+    const tree = render(
+      <WidgetLayoutContext.Provider value={{ mode: 'list', onLabelWidth: jest.fn() }}>
+        <WidgetContent label="Wassertemperatur" visual={<Text>123°C</Text>} />
+      </WidgetLayoutContext.Provider>
+    );
+    const container = tree.UNSAFE_getAllByType(View).find((node) => node.props.onLayout)!;
+    const measure = tree.UNSAFE_getAllByType(RegularText).find((node) => node.props.onTextLayout)!;
+    fireEvent(container, 'layout', { nativeEvent: { layout: { width: 300 } } });
+    fireEvent(measure, 'textLayout', { nativeEvent: { lines: [{ width: 160 }] } });
+    fireEvent(tree.UNSAFE_getByType(WrapperRow), 'layout', {
+      nativeEvent: { layout: { width: 60 } }
+    });
+    expect(StyleSheet.flatten(container.props.style).flexDirection).toBe('row');
+
+    fireEvent(tree.UNSAFE_getByType(WrapperRow), 'layout', {
+      nativeEvent: { layout: { width: 130 } }
+    });
+    expect(StyleSheet.flatten(container.props.style).flexDirection).not.toBe('row');
+    fireEvent(measure, 'textLayout', { nativeEvent: { lines: [{ width: 210 }] } });
+    fireEvent(container, 'layout', { nativeEvent: { layout: { width: 400 } } });
+    expect(StyleSheet.flatten(container.props.style).flexDirection).toBe('row');
   });
 });

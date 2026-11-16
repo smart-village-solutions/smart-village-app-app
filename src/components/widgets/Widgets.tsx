@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react';
+import React, { ReactNode, useCallback, useContext, useMemo, useState } from 'react';
 import { LayoutChangeEvent, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -17,7 +17,7 @@ import { VoucherWidget } from './VoucherWidget';
 import { WaterTemperatureWidget } from './WaterTemperatureWidget';
 import { WeatherWidget } from './WeatherWidget';
 import { WebWidget } from './WebWidget';
-import { WidgetLayoutContext } from './WidgetLayoutContext';
+import { WidgetLayoutContext, WidgetLayoutMode } from './WidgetLayoutContext';
 
 const WIDGET_CONTAINER_PADDING = 16;
 const WIDGET_COLUMN_PADDING = 4;
@@ -48,6 +48,25 @@ const EXISTING_WIDGETS: {
   water: WaterTemperatureWidget,
   weather: WeatherWidget,
   web: WebWidget
+};
+
+const WidgetItem = ({
+  children,
+  measurementKey,
+  mode,
+  onLabelWidth
+}: {
+  children: ReactNode;
+  measurementKey: string;
+  mode: WidgetLayoutMode;
+  onLabelWidth: (key: string, width: number) => void;
+}) => {
+  const reportLabelWidth = useCallback(
+    (value: number) => onLabelWidth(measurementKey, value),
+    [measurementKey, onLabelWidth]
+  );
+  const value = useMemo(() => ({ mode, onLabelWidth: reportLabelWidth }), [mode, reportLabelWidth]);
+  return <WidgetLayoutContext.Provider value={value}>{children}</WidgetLayoutContext.Provider>;
 };
 
 export const Widgets = ({ widgetConfigs, widgetStyle }: Props) => {
@@ -133,12 +152,9 @@ export const Widgets = ({ widgetConfigs, widgetStyle }: Props) => {
   );
   const layoutContext = useMemo(
     () => ({
-      mode:
-        layout.columns === 1 && measuredMinItemWidth + normalize(108) <= availableWidth
-          ? ('list' as const)
-          : ('grid' as const)
+      mode: layout.columns === 1 ? ('list' as const) : ('grid' as const)
     }),
-    [availableWidth, layout.columns, measuredMinItemWidth]
+    [layout.columns]
   );
   const onLayout = useCallback(
     ({ nativeEvent }: LayoutChangeEvent) => {
@@ -170,14 +186,16 @@ export const Widgets = ({ widgetConfigs, widgetStyle }: Props) => {
         ]}
       >
         {widgetComponents.map((entry) => (
-          <WidgetLayoutContext.Provider
+          <WidgetItem
             key={entry.key}
-            value={{ ...layoutContext, onLabelWidth: (value) => onLabelWidth(entry.key, value) }}
+            measurementKey={entry.key}
+            mode={layoutContext.mode}
+            onLabelWidth={onLabelWidth}
           >
             <View style={[layout.columns > 1 && styles.gridItem, itemStyle]}>
               {entry.component}
             </View>
-          </WidgetLayoutContext.Provider>
+          </WidgetItem>
         ))}
       </View>
     </WidgetLayoutContext.Provider>

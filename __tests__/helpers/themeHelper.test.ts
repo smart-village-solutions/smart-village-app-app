@@ -48,6 +48,17 @@ describe('themeHelper', () => {
     expect(isValidThemeColor(123)).toBe(false);
   });
 
+  it.each(['invalid', 'NaN', 'Infinity', '-Infinity'])(
+    'rejects a non-finite alpha with contrast disabled (%s)',
+    (alpha) => {
+      const color = `rgba(16, 120, 33, ${alpha})`;
+      expect(isValidThemeColor(color)).toBe(false);
+      expect(resolveThemePalette(lightColors, { onPrimary: color }, false).onPrimary).toBe(
+        lightColors.onPrimary
+      );
+    }
+  );
+
   it('calculates WCAG contrast ratios for opaque colors', () => {
     expect(getContrastRatio('#000000', '#FFFFFF')).toBeCloseTo(21);
     expect(getContrastRatio('rgb(0, 0, 0)', 'rgb(255, 255, 255)')).toBeCloseTo(21);
@@ -116,8 +127,8 @@ describe('themeHelper', () => {
     expect(palettes.light.border).toBe(lightColors.border);
   });
 
-  it.each([undefined, false, 'true', 'false', null, 0, 1])(
-    'keeps automatic contrast disabled unless explicitly true (%s)',
+  it.each([undefined, 'true', 'false', null, 0, 1])(
+    'preserves automatic correction unless explicitly false (%s)',
     (autoContrastEnabled) => {
       const palettes = resolveThemePalettes({
         settings: {
@@ -128,8 +139,10 @@ describe('themeHelper', () => {
         }
       });
 
-      expect(palettes.light.onPrimary).toBe('#FFFFFF');
-      expect(palettes.light.lightestText).toBe('#FFFFFF');
+      expect(
+        getContrastRatio(palettes.light.onPrimary, palettes.light.primary)
+      ).toBeGreaterThanOrEqual(4.5);
+      expect(palettes.light.lightestText).toBe(palettes.light.onPrimary);
     }
   );
 
@@ -152,7 +165,7 @@ describe('themeHelper', () => {
     });
   });
 
-  it('ignores the old accessibility-level flag and preserves colors by default', () => {
+  it('ignores the old accessibility-level flag and corrects contrast by default', () => {
     const palettes = resolveThemePalettes({
       settings: {
         accessibility: {
@@ -162,14 +175,17 @@ describe('themeHelper', () => {
       }
     } as never);
 
-    expect(palettes.light.onPrimary).toBe('#FFFFFF');
-    expect(resolveThemePalette(lightColors, { text: '#FFFFFF' }).text).toBe('#FFFFFF');
+    expect(
+      getContrastRatio(palettes.light.onPrimary, palettes.light.primary)
+    ).toBeGreaterThanOrEqual(4.5);
+    expect(resolveThemePalette(lightColors, { text: '#FFFFFF' }).text).toBe(lightColors.text);
   });
 
   it('keeps Magdeburg GlobalSettings colors instead of reverting to the base palette', () => {
     const palettes = resolveThemePalettes({
       settings: {
         accessibility: {
+          enabledFeatures: { autoContrastEnabled: false },
           themePalettes: {
             dark: {
               background: '#121212',
