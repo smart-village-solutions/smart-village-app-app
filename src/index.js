@@ -174,7 +174,7 @@ const MainAppWithApolloProvider = () => {
 
   const setupLocationSettings = async (globalSettings) => {
     const locationSettings = globalSettings?.settings?.locationService
-      ? { locationService: undefined, ...((await storageHelper.locationSettings()) || {}) }
+      ? { locationService: undefined, ...(await storageHelper.locationSettings()) }
       : { locationService: false };
     const defaultAlternativePosition =
       globalSettings?.settings?.locationService?.defaultAlternativePosition;

@@ -1,16 +1,9 @@
 import { useFocusEffect } from 'expo-router/react-navigation';
 import { StackScreenProps } from 'expo-router/js-stack';
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useState
-} from 'react';
+import React, { useCallback, useContext, useLayoutEffect, useMemo, useState } from 'react';
 import { DeviceEventEmitter, View } from 'react-native';
 import Markdown from 'react-native-markdown-display';
-import { useMutation } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 
 import { SettingsContext } from '../../SettingsProvider';
 import { styles as configStyles, consts, normalize, texts } from '../../config';
@@ -39,8 +32,7 @@ import {
   ROLE_TYPES,
   ScreenName,
   VolunteerGroup as TVolunteerGroup,
-  VolunteerModulesType,
-  VolunteerUser
+  VolunteerModulesType
 } from '../../types';
 import { Button } from '../Button';
 import { HeaderRight } from '../HeaderRight';
@@ -51,11 +43,13 @@ import { RegularText } from '../Text';
 import { Wrapper } from '../Wrapper';
 import { InfoCard } from '../infoCard';
 import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useVolunteerStoredValue } from '../../hooks/volunteer/storedValue';
 
 import { VolunteerGroupMembersAndApplicants } from './VolunteerGroupMembersAndApplicants';
 import { VolunteerGroupSearch } from './VolunteerGroupSearch';
 import { VolunteerHomeSection } from './VolunteerHomeSection';
 import { VolunteerPosts } from './VolunteerPosts';
+import { VolunteerStorageError } from './VolunteerStorageError';
 
 const { ROOT_ROUTE_NAMES } = consts;
 
@@ -104,11 +98,29 @@ export const VolunteerGroup = ({
   // action to open source urls
   const openWebScreen = useOpenWebScreen(headerTitle, undefined, rootRouteName);
 
-  const [userGuid, setUserGuid] = useState<string | null>();
+  const {
+    value: storedUser,
+    error: storageError,
+    retry: retryStorage
+  } = useVolunteerStoredValue(volunteerUserData);
+  const userGuid = storedUser?.currentUserGuid;
+  const isGroupOwner = !!storedUser && isOwner(storedUser.currentUserId, owner);
   const [isGroupMember, setIsGroupMember] = useState<boolean | undefined>();
-  const [isGroupOwner, setIsGroupOwner] = useState(false);
   const [isGroupApplicant, setIsGroupApplicant] = useState(false);
-  const [groupAdmins, setGroupAdmins] = useState<Array<number>>([owner?.id]);
+  const {
+    data: membership,
+    isError: adminsError,
+    refetch: refetchMembership
+  } = useQuery(['groupMembership', id], () => groupMembership({ id }));
+  const groupAdmins = useMemo(
+    () =>
+      membership?.results?.length > 1
+        ? membership.results
+            .filter(({ role }: { role: ROLE_TYPES }) => role === ROLE_TYPES.ADMIN)
+            .map(({ user: { id } }: { user: { id: number } }) => id)
+        : [owner?.id],
+    [membership, owner?.id]
+  );
 
   const volunteerNavigation = useVolunteerNavigation();
   const {
@@ -124,8 +136,8 @@ export const VolunteerGroup = ({
     isSuccess: isSuccessLeave
   } = useMutation(groupLeave);
 
-  const join = useCallback(async () => {
-    const { currentUserId } = await volunteerUserData();
+  const join = useCallback(() => {
+    const currentUserId = storedUser?.currentUserId;
 
     if (!currentUserId) return;
 
@@ -135,13 +147,13 @@ export const VolunteerGroup = ({
       // JOIN_POLICY_TYPES.OPEN
       mutateJoin({ id, userId: currentUserId });
     }
-  }, [isGroupMember, isGroupApplicant, joinPolicy]);
+  }, [storedUser, id, joinPolicy, mutateRequest, mutateJoin]);
 
-  const leave = useCallback(async () => {
-    const { currentUserId } = await volunteerUserData();
+  const leave = useCallback(() => {
+    const currentUserId = storedUser?.currentUserId;
 
     currentUserId && mutateLeave({ id, userId: currentUserId });
-  }, [isGroupMember]);
+  }, [storedUser, id, mutateLeave]);
 
   useVolunteerRefresh(refetch, QUERY_TYPES.VOLUNTEER.GROUP);
 
@@ -150,26 +162,6 @@ export const VolunteerGroup = ({
     // in other components.
     DeviceEventEmitter.emit(VOLUNTEER_GROUP_REFRESH_EVENT);
   }, []);
-
-  const checkIfOwner = useCallback(async () => {
-    const { currentUserId, currentUserGuid } = await volunteerUserData();
-
-    setUserGuid(currentUserGuid);
-    setIsGroupOwner(isOwner(currentUserId, owner));
-  }, [owner]);
-
-  const getGroupAdmins = useCallback(async () => {
-    const { results } = await groupMembership({ id });
-
-    // if there is only one member, it is the owner, which is the only admin, so we do not need to
-    // check for more admins
-    results?.length > 1 &&
-      setGroupAdmins(
-        results
-          .filter(({ role }: { role: ROLE_TYPES }) => role === ROLE_TYPES.ADMIN)
-          .map(({ user: { id } }: { user: VolunteerUser }) => id)
-      );
-  }, [id]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -199,14 +191,6 @@ export const VolunteerGroup = ({
 
   useFocusEffect(refreshGroup);
 
-  useEffect(() => {
-    checkIfOwner();
-  }, [checkIfOwner]);
-
-  useEffect(() => {
-    getGroupAdmins();
-  }, [getGroupAdmins]);
-
   const isCalendarModuleEnabled = useMemo(
     () => !!modules?.find(({ id }) => id === VolunteerModulesType.CALENDAR)?.enabled,
     [modules]
@@ -214,6 +198,14 @@ export const VolunteerGroup = ({
 
   return (
     <View>
+      {(storageError || adminsError) && (
+        <VolunteerStorageError
+          onRetry={() => {
+            retryStorage();
+            void refetchMembership();
+          }}
+        />
+      )}
       <View>
         <ImageSection mediaContents={mediaContents} />
 

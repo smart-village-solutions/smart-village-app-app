@@ -40,7 +40,10 @@ export const VolunteerUserNotificationSettings = () => {
     setSyncError(false);
     try {
       const authToken = await volunteerAuthToken();
-      if (authToken) await mutateStorePushToken(authToken);
+      if (authToken) {
+        const response = await mutateStorePushToken(authToken);
+        if (!response?.ok) throw new Error('Push token synchronization failed');
+      }
     } catch {
       // The settings update is already saved; retain it and allow token sync to be retried.
       setSyncError(true);
