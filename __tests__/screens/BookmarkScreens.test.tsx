@@ -11,6 +11,7 @@ let mockNewsCategories: {
   categoryId?: string;
   categoryTitle: string;
   categoryTitleDetail: string;
+  parentCategoryId?: string;
 }[];
 let mockQueryErrors: Record<string, boolean> = {};
 
@@ -72,6 +73,7 @@ jest.mock('../../src/config', () => ({
       tours: 'Tours'
     },
     errors: { noData: 'No data', unexpected: 'Unexpected error' },
+    homeCategoriesNews: { categoryTitle: 'News', categoryTitleDetail: 'News detail' },
     homeTitles: { events: 'Events' },
     navigationTitles: { home: 'Overview' },
     screenTitles: { events: 'Events overview', volunteer: { home: 'Volunteer' } },
@@ -158,6 +160,42 @@ describe('bookmark list types', () => {
       sectionTitle: 'News',
       suffix: '7558'
     });
+  });
+
+  it('keeps configured news sections that share a parent and appends missing groups', () => {
+    mockNewsCategories = [
+      {
+        categoryId: 'local',
+        parentCategoryId: 'city',
+        categoryTitle: 'Local',
+        categoryTitleDetail: 'Local news'
+      },
+      {
+        categoryId: 'culture',
+        parentCategoryId: 'city',
+        categoryTitle: 'Culture',
+        categoryTitleDetail: 'Culture news'
+      }
+    ];
+    mockBookmarks = { 'NewsItems-other': ['news-2'], 'NewsItems-city': ['news-1'] };
+
+    let testRenderer: renderer.ReactTestRenderer;
+
+    renderer.act(() => {
+      testRenderer = renderer.create(
+        <SettingsContext.Provider value={initialContext}>
+          <BookmarkScreen navigation={navigation} route={{}} />
+        </SettingsContext.Provider>
+      );
+    });
+
+    const sections = testRenderer!.root.findAllByType('mock-bookmark-section');
+
+    expect(sections.map(({ props }) => [props.sectionTitle, props.suffix, props.ids])).toEqual([
+      ['Local', 'city', ['news-1']],
+      ['Culture', 'city', ['news-1']],
+      ['News', 'other', ['news-2']]
+    ]);
   });
 
   it('does not override the configured list type in bookmark sections', () => {

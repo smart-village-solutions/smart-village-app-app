@@ -32,20 +32,20 @@ const getBookmarkCount = (bookmarks, isLoggedIn) => {
 };
 
 const getNewsSections = (bookmarks, categoriesNews) => {
-  const sections = new Map(
-    categoriesNews?.map((category) => [
-      String(category.parentCategoryId || category.categoryId || ''),
-      category
-    ])
-  );
-  const defaultCategory = sections.get('') ?? texts.homeCategoriesNews;
+  const sections = (categoriesNews ?? []).map((category) => [
+    String(category.parentCategoryId || category.categoryId || ''),
+    category
+  ]);
+  const configuredSuffixes = new Set(sections.map(([suffix]) => suffix));
+  const defaultCategory =
+    sections.find(([suffix]) => suffix === '')?.[1] ?? texts.homeCategoriesNews;
   const prefix = `${QUERY_TYPES.NEWS_ITEMS}-`;
 
   for (const key of Object.keys(bookmarks)) {
     if (key !== QUERY_TYPES.NEWS_ITEMS && !key.startsWith(prefix)) continue;
 
     const suffix = key.slice(prefix.length);
-    if (!sections.has(suffix)) sections.set(suffix, defaultCategory);
+    if (!configuredSuffixes.has(suffix)) sections.push([suffix, defaultCategory]);
   }
 
   return sections;
@@ -69,7 +69,7 @@ export const BookmarkScreen = ({ navigation, route }) => {
   const volunteerEventBookmarkIds = bookmarks?.[QUERY_TYPES.VOLUNTEER.CALENDAR_ALL] || [];
 
   const getSection = useCallback(
-    (itemType, categoryTitle, suffix, categoryTitleDetail) => {
+    (itemType, categoryTitle, suffix, categoryTitleDetail, sectionIndex) => {
       const bookmarkKey = getKeyFromTypeAndSuffix(itemType, suffix);
 
       if (!bookmarks[bookmarkKey]?.length || (!!query && query !== bookmarkKey)) return null;
@@ -79,7 +79,7 @@ export const BookmarkScreen = ({ navigation, route }) => {
           suffix={suffix}
           categoryTitleDetail={categoryTitleDetail}
           ids={bookmarks[bookmarkKey]}
-          key={bookmarkKey}
+          key={sectionIndex === undefined ? bookmarkKey : `${bookmarkKey}:${sectionIndex}`}
           navigation={navigation}
           query={itemType}
           sectionTitle={categoryTitle}
@@ -120,8 +120,8 @@ export const BookmarkScreen = ({ navigation, route }) => {
           />
         }
       >
-        {Array.from(newsSections, ([suffix, { categoryTitle, categoryTitleDetail }]) =>
-          getSection(QUERY_TYPES.NEWS_ITEMS, categoryTitle, suffix, categoryTitleDetail)
+        {newsSections.map(([suffix, { categoryTitle, categoryTitleDetail }], index) =>
+          getSection(QUERY_TYPES.NEWS_ITEMS, categoryTitle, suffix, categoryTitleDetail, index)
         )}
         {getSection(QUERY_TYPES.POINTS_OF_INTEREST, bookmarkCategoryTitlesPointsOfInterest)}
         {getSection(QUERY_TYPES.TOURS, bookmarkCategoryTitlesTours)}
