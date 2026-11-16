@@ -3,7 +3,7 @@ import { QUERY_TYPES } from '../queries/types';
 
 const { LIST_TYPES } = consts;
 const validListTypes = Object.values(LIST_TYPES);
-const dedicatedTextQueries = [
+const dedicatedTextQueries = new Set([
   QUERY_TYPES.PROFILE.GET_CONVERSATIONS,
   QUERY_TYPES.VOLUNTEER.POSTS,
   QUERY_TYPES.VOLUNTEER.CONVERSATIONS,
@@ -12,7 +12,7 @@ const dedicatedTextQueries = [
   QUERY_TYPES.SUE.MY_REQUESTS,
   QUERY_TYPES.VOUCHERS,
   QUERY_TYPES.VOUCHERS_REDEEMED
-];
+]);
 
 export const resolveListType = (query, globalSettings, listTypesSettings, listType) => {
   // These queries supply grouped records to content-specific renderers.
@@ -20,7 +20,7 @@ export const resolveListType = (query, globalSettings, listTypesSettings, listTy
     return LIST_TYPES.GROUPED_LIST;
   }
   // Dedicated rows carry query-specific actions, status, badges, and navigation data.
-  if (dedicatedTextQueries.includes(query)) return LIST_TYPES.TEXT_LIST;
+  if (dedicatedTextQueries.has(query)) return LIST_TYPES.TEXT_LIST;
 
   const remoteListTypes = globalSettings?.sections?.listTypes;
   const settingsKey =
