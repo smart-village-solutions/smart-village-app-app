@@ -15,7 +15,7 @@ jest.mock('react-native/Libraries/Utilities/useWindowDimensions', () => ({
 }));
 
 jest.mock('react-native-safe-area-context', () => ({
-  useSafeAreaInsets: () => ({ bottom: 0, left: 0, right: 0, top: 0 })
+  useSafeAreaInsets: () => ({ bottom: 0, left: 62, right: 62, top: 0 })
 }));
 
 jest.mock('../../src/AccessibilityProvider', () => {
@@ -99,5 +99,17 @@ describe('Widgets responsive layout', () => {
     fireEvent(container!, 'layout', { nativeEvent: { layout: { width: 320 } } });
 
     expect(getItemViewsByWidth(tree, '25%')).toHaveLength(5);
+  });
+
+  it('uses the width inside the stack safe area without applying cutout insets again', () => {
+    const tree = render(<Widgets widgetConfigs={Array(5).fill('custom')} />);
+    const container = tree
+      .UNSAFE_getAllByType(View)
+      .find((view) => typeof view.props.onLayout === 'function');
+
+    fireEvent(container!, 'layout', { nativeEvent: { layout: { width: 400 } } });
+
+    expect(getItemViewsByWidth(tree, '20%')).toHaveLength(5);
+    expect(StyleSheet.flatten(container!.props.style)).toMatchObject({ paddingHorizontal: 16 });
   });
 });

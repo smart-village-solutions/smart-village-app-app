@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
-import React, { createContext, useEffect, useState } from 'react';
+import React, { createContext, useSyncExternalStore } from 'react';
 import { Dimensions } from 'react-native';
-import * as ScreenOrientation from 'expo-screen-orientation';
 
 const defaultDimensions = {
   height: Dimensions.get('window').height,
@@ -18,45 +17,24 @@ export const OrientationContext = createContext({
   dimensions: defaultDimensions
 });
 
-const getOrientation = (orientation) => {
-  if (
-    orientation === ScreenOrientation.Orientation.LANDSCAPE_LEFT ||
-    orientation === ScreenOrientation.Orientation.LANDSCAPE_RIGHT
-  ) {
-    return 'landscape';
-  }
+const getLayout = ({ window, screen }) => ({
+  dimensions: { height: window.height, width: window.width },
+  // Android can resize the window when the keyboard opens. Use screen dimensions
+  // for orientation so a shortened portrait window does not become landscape.
+  orientation: screen.width > screen.height ? 'landscape' : 'portrait'
+});
 
-  return 'portrait';
+const getWindowDimensions = () => Dimensions.get('window');
+const subscribeToDimensions = (onChange) => {
+  const subscription = Dimensions.addEventListener('change', onChange);
+  return () => subscription.remove();
 };
 
 export const OrientationProvider = ({ children }) => {
-  const [dimensions, setDimensions] = useState(defaultDimensions);
-  const [orientation, setOrientation] = useState(defaultOrientation);
+  const window = useSyncExternalStore(subscribeToDimensions, getWindowDimensions);
+  const layout = getLayout({ window, screen: Dimensions.get('screen') });
 
-  useEffect(() => {
-    ScreenOrientation.addOrientationChangeListener(({ orientationInfo }) => {
-      // we need to wait a short period of time before reading and setting the orientation and
-      // dimensions, because some devices may take longer then other to update the orientation.
-      setTimeout(() => {
-        // https://docs.expo.io/versions/latest/sdk/screen-orientation/#screenorientationaddorientationchangelistenerlistener
-        setOrientation(getOrientation(orientationInfo.orientation));
-        setDimensions({
-          height: Dimensions.get('window').height,
-          width: Dimensions.get('window').width
-        });
-      }, 300);
-    });
-
-    // returned function will be called on component unmount
-    // https://docs.expo.io/versions/latest/sdk/screen-orientation/#screenorientationremoveorientationchangelisteners
-    return () => ScreenOrientation.removeOrientationChangeListeners();
-  }, []);
-
-  return (
-    <OrientationContext.Provider value={{ orientation, dimensions }}>
-      {children}
-    </OrientationContext.Provider>
-  );
+  return <OrientationContext.Provider value={layout}>{children}</OrientationContext.Provider>;
 };
 
 OrientationProvider.propTypes = {

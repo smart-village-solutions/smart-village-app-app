@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { fireEvent, render, waitFor } from '@testing-library/react-native';
 import React from 'react';
-import { ActivityIndicator, Text } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text } from 'react-native';
 
 import { Image } from '../../src/components/Image';
+import { ScreenContentWidthContext } from '../../src/ScreenContentWidthContext';
 
 jest.mock('expo-image', () => {
   const ReactLocal = require('react');
@@ -25,10 +26,27 @@ jest.mock('../../src/ConfigurationsProvider', () => {
 });
 jest.mock('../../src/helpers', () => ({
   imageHeight: () => 100,
-  imageWidth: () => 100
+  imageWidth: (_fullWidth: boolean, contentWidth = 100) => contentWidth
 }));
 
 describe('Image loading states', () => {
+  it('updates full-width images when the measured safe screen width changes', () => {
+    const element = (width: number) => (
+      <ScreenContentWidthContext.Provider value={width}>
+        <Image isImageFullWidth source={{ uri: 'https://example.com/image.png' }} />
+      </ScreenContentWidthContext.Provider>
+    );
+    const tree = render(element(750));
+    const getWidth = () =>
+      StyleSheet.flatten(
+        tree.getByTestId('expo-image', { includeHiddenElements: true }).props.style
+      ).width;
+
+    expect(getWidth()).toBe(750);
+    tree.rerender(element(402));
+    expect(getWidth()).toBe(402);
+  });
+
   it('uses a configured accessibility label for informative images', () => {
     const { getByTestId } = render(
       <Image

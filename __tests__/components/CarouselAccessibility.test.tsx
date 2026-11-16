@@ -65,7 +65,8 @@ jest.mock('../../src/config', () => {
 jest.mock('../../src/helpers', () => ({
   graphqlFetchPolicy: () => 'cache-first',
   imageHeight: () => 180,
-  imageWidth: () => 320,
+  imageWidth: (fullWidth: boolean, contentWidth = 320) =>
+    fullWidth ? contentWidth : Math.min(320, contentWidth),
   isActive: () => true,
   shareMessage: () => 'share'
 }));
@@ -109,7 +110,9 @@ import { AccessibilityContext } from '../../src/AccessibilityProvider';
 import { NetworkContext } from '../../src/NetworkProvider';
 import { OrientationContext } from '../../src/OrientationProvider';
 import { SettingsContext } from '../../src/SettingsProvider';
+import { ScreenContentWidthContext } from '../../src/ScreenContentWidthContext';
 import { ImagesCarousel } from '../../src/components/ImagesCarousel';
+import { ImagesCarouselItem } from '../../src/components/ImagesCarouselItem';
 import { MediaCarousel } from '../../src/components/MediaCarousel';
 
 const renderWithAct = (component: React.ReactElement) => {
@@ -208,6 +211,42 @@ const wrapWithContexts = (
 );
 
 describe('Carousel accessibility', () => {
+  it('sizes and centers images inside the measured screen width after rotation', () => {
+    const data = [
+      { picture: { uri: 'https://example.com/1.jpg' } },
+      { picture: { uri: 'https://example.com/2.jpg' } }
+    ];
+    const element = (width: number, fullWidth = false) =>
+      wrapWithContexts(
+        <ScreenContentWidthContext.Provider value={width}>
+          <ImagesCarousel data={data} isImageFullWidth={fullWidth} navigation={{}} />
+        </ScreenContentWidthContext.Provider>
+      );
+    const tree = renderWithAct(element(750));
+    const getCarousel = () => tree.root.findByType('mock-carousel');
+
+    expect(StyleSheet.flatten(getCarousel().props.style).width).toBe(750);
+    expect(getCarousel().props.itemWidth).toBe(320);
+    expect(getCarousel().props.renderItem({ item: data[0] }).props.containerStyle.left).toBe(215);
+
+    renderer.act(() => tree.update(element(402, true)));
+    expect(StyleSheet.flatten(getCarousel().props.style).width).toBe(402);
+    const item = getCarousel().props.renderItem({ item: data[0] });
+    expect(item.props.style.width).toBe(402);
+    expect(item.props.containerStyle.left).toBe(0);
+
+    renderer.act(() =>
+      tree.update(
+        wrapWithContexts(
+          <ScreenContentWidthContext.Provider value={750}>
+            <ImagesCarousel data={data.slice(0, 1)} navigation={{}} />
+          </ScreenContentWidthContext.Provider>
+        )
+      )
+    );
+    expect(tree.root.findByType(ImagesCarouselItem).props.containerStyle.left).toBe(0);
+  });
+
   it('updates image transitions when reduced motion changes and preserves pagination', () => {
     const carousel = (
       <ImagesCarousel

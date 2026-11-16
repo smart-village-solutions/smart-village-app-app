@@ -1,6 +1,5 @@
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { LayoutChangeEvent, StyleSheet, useWindowDimensions, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AccessibilityContext } from '../../AccessibilityProvider';
 import { normalize } from '../../config';
@@ -52,7 +51,6 @@ const EXISTING_WIDGETS: {
 
 export const Widgets = ({ widgetConfigs, widgetStyle }: Props) => {
   const { fontScale, width } = useWindowDimensions();
-  const safeAreaInsets = useSafeAreaInsets();
   const { textScaleMultiplier = 1 } = useContext(AccessibilityContext);
   const [containerMeasurement, setContainerMeasurement] = useState({
     measuredWidth: width,
@@ -95,10 +93,7 @@ export const Widgets = ({ widgetConfigs, widgetStyle }: Props) => {
   const minItemWidth = normalize(WIDGET_MIN_WIDTH);
   const measuredContainerWidth =
     containerMeasurement.windowWidth === width ? containerMeasurement.measuredWidth : width;
-  const availableWidth = Math.max(
-    0,
-    measuredContainerWidth - safeAreaInsets.left - safeAreaInsets.right - 2 * horizontalPadding
-  );
+  const availableWidth = Math.max(0, measuredContainerWidth - 2 * horizontalPadding);
   const effectiveTextScale = resolveEffectiveTextScale(fontScale, textScaleMultiplier);
   const layout = useMemo(
     () =>
@@ -144,8 +139,7 @@ export const Widgets = ({ widgetConfigs, widgetStyle }: Props) => {
         style={[
           styles.container,
           {
-            paddingLeft: horizontalPadding + safeAreaInsets.left,
-            paddingRight: horizontalPadding + safeAreaInsets.right,
+            paddingHorizontal: horizontalPadding,
             rowGap
           }
         ]}

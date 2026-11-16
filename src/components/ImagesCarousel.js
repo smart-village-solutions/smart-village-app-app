@@ -16,6 +16,7 @@ import { NetworkContext } from '../NetworkProvider';
 import { OrientationContext } from '../OrientationProvider';
 import { getQuery } from '../queries';
 import { SettingsContext } from '../SettingsProvider';
+import { ScreenContentWidthContext } from '../ScreenContentWidthContext';
 
 import { ImagesCarouselItem } from './ImagesCarouselItem';
 import { LoadingContainer } from './LoadingContainer';
@@ -46,6 +47,7 @@ export const ImagesCarousel = ({
   const { colors } = useTheme();
   const styles = useThemeStyles(createStyles);
   const { dimensions } = useContext(OrientationContext);
+  const contentWidth = useContext(ScreenContentWidthContext) ?? dimensions.width;
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { isReduceMotionEnabled } = useContext(AccessibilityContext);
   const { globalSettings } = useContext(SettingsContext);
@@ -76,17 +78,18 @@ export const ImagesCarousel = ({
   const shouldShowNavigationButtons = showNavigationButtons && !isDisturber;
   const shouldShowPauseButton = showSliderPauseButton && !isDisturber && !isReduceMotionEnabled;
   const shouldShowPagination = showPagination && !isDisturber;
+  const carouselData = (data ?? []).filter((item) => item && isActive(item));
 
   const fetchPolicy = graphqlFetchPolicy({
     isConnected,
     isMainserverUp,
     refreshTime
   });
-  const itemWidth = imageWidth(isImageFullWidth);
+  const itemWidth = imageWidth(isImageFullWidth, contentWidth);
   const itemHeight = imageHeight(itemWidth, aspectRatio);
-  const centerOffset = Math.max((dimensions.width - itemWidth) / 2, 0);
+  const centerOffset = carouselData.length > 1 ? Math.max((contentWidth - itemWidth) / 2, 0) : 0;
   const carouselItemContainerStyle = useMemo(
-    () => StyleSheet.flatten([styles.imageContainer, { marginLeft: centerOffset }]),
+    () => StyleSheet.flatten([styles.imageContainer, { left: centerOffset }]),
     [centerOffset, styles.imageContainer]
   );
   const withAnimation = useMemo(
@@ -174,6 +177,8 @@ export const ImagesCarousel = ({
       navigation,
       fetchPolicy,
       aspectRatio,
+      itemWidth,
+      itemHeight,
       isImageFullWidth,
       carouselItemContainerStyle,
       colors.refreshControl
@@ -182,8 +187,6 @@ export const ImagesCarousel = ({
 
   if (!data || data.length === 0) return null;
 
-  // filter data for present items and items with active date/time periods
-  const carouselData = data.filter((item) => item && isActive(item));
   const isExplicitlyDecorative =
     carouselData.length > 0 && carouselData.every(isExplicitlyDecorativeCarouselItem);
 
@@ -214,7 +217,7 @@ export const ImagesCarousel = ({
         renderItem={({ item }) =>
           renderItem({ item, refreshInterval: sliderSettings.refreshInterval })
         }
-        style={[styles.carousel, { height: itemHeight, width: dimensions.width }]}
+        style={[styles.carousel, { height: itemHeight, width: contentWidth }]}
         withAnimation={withAnimation}
       />
 

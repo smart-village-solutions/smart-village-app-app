@@ -79,6 +79,7 @@ const omitTileDimensionOverrides = (style: { [key: string]: any } = {}) => {
 
 /* eslint-disable complexity */
 export const ServiceTile = ({
+  contentWidth,
   draggableId,
   hasDiagonalGradientBackground = false,
   isEditMode = false,
@@ -91,6 +92,7 @@ export const ServiceTile = ({
   gridGap,
   tileSizeFactor = 1
 }: {
+  contentWidth?: number;
   draggableId: string;
   hasDiagonalGradientBackground?: boolean;
   isEditMode?: boolean;
@@ -242,8 +244,11 @@ export const ServiceTile = ({
                 },
                 !!item.tile &&
                   stylesWithProps({
+                    contentWidth,
                     columns,
                     dimensions,
+                    gridGap,
+                    gridWidth,
                     safeAreaInsets,
                     tileSizeFactor
                   }).bigTile
@@ -269,8 +274,11 @@ export const ServiceTile = ({
                 normalizedFontStyle,
                 !!item.tile &&
                   stylesWithProps({
+                    contentWidth,
                     columns,
                     dimensions,
+                    gridGap,
+                    gridWidth,
                     safeAreaInsets,
                     tileSizeFactor
                   }).bigTileTitle
@@ -335,23 +343,31 @@ const createStyles = (colors) => ({
 /* eslint-disable react-native/no-unused-styles */
 /* this works properly, we do not want that warning */
 const stylesWithProps = ({
+  contentWidth,
   columns,
   dimensions,
+  gridGap = 0,
+  gridWidth,
   safeAreaInsets,
   tileSizeFactor = 1
 }: {
+  contentWidth?: number;
   columns: number;
   dimensions: { width: number; height: number };
+  gridGap?: number;
+  gridWidth?: number;
   safeAreaInsets: EdgeInsets;
   tileSizeFactor?: number;
 }) => {
   const containerPadding = normalize(14);
   const safeColumns = Math.max(1, columns);
   const availableWidth =
+    contentWidth ??
     dimensions.width - safeAreaInsets.left - safeAreaInsets.right - 2 * containerPadding;
 
   // calculate tile sizes based on live window dimensions, safe area insets and padding
-  const tileSize = Math.max(0, availableWidth) / safeColumns;
+  const tileSize =
+    Math.max(0, (gridWidth ?? availableWidth) - gridGap * (safeColumns - 1)) / safeColumns;
   const computedBigTileSize = Math.min(
     tileSize,
     (tileSize - containerPadding / 2) * tileSizeFactor

@@ -1,7 +1,7 @@
 import { useNavigation, useRoute } from 'expo-router/react-navigation';
 import { StackNavigationProp } from 'expo-router/js-stack';
 import React, { useCallback, useContext, useMemo, useState } from 'react';
-import { TouchableOpacity, View } from 'react-native';
+import { LayoutChangeEvent, TouchableOpacity, View } from 'react-native';
 
 import { AccessibilityContext } from '../../AccessibilityProvider';
 import { consts, normalize, texts } from '../../config';
@@ -47,6 +47,10 @@ export const Service = ({
   staticJsonName: string;
   hasDiagonalGradientBackground?: boolean;
 }) => {
+  const [contentWidth, setContentWidth] = useState<number>();
+  const onLayout = useCallback((event: LayoutChangeEvent) => {
+    setContentWidth(event.nativeEvent.layout.width);
+  }, []);
   const { colors: colors } = useTheme();
 
   const styles = useThemeStyles(createStyles);
@@ -82,6 +86,10 @@ export const Service = ({
       ? tileGridLayout.columns
       : defaultColumnsByOrientation;
 
+  const tileRowPadding = isEditMode ? normalize(14) : rowHorizontalPadding;
+  const tileContentWidth =
+    contentWidth === undefined ? undefined : contentWidth - 2 * tileRowPadding;
+
   const onPress = useCallback(
     () =>
       isEditMode
@@ -98,6 +106,7 @@ export const Service = ({
   const renderItem = useCallback(
     (item: TServiceTile, index: number) => (
       <ServiceTile
+        contentWidth={tileContentWidth}
         draggableId={umlautSwitcher(item.title) || umlautSwitcher(item.accessibilityLabel)}
         draggableKey={`item${item.title || item.accessibilityLabel}-index${index}`}
         hasDiagonalGradientBackground={hasDiagonalGradientBackground}
@@ -125,6 +134,7 @@ export const Service = ({
       />
     ),
     [
+      tileContentWidth,
       isEditMode,
       hasDiagonalGradientBackground,
       onToggleVisibility,
@@ -178,14 +188,15 @@ export const Service = ({
     <DiagonalGradient
       colors={!hasDiagonalGradientBackground ? [colors.surface, colors.surface] : undefined}
       style={styles.diagonalGradient}
+      onLayout={onLayout}
     >
-      <DraggableGrid columns={itemsPerRow} onDragEnd={onDragEnd}>
+      <DraggableGrid columns={itemsPerRow} onDragEnd={onDragEnd} width={contentWidth}>
         {tiles?.map((item, index) => renderItem(item, index))}
       </DraggableGrid>
       {toggler}
     </DiagonalGradient>
   ) : (
-    <>
+    <View onLayout={onLayout}>
       {rows.map((row) => {
         const isLastRow = rows[rows.length - 1] === row;
         const isIncompleteRow = row.length < itemsPerRow;
@@ -212,7 +223,7 @@ export const Service = ({
         );
       })}
       {!!visibleTiles?.length && toggler}
-    </>
+    </View>
   );
 };
 /* eslint-enable complexity */

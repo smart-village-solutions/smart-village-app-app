@@ -6,12 +6,12 @@ exports[`FloatingButton filters items by active route and keeps global items 1`]
   style={
     [
       {
-        "left": 16,
         "position": "absolute",
-        "right": 16,
       },
       {
         "bottom": 16,
+        "left": 16,
+        "right": 16,
       },
     ]
   }
