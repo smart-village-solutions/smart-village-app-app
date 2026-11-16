@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react';
+import React, { ReactNode, useCallback, useContext, useMemo, useState } from 'react';
 import { LayoutChangeEvent, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -17,7 +17,7 @@ import { VoucherWidget } from './VoucherWidget';
 import { WaterTemperatureWidget } from './WaterTemperatureWidget';
 import { WeatherWidget } from './WeatherWidget';
 import { WebWidget } from './WebWidget';
-import { WidgetLayoutContext } from './WidgetLayoutContext';
+import { WidgetLayoutContext, WidgetLayoutMode } from './WidgetLayoutContext';
 
 const WIDGET_CONTAINER_PADDING = 16;
 const WIDGET_COLUMN_PADDING = 4;
@@ -50,10 +50,35 @@ const EXISTING_WIDGETS: {
   web: WebWidget
 };
 
+const WidgetItem = ({
+  children,
+  measurementKey,
+  mode,
+  onLabelWidth
+}: {
+  children: ReactNode;
+  measurementKey: string;
+  mode: WidgetLayoutMode;
+  onLabelWidth: (key: string, width: number) => void;
+}) => {
+  const reportLabelWidth = useCallback(
+    (value: number) => onLabelWidth(measurementKey, value),
+    [measurementKey, onLabelWidth]
+  );
+  const value = useMemo(() => ({ mode, onLabelWidth: reportLabelWidth }), [mode, reportLabelWidth]);
+  return <WidgetLayoutContext.Provider value={value}>{children}</WidgetLayoutContext.Provider>;
+};
+
 export const Widgets = ({ widgetConfigs, widgetStyle }: Props) => {
   const { fontScale, width } = useWindowDimensions();
   const safeAreaInsets = useSafeAreaInsets();
   const { textScaleMultiplier = 1 } = useContext(AccessibilityContext);
+  const [labelWidths, setLabelWidths] = useState<Record<string, number>>({});
+  const onLabelWidth = useCallback((key: string, measuredWidth: number) => {
+    setLabelWidths((current) =>
+      current[key] === measuredWidth ? current : { ...current, [key]: measuredWidth }
+    );
+  }, []);
   const [containerMeasurement, setContainerMeasurement] = useState({
     measuredWidth: width,
     windowWidth: width
@@ -92,14 +117,22 @@ export const Widgets = ({ widgetConfigs, widgetStyle }: Props) => {
   const horizontalPadding = normalize(WIDGET_CONTAINER_PADDING);
   const columnPadding = normalize(WIDGET_COLUMN_PADDING);
   const rowGap = normalize(WIDGET_ROW_GAP);
-  const minItemWidth = normalize(WIDGET_MIN_WIDTH);
+  const effectiveTextScale = resolveEffectiveTextScale(fontScale, textScaleMultiplier);
+  // Native label measurements already include system and app text scaling.
+  const measuredMinItemWidth = Math.max(
+    0,
+    ...widgetComponents.map((entry) => (labelWidths[entry.key] ?? 0) + 2 * columnPadding)
+  );
+  const minItemWidth = Math.max(
+    normalize(WIDGET_MIN_WIDTH),
+    measuredMinItemWidth / effectiveTextScale
+  );
   const measuredContainerWidth =
     containerMeasurement.windowWidth === width ? containerMeasurement.measuredWidth : width;
   const availableWidth = Math.max(
     0,
     measuredContainerWidth - safeAreaInsets.left - safeAreaInsets.right - 2 * horizontalPadding
   );
-  const effectiveTextScale = resolveEffectiveTextScale(fontScale, textScaleMultiplier);
   const layout = useMemo(
     () =>
       resolveWidgetLayout({
@@ -118,7 +151,9 @@ export const Widgets = ({ widgetConfigs, widgetStyle }: Props) => {
     [columnPadding, layout.columns]
   );
   const layoutContext = useMemo(
-    () => ({ mode: layout.columns === 1 ? ('list' as const) : ('grid' as const) }),
+    () => ({
+      mode: layout.columns === 1 ? ('list' as const) : ('grid' as const)
+    }),
     [layout.columns]
   );
   const onLayout = useCallback(
@@ -151,9 +186,16 @@ export const Widgets = ({ widgetConfigs, widgetStyle }: Props) => {
         ]}
       >
         {widgetComponents.map((entry) => (
-          <View key={entry.key} style={[layout.columns > 1 && styles.gridItem, itemStyle]}>
-            {entry.component}
-          </View>
+          <WidgetItem
+            key={entry.key}
+            measurementKey={entry.key}
+            mode={layoutContext.mode}
+            onLabelWidth={onLabelWidth}
+          >
+            <View style={[layout.columns > 1 && styles.gridItem, itemStyle]}>
+              {entry.component}
+            </View>
+          </WidgetItem>
         ))}
       </View>
     </WidgetLayoutContext.Provider>
