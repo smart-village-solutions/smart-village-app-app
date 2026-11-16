@@ -130,9 +130,28 @@ export const GET_EVENT_RECORDS_COUNT = gql`
 `;
 
 export const GET_EVENT_RECORDS_AND_CATEGORIES = gql`
-  query EventRecordsAndCategories {
-    eventRecords {
+  query EventRecordsAndCategories(
+    $ids: [ID]
+    $location: String
+    $locations: [String]
+    $dateRange: [String]
+    $dataProvider: String
+    $dataProviderId: ID
+    $onlyUniqEvents: Boolean
+  ) {
+    eventRecords(
+      ids: $ids
+      location: $location
+      locations: $locations
+      dateRange: $dateRange
+      dataProvider: $dataProvider
+      dataProviderId: $dataProviderId
+      onlyUniqEvents: $onlyUniqEvents
+    ) {
       id
+      categories {
+        name
+      }
       ...dateFields
     }
     categories {
