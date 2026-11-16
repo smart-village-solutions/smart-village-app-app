@@ -36,3 +36,36 @@ export const resolveTileGridLayout = (
     columns: orientation === 'landscape' ? threshold.landscapeColumns : threshold.portraitColumns
   };
 };
+
+export type ServiceTileColumns = Partial<Record<TileGridOrientation, number>>;
+
+export const resolveServiceTileColumns = (
+  configured: ServiceTileColumns | undefined,
+  orientation: TileGridOrientation,
+  fallback: number
+) => {
+  const columns = configured?.[orientation];
+  return typeof columns === 'number' && Number.isFinite(columns) && columns >= 1
+    ? columns
+    : fallback;
+};
+
+// Pack mixed column overrides by their share of a row, preserving the configured order.
+export const groupServiceTileRows = <T extends { numberOfTiles?: ServiceTileColumns }>(
+  tiles: readonly T[],
+  orientation: TileGridOrientation,
+  fallback: number
+) => {
+  const rows: Array<{ tiles: T[]; fill: number }> = [];
+  for (const tile of tiles) {
+    const share = 1 / resolveServiceTileColumns(tile.numberOfTiles, orientation, fallback);
+    const last = rows[rows.length - 1];
+    if (!last || last.fill + share > 1 + 1e-6) {
+      rows.push({ tiles: [tile], fill: share });
+    } else {
+      last.tiles.push(tile);
+      last.fill += share;
+    }
+  }
+  return rows;
+};

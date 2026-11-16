@@ -81,7 +81,10 @@ describe('image tile sizing', () => {
 
   it('preserves the default layout for image tiles without a configured background', () => {
     const tree = render(tile(1, {} as never));
-    expect(tree.UNSAFE_getByType(TouchableOpacity).props.onLayout).toBeUndefined();
+    expect(tree.UNSAFE_getByType(TouchableOpacity).props.onLayout).toBeInstanceOf(Function);
     expect(imageSize(tree).width).toBeCloseTo((402 - 28) / 3 - 7);
+    layout(tree, 90);
+    expect(imageSize(tree).width).toBe(83);
+    expect(imageSize(tree).height).toBe(83);
   });
 });

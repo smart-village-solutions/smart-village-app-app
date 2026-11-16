@@ -1,5 +1,7 @@
 import {
   DEFAULT_TILE_GRID_COLUMNS,
+  resolveServiceTileColumns,
+  groupServiceTileRows,
   resolveTileGridLayout,
   TileGridOrientation
 } from '../../src/helpers/serviceTileLayout';
@@ -39,5 +41,22 @@ describe('serviceTileLayout', () => {
       DEFAULT_TILE_GRID_COLUMNS.landscape
     );
     expect(resolveTileGridLayout('portrait', -1).columns).toBe(DEFAULT_TILE_GRID_COLUMNS.portrait);
+  });
+});
+
+describe('service tile column overrides', () => {
+  it('uses the current orientation and falls back for malformed column counts', () => {
+    expect(resolveServiceTileColumns({ portrait: 2, landscape: 4 }, 'landscape', 5)).toBe(4);
+    expect(resolveServiceTileColumns({ portrait: 2.5 }, 'portrait', 3)).toBe(2.5);
+    for (const value of [0, -1, Infinity, NaN]) {
+      expect(resolveServiceTileColumns({ portrait: value }, 'portrait', 3)).toBe(3);
+    }
+  });
+  it('marks a partially filled last row for centering and tolerates thirds', () => {
+    const data = Array.from({ length: 4 }, (_, id) => ({ id, numberOfTiles: { portrait: 3 } }));
+    const rows = groupServiceTileRows(data, 'portrait', 2);
+    expect(rows.map((row) => row.tiles.map((tile) => tile.id))).toEqual([[0, 1, 2], [3]]);
+    expect(rows[0].fill).toBe(1);
+    expect(rows[1].fill).toBeCloseTo(1 / 3);
   });
 });

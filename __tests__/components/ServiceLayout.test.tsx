@@ -88,6 +88,41 @@ describe('Service layout changes', () => {
     expect(rows[1].props.style.columnGap).toBe(rows[0].props.style.columnGap);
   });
 
+  it('groups a global two-column override before laying out non-wrapping rows', () => {
+    const tree = render(
+      <Service data={tiles} staticJsonName="services" tileLayoutColumns={{ portrait: 2 }} />
+    );
+    const rows = tree.UNSAFE_getAllByType(WrapperWrap);
+    expect(
+      rows.map((row) => row.findAllByType(ServiceTile).map((tile) => tile.props.item.title))
+    ).toEqual([
+      ['Administration', 'Appointments'],
+      ['Trees', 'Map'],
+      ['Family', 'Seniors']
+    ]);
+    expect(rows.every((row) => !row.props.center)).toBe(true);
+    expect(
+      tree
+        .UNSAFE_getAllByType(ServiceTile)
+        .every((tile) => tile.props.item.numberOfTiles.portrait === 2)
+    ).toBe(true);
+  });
+
+  it('preserves order and packs mixed item overrides without squeezing oversized rows', () => {
+    const mixed = tiles
+      .slice(0, 5)
+      .map((tile, i) => ({ ...tile, numberOfTiles: { portrait: [2, 3, 6, 2, 2][i] } }));
+    const tree = render(<Service data={mixed} staticJsonName="services" />);
+    expect(
+      tree
+        .UNSAFE_getAllByType(WrapperWrap)
+        .map((row) => row.findAllByType(ServiceTile).map((tile) => tile.props.item.title))
+    ).toEqual([
+      ['Administration', 'Appointments', 'Trees'],
+      ['Map', 'Family']
+    ]);
+  });
+
   it('updates every tile with the measured width when its container is resized', () => {
     const tree = render(serviceAtScale(0.9));
 

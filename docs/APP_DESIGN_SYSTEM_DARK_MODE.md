@@ -46,7 +46,8 @@ Their width is calculated from the measured row width and current column count. 
 are centered as a group unless `alignIncompleteRowsLeft` is enabled. Custom tile margins can
 override the default spacing; a `marginBottom` override is not required for equal default gaps.
 Rows are grouped by the responsive column count and do not wrap again in the native layout.
-Measured tiles can shrink within their row to accommodate rounding and custom spacing.
+Rows use the same effective orientation-specific column counts as their tiles, including global and mixed per-item overrides. Mixed sizes are packed in order by their share of a row.
+Measured tiles can shrink within their row to accommodate rounding and custom spacing. Image tiles, including unstyled tiles, size their images from the measured content width to prevent clipping.
 
 Long compound labels can include a zero-width space (`\u200B`) at a preferred word boundary in
 the remote `homeService` JSON. It allows a line break without displaying a space or hyphen:

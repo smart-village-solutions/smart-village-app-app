@@ -11,6 +11,7 @@ import {
   resolveServiceTileIconSize,
   resolveServiceTileStyle
 } from '../../helpers';
+import { resolveServiceTileColumns } from '../../helpers/serviceTileLayout';
 import { IconLibrary } from '../../IconProvider';
 import { OrientationContext } from '../../OrientationProvider';
 import { Image } from '../Image';
@@ -44,23 +45,6 @@ export type TServiceTile = {
   tile?: string;
   tileSizeFactor?: number;
   title: string;
-};
-
-const resolveColumns = ({
-  item,
-  layoutColumns,
-  orientation
-}: {
-  item: TServiceTile;
-  layoutColumns: number;
-  orientation: string;
-}) => {
-  const itemColumns =
-    orientation === 'landscape' ? item?.numberOfTiles?.landscape : item?.numberOfTiles?.portrait;
-
-  if (typeof itemColumns === 'number' && itemColumns > 0) return itemColumns;
-
-  return layoutColumns;
 };
 
 const omitTileDimensionOverrides = (style: { [key: string]: any } = {}) => {
@@ -115,7 +99,11 @@ export const ServiceTile = ({
   const { textScaleMultiplier = 1 } = useContext(AccessibilityContext);
   const { orientation, dimensions } = useContext(OrientationContext);
   const safeAreaInsets = useSafeAreaInsets();
-  const columns = resolveColumns({ item, layoutColumns, orientation });
+  const columns = resolveServiceTileColumns(
+    item.numberOfTiles,
+    orientation as 'portrait' | 'landscape',
+    layoutColumns
+  );
   const defaultColumns =
     orientation === 'landscape'
       ? DEFAULT_TILE_GRID_COLUMNS.landscape
@@ -196,9 +184,7 @@ export const ServiceTile = ({
       <TouchableOpacity
         style={[hasTileStyle && styles.button]}
         onLayout={
-          item.tile && hasTileStyle
-            ? ({ nativeEvent: { layout } }) => setContentWidth(layout.width)
-            : undefined
+          item.tile ? ({ nativeEvent: { layout } }) => setContentWidth(layout.width) : undefined
         }
         onPress={onPress}
         accessibilityLabel={
@@ -250,6 +236,7 @@ export const ServiceTile = ({
                   stylesWithProps({
                     columns,
                     contentWidth,
+                    hasTileStyle,
                     dimensions,
                     safeAreaInsets,
                     tileSizeFactor
@@ -278,6 +265,7 @@ export const ServiceTile = ({
                   stylesWithProps({
                     columns,
                     contentWidth,
+                    hasTileStyle,
                     dimensions,
                     safeAreaInsets,
                     tileSizeFactor
@@ -345,12 +333,14 @@ const createStyles = (colors) => ({
 const stylesWithProps = ({
   columns,
   contentWidth,
+  hasTileStyle,
   dimensions,
   safeAreaInsets,
   tileSizeFactor = 1
 }: {
   columns: number;
   contentWidth?: number;
+  hasTileStyle?: boolean;
   dimensions: { width: number; height: number };
   safeAreaInsets: EdgeInsets;
   tileSizeFactor?: number;
@@ -362,10 +352,11 @@ const stylesWithProps = ({
 
   // calculate tile sizes based on live window dimensions, safe area insets and padding
   const tileSize = Math.max(0, availableWidth) / safeColumns;
-  // Styled image tiles use their actual content box, including any flex shrink.
+  // Image tiles use their actual content box, including any flex shrink.
   // A fixed inset keeps the visible background equally thin in full and incomplete rows.
   const imageBounds = contentWidth ?? tileSize;
-  const imageInset = contentWidth === undefined ? containerPadding / 2 : 2 * normalize(1);
+  const imageInset =
+    contentWidth !== undefined && hasTileStyle ? 2 * normalize(1) : containerPadding / 2;
   const computedBigTileSize = Math.min(imageBounds, (imageBounds - imageInset) * tileSizeFactor);
   const bigTileSize = Math.max(0, computedBigTileSize);
 
