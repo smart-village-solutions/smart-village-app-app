@@ -1,7 +1,7 @@
 import { darkColors, lightColors } from '../../src/config/colors';
 import {
   resolveHeaderForeground,
-  resolveHeaderStatusBarStyle
+  resolveHeaderBackgroundColors
 } from '../../src/helpers/headerAppearance';
 
 describe('header appearance', () => {
@@ -37,11 +37,16 @@ describe('header appearance', () => {
     expect(resolveHeaderForeground(lightColors, 'transparent')).toBe(lightColors.text);
   });
 
-  it.each([
-    ['#FFFFFF', 'light-content'],
-    ['#000000', 'dark-content'],
-    ['#141414', 'dark-content']
-  ] as const)('matches system icons to the shared foreground %s', (foreground, style) => {
-    expect(resolveHeaderStatusBarStyle(foreground)).toBe(style);
-  });
+  it.each(['rgba(0, 0, 0, 0.99)', '#00000080', 'transparent', 'rgba(0, 0, 0, NaN)'])(
+    'falls back to an opaque surface for unsafe background %s',
+    (background) => {
+      expect(resolveHeaderBackgroundColors('#FFFFFF', { backgroundColor: background })).toEqual([
+        '#FFFFFF',
+        '#FFFFFF'
+      ]);
+      expect(
+        resolveHeaderBackgroundColors('#FFFFFF', {}, undefined, ['#00519E', background])
+      ).toEqual(['#00519E', '#FFFFFF']);
+    }
+  );
 });

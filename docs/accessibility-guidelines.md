@@ -83,8 +83,8 @@ Header actions must use `useHeaderForeground`; screen-installed custom icons can
 `HeaderIcon` to read that color when rendered inside the header. The provider wraps the actual
 navigation header, including actions installed with `setOptions`. It does not modify the
 theme palette of dialogs or screen content. Reused labeled share/bookmark actions keep their
-primary color when rendered outside a header. System status icons follow the shared
-foreground unless `headerStatusBarStyle` is explicitly configured (for example, for images).
+primary color when rendered outside a header. System status icons use the actual header
+background for contrast unless `headerStatusBarStyle` is explicitly configured (for example, for images).
 
 1. Create styles from the current palette during render with `useThemeStyles(createStyles)`.
 2. Use `useTheme()` for non-style props such as icon, loader, calendar, map-layer, status-bar, and WebView colors.

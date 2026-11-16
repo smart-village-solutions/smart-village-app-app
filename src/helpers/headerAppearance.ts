@@ -1,5 +1,3 @@
-import type { StatusBarStyle } from 'react-native';
-
 import type { HeaderThemeAppearance, ThemeColorPalette } from '../types/Theme';
 
 import { getContrastRatio, isValidThemeColor } from './themeHelper';
@@ -25,14 +23,18 @@ export const resolveHeaderBackgroundColors = (
   configured: HeaderThemeAppearance,
   background?: string,
   gradient?: readonly [string, string, ...string[]]
-): readonly string[] =>
-  gradient ??
-  (background !== undefined
-    ? [background, background]
-    : configured.gradientColors ?? [
-        configured.backgroundColor ?? fallback,
-        configured.backgroundColor ?? fallback
-      ]);
+): readonly string[] => {
+  const stops =
+    gradient ??
+    (background !== undefined
+      ? [background, background]
+      : configured.gradientColors ?? [
+          configured.backgroundColor ?? fallback,
+          configured.backgroundColor ?? fallback
+        ]);
+  // Translucent or unsupported backgrounds cannot provide predictable content contrast.
+  return stops.map((color) => (getContrastRatio(BLACK, color) === undefined ? fallback : color));
+};
 
 export const resolveHeaderForeground = (
   colors: ThemeColorPalette,
@@ -51,8 +53,3 @@ export const resolveHeaderForeground = (
 
   return minimumContrast(WHITE) > minimumContrast(BLACK) ? WHITE : BLACK;
 };
-
-export const resolveHeaderStatusBarStyle = (foreground: string): StatusBarStyle =>
-  (getContrastRatio(foreground, BLACK) ?? 0) > (getContrastRatio(foreground, WHITE) ?? 0)
-    ? 'light-content'
-    : 'dark-content';

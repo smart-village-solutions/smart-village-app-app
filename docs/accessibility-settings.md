@@ -332,7 +332,7 @@ getScreenOptions({
 An explicit `headerGradientColors` wins over an explicit solid background. An explicit solid
 background (including `headerStyle.backgroundColor`) wins over a remote gradient. React
 Navigation's `headerTintColor` overrides remote `tintColor`. The shared `NavigationHeader` owns
-`AppStatusBar` for both solid and gradient backgrounds. Existing custom `headerBackground`
+`AppStatusBar` independently of solid, gradient, or custom backgrounds. Automatic status icons use the first gradient stop; `headerStatusBarStyle` remains available for image backgrounds. Translucent or unsupported background colors fall back to the theme surface. Existing custom `headerBackground`
 renderers retain ownership of their background and status bar.
 
 Once this implementation is included in a municipality's app, subsequent remote header changes

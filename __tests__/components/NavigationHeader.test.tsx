@@ -133,7 +133,7 @@ describe('NavigationHeader shared appearance', () => {
       { headerTitleStyle: { color: '#FF0000' } }
     );
     expectForeground(tree, '#FFFFFF');
-    expect(tree.root.findByType('mock-status-bar' as never).props.barStyle).toBe('light-content');
+    expect(tree.root.findByType('mock-status-bar' as never).props.barStyle).toBeUndefined();
 
     renderer.act(() =>
       tree.update(
@@ -164,7 +164,7 @@ describe('NavigationHeader shared appearance', () => {
     ]);
     expect(tree.root.findByType('mock-status-bar' as never).props).toMatchObject({
       backgroundColor: lightColors.primary,
-      barStyle: 'light-content'
+      barStyle: undefined
     });
     renderer.act(() => tree.update(createHeader(darkColors, appearance)));
     expect(tree.root.findByType('mock-background' as never).props.colors).toEqual([
@@ -296,13 +296,30 @@ describe('NavigationHeader shared appearance', () => {
     expectForeground(tree, 'rgb(255, 255, 255)');
   });
 
+  it.each([
+    [{ ...lightColors, text: '#767676' }, '#FFFFFF', undefined],
+    [lightColors, '#000000', 'white']
+  ] as const)(
+    'leaves automatic status contrast to the actual background',
+    (colors, background, tint) => {
+      const tree = renderHeader(
+        colors,
+        { headerBackgroundColor: background },
+        { headerTintColor: tint }
+      );
+      const status = tree.root.findByType('mock-status-bar' as never).props;
+      expect(status.backgroundColor).toBe(background);
+      expect(status.barStyle).toBeUndefined();
+    }
+  );
+
   it('keeps explicit status bar styles and custom image backgrounds', () => {
     const tree = renderHeader(lightColors, { headerStatusBarStyle: 'light-content' });
     expect(tree.root.findByType('mock-status-bar' as never).props.barStyle).toBe('light-content');
 
     const imageHeader = renderHeader(
       lightColors,
-      {},
+      { headerStatusBarStyle: 'light-content' },
       {
         headerTintColor: '#FFFFFF',
         headerBackground: () => React.createElement('mock-image-background')
@@ -310,5 +327,8 @@ describe('NavigationHeader shared appearance', () => {
     );
     expectForeground(imageHeader, '#FFFFFF');
     expect(imageHeader.root.findByType('mock-image-background' as never)).toBeTruthy();
+    expect(imageHeader.root.findByType('mock-status-bar' as never).props.barStyle).toBe(
+      'light-content'
+    );
   });
 });

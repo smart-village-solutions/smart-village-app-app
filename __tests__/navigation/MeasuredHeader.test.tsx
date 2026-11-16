@@ -79,14 +79,15 @@ describe('MeasuredHeader', () => {
     measure(tree, 'left', 48);
     measure(tree, 'right', 104);
     measure(tree, 'right', 152);
-    expect(maxWidth(tree)).toBe(24);
+    expect(maxWidth(tree)).toBe(128);
+    expect(tree.getByTestId('header').props.options.headerTitleAlign).toBe('left');
     mockInsets.left = 44;
     tree.rerender(<MeasuredHeader {...props} layout={{ width: 800, height: 360 }} />);
     expect(maxWidth(tree)).toBe(464);
     measure(tree, 'left', 200);
     expect(maxWidth(tree)).toBe(280);
     measure(tree, 'right', 500);
-    expect(maxWidth(tree)).toBe(0);
+    expect(maxWidth(tree)).toBe(24);
   });
 
   it('releases space when actions are removed and supports explicit title strings', () => {
@@ -119,6 +120,18 @@ describe('MeasuredHeader', () => {
     expect(maxWidth(tree)).toBe(232);
     expect(tree.getByTestId('header').props.options.headerTitle).toBe(headerTitle);
     expect(tree.getByText('Share')).toBeTruthy();
+  });
+
+  it('keeps a title between a back button and four actions and preserves typography', () => {
+    const style = { fontFamily: 'condbold', fontSize: 18, lineHeight: 23 };
+    const tree = render(
+      <MeasuredHeader {...props} options={{ ...props.options, headerTitleStyle: style }} />
+    );
+    measure(tree, 'left', 48);
+    measure(tree, 'right', 192);
+    expect(maxWidth(tree)).toBe(88);
+    expect(tree.getByTestId('header').props.options.headerTitleAlign).toBe('left');
+    expect(StyleSheet.flatten(tree.getByText(title).props.style)).toMatchObject(style);
   });
 
   it('passes iOS options through without changing title layout or rendering', () => {
