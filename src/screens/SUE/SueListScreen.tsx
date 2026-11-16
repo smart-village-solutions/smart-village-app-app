@@ -229,7 +229,7 @@ export const SueListScreen = ({ navigation, route }: Props) => {
   const refresh = async () => {
     setRefreshing(true);
     try {
-      if (isConnected) await refetch();
+      if (isConnected || query === QUERY_TYPES.SUE.MY_REQUESTS) await refetch();
     } finally {
       setRefreshing(false);
     }
