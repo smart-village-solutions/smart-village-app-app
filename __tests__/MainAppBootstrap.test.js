@@ -192,6 +192,29 @@ describe('MainApp Apollo bootstrap', () => {
     expect(persistCache).toHaveBeenCalledTimes(1);
     warning.mockRestore();
   });
+  it('retries a failed pending hydration after connectivity already changed to online', async () => {
+    jest.spyOn(console, 'warn').mockImplementation(() => {});
+    let failRead;
+    storageHelper.globalSettings.mockImplementationOnce(
+      () =>
+        new Promise((_, reject) => {
+          failRead = reject;
+        })
+    );
+    const view = render(screen(false));
+    await flush();
+    const originalClient = mockClient;
+    view.rerender(screen(true));
+    await flush();
+    expect(mockLiveSettings).toBeUndefined();
+    await act(async () => failRead(new Error('storage temporarily unavailable')));
+    await flush();
+    expect(mockLiveSettings).toBeDefined();
+    expect(mockClient).toBe(originalClient);
+    expect(ApolloClient).toHaveBeenCalledTimes(1);
+    expect(storageHelper.globalSettings).toHaveBeenCalledTimes(2);
+  });
+
   it('keeps one settings request in flight across connectivity changes', async () => {
     let finishSettings;
     mockQuery.mockImplementationOnce(

@@ -60,6 +60,58 @@ describe('list pagination', () => {
     expect(result.current.listEndReached).toBe(false);
   });
 
+  it('retains the last-page state for equivalent variables in a new object/key order', async () => {
+    const fetchMore = jest.fn().mockResolvedValue({ hasNextPage: false });
+    const { result, rerender } = renderHook(
+      ({ variables }) => useListPagination(fetchMore, 'items', variables),
+      { initialProps: { variables: { category: 'a', limit: 20 } } }
+    );
+    await act(async () => result.current.onEndReached());
+    rerender({ variables: { limit: 20, category: 'a' } });
+    expect(result.current.listEndReached).toBe(true);
+  });
+
+  it('resets completion when changing filters away and back without fetching the intermediate scope', async () => {
+    const fetchMore = jest.fn().mockResolvedValue({ hasNextPage: false });
+    const { result, rerender } = renderHook(
+      ({ category }) => useListPagination(fetchMore, 'items', { category }),
+      { initialProps: { category: 'a' } }
+    );
+    await act(async () => result.current.onEndReached());
+    rerender({ category: 'b' });
+    expect(result.current.listEndReached).toBe(false);
+    rerender({ category: 'a' });
+    expect(result.current.listEndReached).toBe(false);
+  });
+
+  it('deduplicates and accepts a pending result across equivalent variable objects', async () => {
+    let finish;
+    const fetchMore = jest.fn().mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          finish = resolve;
+        })
+    );
+    const { result, rerender } = renderHook(
+      ({ variables }) => useListPagination(fetchMore, 'items', variables),
+      { initialProps: { variables: { category: 'a' } } }
+    );
+    let first;
+    act(() => {
+      first = result.current.onEndReached();
+    });
+    rerender({ variables: { category: 'a' } });
+    await act(async () => {
+      await result.current.onEndReached();
+    });
+    expect(fetchMore).toHaveBeenCalledTimes(1);
+    await act(async () => {
+      finish({ hasNextPage: false });
+      await first;
+    });
+    expect(result.current.listEndReached).toBe(true);
+  });
+
   it('ignores completion of an old query after filters change', async () => {
     let resolvePage: (value: { hasNextPage: boolean }) => void = () => {};
     const fetchMore = jest.fn().mockImplementation(

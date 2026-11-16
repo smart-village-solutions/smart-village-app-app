@@ -104,6 +104,7 @@ const MainAppWithApolloProvider = () => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const [loading, setLoading] = useState(true);
   const [client, setClient] = useState();
+  const [bootstrapRetry, setBootstrapRetry] = useState(0);
   const bootstrap = useRef({
     client: undefined,
     pending: false,
@@ -223,11 +224,16 @@ const MainAppWithApolloProvider = () => {
   // Bootstrap once; reconnects must not replace the live cache or reset user settings.
   useEffect(() => {
     const state = bootstrap.current;
-    if (isMainserverUp === null || state.pending) return;
+    if (isMainserverUp === null) return;
+    if (state.pending) {
+      state.retryAfterPending = true;
+      return;
+    }
 
     if (state.complete && !isMainserverUp) return;
 
     state.pending = true;
+    state.retryAfterPending = false;
     async function prepare() {
       try {
         if (isMainserverUp) {
@@ -259,11 +265,12 @@ const MainAppWithApolloProvider = () => {
         console.warn(error);
       } finally {
         state.pending = false;
+        if (state.retryAfterPending) setBootstrapRetry((attempt) => attempt + 1);
       }
     }
 
     void prepare();
-  }, [isMainserverUp, loading]);
+  }, [isMainserverUp, loading, bootstrapRetry]);
 
   if (loading || !client) return null;
 

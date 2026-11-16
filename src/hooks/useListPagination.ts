@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
+import _isEqual from 'lodash/isEqual';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 type PageResult = {
   data?: Record<string, unknown> | unknown[];
@@ -18,19 +19,30 @@ export const useListPagination = (
   queryVariables?: unknown
 ) => {
   const [pageState, setPageState] = useState({ query, queryVariables, ended: false });
+  if (pageState.query !== query || !_isEqual(pageState.queryVariables, queryVariables)) {
+    setPageState({ query, queryVariables, ended: false });
+  }
   const listEndReached =
-    pageState.query === query && pageState.queryVariables === queryVariables && pageState.ended;
+    pageState.query === query &&
+    _isEqual(pageState.queryVariables, queryVariables) &&
+    pageState.ended;
   const setListEndReached = (ended: boolean) => setPageState({ query, queryVariables, ended });
   const generation = useRef(0);
   const pending = useRef<number | null>(null);
 
-  useEffect(() => {
-    generation.current += 1;
-
-    return () => {
+  const scope = useRef({ query, queryVariables });
+  useLayoutEffect(() => {
+    if (scope.current.query !== query || !_isEqual(scope.current.queryVariables, queryVariables)) {
       generation.current += 1;
-    };
-  }, [query, queryVariables]);
+      scope.current = { query, queryVariables };
+    }
+  });
+  useEffect(
+    () => () => {
+      generation.current += 1;
+    },
+    []
+  );
 
   const onEndReached = async () => {
     const requestGeneration = generation.current;

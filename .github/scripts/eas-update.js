@@ -3,6 +3,21 @@ const path = require('path');
 const { createRequire } = require('node:module');
 const { execSync, execFileSync } = require('node:child_process');
 
+const findEasExecutable = () => {
+  for (const directory of (process.env.PATH || '').split(path.delimiter)) {
+    if (!path.isAbsolute(directory)) continue;
+    try {
+      const executable = fs.realpathSync(path.join(directory, 'eas'));
+      if (!fs.statSync(executable).isFile()) continue;
+      fs.accessSync(executable, fs.constants.X_OK);
+      return executable;
+    } catch {
+      // Skip missing or non-executable entries; never search relative/current directories.
+    }
+  }
+  throw new Error('EAS CLI executable not found on PATH.');
+};
+
 const appJsonPath = path.resolve(__dirname, '../../app.json');
 // Read the file
 const appJson = JSON.parse(fs.readFileSync(appJsonPath, 'utf8'));
@@ -41,8 +56,8 @@ try {
 } catch (error) {
   if (error.code !== 'MODULE_NOT_FOUND') throw error;
   // Fail before modifying app.json if PATH does not provide an executable CLI either.
-  execFileSync('eas', ['--version'], { stdio: 'ignore' });
-  easCommand = 'eas';
+  easCommand = findEasExecutable();
+  execFileSync(easCommand, ['--version'], { stdio: 'ignore' });
   easPrefix = [];
 }
 

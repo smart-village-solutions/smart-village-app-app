@@ -6,7 +6,14 @@ import { execSync, execFileSync } from 'node:child_process';
 const mockResolveCli = jest.fn();
 jest.mock('node:module', () => ({ createRequire: jest.fn(() => ({ resolve: mockResolveCli })) }));
 
-jest.mock('fs', () => ({ readFileSync: jest.fn(), writeFileSync: jest.fn() }));
+jest.mock('fs', () => ({
+  readFileSync: jest.fn(),
+  writeFileSync: jest.fn(),
+  realpathSync: jest.fn(),
+  statSync: jest.fn(),
+  accessSync: jest.fn(),
+  constants: { X_OK: 1 }
+}));
 jest.mock('node:child_process', () => ({ execSync: jest.fn(), execFileSync: jest.fn() }));
 
 describe('OTA native compatibility gate', () => {
@@ -27,11 +34,16 @@ describe('OTA native compatibility gate', () => {
 describe('OTA source map publishing', () => {
   const originalArgs = process.argv;
   const originalToken = process.env.SENTRY_AUTH_TOKEN;
+  const originalPath = process.env.PATH;
   beforeEach(() => {
     jest.clearAllMocks();
     mockResolveCli.mockReset().mockReturnValue('/tools/eas-cli/bin/run');
     process.argv = ['node', 'eas-update.js', 'fix "quoted" message'];
     process.env.SENTRY_AUTH_TOKEN = 'test-token';
+    process.env.PATH = 'relative:/custom/bin';
+    fs.realpathSync.mockReturnValue('/custom/lib/eas-cli/bin/run');
+    fs.statSync.mockReturnValue({ isFile: () => true });
+    fs.accessSync.mockReturnValue(undefined);
     fs.readFileSync.mockReturnValue(
       JSON.stringify({
         expo: { runtimeVersion: { policy: 'fingerprint' }, extra: { otaVersion: 1 } }
@@ -40,6 +52,7 @@ describe('OTA source map publishing', () => {
   });
   afterEach(() => {
     process.argv = originalArgs;
+    process.env.PATH = originalPath;
     if (originalToken === undefined) delete process.env.SENTRY_AUTH_TOKEN;
     else process.env.SENTRY_AUTH_TOKEN = originalToken;
   });
@@ -97,13 +110,17 @@ describe('OTA source map publishing', () => {
       throw Object.assign(new Error('module not found'), { code: 'MODULE_NOT_FOUND' });
     });
     jest.isolateModules(() => require('../../.github/scripts/eas-update'));
-    expect(execFileSync).toHaveBeenNthCalledWith(1, 'eas', ['--version'], { stdio: 'ignore' });
+    expect(execFileSync).toHaveBeenNthCalledWith(1, '/custom/lib/eas-cli/bin/run', ['--version'], {
+      stdio: 'ignore'
+    });
+    expect(fs.realpathSync).toHaveBeenCalledTimes(1);
+    expect(fs.realpathSync).toHaveBeenCalledWith('/custom/bin/eas');
     expect(execFileSync.mock.invocationCallOrder[0]).toBeLessThan(
       fs.writeFileSync.mock.invocationCallOrder[0]
     );
     expect(execFileSync).toHaveBeenNthCalledWith(
       2,
-      'eas',
+      '/custom/lib/eas-cli/bin/run',
       ['update', '--channel', 'production', '--message', 'fix "quoted" message'],
       { stdio: 'inherit' }
     );
@@ -113,15 +130,15 @@ describe('OTA source map publishing', () => {
     mockResolveCli.mockImplementationOnce(() => {
       throw Object.assign(new Error('module not found'), { code: 'MODULE_NOT_FOUND' });
     });
-    execFileSync.mockImplementationOnce(() => {
-      throw Object.assign(new Error('spawn eas ENOENT'), { code: 'ENOENT' });
+    fs.accessSync.mockImplementationOnce(() => {
+      throw new Error('not executable');
     });
     expect(() => jest.isolateModules(() => require('../../.github/scripts/eas-update'))).toThrow(
-      'spawn eas ENOENT'
+      'EAS CLI executable not found on PATH.'
     );
     expect(fs.writeFileSync).not.toHaveBeenCalled();
     expect(execSync).not.toHaveBeenCalled();
-    expect(execFileSync).toHaveBeenCalledTimes(1);
+    expect(execFileSync).not.toHaveBeenCalled();
   });
 
   it('does not commit or push after a source map upload failure', () => {
