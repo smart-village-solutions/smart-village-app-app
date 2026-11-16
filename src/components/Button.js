@@ -3,6 +3,7 @@ import React, { useContext, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Button as RNEButton } from 'react-native-elements';
 
+import { AccessibilityContext } from '../AccessibilityProvider';
 import { consts, normalize } from '../config';
 import { useTheme } from '../hooks/useTheme';
 import { OrientationContext } from '../OrientationProvider';
@@ -35,7 +36,11 @@ export const Button = ({
 }) => {
   const { orientation, dimensions } = useContext(OrientationContext);
   const { colors } = useTheme();
-  const styles = useMemo(() => createStyles(colors), [colors]);
+  const { textScaleMultiplier = 1 } = useContext(AccessibilityContext);
+  const styles = useMemo(
+    () => createStyles(colors, textScaleMultiplier),
+    [colors, textScaleMultiplier]
+  );
   const needLandscapeStyle =
     notFullWidth ||
     orientation === 'landscape' ||
@@ -125,7 +130,7 @@ export const Button = ({
 
 /* Dynamic theme styles cannot be resolved by react-native/no-unused-styles. */
 /* eslint-disable react-native/no-unused-styles */
-const createStyles = (colors) =>
+const createStyles = (colors, textScaleMultiplier) =>
   StyleSheet.create({
     acceptButton: {
       backgroundColor: colors.primary
@@ -138,7 +143,7 @@ const createStyles = (colors) =>
       borderRadius: normalize(8)
     },
     bigTitle: {
-      fontSize: normalize(14)
+      fontSize: normalize(14) * textScaleMultiplier
     },
     button: {
       alignItems: 'center',
@@ -205,15 +210,15 @@ const createStyles = (colors) =>
       borderRadius: normalize(32)
     },
     smallestTitle: {
-      fontSize: normalize(12)
+      fontSize: normalize(12) * textScaleMultiplier
     },
     smallTitle: {
-      fontSize: normalize(14)
+      fontSize: normalize(14) * textScaleMultiplier
     },
     title: {
       color: colors.onPrimary,
       fontFamily: 'bold',
-      fontSize: normalize(14),
+      fontSize: normalize(14) * textScaleMultiplier,
       fontWeight: '600'
     },
     titleInvert: {

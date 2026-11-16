@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
-const { createRequire } = require('module');
-const { execSync, execFileSync } = require('child_process');
+const { createRequire } = require('node:module');
+const { execSync, execFileSync } = require('node:child_process');
 
 const appJsonPath = path.resolve(__dirname, '../../app.json');
 // Read the file

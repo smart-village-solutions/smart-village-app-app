@@ -207,7 +207,9 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
       setAuthToken(token);
     };
 
-    fetchAuthToken();
+    void fetchAuthToken().catch((error) =>
+      console.warn('Unable to read volunteer credentials', error)
+    );
   }, []);
 
   if ((isLoading && !showCalendar) || isLoadingGroupsIntroText) {

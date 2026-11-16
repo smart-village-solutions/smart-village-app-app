@@ -6,6 +6,7 @@ import { ApolloLink } from 'apollo-link';
 import { setContext } from 'apollo-link-context';
 import { createHttpLink } from 'apollo-link-http';
 import _isEmpty from 'lodash/isEmpty';
+import _isPlainObject from 'lodash/isPlainObject';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { ApolloProvider } from 'react-apollo';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -49,8 +50,31 @@ const applyImageAspectRatio = (imageAspectRatio) => {
   }
 };
 
+const fetchGlobalSettings = async (client, fetchPolicy) => {
+  try {
+    const response = await queryWithAuthRetry(
+      () =>
+        client.query({
+          query: getQuery(QUERY_TYPES.PUBLIC_JSON_FILE),
+          variables: { name: 'globalSettings', version: appJson.expo.version },
+          fetchPolicy
+        }),
+      () => auth(undefined, true)
+    );
+    const content = response.data?.publicJsonFile?.content;
+    return _isPlainObject(content) ? content : undefined;
+  } catch (error) {
+    console.warn('Unable to refresh global settings', error);
+    return undefined;
+  }
+};
+
 const MainAppWithSettings = () => {
   const { globalSettings } = useContext(SettingsContext);
+
+  useEffect(() => {
+    applyImageAspectRatio(globalSettings.imageAspectRatio);
+  }, [globalSettings.imageAspectRatio]);
 
   return (
     <IconProvider>
@@ -80,7 +104,12 @@ const MainAppWithApolloProvider = () => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const [loading, setLoading] = useState(true);
   const [client, setClient] = useState();
-  const bootstrap = useRef({ client: undefined, pending: false, complete: false });
+  const bootstrap = useRef({
+    client: undefined,
+    pending: false,
+    complete: false,
+    settingsFetched: false
+  });
   const [initialGlobalSettings, setInitialGlobalSettings] = useState(initialContext.globalSettings);
   const [initialListTypesSettings, setInitialListTypesSettings] = useState({});
   const [initialLocationSettings, setInitialLocationSettings] = useState({});
@@ -159,26 +188,7 @@ const MainAppWithApolloProvider = () => {
       [QUERY_TYPES.WASTE_STREET]: LIST_TYPES.GROUPED_LIST
     };
 
-    let globalSettingsData;
-
-    try {
-      const response = await queryWithAuthRetry(
-        () =>
-          client.query({
-            query: getQuery(QUERY_TYPES.PUBLIC_JSON_FILE),
-            variables: { name: 'globalSettings', version: appJson.expo.version },
-            fetchPolicy
-          }),
-        () => auth(undefined, true)
-      );
-
-      globalSettingsData = response.data;
-    } catch (error) {
-      // Keep cached settings on transport/parse failures; do not refresh valid credentials.
-      console.warn('Unable to refresh global settings', error);
-    }
-
-    const globalSettingsPublicJsonFileContent = globalSettingsData?.publicJsonFile?.content;
+    const globalSettingsPublicJsonFileContent = await fetchGlobalSettings(client, fetchPolicy);
 
     if (!_isEmpty(globalSettingsPublicJsonFileContent)) {
       globalSettings = {
@@ -207,6 +217,7 @@ const MainAppWithApolloProvider = () => {
     applyImageAspectRatio(globalSettings.imageAspectRatio);
     setInitialGlobalSettings(globalSettings);
     setInitialConversationSettings((await storageHelper.conversationSettings()) || {});
+    return !!isMainserverUp && globalSettingsPublicJsonFileContent !== undefined;
   };
 
   // Bootstrap once; reconnects must not replace the live cache or reset user settings.
@@ -214,12 +225,7 @@ const MainAppWithApolloProvider = () => {
     const state = bootstrap.current;
     if (isMainserverUp === null || state.pending) return;
 
-    if (state.complete) {
-      if (isMainserverUp) {
-        void auth().catch((error) => console.warn('Unable to refresh app authentication', error));
-      }
-      return;
-    }
+    if (state.complete && !isMainserverUp) return;
 
     state.pending = true;
     async function prepare() {
@@ -232,9 +238,20 @@ const MainAppWithApolloProvider = () => {
           }
         }
 
+        if (state.complete) {
+          if (!state.settingsFetched) {
+            const settings = await fetchGlobalSettings(state.client, 'network-only');
+            if (settings !== undefined) {
+              setInitialGlobalSettings((current) => ({ ...current, ...settings }));
+              state.settingsFetched = true;
+            }
+          }
+          return;
+        }
+
         // Reuse the client if settings hydration failed and bootstrap is retried.
         if (!state.client) state.client = await setupApolloClient();
-        await setupInitialGlobalSettings({ client: state.client });
+        state.settingsFetched = await setupInitialGlobalSettings({ client: state.client });
         state.complete = true;
         setLoading(false);
       } catch (error) {

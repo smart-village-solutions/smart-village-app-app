@@ -1,13 +1,13 @@
 import fs from 'fs';
-import { createRequire } from 'module';
-import { execSync, execFileSync } from 'child_process';
+import { createRequire } from 'node:module';
+import { execSync, execFileSync } from 'node:child_process';
 
 // CI does not need a global EAS installation; publishing remains mocked.
 const mockResolveCli = jest.fn();
-jest.mock('module', () => ({ createRequire: jest.fn(() => ({ resolve: mockResolveCli })) }));
+jest.mock('node:module', () => ({ createRequire: jest.fn(() => ({ resolve: mockResolveCli })) }));
 
 jest.mock('fs', () => ({ readFileSync: jest.fn(), writeFileSync: jest.fn() }));
-jest.mock('child_process', () => ({ execSync: jest.fn(), execFileSync: jest.fn() }));
+jest.mock('node:child_process', () => ({ execSync: jest.fn(), execFileSync: jest.fn() }));
 
 describe('OTA native compatibility gate', () => {
   beforeEach(() => jest.clearAllMocks());

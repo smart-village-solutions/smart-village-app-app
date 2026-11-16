@@ -1,5 +1,5 @@
 import React from 'react';
-import { Platform, TouchableOpacity } from 'react-native';
+import { Platform, Pressable, StyleSheet, TouchableOpacity } from 'react-native';
 import renderer from 'react-test-renderer';
 
 jest.mock('react-native-elements', () => {
@@ -123,6 +123,8 @@ import { Switch as AppSwitch } from '../../src/components/Switch';
 import { Touchable } from '../../src/components/Touchable';
 import { consts } from '../../src/config';
 import { AccessibilityContext } from '../../src/AccessibilityProvider';
+import { ThemeContext } from '../../src/ThemeContext';
+import { darkColors, lightColors } from '../../src/config/colors';
 
 describe('Accessibility primitives', () => {
   const onPress = () => {};
@@ -144,6 +146,27 @@ describe('Accessibility primitives', () => {
     expect(node.props.accessibilityState).toEqual({ disabled: true });
     expect(node.props.accessibilityLabel).toBe(`Speichern ${consts.a11yLabel.button}`);
   });
+
+  it.each([undefined, 'accept', 'reject', 'delete'])(
+    'updates the %s button title when the accessibility text size changes',
+    (variant) => {
+      const buttonAtScale = (textScaleMultiplier) => (
+        <AccessibilityContext.Provider value={{ textScaleMultiplier }}>
+          <Button onPress={onPress} title="Termin vereinbaren" variant={variant} />
+        </AccessibilityContext.Provider>
+      );
+      const tree = renderWithAct(buttonAtScale(0.9));
+      const titleSize = () =>
+        StyleSheet.flatten(tree.root.findByType('mock-rne-button').props.titleStyle).fontSize;
+
+      expect(titleSize()).toBeCloseTo(14 * 0.9);
+
+      renderer.act(() => tree.update(buttonAtScale(1.3)));
+
+      expect(titleSize()).toBeCloseTo(14 * 1.3);
+      renderer.act(() => tree.unmount());
+    }
+  );
 
   it('Touchable sets default role and merges state', () => {
     const tree = renderWithAct(
@@ -185,6 +208,26 @@ describe('Accessibility primitives', () => {
 
     expect(node.props.accessibilityState).toEqual({ checked: true, disabled: true });
     expect(node.props.accessibilityRole).toBe('radio');
+  });
+
+  it('updates radio selection colors without an opacity animation when the theme changes', () => {
+    const renderRadio = (colors, selected) => (
+      <ThemeContext.Provider value={{ colors, isDark: colors === darkColors, mode: 'system' }}>
+        <Radiobutton onPress={onPress} selected={selected} title="Dunkel" />
+      </ThemeContext.Provider>
+    );
+    const tree = renderWithAct(renderRadio(lightColors, false));
+
+    renderer.act(() => {
+      tree.update(renderRadio(darkColors, true));
+    });
+
+    const node = tree.root.findByType('mock-rne-checkbox');
+    expect(node.props.Component).toBe(Pressable);
+    expect(node.props.checked).toBe(true);
+    expect(node.props.checkedIcon.props.color).toBe(darkColors.primary);
+    expect(StyleSheet.flatten(node.props.textStyle).color).toBe(darkColors.primary);
+    expect(StyleSheet.flatten(node.props.containerStyle).opacity).toBeUndefined();
   });
 
   it('Rich text input exposes field, error and formatting controls to assistive technology', () => {

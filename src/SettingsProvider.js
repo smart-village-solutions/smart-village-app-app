@@ -1,5 +1,8 @@
 import PropTypes from 'prop-types';
-import React, { createContext, useState } from 'react';
+import React, { createContext, useCallback, useEffect, useRef, useState } from 'react';
+
+import { mergeRecoveredSettings } from './helpers/mergeRecoveredSettings';
+import { storageHelper } from './helpers/storageHelper';
 
 export const initialContext = {
   globalSettings: {
@@ -26,7 +29,31 @@ export const SettingsProvider = ({
   initialConversationSettings,
   children
 }) => {
-  const [globalSettings, setGlobalSettings] = useState(initialGlobalSettings);
+  const [globalState, setGlobalState] = useState({
+    settings: initialGlobalSettings,
+    source: initialGlobalSettings
+  });
+  const persistedSource = useRef(initialGlobalSettings);
+  const globalSettings = globalState.settings;
+  const setGlobalSettings = useCallback((update) => {
+    setGlobalState((current) => ({
+      ...current,
+      settings: typeof update === 'function' ? update(current.settings) : update
+    }));
+  }, []);
+  if (globalState.source !== initialGlobalSettings) {
+    setGlobalState({
+      source: initialGlobalSettings,
+      settings: mergeRecoveredSettings(globalState.source, globalSettings, initialGlobalSettings)
+    });
+  }
+  useEffect(() => {
+    if (persistedSource.current === globalState.source) return;
+    persistedSource.current = globalState.source;
+    void storageHelper
+      .setGlobalSettings(globalSettings)
+      .catch((error) => console.warn('Unable to persist recovered global settings', error));
+  }, [globalSettings, globalState.source]);
   const [listTypesSettings, setListTypesSettings] = useState(initialListTypesSettings);
   const [locationSettings, setLocationSettings] = useState(initialLocationSettings);
   const [conversationSettings, setConversationSettings] = useState(initialConversationSettings);

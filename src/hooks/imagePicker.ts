@@ -5,15 +5,14 @@ import {
   PermissionStatus,
   requestCameraPermissionsAsync
 } from 'expo-image-picker';
+import { getPermissionsAsync, requestPermissionsAsync } from 'expo-media-library';
 import {
   addAssetsToAlbumAsync,
   createAlbumAsync,
   createAssetAsync,
   getAlbumAsync,
-  getPermissionsAsync,
-  requestPermissionsAsync,
   saveToLibraryAsync
-} from 'expo-media-library';
+} from 'expo-media-library/legacy';
 import { useCallback, useState } from 'react';
 import { Alert, Linking } from 'react-native';
 

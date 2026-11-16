@@ -160,6 +160,19 @@ export const GET_VOUCHER = gql`
         name
         payload
         id
+        addresses {
+          id
+          kind
+          addition
+          street
+          zip
+          city
+          geoLocation {
+            id
+            latitude
+            longitude
+          }
+        }
         operatingCompany {
           id
           name

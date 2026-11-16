@@ -13,6 +13,7 @@ import React, {
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Calendar as RNCalendar } from 'react-native-calendars';
 import { Overlay } from 'react-native-elements';
+import { ScrollView } from 'react-native-gesture-handler';
 
 import {
   AccessibilityHeader,
@@ -322,20 +323,28 @@ export const WasteCollectionScreen = ({ navigation, route }) => {
     return <LoadingSpinner loading />;
   }
 
+  // Android edge-to-edge windows can stay full-height above the keyboard.
+  // Keep keyboard avoidance enabled so the address form can scroll into view.
   return (
     <SafeAreaViewFlex>
       {!hasHeaderSearchBarOption ? (
         !selectedStreetId ? (
-          <DefaultKeyboardAvoidingView enabled={device.platform === 'ios'}>
-            <Wrapper>
-              <RegularText small>
-                {hasWasteAddressesTwoStep ? wasteTexts.hintCityAndStreet : wasteTexts.hintStreet}
-              </RegularText>
-            </Wrapper>
-            <WasteInputForm
-              renderSuggestions={renderSuggestions}
-              setSelectedStreetId={setSelectedStreetId}
-            />
+          <DefaultKeyboardAvoidingView>
+            <ScrollView
+              keyboardDismissMode="none"
+              keyboardShouldPersistTaps="always"
+              nestedScrollEnabled
+            >
+              <Wrapper>
+                <RegularText small>
+                  {hasWasteAddressesTwoStep ? wasteTexts.hintCityAndStreet : wasteTexts.hintStreet}
+                </RegularText>
+              </Wrapper>
+              <WasteInputForm
+                renderSuggestions={renderSuggestions}
+                setSelectedStreetId={setSelectedStreetId}
+              />
+            </ScrollView>
           </DefaultKeyboardAvoidingView>
         ) : (
           <>

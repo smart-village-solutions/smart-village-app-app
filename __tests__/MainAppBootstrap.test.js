@@ -48,6 +48,9 @@ jest.mock('../src/helpers', () => ({
     setGlobalSettings: jest.fn()
   }
 }));
+jest.mock('../src/helpers/storageHelper', () => ({
+  storageHelper: jest.requireMock('../src/helpers').storageHelper
+}));
 jest.mock('../src/queries', () => ({ getQuery: jest.fn(), QUERY_TYPES: {} }));
 jest.mock('../src/NetworkProvider', () => ({
   NetworkContext: jest.requireActual('react').createContext({}),
@@ -110,7 +113,8 @@ describe('MainApp Apollo bootstrap', () => {
     storageHelper.globalSettings.mockResolvedValue({ navigation: 'tab', settings: {} });
     storageHelper.listTypesSettings.mockResolvedValue({});
     storageHelper.conversationSettings.mockResolvedValue({});
-    mockQuery.mockResolvedValue({ data: {} });
+    storageHelper.setGlobalSettings.mockResolvedValue(undefined);
+    mockQuery.mockResolvedValue({ data: { publicJsonFile: { content: {} } } });
   });
 
   afterEach(() => jest.restoreAllMocks());
@@ -166,7 +170,7 @@ describe('MainApp Apollo bootstrap', () => {
     await act(async () => finishHydration());
     expect(ApolloClient).toHaveBeenCalledTimes(1);
     expect(storageHelper.globalSettings).toHaveBeenCalledTimes(1);
-    expect(mockQuery).toHaveBeenCalledTimes(1);
+    expect(mockQuery).toHaveBeenCalledTimes(2);
     expect(mockLiveSettings.globalSettings.navigation).toBe('tab');
     expect(auth).toHaveBeenCalledTimes(1);
   });
@@ -230,5 +234,93 @@ describe('MainApp Apollo bootstrap', () => {
       'Unable to refresh app authentication',
       expect.any(Error)
     );
+  });
+
+  it('fetches customer settings after an uncached offline launch without replacing the client', async () => {
+    storageHelper.globalSettings.mockResolvedValue(undefined);
+    mockQuery.mockResolvedValueOnce({ data: {} });
+    const view = render(screen(false));
+    await flush();
+    const originalClient = mockClient;
+    expect(mockLiveSettings.globalSettings.navigation).toBe('tab');
+
+    mockQuery.mockResolvedValueOnce({
+      data: {
+        publicJsonFile: { content: { navigation: 'drawer', settings: { branding: 'customer' } } }
+      }
+    });
+    view.rerender(screen(true));
+    await flush();
+
+    expect(mockLiveSettings.globalSettings.navigation).toBe('drawer');
+    expect(mockLiveSettings.globalSettings.settings.branding).toBe('customer');
+    expect(ApolloClient).toHaveBeenCalledTimes(1);
+    expect(mockClient).toBe(originalClient);
+    expect(storageHelper.globalSettings).toHaveBeenCalledTimes(1);
+    expect(mockQuery).toHaveBeenLastCalledWith(
+      expect.objectContaining({ fetchPolicy: 'network-only' })
+    );
+  });
+
+  it('preserves live edits while settings recovery is pending and persists the merged state', async () => {
+    let finishRecovery;
+    const view = render(screen(false));
+    await flush();
+    const originalClient = mockClient;
+    originalClient.cache.writeData({ data: { liveValue: 'session cache' } });
+    mockQuery.mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          finishRecovery = resolve;
+        })
+    );
+    view.rerender(screen(true));
+    await flush();
+    await act(async () =>
+      mockLiveSettings.setGlobalSettings((current) => ({
+        ...current,
+        settings: { ...current.settings, localChoice: true },
+        waste: { streetId: 42 }
+      }))
+    );
+    await act(async () =>
+      finishRecovery({
+        data: {
+          publicJsonFile: {
+            content: { navigation: 'drawer', settings: { serverFlag: true }, waste: {} }
+          }
+        }
+      })
+    );
+
+    expect(mockLiveSettings.globalSettings).toMatchObject({
+      navigation: 'drawer',
+      settings: { localChoice: true, serverFlag: true },
+      waste: { streetId: 42 }
+    });
+    expect(storageHelper.setGlobalSettings).toHaveBeenLastCalledWith(
+      mockLiveSettings.globalSettings
+    );
+    expect(mockClient).toBe(originalClient);
+    expect(originalClient.cache.extract().ROOT_QUERY.liveValue).toBe('session cache');
+  });
+
+  it('retries an unsuccessful online settings fetch on reconnect without overlapping requests', async () => {
+    jest.spyOn(console, 'warn').mockImplementation(() => {});
+    mockQuery.mockRejectedValue(new Error('temporary settings failure'));
+    const view = render(screen(true));
+    await flush();
+    const originalClient = mockClient;
+    view.rerender(screen(false));
+    await flush();
+    mockQuery.mockResolvedValueOnce({
+      data: { publicJsonFile: { content: { navigation: 'drawer' } } }
+    });
+    view.rerender(screen(true));
+    await flush();
+
+    expect(mockLiveSettings.globalSettings.navigation).toBe('drawer');
+    expect(mockClient).toBe(originalClient);
+    expect(ApolloClient).toHaveBeenCalledTimes(1);
   });
 });

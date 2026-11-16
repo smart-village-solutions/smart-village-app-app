@@ -45,6 +45,36 @@ const deferred = <T,>() => {
 };
 
 describe('useVolunteerData', () => {
+  it('retains processed data and clears loading when a later credential read fails', async () => {
+    jest.spyOn(console, 'warn').mockImplementation(() => {});
+    let queryData = { results: [{ id: 'saved' }] };
+    let latest: ReturnType<typeof useVolunteerData>;
+    mockUseQuery.mockImplementation(() => ({
+      data: queryData,
+      isLoading: false,
+      isRefetching: false,
+      refetch: jest.fn()
+    }));
+    mockVolunteerUserData.mockResolvedValue({ currentUserId: '1', currentUserGuid: 'saved-user' });
+    const Harness = () => {
+      latest = useVolunteerData({ query: 'test' as never });
+      return null;
+    };
+    const tree = render(<Harness />);
+    await act(async () => {});
+    expect(latest!.data).toEqual([{ id: 'saved' }]);
+
+    mockVolunteerUserData.mockRejectedValueOnce(new Error('SecureStore unavailable'));
+    queryData = { results: [{ id: 'new' }] };
+    tree.rerender(<Harness />);
+    await act(async () => {});
+
+    expect(latest!.isLoading).toBe(false);
+    expect(latest!.data).toEqual([{ id: 'saved' }]);
+    expect(latest!.userGuid).toBe('saved-user');
+    jest.restoreAllMocks();
+  });
+
   it('does not publish an older processing result after the range changes', async () => {
     const firstUserData = deferred<{
       currentUserId: string;

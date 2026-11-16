@@ -68,7 +68,15 @@ export const useVolunteerData = ({
   const processVolunteerData = useCallback(async () => {
     const generation = ++processingGeneration.current;
     setIsProcessing(true);
-    const { currentUserId, currentUserGuid } = await volunteerUserData();
+    let userData: Awaited<ReturnType<typeof volunteerUserData>>;
+    try {
+      userData = await volunteerUserData();
+    } catch (error) {
+      console.warn('Unable to read volunteer user data', error);
+      if (generation === processingGeneration.current) setIsProcessing(false);
+      return;
+    }
+    const { currentUserId, currentUserGuid } = userData;
 
     if (generation !== processingGeneration.current) return;
 
