@@ -159,6 +159,7 @@ jest.mock('../../src/components/Wrapper', () => ({
 }));
 
 import { TourStops } from '../../src/components/TourStops';
+import { ListComponent } from '../../src/components/ListComponent';
 
 describe('TourStops', () => {
   beforeEach(() => {
@@ -176,7 +177,10 @@ describe('TourStops', () => {
             longitude: 13.405
           }
         },
-        title: 'Stop 1'
+        title: 'Stop 1',
+        mediaContents: [
+          { contentType: 'image', sourceUrl: { url: 'https://example.test/stop.png' } }
+        ]
       },
       {
         id: 2,
@@ -222,6 +226,10 @@ describe('TourStops', () => {
       0
     );
     expect(mockMapLibreUnmountSpy).not.toHaveBeenCalled();
+
+    const list = component!.root.findByType(ListComponent);
+    expect(list.props.data[0].picture.url).toBe('https://example.test/stop.png');
+    expect(list.props.data[1].picture.url).toBeNull();
 
     act(() => {
       component!.root.findByProps({ testID: 'filter-map' }).props.onPress();

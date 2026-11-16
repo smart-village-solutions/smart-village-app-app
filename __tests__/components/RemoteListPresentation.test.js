@@ -7,6 +7,7 @@ import { SettingsContext } from '../../src/SettingsProvider';
 import { ListComponent } from '../../src/components/ListComponent';
 import { GroupedListItem } from '../../src/components/GroupedListItem';
 import { TextListItem } from '../../src/components/TextListItem';
+import { CardListItem } from '../../src/components/CardListItem';
 import { SearchResultSectionList } from '../../src/components/search/SearchResultSectionList';
 import { WasteCollectionListItem } from '../../src/components/waste/WasteCollectionListItem';
 import { useRenderItem } from '../../src/hooks/listHooks';
@@ -100,6 +101,41 @@ it.each([QUERY_TYPES.VOLUNTEER.CALENDAR_ALL, QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_
     expect(row.props.leftImage).toBeUndefined();
   }
 );
+
+it.each([0, 1])('renders the leading large-image card at data index %s', (index) => {
+  const { result } = renderHook(
+    () => useRenderItem(QUERY_TYPES.GENERIC_ITEMS, undefined, { isIndexStartingAt1: index === 1 }),
+    { wrapper: withListTypes({ genericItems: 'cardTextList' }) }
+  );
+  const item = {
+    id: 'post',
+    title: 'First post',
+    picture: { url: 'https://example.test/photo.png' }
+  };
+  const row = result.current({ item, index });
+  expect(row.type).toBe(CardListItem);
+  expect(row.props.bigTitle).toBe(true);
+  expect(result.current({ item, index: index + 1 }).type).toBe(TextListItem);
+});
+
+it('retains day-header navigation in grouped event presentation', () => {
+  const navigation = { push: jest.fn() };
+  const { result } = renderHook(
+    () =>
+      useRenderItem(QUERY_TYPES.EVENT_RECORDS, navigation, { queryVariables: { categoryId: 7 } }),
+    { wrapper: withListTypes({ eventRecords: 'groupedList' }) }
+  );
+  render(result.current({ item: '2026-11-16', index: 0, target: 'StickyHeader' }));
+  const header = screen.UNSAFE_getByType('SectionHeader');
+  header.props.onPress();
+  expect(navigation.push).toHaveBeenCalledWith(
+    expect.any(String),
+    expect.objectContaining({
+      query: QUERY_TYPES.EVENT_RECORDS,
+      queryVariables: { categoryId: 7, dateRange: ['2026-11-16', '2026-11-16'] }
+    })
+  );
+});
 
 it('still applies the event-record presentation to an ordinary sectioned event list', () => {
   render(

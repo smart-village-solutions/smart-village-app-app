@@ -4,6 +4,7 @@ import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { consts, normalize, texts } from '../config';
+import { mainImageOfMediaContents } from '../helpers/imageHelper';
 import { QUERY_TYPES } from '../queries/types';
 import {
   useLastKnownPosition,
@@ -86,6 +87,10 @@ export const TourStops = ({
         routeName: ScreenName.TourStopDetail,
         overtitle: texts.tour.tourStop,
         title: tourStop.title,
+        picture: {
+          ...tourStop.picture,
+          url: tourStop.picture?.url || mainImageOfMediaContents(tourStop.mediaContents)
+        },
         params: {
           geometryTourData,
           headline: tourStop.title,
