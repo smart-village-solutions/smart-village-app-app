@@ -1691,6 +1691,8 @@ export const texts = {
     termsAndConditions: 'Einwilligung zu Datenschutzhinweisen'
   },
   sue: {
+    unavailableReport: 'Diese Meldung ist derzeit nicht verfügbar.',
+    retry: 'Erneut versuchen',
     answer: 'Antworten',
     currentStatus: 'Aktueller Status',
     datetime: 'Datum und Uhrzeit der Meldung',
@@ -1952,6 +1954,9 @@ export const texts = {
     enterCodeSentInfo:
       'Wir haben gerade einen Bestätigungs-Code an die von Ihnen angegebene E-Mail-Adresse versandt. Bitte geben Sie diesen Code in das entsprechende Feld ein.',
     entranceFee: 'Eintrittspreis',
+    errorLoadingStoredData:
+      'Deine gespeicherten Daten konnten nicht geladen werden. Bitte erneut versuchen.',
+    retry: 'Erneut versuchen',
     errorLoadingUser: 'Beim Laden deiner Daten ist ein Fehler aufgetreten. Bitte erneut einloggen.',
     errorLoadingUserNotificationSettings:
       'Beim Laden deiner Einstellungen ist ein Fehler aufgetreten. Bitte erneut versuchen.',

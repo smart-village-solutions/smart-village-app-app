@@ -172,6 +172,20 @@ const MainAppWithApolloProvider = () => {
     return client;
   };
 
+  const setupLocationSettings = async (globalSettings) => {
+    const locationSettings = globalSettings?.settings?.locationService
+      ? { locationService: undefined, ...((await storageHelper.locationSettings()) || {}) }
+      : { locationService: false };
+    const defaultAlternativePosition =
+      globalSettings?.settings?.locationService?.defaultAlternativePosition;
+    if (defaultAlternativePosition) {
+      locationSettings.defaultAlternativePosition = geoLocationToLocationObject(
+        defaultAlternativePosition
+      );
+    }
+    setInitialLocationSettings(locationSettings);
+  };
+
   const setupInitialGlobalSettings = async ({ client }) => {
     const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
 
@@ -198,21 +212,7 @@ const MainAppWithApolloProvider = () => {
       storageHelper.setGlobalSettings(globalSettings);
     }
 
-    // if there are no locationSettings yet, set the defaults as fallback
-    const locationSettings = !globalSettings?.settings?.locationService
-      ? { locationService: false }
-      : (await storageHelper.locationSettings()) || {};
-
-    const defaultAlternativePosition =
-      globalSettings?.settings?.locationService?.defaultAlternativePosition;
-
-    if (defaultAlternativePosition) {
-      locationSettings.defaultAlternativePosition = geoLocationToLocationObject(
-        defaultAlternativePosition
-      );
-    }
-
-    setInitialLocationSettings(locationSettings);
+    await setupLocationSettings(globalSettings);
     setInitialListTypesSettings(listTypesSettings);
     applyImageAspectRatio(globalSettings.imageAspectRatio);
     setInitialGlobalSettings(globalSettings);
@@ -242,6 +242,7 @@ const MainAppWithApolloProvider = () => {
           if (!state.settingsFetched) {
             const settings = await fetchGlobalSettings(state.client, 'network-only');
             if (settings !== undefined) {
+              await setupLocationSettings({ ...initialGlobalSettings, ...settings });
               setInitialGlobalSettings((current) => ({ ...current, ...settings }));
               state.settingsFetched = true;
             }

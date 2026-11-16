@@ -88,6 +88,14 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
 
   const details =
     query === QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID ? data : route.params?.details;
+  if (!details) {
+    return (
+      <Wrapper>
+        <RegularText>{texts.sue.unavailableReport}</RegularText>
+        <Button title={texts.sue.retry} onPress={() => refetch()} />
+      </Wrapper>
+    );
+  }
   const {
     address,
     description,

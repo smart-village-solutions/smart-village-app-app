@@ -305,6 +305,66 @@ describe('MainApp Apollo bootstrap', () => {
     expect(originalClient.cache.extract().ROOT_QUERY.liveValue).toBe('session cache');
   });
 
+  it('recovers location defaults and enables location hooks after an uncached offline launch', async () => {
+    storageHelper.globalSettings.mockResolvedValue(undefined);
+    storageHelper.locationSettings.mockResolvedValue(undefined);
+    const fallback = { coords: { latitude: 52, longitude: 13 } };
+    jest.requireMock('../src/helpers').geoLocationToLocationObject.mockReturnValue(fallback);
+    const view = render(screen(false));
+    await flush();
+    expect(mockLiveSettings.locationSettings.locationService).toBe(false);
+    mockQuery.mockResolvedValueOnce({
+      data: {
+        publicJsonFile: {
+          content: {
+            settings: { locationService: { defaultAlternativePosition: '52,13' } }
+          }
+        }
+      }
+    });
+    view.rerender(screen(true));
+    await flush();
+    expect(mockLiveSettings.locationSettings.locationService).toBeUndefined();
+    expect(mockLiveSettings.locationSettings.defaultAlternativePosition).toBe(fallback);
+    expect(ApolloClient).toHaveBeenCalledTimes(1);
+  });
+
+  it('preserves a user opt-out equal to the offline default while recovering customer location', async () => {
+    storageHelper.globalSettings.mockResolvedValue(undefined);
+    let finishLocationRead;
+    storageHelper.locationSettings.mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          finishLocationRead = resolve;
+        })
+    );
+    const fallback = { coords: { latitude: 52, longitude: 13 } };
+    jest.requireMock('../src/helpers').geoLocationToLocationObject.mockReturnValue(fallback);
+    const view = render(screen(false));
+    await flush();
+    mockQuery.mockResolvedValueOnce({
+      data: {
+        publicJsonFile: {
+          content: {
+            settings: { locationService: { defaultAlternativePosition: '52,13' } }
+          }
+        }
+      }
+    });
+    view.rerender(screen(true));
+    await flush();
+    const chosen = { coords: { latitude: 48, longitude: 11 } };
+    act(() =>
+      mockLiveSettings.setLocationSettings({ locationService: false, alternativePosition: chosen })
+    );
+    await act(async () => finishLocationRead({ locationService: true }));
+    expect(mockLiveSettings.locationSettings).toMatchObject({
+      locationService: false,
+      alternativePosition: chosen,
+      defaultAlternativePosition: fallback
+    });
+  });
+
   it('retries an unsuccessful online settings fetch on reconnect without overlapping requests', async () => {
     jest.spyOn(console, 'warn').mockImplementation(() => {});
     mockQuery.mockRejectedValue(new Error('temporary settings failure'));
