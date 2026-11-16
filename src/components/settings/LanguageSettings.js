@@ -49,6 +49,7 @@ export const LanguageSettings = () => {
       <WrapperHorizontal>
         <SettingsRadioGroup
           title={texts.settingsTitles.language}
+          hideTitle
           options={locales.map((language) => ({
             value: language,
             label: names[language] ?? languageLabel(language)

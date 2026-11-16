@@ -9,6 +9,7 @@ import { useThemeStyles } from '../../hooks/useThemeStyles';
 
 type Props<Value extends string> = {
   title: string;
+  hideTitle?: boolean;
   description?: string;
   options: ReadonlyArray<{ label: string; value: Value }>;
   onChange: (value: Value) => void;
@@ -18,6 +19,7 @@ type Props<Value extends string> = {
 
 export const SettingsRadioGroup = <Value extends string>({
   title,
+  hideTitle,
   description,
   options,
   onChange,
@@ -29,7 +31,7 @@ export const SettingsRadioGroup = <Value extends string>({
   return (
     <ListItem accessible={false} containerStyle={styles.container} importantForAccessibility="no">
       <ListItem.Content>
-        <BoldText small>{title}</BoldText>
+        {!hideTitle && <BoldText small>{title}</BoldText>}
         {description && <RegularText small>{description}</RegularText>}
 
         <View accessibilityLabel={title} accessibilityRole="radiogroup" style={styles.radioGroup}>
