@@ -54,6 +54,8 @@ Jest is used for unit and snapshot tests (for example `__tests__/components/Butt
 
 For executing tests run `npm run test` or `yarn test`.
 
+For release template generation and Firebase requirements, see [release template configuration](./RELEASE_TEMPLATE.md).
+
 ## Lint the app
 
 For executing linters run `npm run lint` or `yarn lint`.
