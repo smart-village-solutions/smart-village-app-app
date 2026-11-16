@@ -2,17 +2,35 @@ import {
   CardStyleInterpolators,
   createStackNavigator
 } from 'expo-router/build/react-navigation/stack';
-import React, { useContext } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React, { useCallback, useContext, useState } from 'react';
+import { LayoutChangeEvent, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AccessibilityContext } from '../AccessibilityProvider';
+import { ScreenContentWidthContext } from '../ScreenContentWidthContext';
 import { StackConfig } from '../types';
 
 const Stack = createStackNavigator<Record<string, { title: string } | undefined>>();
 
 const AppStackNavigator = ({ stackConfig }: { stackConfig: StackConfig }) => {
   const { isReduceMotionEnabled } = useContext(AccessibilityContext);
+  const { width } = useWindowDimensions();
+  const { left, right } = useSafeAreaInsets();
+  const [measurement, setMeasurement] = useState({ width, contentWidth: width - left - right });
+  const contentWidth =
+    measurement.width === width ? measurement.contentWidth : width - left - right;
+  const onLayout = useCallback(
+    ({ nativeEvent: { layout } }: LayoutChangeEvent) => {
+      if (!Number.isFinite(layout.width) || layout.width <= 0) return;
+
+      setMeasurement((current) =>
+        current.width === width && current.contentWidth === layout.width
+          ? current
+          : { width, contentWidth: layout.width }
+      );
+    },
+    [width]
+  );
 
   return (
     <Stack.Navigator
@@ -56,8 +74,10 @@ const AppStackNavigator = ({ stackConfig }: { stackConfig: StackConfig }) => {
         >
           {(props) => (
             <SafeAreaView edges={['left', 'right']} style={styles.screen}>
-              <View style={styles.screen}>
-                <screenConfig.screenComponent {...props} />
+              <View onLayout={onLayout} style={styles.screen}>
+                <ScreenContentWidthContext.Provider value={contentWidth}>
+                  <screenConfig.screenComponent {...props} />
+                </ScreenContentWidthContext.Provider>
               </View>
             </SafeAreaView>
           )}

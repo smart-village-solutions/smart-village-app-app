@@ -5,6 +5,7 @@ import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
 import { ConfigurationsContext } from '../ConfigurationsProvider';
 import { SettingsContext } from '../SettingsProvider';
+import { ScreenContentWidthContext } from '../ScreenContentWidthContext';
 import { consts, device } from '../config';
 import { imageHeight, imageWidth } from '../helpers';
 import { useInterval } from '../hooks/TimeHooks';
@@ -80,6 +81,7 @@ export const Image = ({
   style
 }: ImageProps) => {
   const { colors: colors } = useTheme();
+  const screenContentWidth = useContext(ScreenContentWidthContext);
 
   const [contentHeight, setContentHeight] = useState(0);
 
@@ -156,7 +158,11 @@ export const Image = ({
   );
   const showChildren = !!message || !!button || !!additionalButtons.length || showImageRights;
   const showFallback = hasError && fallbackContent !== undefined;
-  const defaultImageStyle = stylesForImage(aspectRatio, isImageFullWidth).defaultStyle;
+  const defaultImageStyle = stylesForImage(
+    aspectRatio,
+    isImageFullWidth,
+    screenContentWidth
+  ).defaultStyle;
 
   const imageStyle = useMemo(
     () => [style || defaultImageStyle, { borderRadius }],
@@ -276,9 +282,10 @@ const createStyles = (colors) => ({
 /* eslint-disable react-native/no-unused-styles */
 const stylesForImage = (
   aspectRatio?: { width: number; height: number },
-  isImageFullWidth?: boolean
+  isImageFullWidth?: boolean,
+  contentWidth?: number
 ) => {
-  const width = imageWidth(isImageFullWidth);
+  const width = imageWidth(isImageFullWidth, contentWidth);
 
   return StyleSheet.create({
     defaultStyle: {

@@ -3,6 +3,7 @@ import React from 'react';
 import renderer from 'react-test-renderer';
 
 import { AccessibilityContext } from '../../src/AccessibilityProvider';
+import { ScreenContentWidthContext } from '../../src/ScreenContentWidthContext';
 import { getStackNavigator } from '../../src/navigation/AppStackNavigator';
 
 jest.mock('expo-router/build/react-navigation/stack', () => {
@@ -19,7 +20,10 @@ jest.mock('../../src/AccessibilityProvider', () => ({
     .createContext({ textScaleMultiplier: 1, isReduceMotionEnabled: false })
 }));
 
-jest.mock('react-native-safe-area-context', () => ({ SafeAreaView: 'SafeAreaView' }));
+jest.mock('react-native-safe-area-context', () => ({
+  SafeAreaView: 'SafeAreaView',
+  useSafeAreaInsets: () => ({ left: 62, right: 62 })
+}));
 
 it('protects every stack screen horizontally and forwards navigation props', () => {
   const Screen = () => null;
@@ -41,9 +45,19 @@ it('protects every stack screen horizontally and forwards navigation props', () 
     const wrapped = screen.props.children(props);
     expect(wrapped.type).toBe('SafeAreaView');
     expect(wrapped.props.edges).toEqual(['left', 'right']);
-    const content = wrapped.props.children.props.children;
+    const provider = wrapped.props.children.props.children;
+    expect(provider.type).toBe(ScreenContentWidthContext.Provider);
+    const content = provider.props.children;
     expect(content.type).toBe(Screen);
     expect(content.props).toEqual(props);
+  });
+  renderer.act(() => {
+    screens[0].props.children({}).props.children.props.onLayout({
+      nativeEvent: { layout: { width: 750 } }
+    });
+  });
+  tree.root.findAllByType(createStackNavigator().Screen).forEach((screen) => {
+    expect(screen.props.children({}).props.children.props.children.props.value).toBe(750);
   });
   renderer.act(() => tree.unmount());
 });
