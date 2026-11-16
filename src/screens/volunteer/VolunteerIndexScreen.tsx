@@ -44,6 +44,7 @@ import { useReadAloudScrollContentContainerStyle } from '../../ReadAloudAvailabi
 import { ScreenName, VolunteerUser } from '../../types';
 import { useThemeStyles } from '../../hooks/useThemeStyles';
 import { useTheme } from '../../hooks/useTheme';
+import { VolunteerStorageError } from '../../components/volunteer/VolunteerStorageError';
 
 const { FILTER_TYPES, ROOT_ROUTE_NAMES } = consts;
 
@@ -146,7 +147,7 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
   const isInitialFocus = useRef(true);
   const focusRefresh = useRef<() => void>(() => undefined);
 
-  const { data, isLoading, refetch, userGuid } = useVolunteerData({
+  const { data, isLoading, isStorageError, refetch, userGuid } = useVolunteerData({
     query,
     queryVariables: calendarQueryVariables,
     queryOptions: volunteerQueryOptions,
@@ -211,6 +212,8 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
       console.warn('Unable to read volunteer credentials', error)
     );
   }, []);
+
+  if (isStorageError) return <VolunteerStorageError onRetry={refetch} />;
 
   if ((isLoading && !showCalendar) || isLoadingGroupsIntroText) {
     return <LoadingSpinner loading />;

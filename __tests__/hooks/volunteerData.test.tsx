@@ -117,6 +117,51 @@ describe('useVolunteerData', () => {
     }
   });
 
+  it('does not display retained rows as results for a different filter after a failed read', async () => {
+    const warning = jest.spyOn(console, 'warn').mockImplementation(() => {});
+    const cachedData = {
+      results: [
+        { id: 'saved', name: 'saved' },
+        { id: 'other', name: 'other' }
+      ]
+    };
+    const refetchQuery = jest.fn().mockResolvedValue({ data: cachedData });
+    mockUseQuery.mockReturnValue({
+      data: cachedData,
+      isLoading: false,
+      isRefetching: false,
+      refetch: refetchQuery
+    });
+    mockVolunteerUserData.mockResolvedValue({
+      currentUserId: '1',
+      currentUserGuid: 'existing-user'
+    });
+    let latest: ReturnType<typeof useVolunteerData>;
+    const Harness = ({ search }: { search: string }) => {
+      const filters = React.useMemo(() => ({ search }), [search]);
+      latest = useVolunteerData({ query: 'test' as never, filterVariables: filters });
+      return null;
+    };
+    try {
+      const view = render(<Harness search="" />);
+      await act(async () => {});
+      expect(latest!.data).toHaveLength(2);
+      mockVolunteerUserData.mockRejectedValueOnce(new Error('temporarily locked'));
+      view.rerender(<Harness search="saved" />);
+      await act(async () => {});
+      expect(latest!.data).toEqual([]);
+      expect(latest!.isStorageError).toBe(true);
+      expect(latest!.userGuid).toBe('existing-user');
+      await act(async () => {
+        await latest!.refetch();
+      });
+      expect(latest!.isStorageError).toBe(false);
+      expect(latest!.data).toEqual([{ id: 'saved', name: 'saved' }]);
+    } finally {
+      warning.mockRestore();
+    }
+  });
+
   it('does not publish an older processing result after the range changes', async () => {
     const firstUserData = deferred<{
       currentUserId: string;

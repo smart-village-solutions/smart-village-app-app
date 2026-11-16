@@ -1,4 +1,5 @@
 import _orderBy from 'lodash/orderBy';
+import _isEqual from 'lodash/isEqual';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useQuery } from 'react-query';
 
@@ -12,6 +13,8 @@ import {
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { MEMBER_STATUS_TYPES, VolunteerQuery } from '../../types';
 import type { VolunteerDateRange } from '../../types';
+
+const EMPTY_DATA: never[] = [];
 
 export const VOLUNTEER_FILTER_BY = {
   ARCHIVED: 'archived',
@@ -50,6 +53,7 @@ export const useVolunteerData = ({
 }): {
   data: any[];
   isLoading: boolean;
+  isStorageError: boolean;
   isRefetching: boolean;
   refetch: () => void;
   userGuid?: string | null;
@@ -62,6 +66,8 @@ export const useVolunteerData = ({
   } = useQuery([query, queryVariables], () => getQuery(query)(queryVariables), queryOptions);
 
   const [isProcessing, setIsProcessing] = useState(true);
+  const [isStorageError, setIsStorageError] = useState(false);
+  const [processedScope, setProcessedScope] = useState<Record<string, unknown>>();
   const [userGuid, setUserGuid] = useState<string | null>();
   const [volunteerData, setVolunteerData] = useState<any[]>([]);
   const processingGeneration = useRef(0);
@@ -75,12 +81,16 @@ export const useVolunteerData = ({
   const processVolunteerData = useCallback(async () => {
     const generation = ++processingGeneration.current;
     setIsProcessing(true);
+    setIsStorageError(false);
     let userData: Awaited<ReturnType<typeof volunteerUserData>>;
     try {
       userData = await volunteerUserData();
     } catch (error) {
       console.warn('Unable to read volunteer user data', error);
-      if (generation === processingGeneration.current) setIsProcessing(false);
+      if (generation === processingGeneration.current) {
+        setIsStorageError(true);
+        setIsProcessing(false);
+      }
       return;
     }
     const { currentUserId, currentUserGuid } = userData;
@@ -229,6 +239,16 @@ export const useVolunteerData = ({
     }
 
     setVolunteerData(processedVolunteerData);
+    setProcessedScope({
+      query,
+      queryVariables,
+      filterVariables,
+      isCalendar,
+      isSectioned,
+      onlyUpcoming,
+      titleDetail,
+      bookmarkable
+    });
     setIsProcessing(false);
   }, [
     query,
@@ -251,8 +271,20 @@ export const useVolunteerData = ({
   }, [processVolunteerData, processingAttempt]);
 
   return {
-    data: volunteerData,
+    data: _isEqual(processedScope, {
+      query,
+      queryVariables,
+      filterVariables,
+      isCalendar,
+      isSectioned,
+      onlyUpcoming,
+      titleDetail,
+      bookmarkable
+    })
+      ? volunteerData
+      : EMPTY_DATA,
     isLoading: isLoading || isProcessing,
+    isStorageError,
     isRefetching,
     refetch,
     userGuid
