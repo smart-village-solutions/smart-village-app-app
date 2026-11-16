@@ -1,14 +1,21 @@
 import React from 'react';
 import renderer, { act } from 'react-test-renderer';
+import { DeviceEventEmitter } from 'react-native';
 
 import { ListComponent } from '../../src/components/ListComponent';
 import { Overviews } from '../../src/components/screens/Overviews';
 import { NetworkContext } from '../../src/NetworkProvider';
 import { QUERY_TYPES } from '../../src/queries';
+import { DETAIL_REFRESH_EVENT } from '../../src/hooks/DetailRefresh';
 
 let mockFocus;
 let mockData;
 const mockRefetch = jest.fn();
+const mockTrees = [];
+beforeEach(() => mockRefetch.mockReset());
+afterEach(async () => {
+  await act(async () => mockTrees.splice(0).forEach((tree) => tree.unmount()));
+});
 
 jest.mock('expo-router/react-navigation', () => ({
   ...jest.requireActual('expo-router/react-navigation'),
@@ -78,3 +85,82 @@ it.each([QUERY_TYPES.NEWS_ITEMS, QUERY_TYPES.TOURS])(
     }
   }
 );
+
+const newsScreen = (online = true) => (
+  <NetworkContext.Provider value={{ isConnected: online, isMainserverUp: online }}>
+    <Overviews
+      navigation={{}}
+      route={{
+        params: { query: QUERY_TYPES.NEWS_ITEMS, queryVariables: { limit: 20, categoryIds: ['a'] } }
+      }}
+    />
+  </NetworkContext.Provider>
+);
+const renderNews = async (online = true) => {
+  mockData = {
+    newsItems: Array.from({ length: 40 }, (_, id) => ({ id: String(id), title: `News ${id}` }))
+  };
+  let tree;
+  await act(async () => {
+    tree = renderer.create(newsScreen(online));
+  });
+  mockTrees.push(tree);
+  return tree;
+};
+
+it('reconciles the loaded filtered news range after a save and keeps unchanged visits cached', async () => {
+  mockRefetch.mockResolvedValue({ data: {} });
+  const tree = await renderNews();
+  act(() => DeviceEventEmitter.emit(DETAIL_REFRESH_EVENT));
+  await act(async () => mockFocus());
+  expect(mockRefetch).toHaveBeenCalledWith({ limit: 40, categoryIds: ['a'] });
+  expect(tree.root.findByType(ListComponent).props.data).toHaveLength(40);
+  await act(async () => mockFocus());
+  expect(mockRefetch).toHaveBeenCalledTimes(1);
+  await act(async () => tree.root.findByType(ListComponent).props.refreshControl.props.onRefresh());
+  expect(mockRefetch).toHaveBeenLastCalledWith({ limit: 20, categoryIds: ['a'] });
+});
+
+it('retains a failed news invalidation for the next focus without discarding loaded rows', async () => {
+  const tree = await renderNews();
+  mockRefetch
+    .mockRejectedValueOnce(new Error('temporary network failure'))
+    .mockResolvedValue({ data: {} });
+  act(() => DeviceEventEmitter.emit(DETAIL_REFRESH_EVENT));
+  await act(async () => mockFocus());
+  expect(tree.root.findByType(ListComponent).props.data).toHaveLength(40);
+  await act(async () => mockFocus());
+  expect(mockRefetch).toHaveBeenCalledTimes(2);
+  expect(mockRefetch).toHaveBeenLastCalledWith({ limit: 40, categoryIds: ['a'] });
+});
+
+it('keeps offline invalidations pending until online focus', async () => {
+  mockRefetch.mockResolvedValue({ data: {} });
+  const tree = await renderNews(false);
+  act(() => DeviceEventEmitter.emit(DETAIL_REFRESH_EVENT));
+  await act(async () => mockFocus());
+  expect(mockRefetch).not.toHaveBeenCalled();
+  await act(async () => tree.update(newsScreen(true)));
+  await act(async () => mockFocus());
+  expect(mockRefetch).toHaveBeenCalledWith({ limit: 40, categoryIds: ['a'] });
+});
+
+it('does not let an older successful refresh undo a newer acknowledged invalidation', async () => {
+  await renderNews();
+  let finishOld;
+  mockRefetch
+    .mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          finishOld = resolve;
+        })
+    )
+    .mockResolvedValue({ data: {} });
+  act(() => DeviceEventEmitter.emit(DETAIL_REFRESH_EVENT));
+  await act(async () => mockFocus());
+  act(() => DeviceEventEmitter.emit(DETAIL_REFRESH_EVENT));
+  await act(async () => mockFocus());
+  await act(async () => finishOld({ data: {} }));
+  await act(async () => mockFocus());
+  expect(mockRefetch).toHaveBeenCalledTimes(2);
+});

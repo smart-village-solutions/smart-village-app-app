@@ -43,6 +43,7 @@ import {
   sortPOIsByDistanceFromPosition
 } from '../../helpers';
 import { compareParticipationProjects } from '../../helpers/participationProjectSortHelper';
+import { DETAIL_REFRESH_EVENT } from '../../hooks/DetailRefresh';
 import { updateResourceFiltersStateHelper } from '../../helpers/updateResourceFiltersStateHelper';
 import {
   useLastKnownPosition,
@@ -468,27 +469,50 @@ export const Overviews = ({ navigation, route }) => {
   const refresh = useCallback(() => {
     setRefreshing(true);
     if (isConnected) {
-      refetch();
+      refetch({ ...networkQueryVariables, limit: pageSize });
     }
     setRefreshing(false);
-  }, [isConnected, setRefreshing, refetch]);
+  }, [isConnected, setRefreshing, refetch, networkQueryVariables, pageSize]);
 
   const hasLoadedMore = useRef(false);
+  const loadedCount = useRef(0);
+  const detailRevision = useRef(0);
+  const reconciledDetailRevision = useRef(0);
+  useEffect(() => {
+    // Successful content saves and explicit detail refreshes already emit this event.
+    const subscription = DeviceEventEmitter.addListener(DETAIL_REFRESH_EVENT, () => {
+      detailRevision.current += 1;
+    });
+    return () => subscription.remove();
+  }, []);
   useLayoutEffect(() => {
-    hasLoadedMore.current = pageSize > 0 && (data?.[query]?.length ?? 0) > pageSize;
+    loadedCount.current = data?.[query]?.length ?? 0;
+    hasLoadedMore.current = pageSize > 0 && loadedCount.current > pageSize;
   }, [data, pageSize, query]);
 
   useFocusEffect(
     useCallback(() => {
-      // Refetch uses the first-page variables and would discard the loaded pages.
-      if (!isConnected || !query || hasLoadedMore.current) {
+      const hasDetailChanges = detailRevision.current > reconciledDetailRevision.current;
+      // Unchanged detail visits retain their pages; successful edits must reconcile membership.
+      if (!isConnected || !query || (hasLoadedMore.current && !hasDetailChanges)) {
         return undefined;
       }
 
-      refetch?.();
+      const revision = detailRevision.current;
+      const variables = {
+        ...networkQueryVariables,
+        limit: hasDetailChanges && pageSize ? Math.max(pageSize, loadedCount.current) : pageSize
+      };
+      void Promise.resolve(refetch?.(variables))
+        .then(() => {
+          reconciledDetailRevision.current = Math.max(reconciledDetailRevision.current, revision);
+        })
+        .catch(() => {
+          // Keep the invalidation pending so a later focus/reconnect can retry it.
+        });
 
       return undefined;
-    }, [isConnected, query, refetch])
+    }, [isConnected, query, refetch, networkQueryVariables, pageSize])
   );
 
   const filterTypes = useMemo(() => {
