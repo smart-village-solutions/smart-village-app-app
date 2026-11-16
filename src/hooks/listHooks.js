@@ -87,7 +87,7 @@ export const useRenderItem = (query, navigation, options = {}) => {
   const { globalSettings, listTypesSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { listsWithoutArrows = false } = settings;
-  const listType = resolveListType(query, globalSettings, listTypesSettings, options.listType);
+  const listType = options.listType || resolveListType(query, globalSettings, listTypesSettings);
   let renderItem;
 
   const calculateBottomDivider = (item, index, section) => {
@@ -200,6 +200,19 @@ export const useRenderItem = (query, navigation, options = {}) => {
           return <WasteCollectionListItem item={item} options={options.queryVariables} />;
         }
 
+        // Remote presentation changes do not turn flat data into date-grouped rows.
+        if (!_isArray(item) || !options.queryVariables?.groupKey) {
+          return (
+            <TextListItem
+              item={item}
+              navigation={navigation}
+              noSubtitle={options.noSubtitle}
+              noOvertitle={options.noOvertitle}
+              listsWithoutArrows={listsWithoutArrows}
+            />
+          );
+        }
+
         return (
           <GroupedListItem item={item} navigation={navigation} options={options.queryVariables} />
         );
@@ -299,11 +312,6 @@ export const useRenderItem = (query, navigation, options = {}) => {
           );
         }
 
-        // `SectionHeader` list item for `Noticeboard`
-        if (query === QUERY_TYPES.GENERIC_ITEMS && !!item.component) {
-          return item.component;
-        }
-
         if (
           query === QUERY_TYPES.GENERIC_ITEMS &&
           options.queryVariables?.genericType === GenericType.ParticipationProject
@@ -346,7 +354,7 @@ export const useRenderItem = (query, navigation, options = {}) => {
     }
   }
 
-  return useCallback(renderItem, [
+  const renderRow = useCallback(renderItem, [
     query,
     listType,
     navigation,
@@ -354,6 +362,17 @@ export const useRenderItem = (query, navigation, options = {}) => {
     options.noSubtitle,
     options.queryVariables
   ]);
+
+  return useCallback(
+    (info) => {
+      // Noticeboard category controls must survive every configured row presentation.
+      if (query === QUERY_TYPES.GENERIC_ITEMS && info.item?.component) {
+        return info.item.component;
+      }
+      return renderRow(info);
+    },
+    [query, renderRow]
+  );
 };
 
 /**

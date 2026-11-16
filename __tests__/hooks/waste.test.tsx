@@ -122,6 +122,30 @@ describe('useWasteTypes', () => {
 });
 
 describe('useWasteUsedTypes', () => {
+  it('returns an empty type map when the street only has unknown waste types', async () => {
+    const onResult = jest.fn();
+    let tree: renderer.ReactTestRenderer;
+
+    await act(async () => {
+      tree = renderer.create(
+        <TestWasteUsedTypes
+          onResult={onResult}
+          streetData={{
+            wasteAddresses: [
+              {
+                wasteLocationTypes: [{ wasteType: 'Restmüll (60–1.100 L)' }]
+              }
+            ]
+          }}
+          typesData={{ 'RM-60-1100': { label: 'Restmüll' } }}
+        />
+      );
+    });
+
+    expect(onResult).toHaveBeenLastCalledWith({});
+    act(() => tree.unmount());
+  });
+
   it('excludes disruption types from normal waste type consumers', async () => {
     const onResult = jest.fn();
 

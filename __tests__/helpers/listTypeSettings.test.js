@@ -30,4 +30,21 @@ describe('resolveListType', () => {
       )
     ).toBe('textList');
   });
+
+  it.each(['typo', '', null])(
+    'uses the valid shared fallback when the individual value is %s',
+    (value) => {
+      expect(
+        resolveListType(
+          'tours',
+          { sections: { listTypes: { tours: value, pointsOfInterestAndTours: 'textList' } } },
+          storedTypes
+        )
+      ).toBe('textList');
+    }
+  );
+
+  it('falls back to the supplied presentation without device settings', () => {
+    expect(resolveListType('tours', {}, undefined, 'imageTextList')).toBe('imageTextList');
+  });
 });

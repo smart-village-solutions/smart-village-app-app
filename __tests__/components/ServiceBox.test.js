@@ -1,5 +1,6 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
+import { StyleSheet } from 'react-native';
 
 import { ServiceBox } from '../../src/components/ServiceBox';
 
@@ -33,5 +34,17 @@ describe('ServiceBox', () => {
   it('renders styled tile with orientation-specific factor', () => {
     const tree = renderSnapshot(<ServiceBox columns={4} hasTileStyle orientation="landscape" />);
     expect(tree).toMatchSnapshot();
+  });
+
+  it.each([2, 3, 4])('uses the same horizontal and vertical gap with %s columns', (columns) => {
+    const gridWidth = 360;
+    const gap = 5;
+    const tree = renderSnapshot(
+      <ServiceBox columns={columns} hasTileStyle gridWidth={gridWidth} gridGap={gap} />
+    );
+    const style = StyleSheet.flatten(tree.props.style);
+
+    expect(style.flexBasis * columns + gap * (columns - 1)).toBeCloseTo(gridWidth);
+    expect(style.marginBottom).toBe(gap);
   });
 });
