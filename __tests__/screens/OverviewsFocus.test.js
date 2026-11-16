@@ -190,3 +190,36 @@ it('retains the pre-detail range when an awaited news deletion refetch first shr
   await act(async () => mockFocus());
   expect(mockRefetch).toHaveBeenLastCalledWith({ limit: 20, categoryIds: ['a'] });
 });
+
+it.each([false, true])(
+  'retains failed deletion reconciliation across blur unless manually reset (%s)',
+  async (manualReset) => {
+    const tree = await renderNews();
+    let blur;
+    act(() => {
+      blur = mockFocus();
+    });
+    act(() => blur());
+    mockData = { newsItems: mockData.newsItems.slice(0, 20) };
+    await act(async () => tree.update(newsScreen()));
+    mockRefetch
+      .mockRejectedValueOnce(new Error('reconciliation failed'))
+      .mockResolvedValue({ data: {} });
+    act(() => DeviceEventEmitter.emit(DETAIL_REFRESH_EVENT));
+    await act(async () => {
+      blur = mockFocus();
+    });
+    expect(mockRefetch).toHaveBeenLastCalledWith({ limit: 40, categoryIds: ['a'] });
+    if (manualReset) {
+      await act(async () =>
+        tree.root.findByType(ListComponent).props.refreshControl.props.onRefresh()
+      );
+    }
+    act(() => blur());
+    await act(async () => mockFocus());
+    expect(mockRefetch).toHaveBeenLastCalledWith({
+      limit: manualReset ? 20 : 40,
+      categoryIds: ['a']
+    });
+  }
+);

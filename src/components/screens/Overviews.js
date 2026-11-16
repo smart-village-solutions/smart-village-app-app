@@ -467,7 +467,14 @@ export const Overviews = ({ navigation, route }) => {
         )
     );
 
+  const hasLoadedMore = useRef(false);
+  const loadedCount = useRef(0);
+  const lastViewedRange = useRef();
+  const detailRevision = useRef(0);
+  const reconciledDetailRevision = useRef(0);
+
   const refresh = useCallback(() => {
+    lastViewedRange.current = undefined;
     setRefreshing(true);
     if (isConnected) {
       refetch({ ...networkQueryVariables, limit: pageSize });
@@ -475,11 +482,6 @@ export const Overviews = ({ navigation, route }) => {
     setRefreshing(false);
   }, [isConnected, setRefreshing, refetch, networkQueryVariables, pageSize]);
 
-  const hasLoadedMore = useRef(false);
-  const loadedCount = useRef(0);
-  const lastViewedRange = useRef();
-  const detailRevision = useRef(0);
-  const reconciledDetailRevision = useRef(0);
   useEffect(() => {
     // Successful content saves and explicit detail refreshes already emit this event.
     const subscription = DeviceEventEmitter.addListener(DETAIL_REFRESH_EVENT, () => {
@@ -495,38 +497,44 @@ export const Overviews = ({ navigation, route }) => {
   useFocusEffect(
     useCallback(() => {
       const rememberViewedRange = () => {
+        const previous = lastViewedRange.current;
+        const keepPendingRange =
+          detailRevision.current > reconciledDetailRevision.current &&
+          previous?.query === query &&
+          _isEqual(previous?.variables, networkQueryVariables);
         lastViewedRange.current = {
           query,
           variables: networkQueryVariables,
-          count: loadedCount.current
+          count: keepPendingRange
+            ? Math.max(previous.count, loadedCount.current)
+            : loadedCount.current
         };
       };
       const hasDetailChanges = detailRevision.current > reconciledDetailRevision.current;
       // Unchanged detail visits retain their pages; successful edits must reconcile membership.
-      if (!isConnected || !query || (hasLoadedMore.current && !hasDetailChanges)) {
-        return rememberViewedRange;
+      const shouldRefetch = isConnected && query && (!hasLoadedMore.current || hasDetailChanges);
+      if (shouldRefetch) {
+        const viewedCount =
+          lastViewedRange.current?.query === query &&
+          _isEqual(lastViewedRange.current?.variables, networkQueryVariables)
+            ? lastViewedRange.current.count
+            : 0;
+        const revision = detailRevision.current;
+        const variables = {
+          ...networkQueryVariables,
+          limit:
+            hasDetailChanges && pageSize
+              ? Math.max(pageSize, loadedCount.current, viewedCount)
+              : pageSize
+        };
+        void Promise.resolve(refetch?.(variables))
+          .then(() => {
+            reconciledDetailRevision.current = Math.max(reconciledDetailRevision.current, revision);
+          })
+          .catch(() => {
+            // Keep the invalidation pending so a later focus/reconnect can retry it.
+          });
       }
-
-      const viewedCount =
-        lastViewedRange.current?.query === query &&
-        _isEqual(lastViewedRange.current?.variables, networkQueryVariables)
-          ? lastViewedRange.current.count
-          : 0;
-      const revision = detailRevision.current;
-      const variables = {
-        ...networkQueryVariables,
-        limit:
-          hasDetailChanges && pageSize
-            ? Math.max(pageSize, loadedCount.current, viewedCount)
-            : pageSize
-      };
-      void Promise.resolve(refetch?.(variables))
-        .then(() => {
-          reconciledDetailRevision.current = Math.max(reconciledDetailRevision.current, revision);
-        })
-        .catch(() => {
-          // Keep the invalidation pending so a later focus/reconnect can retry it.
-        });
 
       return rememberViewedRange;
     }, [isConnected, query, refetch, networkQueryVariables, pageSize])
