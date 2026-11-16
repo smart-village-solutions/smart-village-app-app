@@ -1,5 +1,12 @@
-import React, { ReactNode, useContext } from 'react';
-import { StyleProp, StyleSheet, TextStyle, View } from 'react-native';
+import React, { ReactNode, useCallback, useContext, useLayoutEffect } from 'react';
+import {
+  NativeSyntheticEvent,
+  StyleProp,
+  StyleSheet,
+  TextLayoutEventData,
+  TextStyle,
+  View
+} from 'react-native';
 
 import { normalize } from '../../config';
 import { RegularText } from '../Text';
@@ -14,8 +21,21 @@ type Props = {
 };
 
 export const WidgetContent = ({ label, labelStyle, visual }: Props) => {
-  const { mode } = useContext(WidgetLayoutContext);
+  const { mode, measurementKey, onLabelWidth } = useContext(WidgetLayoutContext);
   const isList = mode === 'list';
+  useLayoutEffect(() => {
+    // Empty native Text may not emit onTextLayout; it must not block the grid.
+    if (!label.trim()) onLabelWidth?.(1 + 2 * normalize(4));
+  }, [label, onLabelWidth]);
+  const measureLabel = useCallback(
+    ({ nativeEvent }: NativeSyntheticEvent<TextLayoutEventData>) => {
+      const wordWidth = Math.max(0, ...nativeEvent.lines.map((line) => line.width));
+      if (Number.isFinite(wordWidth) && (wordWidth > 0 || !label.trim())) {
+        onLabelWidth?.(Math.ceil(wordWidth) + 1 + 2 * normalize(4));
+      }
+    },
+    [label, onLabelWidth]
+  );
 
   return (
     <View
@@ -26,6 +46,25 @@ export const WidgetContent = ({ label, labelStyle, visual }: Props) => {
         isList && { minHeight: normalize(64), paddingHorizontal: normalize(12) }
       ]}
     >
+      {onLabelWidth && (
+        <View
+          accessible={false}
+          accessibilityElementsHidden
+          importantForAccessibility="no-hide-descendants"
+          pointerEvents="none"
+          style={styles.measurement}
+        >
+          <RegularText
+            key={`${measurementKey ?? ''}:${label}`}
+            primary
+            small
+            style={[styles.label, labelStyle]}
+            onTextLayout={measureLabel}
+          >
+            {label.trim().split(/\s+/).join('\n')}
+          </RegularText>
+        </View>
+      )}
       <WrapperRow
         center
         style={[
@@ -57,6 +96,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%'
+  },
+  // Measure each word with the same font and scaling, independently of the current column width.
+  measurement: {
+    opacity: 0,
+    position: 'absolute',
+    width: 10000
   },
   label: {
     flexShrink: 1,
