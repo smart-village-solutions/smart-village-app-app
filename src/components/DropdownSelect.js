@@ -37,6 +37,9 @@ const inlineOptionAccessibilityProps = (entry, multipleSelect) => {
   };
 };
 
+const shouldUseInlineSearch = (inlineSearch, showInlineDropdown, showSearch, multipleSelect) =>
+  inlineSearch || (showInlineDropdown && showSearch && !multipleSelect);
+
 export const DropdownSelect = ({
   boldLabel = false,
   data,
@@ -201,7 +204,7 @@ export const DropdownSelect = ({
       entry.value?.toLocaleLowerCase().includes(inlineSearchText.trim().toLocaleLowerCase())
     );
 
-  if (inlineSearch || (showInlineDropdown && showSearch && !multipleSelect)) {
+  if (shouldUseInlineSearch(inlineSearch, showInlineDropdown, showSearch, multipleSelect)) {
     return (
       <InlineSearchDropdown
         {...{
