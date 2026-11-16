@@ -3,7 +3,7 @@ import * as Location from 'expo-location';
 import React from 'react';
 import { useMutation } from 'react-apollo';
 import { Controller, useForm } from 'react-hook-form';
-import { Alert, Keyboard } from 'react-native';
+import { Alert, DeviceEventEmitter, Keyboard } from 'react-native';
 import type { LayoutChangeEvent } from 'react-native';
 
 import {
@@ -23,6 +23,7 @@ import { GenericType } from '../../types';
 import { ImageSelector } from '../selectors';
 import { useThemeStyles } from '../../hooks/useThemeStyles';
 import { useTheme } from '../../hooks/useTheme';
+import { DETAIL_REFRESH_EVENT } from '../../hooks/DetailRefresh';
 
 const { EMAIL_REGEX } = consts;
 
@@ -139,6 +140,7 @@ export const DefectReportCreateForm = ({
         }
       });
 
+      DeviceEventEmitter.emit(DETAIL_REFRESH_EVENT);
       navigation.goBack();
       Alert.alert(texts.defectReport.successScreen.header, texts.defectReport.successScreen.entry);
     } catch (error) {

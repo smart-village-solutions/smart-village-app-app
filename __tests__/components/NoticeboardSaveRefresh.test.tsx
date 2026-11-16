@@ -28,6 +28,7 @@ jest.mock('../../src/components', () => {
   return {
     Button: (props) => ReactLocal.createElement('mock-button', props),
     Checkbox: Null,
+    DropdownInput: Null,
     DateTimeInput: Null,
     DocumentSelector: Null,
     HtmlView: Null,
@@ -43,6 +44,7 @@ jest.mock('../../src/components', () => {
   };
 });
 jest.mock('../../src/components/selectors', () => ({
+  ImageSelector: () => null,
   DocumentSelector: () => null,
   MultiImageSelector: () => null
 }));
@@ -76,6 +78,7 @@ import { texts } from '../../src/config';
 import { DETAIL_REFRESH_EVENT } from '../../src/hooks/DetailRefresh';
 import { NoticeboardCreateForm } from '../../src/components/noticeboard/NoticeboardCreateForm';
 import { ProfileNoticeboardCreateForm } from '../../src/components/profile/noticeboard/ProfileNoticeboardCreateForm';
+import { DefectReportCreateForm } from '../../src/components/defectReport/DefectReportCreateForm';
 
 beforeEach(() => {
   mockMutate.mockReset().mockResolvedValue({ data: { createGenericItem: { id: 'saved' } } });
@@ -87,6 +90,8 @@ beforeEach(() => {
     email: 'synthetic@example.test',
     noticeboardType: 'offer',
     image: '[]',
+    images: '[]',
+    categoryName: 'Synthetic',
     documents: '[]',
     dateStart: '2026-11-16',
     dateEnd: '2026-11-17',
@@ -104,8 +109,10 @@ it.each([
   ['public edit', NoticeboardCreateForm, true, false],
   ['profile create', ProfileNoticeboardCreateForm, false, false],
   ['profile edit', ProfileNoticeboardCreateForm, true, false],
+  ['defect create', DefectReportCreateForm, false, false],
   ['public failure', NoticeboardCreateForm, true, true],
-  ['profile failure', ProfileNoticeboardCreateForm, true, true]
+  ['profile failure', ProfileNoticeboardCreateForm, true, true],
+  ['defect failure', DefectReportCreateForm, false, true]
 ])(
   '%s emits invalidation before returning only after an acknowledged save',
   async (_name, Form, editing, fails) => {
@@ -132,7 +139,12 @@ it.each([
         .findAllByType('mock-button')
         .find(
           ({ props }) =>
-            props.title === (editing ? texts.noticeboard.editButton : texts.noticeboard.sendButton)
+            props.title ===
+            (Form === DefectReportCreateForm
+              ? texts.defectReport.send
+              : editing
+              ? texts.noticeboard.editButton
+              : texts.noticeboard.sendButton)
         );
       await act(async () => {
         button.props.onPress();
