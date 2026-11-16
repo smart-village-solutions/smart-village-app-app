@@ -24,12 +24,14 @@ Supported values are `textList`, `imageTextList`, `cardList`, `cardTextList`, an
 shared setting. The same query key controls that content type wherever it uses the
 shared list renderer, including home, overview, bookmarks, and calendar lists. Other shared-list
 query names can also be configured individually, such as `genericItems`, `staticContentList`,
-`calendarAll`, `calendarAllMy`, `wallet`, `requests`, `myRequests`, `getConversations`, and
-`tourStops`.
+`calendarAll`, `calendarAllMy`, `wallet`, and `tourStops`.
 
 Search and waste keep their content-specific `groupedList` presentation; other remote values for
 `search` and `wasteStreet` are ignored to preserve their grouped records and navigation. Category
 and voucher lists use dedicated list components and keep their own layout.
+Profile conversations, volunteer posts/conversations/applicants, SUE reports, and voucher rows
+also retain their dedicated renderer. Remote row-presentation overrides for these queries are
+ignored so their actions, status, badges, and navigation data remain available.
 Choose a presentation supported by each shared list's content. Images appear only when
 the content has an image URL. Lists that force a horizontal or vertical layout keep that layout;
 the remote setting changes the row presentation.

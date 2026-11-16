@@ -61,4 +61,21 @@ describe('resolveListType', () => {
       );
     }
   });
+
+  it.each([
+    'getConversations',
+    'posts',
+    'conversations',
+    'applicants',
+    'requests',
+    'myRequests',
+    'vouchers',
+    'vouchersRedeemed'
+  ])('preserves the dedicated %s row presentation', (query) => {
+    for (const type of ['imageTextList', 'cardList', 'cardTextList', 'groupedList']) {
+      expect(resolveListType(query, { sections: { listTypes: { [query]: type } } })).toBe(
+        'textList'
+      );
+    }
+  });
 });

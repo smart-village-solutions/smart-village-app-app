@@ -167,3 +167,26 @@ it('keeps the grouped renderer for grouped data with a grouping key', () => {
   expect(row.type).toBe(GroupedListItem);
   expect(row.props.item).toBe(item);
 });
+
+it.each([
+  [QUERY_TYPES.PROFILE.GET_CONVERSATIONS, 'ConversationListItem'],
+  [QUERY_TYPES.VOLUNTEER.POSTS, 'VolunteerPostListItem'],
+  [QUERY_TYPES.VOLUNTEER.CONVERSATIONS, 'VolunteerConversationListItem'],
+  [QUERY_TYPES.VOLUNTEER.APPLICANTS, 'VolunteerApplicantListItem'],
+  [QUERY_TYPES.SUE.REQUESTS, 'CardListItem'],
+  [QUERY_TYPES.SUE.MY_REQUESTS, 'CardListItem'],
+  [QUERY_TYPES.VOUCHERS, 'VoucherListItem'],
+  [QUERY_TYPES.VOUCHERS_REDEEMED, 'VoucherListItem']
+])(
+  'preserves the dedicated %s renderer under an incompatible remote presentation',
+  (query, component) => {
+    const { result } = renderHook(() => useRenderItem(query), {
+      wrapper: withListTypes({ [query]: 'cardList' })
+    });
+    const row = result.current({ item: { id: 'record', title: 'Title', params: {} }, index: 1 });
+    expect(row.type).toBe(component);
+    if (query === QUERY_TYPES.SUE.REQUESTS || query === QUERY_TYPES.SUE.MY_REQUESTS) {
+      expect(row.props.isSue).toBe(true);
+    }
+  }
+);
