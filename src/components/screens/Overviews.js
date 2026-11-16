@@ -41,6 +41,7 @@ import {
   PARTICIPATION_PROJECT_STATUS_POSITION_PARAM,
   sortPOIsByDistanceFromPosition
 } from '../../helpers';
+import { visibleContent } from '../../helpers/contentVisibility';
 import { compareParticipationProjects } from '../../helpers/participationProjectSortHelper';
 import { updateResourceFiltersStateHelper } from '../../helpers/updateResourceFiltersStateHelper';
 import {
@@ -315,7 +316,8 @@ export const Overviews = ({ navigation, route }) => {
   const titleDetail = route.params?.titleDetail ?? '';
   const authMode = route.params?.authMode;
   const bookmarkable = route.params?.bookmarkable;
-  const categories = route.params?.categories; // HINT: defined on a nested category list screen
+  // HINT: defined on a nested category list screen.
+  const categories = visibleContent({ categories: route.params?.categories }).categories;
   const subQuery = route.params?.subQuery ?? {};
   const openWebScreen = useOpenWebScreen(title, categoryListFooter?.url);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
@@ -341,9 +343,14 @@ export const Overviews = ({ navigation, route }) => {
     return participationQueryVariables;
   }, [isParticipationProjectOverview, queryVariables]);
 
+  const [loadAllPois, setLoadAllPois] = useState(false);
   const { data, loading, fetchMore, refetch } = useQuery(getQuery(query, { showNewsFilter }), {
     ...(authMode ? getApolloAuthContext(authMode) : {}),
     fetchPolicy,
+    onCompleted: (response) => {
+      if (query !== QUERY_TYPES.POINTS_OF_INTEREST || !Array.isArray(response?.[query])) return;
+      if (visibleContent(response[query]).length < response[query].length) setLoadAllPois(true);
+    },
     variables: {
       ...networkQueryVariables,
       // if we want to sort by distance, we need to fetch all the entries at once. this is not a
@@ -353,7 +360,10 @@ export const Overviews = ({ navigation, route }) => {
       // have any open POIs in the next batch that would result in the list not getting any new
       // items and not reliably triggering another `fetchMore`
       limit:
-        isParticipationProjectOverview || sortByDistance || queryVariables.onlyCurrentlyOpen
+        isParticipationProjectOverview ||
+        sortByDistance ||
+        queryVariables.onlyCurrentlyOpen ||
+        (loadAllPois && query === QUERY_TYPES.POINTS_OF_INTEREST)
           ? undefined
           : route.params?.queryVariables?.limit
     }

@@ -18,6 +18,7 @@ import {
   volunteerEventDates,
   volunteerEventOverlapsDate
 } from '../helpers';
+import { visibleContent } from '../helpers/contentVisibility';
 import { getCalendarTheme, setupLocales } from '../helpers/calendarHelper';
 import { useVolunteerData } from '../hooks';
 import { QUERY_TYPES, getQuery } from '../queries';
@@ -218,7 +219,7 @@ export const Calendar = ({
     const eventRecords =
       query === QUERY_TYPES.EVENT_RECORDS
         ? [
-            ...(data?.[query] || []),
+            ...(visibleContent(data)?.[query] || []),
             ...(additionalData || []),
             ...(includeVolunteerEvents ? volunteerCalendarData || [] : [])
           ]

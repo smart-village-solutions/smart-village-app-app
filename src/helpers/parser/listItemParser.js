@@ -6,6 +6,7 @@ import _uniqBy from 'lodash/uniqBy';
 import { consts, texts } from '../../config';
 import { QUERY_TYPES } from '../../queries';
 import { GenericType, ScreenName } from '../../types';
+import { visibleContent } from '../contentVisibility';
 import { eventDate, isBeforeEndOfToday, isTodayOrLater } from '../dateTimeHelper';
 import {
   getGenericItemDetailTitle,
@@ -417,6 +418,7 @@ const parseConversations = (data) =>
  * @returns
  */
 export const parseListItemsFromQuery = (query, data, titleDetail = '', options = {}) => {
+  data = visibleContent(data);
   if (!data) return [];
 
   const {

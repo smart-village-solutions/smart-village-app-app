@@ -21,6 +21,7 @@ import { FeedbackFooter } from '../components/FeedbackFooter';
 import { consts, texts } from '../config';
 import { AUTH_MODE_PUBLIC } from '../graphqlAuth';
 import { graphqlFetchPolicy } from '../helpers';
+import { visibleContent } from '../helpers/contentVisibility';
 import { getDetailSpeechItems } from '../helpers/accessibility/detailSpeechParser';
 import { useRefreshTime } from '../hooks';
 import { DETAIL_REFRESH_EVENT } from '../hooks/DetailRefresh';
@@ -108,7 +109,9 @@ export const DetailScreen = ({ navigation, route }) => {
   const id = route.params?.id;
   const queryVariables = route.params?.queryVariables || (id ? { id } : {});
   const authMode = route.params?.authMode ?? AUTH_MODE_PUBLIC;
-  const details = route.params?.details ?? {};
+  const rawDetails = route.params?.details;
+  const visibleDetails = visibleContent(rawDetails);
+  const details = visibleDetails ?? {};
   const hasValidDetailParams = !!query && !!queryVariables?.id;
   const isSueDetail = query === QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID;
 
@@ -144,7 +147,7 @@ export const DetailScreen = ({ navigation, route }) => {
   });
 
   const {
-    data,
+    data: rawData,
     isLoading: loading,
     isRefetching,
     refetch
@@ -158,7 +161,9 @@ export const DetailScreen = ({ navigation, route }) => {
       enabled: !!refreshTime && hasValidDetailParams && !isSueDetail
     }
   );
-  const detailData = (data && data[query]) || details;
+  const data = visibleContent(rawData);
+  const isRestricted = rawData?.[query] ? !data?.[query] : rawDetails && !visibleDetails;
+  const detailData = !isRestricted && ((data && data[query]) || details);
   const detailSpeechItems = useMemo(
     () => getDetailSpeechItems({ detail: detailData, query }),
     [detailData, query]
@@ -190,6 +195,10 @@ export const DetailScreen = ({ navigation, route }) => {
         <ActivityIndicator color={colors.refreshControl} />
       </LoadingContainer>
     );
+  }
+
+  if (isRestricted) {
+    return <EmptyMessage title={texts.empty.content} />;
   }
 
   // we can have `data` from GraphQL or `details` from the previous list view.

@@ -6,6 +6,7 @@ import { FlatList, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { IconUrl, consts, normalize } from '../../config';
+import { visibleContent } from '../../helpers/contentVisibility';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { BoldText } from '../Text';
 import { useThemeStyles } from '../../hooks/useThemeStyles';
@@ -45,7 +46,7 @@ export const ChipFilter = ({ queryVariables, refetch }: Props) => {
     }
   });
 
-  const filter = _sortBy(data?.categories || [], 'name');
+  const filter = _sortBy(visibleContent(data)?.categories || [], 'name');
 
   useEffect(() => {
     refetch?.({ limit: undefined, categoryIds });

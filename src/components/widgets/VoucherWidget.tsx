@@ -4,6 +4,7 @@ import { useQuery } from 'react-apollo';
 
 import { consts, Icon, texts } from '../../config';
 import { graphqlFetchPolicy } from '../../helpers';
+import { visibleContent } from '../../helpers/contentVisibility';
 import { useRefreshTime } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../../queries';
@@ -32,7 +33,7 @@ export const VoucherWidget = ({ text, additionalProps, widgetStyle }: WidgetProp
     });
   }, [navigation]);
 
-  const count = data?.genericItems?.length || 0;
+  const count = visibleContent(data)?.genericItems?.length || 0;
 
   return (
     <DefaultWidget

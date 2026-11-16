@@ -78,6 +78,10 @@ For module setup and static content examples see [the Participation Project docs
 
 For detailed documentation see [the accessibility settings docs](./accessibility-settings.md).
 
+## Content version requirements
+
+For optional GraphQL payload version/build restrictions, see [content visibility](./CONTENT_VERSIONING.md).
+
 ## Version module history
 
 Overview of modules and major capabilities introduced or developed in every release, see [the version module history](./VERSION_MODULE_HISTORY.md).
