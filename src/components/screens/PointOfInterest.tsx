@@ -1,8 +1,10 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { useMutation } from 'react-apollo';
 import { Alert, FlatList, StyleSheet, View } from 'react-native';
+import { useQuery } from 'react-query';
 
 import { NetworkContext } from '../../NetworkProvider';
+import { ReactQueryClient } from '../../ReactQueryClient';
 import { useProfileContext } from '../../ProfileProvider';
 import { SettingsContext } from '../../SettingsProvider';
 import { Icon, consts, normalize, texts } from '../../config';
@@ -11,7 +13,10 @@ import { isValidGeoLocation, matomoTrackingString, parseListItemsFromQuery } fro
 import { useDetailRefresh, useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
 import { useTheme } from '../../hooks/useTheme';
 import { QUERY_TYPES } from '../../queries';
-import { DELETE_POINT_OF_INTEREST } from '../../queries/pointsOfInterest';
+import {
+  DELETE_POINT_OF_INTEREST,
+  GET_POINT_OF_INTEREST_MAP_MARKERS
+} from '../../queries/pointsOfInterest';
 import { ScreenName } from '../../types';
 import { Button } from '../Button';
 import { DataProviderButton } from '../DataProviderButton';
@@ -38,6 +43,10 @@ import { OperatingCompany } from './OperatingCompany';
 import { PriceCard } from './PriceCard';
 import { TravelTimes } from './TravelTimes';
 import { isOpeningTimesGroupingEnabled } from './openingTimesSettings';
+import {
+  getPointOfInterestMapFilters,
+  getPointOfInterestMapMarkers
+} from './pointOfInterestMapHelper';
 
 const { MAP, MATOMO_TRACKING } = consts;
 export const INITIAL_VOUCHER_COUNT = 3;
@@ -96,6 +105,33 @@ export const PointOfInterest = ({
   const hasGeoCoordinates = isValidGeoLocation(geoLocation);
   const latitude = geoLocation?.latitude;
   const longitude = geoLocation?.longitude;
+  const queryVariables = route.params?.queryVariables;
+  const categoryName = queryVariables?.categoryName;
+  const mapCategoryFilters = useMemo(
+    () => getPointOfInterestMapFilters(categories, queryVariables),
+    [categories, queryVariables]
+  );
+  const hasMapCategoryFilter =
+    !!mapCategoryFilters.category ||
+    mapCategoryFilters.categoryId != null ||
+    !!mapCategoryFilters.categoryIds?.length;
+  const canLoadMapMarkers =
+    !hideMap && hasGeoCoordinates && !!isConnected && !!isMainserverUp && hasMapCategoryFilter;
+  const { data: mapMarkerData, refetch: refetchMapMarkers } = useQuery(
+    ['pointOfInterestMapMarkers', mapCategoryFilters],
+    async () => {
+      const client = await ReactQueryClient();
+      return client.request(GET_POINT_OF_INTEREST_MAP_MARKERS, mapCategoryFilters);
+    },
+    { enabled: canLoadMapMarkers }
+  );
+  const currentMapMarker = useMemo(
+    () => ({
+      id,
+      position: { latitude, longitude }
+    }),
+    [id, latitude, longitude]
+  );
 
   // action to open source urls
   const openWebScreen = useOpenWebScreen('Ort', undefined, route.params?.rootRouteName);
@@ -170,12 +206,12 @@ export const PointOfInterest = ({
   });
   useDetailRefresh(() => {
     refetch?.();
+    if (canLoadMapMarkers) void refetchMapMarkers();
   });
 
-  const categoryName = route.params?.queryVariables?.categoryName;
   let nestedCategory;
   if (categoryName) {
-    nestedCategory = categories.find((category) => category.name === categoryName);
+    nestedCategory = categories?.find((category) => category.name === categoryName);
   }
 
   const status = availableVehiclesData?.length
@@ -208,6 +244,11 @@ export const PointOfInterest = ({
     typeof status === 'string' && KNOWN_ICON_STATUS_NAMES.has(status)
       ? status
       : payload?.activeIconName || vehicleActiveIconName || fallbackActiveIconName;
+
+  const mapMarkers = getPointOfInterestMapMarkers(
+    { ...currentMapMarker, iconName, activeIconName },
+    mapMarkerData?.pointsOfInterest
+  );
 
   return (
     <WrapperVertical>
@@ -369,15 +410,23 @@ export const PointOfInterest = ({
           <MapLibre
             isMultipleMarkersMap={false}
             isMyLocationButtonVisible={false}
-            locations={[
-              {
-                iconName,
-                activeIconName,
-                id,
-                position: { latitude, longitude }
-              }
-            ]}
+            locations={mapMarkers}
             mapStyle={styles.mapStyle}
+            onMarkerPress={(markerId) => {
+              if (!markerId || markerId === id) return;
+
+              navigation.push(ScreenName.Detail, {
+                title: texts.detailTitles.pointOfInterest,
+                query: QUERY_TYPES.POINT_OF_INTEREST,
+                queryVariables: {
+                  id: markerId,
+                  categoryName: mapCategoryFilters.category,
+                  categoryId: mapCategoryFilters.categoryId,
+                  categoryIds: mapCategoryFilters.categoryIds
+                },
+                rootRouteName: route.params?.rootRouteName
+              });
+            }}
             selectedMarker={id}
           />
         </WrapperVertical>

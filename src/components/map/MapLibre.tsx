@@ -844,7 +844,7 @@ export const MapLibre = ({
 
         {!!resolvedMarkerImages && <Images images={resolvedMarkerImages} />}
 
-        {!!shape && !_isEmpty(layerStyles) && (
+        {mapReady && !!shape && !_isEmpty(layerStyles) && (
           <>
             {!!geometryTourData?.length && (
               <GeoJSONSource
