@@ -51,14 +51,27 @@ export const resolveServiceTileColumns = (
 };
 
 // Pack mixed column overrides by their share of a row, preserving the configured order.
-export const groupServiceTileRows = <T extends { numberOfTiles?: ServiceTileColumns }>(
+export const groupServiceTileRows = <
+  T extends {
+    numberOfTiles?: ServiceTileColumns;
+    tile?: unknown;
+    style?: { tileStyle?: Record<string, unknown> };
+  }
+>(
   tiles: readonly T[],
   orientation: TileGridOrientation,
-  fallback: number
+  fallback: number,
+  tileStyle: Record<string, unknown> = {}
 ) => {
   const rows: Array<{ tiles: T[]; fill: number }> = [];
   for (const tile of tiles) {
-    const share = 1 / resolveServiceTileColumns(tile.numberOfTiles, orientation, fallback);
+    const columns = resolveServiceTileColumns(tile.numberOfTiles, orientation, fallback);
+    const hasTileStyle =
+      !!Object.keys(tileStyle).length || !!Object.keys(tile.style?.tileStyle ?? {}).length;
+    // Unstyled icons are narrower (1 / (columns + 1)). Fractional overrides tune their
+    // size without reducing the intended row count; integer defaults retain their count.
+    const rowColumns = tile.tile || hasTileStyle ? columns : Math.ceil(columns);
+    const share = 1 / rowColumns;
     const last = rows[rows.length - 1];
     if (!last || last.fill + share > 1 + 1e-6) {
       rows.push({ tiles: [tile], fill: share });

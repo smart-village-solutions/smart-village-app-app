@@ -176,7 +176,8 @@ export const Service = ({
   const rows = groupServiceTileRows(
     (visibleTiles ?? []).map(configureTile),
     orientation as 'portrait' | 'landscape',
-    itemsPerRow
+    itemsPerRow,
+    serviceTiles.tileStyle
   );
 
   return isEditMode ? (

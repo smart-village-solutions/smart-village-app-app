@@ -53,6 +53,7 @@ jest.mock('../../src/components/screens/ServiceTile', () => ({
 }));
 
 import { AccessibilityContext } from '../../src/AccessibilityProvider';
+import { ConfigurationsContext } from '../../src/ConfigurationsProvider';
 import { Service } from '../../src/components/screens/Service';
 import { ServiceTile } from '../../src/components/screens/ServiceTile';
 import { WrapperWrap } from '../../src/components/Wrapper';
@@ -106,6 +107,22 @@ describe('Service layout changes', () => {
         .UNSAFE_getAllByType(ServiceTile)
         .every((tile) => tile.props.item.numberOfTiles.portrait === 2)
     ).toBe(true);
+  });
+
+  it('uses effective styling when grouping the existing fractional icon override', () => {
+    const service = (tileStyle = {}) => (
+      <ConfigurationsContext.Provider
+        value={{ appDesignSystem: { serviceTiles: { tileStyle } } } as never}
+      >
+        <Service data={tiles} staticJsonName="services" tileLayoutColumns={{ portrait: 2.7 }} />
+      </ConfigurationsContext.Provider>
+    );
+    const tree = render(service());
+    const counts = () =>
+      tree.UNSAFE_getAllByType(WrapperWrap).map((row) => row.findAllByType(ServiceTile).length);
+    expect(counts()).toEqual([3, 3]);
+    tree.rerender(service({ backgroundColor: '#fff' }));
+    expect(counts()).toEqual([2, 2, 2]);
   });
 
   it('preserves order and packs mixed item overrides without squeezing oversized rows', () => {
