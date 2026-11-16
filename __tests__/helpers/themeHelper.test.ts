@@ -48,8 +48,8 @@ describe('themeHelper', () => {
     expect(isValidThemeColor(123)).toBe(false);
   });
 
-  it.each(['invalid', 'NaN', 'Infinity', '-Infinity'])(
-    'rejects a non-finite alpha with contrast disabled (%s)',
+  it.each(['invalid', 'NaN', 'Infinity', '-Infinity', '', ' '])(
+    'rejects a malformed alpha with contrast disabled (%s)',
     (alpha) => {
       const color = `rgba(16, 120, 33, ${alpha})`;
       expect(isValidThemeColor(color)).toBe(false);

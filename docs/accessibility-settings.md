@@ -202,7 +202,7 @@ Use the following JSON shape in `globalSettings`:
 ### `enabledFeatures`
 
 Controls which accessibility capabilities are available in the UI and behavior layer.
-Any omitted key in `enabledFeatures` defaults to `false`.
+Omitted keys in `enabledFeatures` default to `false`, except `autoContrastEnabled`, which defaults to `true` to preserve existing contrast correction.
 
 - `settingsEntry`
   - `true`: show Accessibility section in the Settings screen.
@@ -219,7 +219,7 @@ Any omitted key in `enabledFeatures` defaults to `false`.
 - `isGrayscaleEnabled`
   - Enables/disables the in-app grayscale preference and filter behavior.
 - `autoContrastEnabled`
-  - Enables automatic foreground contrast correction for both theme palettes; defaults to `false`.
+  - Enables automatic foreground contrast correction for both theme palettes; defaults to `true`. Set to `false` to preserve valid configured foreground colors.
   - Controlled only through `globalSettings`, without a user-facing toggle.
 - `highContrast`
   - Enables/disables the in-app higher-contrast preference.

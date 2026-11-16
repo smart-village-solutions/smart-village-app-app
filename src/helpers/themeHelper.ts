@@ -32,7 +32,9 @@ const parseRgbColor = (value: string): RgbColor | undefined => {
   const match = RGB_COLOR_PATTERN.exec(value);
   if (!match) return undefined;
 
-  const channels = match[2].split(',').map((channel) => Number(channel.trim()));
+  const rawChannels = match[2].split(',').map((channel) => channel.trim());
+  if (rawChannels.some((channel) => channel === '')) return undefined;
+  const channels = rawChannels.map(Number);
   const expectsAlpha = match[1].toLowerCase() === 'rgba';
   if (channels.length !== (expectsAlpha ? 4 : 3)) return undefined;
 
