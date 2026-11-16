@@ -2,7 +2,7 @@ import { useFocusEffect } from 'expo-router/react-navigation';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useLayoutEffect } from 'react';
 import { useMutation, useQuery } from 'react-apollo';
-import { Alert, View } from 'react-native';
+import { Alert, DeviceEventEmitter, View } from 'react-native';
 
 import { useProfileContext } from '../../../ProfileProvider';
 import { colors, Icon, normalize, texts } from '../../../config';
@@ -30,6 +30,7 @@ import { InfoCard } from '../../infoCard';
 import { VolunteerAvatar } from '../../volunteer';
 import { useThemeStyles } from '../../../hooks/useThemeStyles';
 import { useTheme } from '../../../hooks/useTheme';
+import { DETAIL_REFRESH_EVENT } from '../../../hooks/DetailRefresh';
 
 const isImage = (mediaContent) => mediaContent.contentType === 'image';
 
@@ -86,7 +87,10 @@ export const NoticeboardDetail = ({
   const [deleteEntry] = useMutation(DELETE_GENERIC_ITEM, {
     ...getApolloAuthContext(AUTH_MODE_USER),
     variables: { id },
-    onCompleted: () => navigation.goBack()
+    onCompleted: () => {
+      DeviceEventEmitter.emit(DETAIL_REFRESH_EVENT);
+      navigation.goBack();
+    }
   });
 
   const { data: dataMemberIndex, refetch: refetchMemberIndex } = useQuery(
