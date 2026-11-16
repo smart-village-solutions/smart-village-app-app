@@ -5,10 +5,9 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 
 import { FavoritesHeader, HeaderLeft, HeaderRight } from '../components';
-import type { AppStatusBarProps } from '../components/AppStatusBar';
 import { normalize } from '../config';
 import { NavigationHeader } from '../components/NavigationHeader';
-import { ThemeColorPalette } from '../types/Theme';
+import type { HeaderAppearanceConfig } from '../components/NavigationHeader';
 
 type NavigationParams = Record<string, object | undefined>;
 
@@ -17,14 +16,8 @@ type OptionProps = {
   navigation: NavigationProp<NavigationParams>;
 };
 
-type ThemeValue<T> = T | ((colors: ThemeColorPalette) => T);
-
-export type ScreenOptionConfig = {
+export type ScreenOptionConfig = HeaderAppearanceConfig & {
   cardStyleInterpolator?: StackNavigationOptions['cardStyleInterpolator'];
-  /** A solid header surface, or a resolver for theme-specific app branding. */
-  headerBackgroundColor?: ThemeValue<string>;
-  /** Overrides automatic contrast for image-based or otherwise custom headers. */
-  headerStatusBarStyle?: ThemeValue<AppStatusBarProps['barStyle']>;
   noHeaderLeft?: boolean;
   withBookmark?: boolean;
   withAccessibility?: boolean;
@@ -41,6 +34,7 @@ export const getScreenOptions =
   ({
     cardStyleInterpolator,
     headerBackgroundColor,
+    headerGradientColors,
     headerStatusBarStyle,
     noHeaderLeft = false,
     withBookmark,
@@ -59,6 +53,7 @@ export const getScreenOptions =
         <NavigationHeader
           {...props}
           headerBackgroundColor={headerBackgroundColor}
+          headerGradientColors={headerGradientColors}
           headerStatusBarStyle={headerStatusBarStyle}
         />
       ),

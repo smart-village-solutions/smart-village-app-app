@@ -57,9 +57,13 @@ describe('getScreenOptions shared header', () => {
     const background = (colors: { primary: string }) => colors.primary;
     const header = renderConfiguredHeader({
       headerBackgroundColor: background,
+      headerGradientColors: (colors) => [colors.primary, colors.secondary],
       headerStatusBarStyle: 'light-content'
     });
     expect(header.props.headerBackgroundColor).toBe(background);
+    expect(header.props.headerGradientColors({ primary: '#111111', secondary: '#222222' })).toEqual(
+      ['#111111', '#222222']
+    );
     expect(header.props.headerStatusBarStyle).toBe('light-content');
   });
 });

@@ -26,6 +26,9 @@ jest.mock('../../src/components/DiagonalGradient', () => ({
     jest.requireActual('react').createElement('mock-background', props, children)
 }));
 
+import { AccessibilityContext } from '../../src/AccessibilityProvider';
+import { SettingsContext } from '../../src/SettingsProvider';
+import type { ThemeGlobalSettings } from '../../src/types/Theme';
 import { NavigationHeader } from '../../src/components/NavigationHeader';
 import type { HeaderAppearanceConfig } from '../../src/components/NavigationHeader';
 import { HeaderIcon } from '../../src/components/HeaderIcon';
@@ -50,14 +53,28 @@ const ScreenActions = () => {
 const createHeader = (
   colors: ThemeColorPalette,
   appearance: HeaderAppearanceConfig = {},
-  options: StackHeaderProps['options'] = {}
+  options: StackHeaderProps['options'] = {},
+  globalSettings: ThemeGlobalSettings = {},
+  grayscale = false
 ) => (
-  <ThemeContext.Provider value={{ colors, isDark: colors === darkColors, mode: 'light' }}>
-    <NavigationHeader
-      {...({ options: { headerRight: () => <ScreenActions />, ...options } } as StackHeaderProps)}
-      {...appearance}
-    />
-  </ThemeContext.Provider>
+  <SettingsContext.Provider value={{ globalSettings } as never}>
+    <AccessibilityContext.Provider value={{ isGrayscaleEnabled: grayscale } as never}>
+      <ThemeContext.Provider
+        value={{
+          colors,
+          isDark: colors === darkColors,
+          mode: colors === darkColors ? 'dark' : 'light'
+        }}
+      >
+        <NavigationHeader
+          {...({
+            options: { headerRight: () => <ScreenActions />, ...options }
+          } as StackHeaderProps)}
+          {...appearance}
+        />
+      </ThemeContext.Provider>
+    </AccessibilityContext.Provider>
+  </SettingsContext.Provider>
 );
 
 const renderHeader = (...args: Parameters<typeof createHeader>) => {
@@ -134,6 +151,149 @@ describe('NavigationHeader shared appearance', () => {
     const tree = renderHeader(lightColors, {}, { headerStyle: { backgroundColor: '#000000' } });
     expectForeground(tree, '#FFFFFF');
     expect(tree.root.findByType('mock-status-bar' as never).props.backgroundColor).toBe('#000000');
+  });
+
+  it('renders a theme-aware gradient and manages its status bar in the shared header', () => {
+    const appearance: HeaderAppearanceConfig = {
+      headerGradientColors: (palette) => [palette.primary, palette.secondary]
+    };
+    const tree = renderHeader(lightColors, appearance);
+    expect(tree.root.findByType('mock-background' as never).props.colors).toEqual([
+      lightColors.primary,
+      lightColors.secondary
+    ]);
+    expect(tree.root.findByType('mock-status-bar' as never).props).toMatchObject({
+      backgroundColor: lightColors.primary,
+      barStyle: 'light-content'
+    });
+    renderer.act(() => tree.update(createHeader(darkColors, appearance)));
+    expect(tree.root.findByType('mock-background' as never).props.colors).toEqual([
+      darkColors.primary,
+      darkColors.secondary
+    ]);
+  });
+
+  it('updates remote municipality branding and selects the active theme without screen changes', () => {
+    const globalSettings = {
+      settings: {
+        accessibility: {
+          header: {
+            light: { gradientColors: ['#00519E', '#02284C'], tintColor: '#FFFFFF' },
+            dark: { backgroundColor: '#101010', tintColor: '#EEEEEE' }
+          }
+        }
+      }
+    };
+    const tree = renderHeader(lightColors, {}, {}, globalSettings);
+    expect(tree.root.findByType('mock-background' as never).props.colors).toEqual([
+      '#00519E',
+      '#02284C'
+    ]);
+    expectForeground(tree, '#FFFFFF');
+    renderer.act(() => tree.update(createHeader(darkColors, {}, {}, globalSettings)));
+    expect(tree.root.findByType('mock-background' as never).props.colors).toEqual([
+      '#101010',
+      '#101010'
+    ]);
+    expectForeground(tree, '#EEEEEE');
+    renderer.act(() =>
+      tree.update(
+        createHeader(
+          lightColors,
+          {},
+          {},
+          {
+            settings: { accessibility: { header: { light: { backgroundColor: '#FFFFFF' } } } }
+          }
+        )
+      )
+    );
+    expect(tree.root.findByType('mock-background' as never).props.colors).toEqual([
+      '#FFFFFF',
+      '#FFFFFF'
+    ]);
+    expectForeground(tree, lightColors.text);
+  });
+
+  it('allows explicit solid and gradient options to override remote backgrounds', () => {
+    const globalSettings = {
+      settings: {
+        accessibility: {
+          header: {
+            light: { gradientColors: ['#00519E', '#02284C'], tintColor: '#FFFFFF' }
+          }
+        }
+      }
+    };
+    const tree = renderHeader(
+      lightColors,
+      { headerBackgroundColor: '#000000' },
+      {},
+      globalSettings
+    );
+    expect(tree.root.findByType('mock-background' as never).props.colors).toEqual([
+      '#000000',
+      '#000000'
+    ]);
+    renderer.act(() =>
+      tree.update(
+        createHeader(
+          lightColors,
+          {
+            headerGradientColors: ['#111111', '#222222']
+          },
+          { headerTintColor: '#ABCDEF' },
+          globalSettings
+        )
+      )
+    );
+    expect(tree.root.findByType('mock-background' as never).props.colors).toEqual([
+      '#111111',
+      '#222222'
+    ]);
+    expectForeground(tree, '#ABCDEF');
+  });
+
+  it('ignores malformed remote colors and converts municipality branding to grayscale', () => {
+    const invalid = {
+      settings: {
+        accessibility: {
+          header: {
+            light: { gradientColors: ['#00519E'], backgroundColor: 'invalid', tintColor: 42 }
+          }
+        }
+      }
+    };
+    const tree = renderHeader(lightColors, {}, {}, invalid);
+    expect(tree.root.findByType('mock-background' as never).props.colors).toEqual([
+      lightColors.surface,
+      lightColors.surface
+    ]);
+    renderer.act(() =>
+      tree.update(
+        createHeader(
+          lightColors,
+          {},
+          {},
+          {
+            settings: {
+              accessibility: {
+                header: {
+                  light: {
+                    gradientColors: ['#FF0000', '#00FF00'],
+                    tintColor: '#FFFFFF'
+                  }
+                }
+              }
+            }
+          },
+          true
+        )
+      )
+    );
+    const stops = tree.root.findByType('mock-background' as never).props.colors;
+    expect(stops).toEqual(['rgb(127, 127, 127)', 'rgb(220, 220, 220)']);
+    expectForeground(tree, 'rgb(255, 255, 255)');
   });
 
   it('keeps explicit status bar styles and custom image backgrounds', () => {

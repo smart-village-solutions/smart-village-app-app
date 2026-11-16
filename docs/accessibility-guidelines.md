@@ -72,7 +72,9 @@ Full-scan tests still run for visibility but do not block PRs by themselves.
 
 Navigation headers resolve their appearance in `NavigationHeader`. By default, the background
 remains `surface`; apps can supply a brand background through `getScreenOptions`'s
-`headerBackgroundColor` or React Navigation's `headerStyle.backgroundColor`. The shared
+`headerBackgroundColor`, `headerGradientColors`, or React Navigation's `headerStyle.backgroundColor`.
+Municipality defaults come from `globalSettings.settings.accessibility.header.light` and `.dark`.
+See the municipality header example in `accessibility-settings.md`. The shared
 foreground uses `text` on normal surfaces and `onPrimary` on the primary brand color, with a
 contrast fallback for custom colors. An explicit `headerTintColor` overrides all header content
 together. Do not give the title an independent color through `headerTitleStyle.color`.

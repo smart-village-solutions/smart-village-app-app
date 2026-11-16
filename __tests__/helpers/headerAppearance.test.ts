@@ -28,6 +28,11 @@ describe('header appearance', () => {
     expect(resolveHeaderForeground(lightColors, '#000000', '#ABCDEF')).toBe('#ABCDEF');
   });
 
+  it('chooses content against every gradient stop', () => {
+    expect(resolveHeaderForeground(lightColors, ['#00519E', '#02284C'])).toBe('#FFFFFF');
+    expect(resolveHeaderForeground(lightColors, ['#FFFFFF', '#00519E'])).toBe('#000000');
+  });
+
   it('uses the normal text fallback for backgrounds that cannot be evaluated', () => {
     expect(resolveHeaderForeground(lightColors, 'transparent')).toBe(lightColors.text);
   });

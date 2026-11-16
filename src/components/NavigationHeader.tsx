@@ -3,7 +3,12 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 
 import type { ThemeColorPalette } from '../types/Theme';
-import { resolveHeaderForeground, resolveHeaderStatusBarStyle } from '../helpers/headerAppearance';
+import {
+  resolveHeaderBackgroundColors,
+  resolveHeaderForeground,
+  resolveHeaderStatusBarStyle
+} from '../helpers/headerAppearance';
+import { useHeaderAppearance } from '../hooks/useHeaderAppearance';
 import { HeaderForegroundContext } from '../hooks/useHeaderForeground';
 import { useTheme } from '../hooks/useTheme';
 import { MeasuredHeader } from '../navigation/MeasuredHeader';
@@ -16,6 +21,7 @@ type ThemeValue<T> = T | ((colors: ThemeColorPalette) => T);
 
 export type HeaderAppearanceConfig = {
   headerBackgroundColor?: ThemeValue<string>;
+  headerGradientColors?: ThemeValue<readonly [string, string, ...string[]]>;
   headerStatusBarStyle?: ThemeValue<AppStatusBarProps['barStyle']>;
 };
 
@@ -24,22 +30,29 @@ const resolveThemeValue = <T,>(value: ThemeValue<T> | undefined, colors: ThemeCo
 
 export const NavigationHeader = ({
   headerBackgroundColor,
+  headerGradientColors,
   headerStatusBarStyle,
   ...props
 }: StackHeaderProps & HeaderAppearanceConfig) => {
   const { colors } = useTheme();
+  const configured = useHeaderAppearance();
   const headerStyle = StyleSheet.flatten(props.options.headerStyle);
   const styledBackground =
     headerStyle && typeof headerStyle === 'object' && 'backgroundColor' in headerStyle
       ? headerStyle.backgroundColor
       : undefined;
-  const background =
+  const backgroundColors = resolveHeaderBackgroundColors(
+    colors.surface,
+    configured,
     resolveThemeValue(headerBackgroundColor, colors) ??
-    (typeof styledBackground === 'string' ? styledBackground : colors.surface);
-  const tintColor = props.options.headerTintColor;
+      (typeof styledBackground === 'string' ? styledBackground : undefined),
+    resolveThemeValue(headerGradientColors, colors)
+  );
+  const background = backgroundColors[0];
+  const tintColor = props.options.headerTintColor ?? configured.tintColor;
   const foreground = resolveHeaderForeground(
     colors,
-    background,
+    backgroundColors,
     typeof tintColor === 'string' ? tintColor : undefined
   );
   const barStyle =
@@ -58,7 +71,7 @@ export const NavigationHeader = ({
           headerBackground:
             props.options.headerBackground ??
             (() => (
-              <DiagonalGradient colors={[background, background]}>
+              <DiagonalGradient colors={backgroundColors}>
                 <AppStatusBar backgroundColor={background} barStyle={barStyle} />
               </DiagonalGradient>
             ))
