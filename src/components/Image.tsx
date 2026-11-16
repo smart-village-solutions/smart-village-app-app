@@ -42,6 +42,7 @@ type ImageProps = {
   message?: string;
   contentPosition?: ImageContentPosition;
   onContentHeightChange?: (height: number) => void;
+  onError?: () => void;
   PlaceholderContent?: React.ReactNode;
   placeholderStyle?: object | object[];
   refreshInterval?: number;
@@ -72,6 +73,7 @@ export const Image = ({
   onContentHeightChange,
   PlaceholderContent: placeholderContent,
   placeholderStyle: placeholderStyleProp,
+  onError,
   refreshInterval,
   resizeMode = 'cover',
   source: sourceProp,
@@ -196,6 +198,8 @@ export const Image = ({
     />
   ) : null;
 
+  if (source?.uri === NO_IMAGE.uri) return null;
+
   return (
     <View style={[containerStyle, placeholderStyle]}>
       {imageElement}
@@ -205,16 +209,11 @@ export const Image = ({
           {PlaceholderContent}
         </View>
       )}
-      {showFallback && (
-        <View style={[overlayStyle, styles.loadingStyle]}>{fallbackContent}</View>
-      )}
+      {showFallback && <View style={[overlayStyle, styles.loadingStyle]}>{fallbackContent}</View>}
       {showChildren && (
         <View style={[overlayStyle, styles.contentContainerStyle]} pointerEvents="box-none">
           <View
-            style={[
-              styles.content,
-              { top: Math.max(imageDimensions.height - contentHeight, 0) }
-            ]}
+            style={[styles.content, { top: Math.max(imageDimensions.height - contentHeight, 0) }]}
             onLayout={({ nativeEvent }) => {
               const nextContentHeight = nativeEvent.layout.height;
 

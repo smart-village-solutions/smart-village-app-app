@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useMutation } from 'react-apollo';
 import { Modal, TouchableOpacity, View } from 'react-native';
 import CircularProgress from 'react-native-circular-progress-indicator';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Icon, normalize, texts } from '../../config';
 import { addToStore, readFromStore } from '../../helpers';
@@ -15,7 +16,6 @@ import { REDEEM_QUOTA_OF_VOUCHER } from '../../queries/vouchers';
 import { TQuota, TVoucherDates } from '../../types';
 import { Button } from '../Button';
 import { Checkbox } from '../Checkbox';
-import { SafeAreaViewFlex } from '../SafeAreaViewFlex';
 import { BoldText, RegularText } from '../Text';
 import { Touchable } from '../Touchable';
 import { Wrapper, WrapperRow, WrapperVertical } from '../Wrapper';
@@ -39,7 +39,7 @@ export const VoucherRedeem = ({
   isLoggedIn: boolean;
   isSessionLoading: boolean;
   memberId: string | undefined;
-  quota: TQuota;
+  quota?: TQuota | null;
   voucherId: string;
 }) => {
   const { colors } = useTheme();
@@ -52,8 +52,9 @@ export const VoucherRedeem = ({
   const [isRedeemedVoucher, setIsRedeemedVoucher] = useState<boolean>();
   const [redeemStartTime, setRedeemStartTime] = useState<number | null>(null);
   const [isExpiredVoucher, setIsExpiredVoucher] = useState(false);
+  const { bottom: bottomInset } = useSafeAreaInsets();
 
-  const { availableQuantityForMember, availableQuantity } = quota;
+  const { availableQuantityForMember, availableQuantity } = quota ?? {};
   const isAvailableVoucher = useMemo(
     () =>
       isVoucherCurrentlyAvailable({
@@ -177,8 +178,8 @@ export const VoucherRedeem = ({
         visible={isVisible}
         supportedOrientations={['landscape', 'portrait']}
       >
-        <SafeAreaViewFlex edges={['bottom']} style={styles.sheetBackgroundContainer}>
-          <View style={styles.sheetContainer}>
+        <View style={styles.sheetBackgroundContainer}>
+          <View style={[styles.sheetContainer, { paddingBottom: normalize(20) + bottomInset }]}>
             {isExpiredVoucher ? (
               <WrapperVertical>
                 <Wrapper>
@@ -343,7 +344,7 @@ export const VoucherRedeem = ({
               </WrapperVertical>
             )}
           </View>
-        </SafeAreaViewFlex>
+        </View>
       </Modal>
     </>
   );
@@ -434,7 +435,6 @@ const createStyles = (colors) => ({
     backgroundColor: colors.darkerPrimary,
     borderTopLeftRadius: normalize(5),
     borderTopRightRadius: normalize(5),
-    paddingBottom: normalize(20),
     width: '100%'
   }
 });

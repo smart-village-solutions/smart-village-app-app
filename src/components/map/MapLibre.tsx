@@ -734,6 +734,7 @@ export const MapLibre = ({
   // the resulting undefined/NaN values are safe because the !_isEmpty(layerStyles) render
   // guard below prevents these layers from being mounted when layerStyles is empty.
   const singleIcon = layerStyles.singleIcon ?? {};
+  const sortMarkers = locations?.some((location) => location.sortKey != null);
   const { paint: clusterShadowPaint } = splitLayerStyle('circle', {
     ...layerStyles.clusteredCircleShadow,
     circlePitchAlignment: 'map'
@@ -746,6 +747,7 @@ export const MapLibre = ({
       ownLocationPin: MAP.OWN_LOCATION_PIN,
       selectedMarker,
       showMarkerLabels,
+      sortMarkers,
       singleIconStyle: singleIcon
     })
   );

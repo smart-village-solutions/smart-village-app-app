@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
 import Autocomplete from 'react-native-autocomplete-input';
 
-import { device, normalize, texts } from '../../config';
-import { useFilterCities, useKeyboardHeight, useWasteAddresses } from '../../hooks';
+import { texts } from '../../config';
+import { useFilterCities, useWasteAddresses } from '../../hooks';
 import { useTheme } from '../../hooks/useTheme';
 import { useThemeStyles } from '../../hooks/useThemeStyles';
 import { OrientationContext } from '../../OrientationProvider';
@@ -10,10 +10,6 @@ import { SettingsContext } from '../../SettingsProvider';
 import { Label } from '../Label';
 import { Wrapper } from '../Wrapper';
 
-import {
-  getAutocompleteListContainerHeight,
-  getAutocompleteMaxDropdownHeight
-} from './autocompleteLayout';
 import { createWasteInputStyles } from './wasteInputStyles';
 import { WasteSuggestionList } from './WasteSuggestionList';
 
@@ -62,7 +58,6 @@ export const WasteCityInput = ({
   });
   const { filterCities } = useFilterCities(isFocused);
   const cities = filterCities(inputValueCity, data?.wasteAddresses);
-  const keyboardHeight = useKeyboardHeight();
 
   /**
    * The variable `isCityResultsHidden` indicates whether the city results should be hidden based
@@ -94,17 +89,7 @@ export const WasteCityInput = ({
         inputContainerStyle={styles.autoCompleteInputContainer}
         listContainerStyle={[
           styles.autoCompleteListContainer,
-          {
-            maxHeight: getAutocompleteListContainerHeight({
-              height: dimensions.height / 2.5,
-              keyboardHeight,
-              maxDropdownHeight: getAutocompleteMaxDropdownHeight({
-                androidMaxHeight: normalize(250),
-                iosMaxHeight: normalize(220),
-                platform: device.platform
-              })
-            })
-          }
+          { maxHeight: dimensions.height / 2.5 }
         ]}
         onBlur={() => setIsFocused(false)}
         onChangeText={(text) => {
@@ -114,9 +99,9 @@ export const WasteCityInput = ({
         }}
         onFocus={() => setIsFocused(true)}
         placeholder={wasteTexts.location}
+        renderResultList={WasteSuggestionList}
         placeholderTextColor={colors.placeholder}
         selectionColor={colors.primary}
-        renderResultList={WasteSuggestionList}
         style={styles.autoCompleteInput}
         value={inputValueCity}
       />

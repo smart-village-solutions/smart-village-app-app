@@ -88,7 +88,8 @@ export const ServiceTile = ({
   onToggleVisibility,
   serviceTiles,
   staticJsonName,
-  shouldAddMargin = false,
+  gridWidth,
+  gridGap,
   tileSizeFactor = 1
 }: {
   contentWidth?: number;
@@ -104,7 +105,8 @@ export const ServiceTile = ({
   ) => void;
   serviceTiles?: any;
   staticJsonName?: string;
-  shouldAddMargin?: boolean;
+  gridWidth?: number;
+  gridGap?: number;
   tileSizeFactor?: number;
 }) => {
   const { colors: colors } = useTheme();
@@ -186,14 +188,11 @@ export const ServiceTile = ({
     <ServiceBox
       bigTile={!!item.tile}
       columns={columns}
+      gridWidth={gridWidth}
+      gridGap={gridGap}
       hasTileStyle={hasTileStyle}
       orientation={orientation}
-      style={[
-        normalizedTileStyle,
-        isEditMode && styles.editableTile,
-        !isEditMode && shouldAddMargin && styles.marginLeft,
-        styles.squareTile
-      ]}
+      style={[normalizedTileStyle, isEditMode && styles.editableTile, styles.squareTile]}
     >
       <TouchableOpacity
         style={[hasTileStyle && styles.button]}
@@ -303,10 +302,6 @@ const createStyles = (colors) => ({
     flex: 1,
     marginBottom: 0,
     width: '100%'
-  },
-
-  marginLeft: {
-    marginLeft: normalize(8)
   },
 
   squareTile: {

@@ -16,6 +16,19 @@ This document defines how AI agents should work in this repository.
 - Update tests/documentation when behavior changes.
 - Do not introduce unrelated refactors in the same change.
 
+### Municipality variants and integration into `master`
+
+- At the start of every task, check whether the change affects shared behavior or a municipality-specific feature, layout, or asset. For a municipality-specific change, identify how it can coexist with other variants before implementing it.
+- Reuse existing instance settings, feature flags, or branding and asset configuration. Keep shared code reusable and preserve the current default behavior for instances without an override. Keep municipality-specific values in instance configuration and update the generation template when needed. Verify both the default and the configured variant.
+- Use `master` as the base for shared changes whenever possible. If implementation starts on a municipality release or staging branch, also prepare the reusable change against `master`. Bring over only the relevant changes and keep municipality-specific settings on the release branch. At handoff, link the `master` commit, branch, or PR, or state what is still open. A release alone does not complete integration into `master`.
+
+### Icon library mappings (v5.0.0+)
+
+- The app supports multiple icon libraries through `src/IconProvider.tsx`. Whenever adding or renaming a shared icon (including `Icon` entries and `Icon.NamedIcon` usages in `src/config/icons/Icon.tsx` or elsewhere), update its unified name in **all eight** library mapping files under `src/config/icons/mappings/`: `tabler.tsx`, `ionicons.tsx`, `fontawesome.tsx`, `fontawesome5.tsx`, `fontawesome6.tsx`, `materialicons.tsx`, `materialcommunityicons.tsx`, and `simplelineicons.tsx`.
+- Use the same lowercase, kebab-case key in every mapping and select a valid, semantically equivalent icon from each installed library. If there is no exact equivalent, use the closest meaningful alternative. Verify the target names against the installed libraries; do not guess names or rely on the unmapped-name fallback for shared icons, even when a library uses the same name.
+- For custom SVG icons resolved by unified name, also update `src/config/icons/mappings/customSvg.tsx`; custom SVGs take priority over library mappings. Preserve this behavior.
+- Check the new or renamed icon with each supported library, including an explicit `iconSet` and the configured `iconFamilies` order, so customer-specific library choices remain supported.
+
 ## 3) Required Quality Gate
 
 For normal development tasks, run both commands before finalizing work:
@@ -31,13 +44,12 @@ yarn test
 
 For AI-assisted development work, commits are required and must follow these rules:
 
-1. **Before every commit, determine the ticket number**. First inspect the current branch name for a ticket pattern such as `SVA-1723`, `SVAK-183`, `SVASD-537`, or `MQGB-208`. If the branch name contains a ticket, use it. If not, ask the user for one before committing.
-2. Use **Conventional Commit** format in the subject:
+1. Use **Conventional Commit** format in the subject:
    - `type(scope): short summary`
    - or `type: short summary` when scope is not needed
-3. Allowed `type` values: `feat`, `fix`, `refactor`, `chore`, `docs`, `test`, `style`.
-4. Add a commit body with concise bullet points explaining what changed (and why when needed).
-5. Put the ticket number in the commit body (usually as the last line).
+2. Allowed `type` values: `feat`, `fix`, `refactor`, `chore`, `docs`, `test`, `style`.
+3. Add a commit body with concise bullet points explaining what changed (and why when needed).
+4. If the task already has a ticket number, put it on the last line of the commit body. Use the number supplied with the task or take it from the current branch name if it refers to the same task (for example, `SVAK-183`). If neither provides a number, proceed without one or a follow-up question.
 
 Example:
 
@@ -46,20 +58,15 @@ feat(map): upgrade marker clustering behavior
 
 - refactored cluster source options to improve stability on zoom
 - aligned marker rendering with MapLibre v11 layer configuration
-
-SVAK-183
 ```
-
-If no ticket number can be found in the branch name and the user has not provided one, do not guess one. Ask the user first.
 
 ## 5) Branch and PR Expectations
 
-- Prefer ticket-based branch names (examples from this repo):
-  - `feature/SVAK-183-short-description`
-  - `fix/SVA-1610-short-description`
-- Follow `PULL_REQUEST_TEMPLATE.md`:
+- Use descriptive branch names, such as `feature/map-clustering` or `fix/map-loading`.
+- When creating a branch for a task with a known ticket number, include it in the branch name, such as `feature/SVAK-183-map-clustering`.
+- Follow the [pull request template](.github/pull_request_template.md):
   - include testing notes
-  - reference issue/ticket
+  - reference the ticket if one exists
   - add screenshots when UI changes
 
 ## 6) Security and Secrets
@@ -82,3 +89,19 @@ Note: `.gitignore` already covers these rules; this section makes the agent beha
 - Main docs index: `docs/INDEX.md`
 - Changelog policy and release notes: `CHANGELOG.md`
 - Contribution and commit guidance: `CONTRIBUTING.md`
+
+## Code Review Rules
+
+- Write all review findings and summaries in English. Report actionable regressions introduced by the pull request, explain the affected scenario and impact, and point to the relevant changed lines. Leave formatting and lint checks to CI.
+
+### Customer app configuration
+
+- Check that shared changes preserve customer-specific API endpoints, feature flags, and branding. Flag hard-coded customer values in shared code or configuration changes that leave the corresponding generation templates inconsistent. For municipality-specific changes, check the existing default, the configured variant, and the path back to `master`.
+
+### Native and OTA compatibility
+
+- When a change adds or changes native modules, config plugins, or native build settings, check whether an OTA update could reach an incompatible installed binary. Require a compatible native build/runtime for native changes; JavaScript-only updates may remain OTA-compatible. Check both iOS and Android behavior where applicable.
+
+### Authentication and failure recovery
+
+- Flag changes that discard valid credentials or cached user data after temporary network or secure-storage failures, expose tokens or personal data in logs, or let stale asynchronous responses overwrite current state. Preserve recoverable state on transient failures; explicit logout and confirmed invalid credentials may clear the relevant state.

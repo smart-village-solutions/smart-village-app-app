@@ -5,7 +5,6 @@ import { ThemeColorPalette } from '../../types/Theme';
 
 export const createWasteInputStyles = (colors: ThemeColorPalette) => ({
   autoCompleteContainer: {
-    // Override the library's Android flex: 1 so the input stays within its wrapper.
     flex: 0,
     flexShrink: 1,
     backgroundColor: colors.background,
@@ -53,7 +52,6 @@ export const createWasteInputStyles = (colors: ThemeColorPalette) => ({
   },
 
   autoCompleteListContainer: {
-    // Shrink the results to the available space without moving inactive inputs.
     flexShrink: 1,
     backgroundColor: colors.background,
     elevation: 2,

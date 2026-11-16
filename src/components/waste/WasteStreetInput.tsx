@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
 import Autocomplete from 'react-native-autocomplete-input';
 
-import { device, normalize, texts } from '../../config';
-import { useFilterStreets, useKeyboardHeight, useWasteAddresses } from '../../hooks';
+import { texts } from '../../config';
+import { useFilterStreets, useWasteAddresses } from '../../hooks';
 import { useTheme } from '../../hooks/useTheme';
 import { useThemeStyles } from '../../hooks/useThemeStyles';
 import { OrientationContext } from '../../OrientationProvider';
@@ -11,10 +11,6 @@ import { Label } from '../Label';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { Wrapper } from '../Wrapper';
 
-import {
-  getAutocompleteListContainerHeight,
-  getAutocompleteMaxDropdownHeight
-} from './autocompleteLayout';
 import { createWasteInputStyles } from './wasteInputStyles';
 import { WasteSuggestionList } from './WasteSuggestionList';
 
@@ -48,7 +44,6 @@ export const WasteStreetInput = ({ isFocused, renderSuggestions, setIsFocused }:
   const { filterStreets } = useFilterStreets(inputValueCity, isFocused);
   const streets = filterStreets(inputValue, data?.wasteAddresses);
   const isLoading = inputValue.length >= minSearchLength && loading;
-  const keyboardHeight = useKeyboardHeight();
 
   /**
    * The variable `isStreetResultsHidden` indicates whether the street results should be hidden based
@@ -83,25 +78,15 @@ export const WasteStreetInput = ({ isFocused, renderSuggestions, setIsFocused }:
         inputContainerStyle={styles.autoCompleteInputContainer}
         listContainerStyle={[
           styles.autoCompleteListContainer,
-          {
-            maxHeight: getAutocompleteListContainerHeight({
-              height: dimensions.height / 2.5,
-              keyboardHeight,
-              maxDropdownHeight: getAutocompleteMaxDropdownHeight({
-                androidMaxHeight: normalize(230),
-                iosMaxHeight: normalize(200),
-                platform: device.platform
-              })
-            })
-          }
+          { maxHeight: dimensions.height / 2.5 }
         ]}
         onBlur={() => setIsFocused(false)}
         onChangeText={(text) => setInputValue(text)}
         onFocus={() => setIsFocused(true)}
         placeholder={wasteTexts.street}
+        renderResultList={WasteSuggestionList}
         placeholderTextColor={colors.placeholder}
         selectionColor={colors.primary}
-        renderResultList={WasteSuggestionList}
         style={styles.autoCompleteInput}
         value={inputValue}
       />

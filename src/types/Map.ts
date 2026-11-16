@@ -12,5 +12,6 @@ export type MapMarker = {
   label?: string;
   position: LocationObjectCoords;
   serviceName?: string;
+  sortKey?: number;
   title?: string;
 };

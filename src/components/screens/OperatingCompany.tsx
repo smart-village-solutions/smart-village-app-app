@@ -1,5 +1,4 @@
-import React from 'react';
-import { View } from 'react-native';
+import React, { useState } from 'react';
 
 import { Address, Contact, WebUrl } from '../../types';
 import { Logo } from '../Logo';
@@ -20,21 +19,28 @@ type Props = {
 };
 
 export const OperatingCompany = ({ title, logo, operatingCompany, openWebScreen }: Props) => {
+  const [failedLogoUrl, setFailedLogoUrl] = useState<string>();
+
   if (!operatingCompany) {
     return null;
   }
+
+  const logoUrl = logo?.trim();
 
   return (
     <WrapperVertical>
       <SectionHeader title={title} />
       <Wrapper>
-        {!!logo && <Logo source={{ uri: logo }} />}
+        {!!logoUrl && failedLogoUrl !== logoUrl && (
+          <Logo source={{ uri: logoUrl }} onError={() => setFailedLogoUrl(logoUrl)} />
+        )}
 
         <InfoCard
           address={operatingCompany.address}
           contact={operatingCompany.contact}
           name={operatingCompany.name}
           openWebScreen={openWebScreen}
+          showOpeningTimes={false}
         />
       </Wrapper>
     </WrapperVertical>

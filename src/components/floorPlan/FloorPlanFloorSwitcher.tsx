@@ -70,7 +70,7 @@ const createStyles = (colors: ThemeColorPalette) => ({
     overflow: 'hidden',
     position: 'absolute',
     right: normalize(16),
-    top: normalize(62),
+    top: normalize(16),
     shadowColor: colors.shadowRgba,
     shadowOffset: {
       height: 4,

@@ -99,6 +99,17 @@ export const materialiconsIconMapping: Record<string, string> = {
   play: 'play-arrow',
   pause: 'pause',
 
+  // Accessibility & Read Aloud
+  accessible: 'accessibility-new',
+  volume: 'volume-up',
+  'player-play': 'play-arrow',
+  'player-pause': 'pause',
+  'player-skip-back': 'skip-previous',
+  'player-skip-forward': 'skip-next',
+  eye: 'remove-red-eye',
+  'eye-off': 'visibility-off',
+  'chevron-down': 'keyboard-arrow-down',
+
   // Visibility
   visible: 'visibility',
   unvisible: 'visibility-off',

@@ -323,11 +323,13 @@ export const WasteCollectionScreen = ({ navigation, route }) => {
     return <LoadingSpinner loading />;
   }
 
+  // Android edge-to-edge windows can stay full-height above the keyboard.
+  // Keep keyboard avoidance enabled so the address form can scroll into view.
   return (
     <SafeAreaViewFlex>
       {!hasHeaderSearchBarOption ? (
         !selectedStreetId ? (
-          <DefaultKeyboardAvoidingView enabled={device.platform === 'ios'}>
+          <DefaultKeyboardAvoidingView>
             <ScrollView
               keyboardDismissMode="none"
               keyboardShouldPersistTaps="always"

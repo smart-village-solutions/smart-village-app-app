@@ -1734,8 +1734,8 @@ export const texts = {
           camera: 'Bild aufnehmen',
           cancel: 'Abbrechen',
           description:
-            'Möchten Sie ein Bild mit der Kamera aufnehmen oder aus der Galerie auswählen?',
-          gallery: 'Galerie öffnen',
+            'Möchten Sie ein Bild mit der Kamera aufnehmen oder aus der Mediathek auswählen?',
+          gallery: 'Mediathek öffnen',
           title: 'Bildquelle auswählen'
         },
         invalidMail: 'Die eingegebene E-Mail-Adresse ist nicht gültig.',
@@ -2147,6 +2147,8 @@ export const texts = {
       close: 'Schließen',
       daily: 'pro Tag',
       desiredQuantity: 'Gewünschte Anzahl',
+      discountAmount: (amount) => `${amount} Rabatt`,
+      discountPercentage: (percentage) => `${percentage} % Rabatt`,
       emptyMessage: 'Der Inhalt kann nicht geladen werden. Bitte versuchen Sie es später erneut.',
       frequency: (maxPerPerson, frequency) =>
         `${maxPerPerson || 1}x pro Person ${texts.voucher.detailScreen[frequency]} einlösbar`,
