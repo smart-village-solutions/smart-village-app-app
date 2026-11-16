@@ -5,6 +5,11 @@ const { LIST_TYPES } = consts;
 const validListTypes = Object.values(LIST_TYPES);
 
 export const resolveListType = (query, globalSettings, listTypesSettings, listType) => {
+  // These queries supply grouped records to content-specific renderers.
+  if (query === QUERY_TYPES.SEARCH || query === QUERY_TYPES.WASTE_STREET) {
+    return LIST_TYPES.GROUPED_LIST;
+  }
+
   const remoteListTypes = globalSettings?.sections?.listTypes;
   const settingsKey =
     query === QUERY_TYPES.POINTS_OF_INTEREST || query === QUERY_TYPES.TOURS
@@ -18,5 +23,5 @@ export const resolveListType = (query, globalSettings, listTypesSettings, listTy
 
   if (listType) return listType;
 
-  return listTypesSettings?.[settingsKey];
+  return listTypesSettings?.[settingsKey] || LIST_TYPES.TEXT_LIST;
 };

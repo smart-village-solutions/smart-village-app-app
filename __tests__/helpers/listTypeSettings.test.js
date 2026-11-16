@@ -47,4 +47,18 @@ describe('resolveListType', () => {
   it('falls back to the supplied presentation without device settings', () => {
     expect(resolveListType('tours', {}, undefined, 'imageTextList')).toBe('imageTextList');
   });
+
+  it.each(['calendarAll', 'calendarAllMy'])('keeps unspecified %s on its text default', (query) => {
+    expect(
+      resolveListType(query, { sections: { listTypes: { eventRecords: 'imageTextList' } } })
+    ).toBe('textList');
+  });
+
+  it.each(['search', 'wasteStreet'])('preserves the dedicated grouped %s presentation', (query) => {
+    for (const type of ['textList', 'imageTextList', 'cardList', 'cardTextList', 'groupedList']) {
+      expect(resolveListType(query, { sections: { listTypes: { [query]: type } } })).toBe(
+        'groupedList'
+      );
+    }
+  });
 });

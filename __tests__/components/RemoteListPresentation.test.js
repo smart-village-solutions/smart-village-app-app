@@ -7,6 +7,8 @@ import { SettingsContext } from '../../src/SettingsProvider';
 import { ListComponent } from '../../src/components/ListComponent';
 import { GroupedListItem } from '../../src/components/GroupedListItem';
 import { TextListItem } from '../../src/components/TextListItem';
+import { SearchResultSectionList } from '../../src/components/search/SearchResultSectionList';
+import { WasteCollectionListItem } from '../../src/components/waste/WasteCollectionListItem';
 import { useRenderItem } from '../../src/hooks/listHooks';
 import { QUERY_TYPES } from '../../src/queries/types';
 
@@ -112,6 +114,34 @@ it('still applies the event-record presentation to an ordinary sectioned event l
   });
   expect(row.type).toBe(TextListItem);
   expect(row.props.leftImage).toBe(true);
+});
+
+it.each([QUERY_TYPES.VOLUNTEER.CALENDAR_ALL, QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY])(
+  'keeps the unconfigured %s text default when eventRecords is configured',
+  (query) => {
+    render(
+      <Wrapper listTypes={{ eventRecords: 'imageTextList' }}>
+        <ListComponent query={query} sectionByDate data={[]} />
+      </Wrapper>
+    );
+    const row = screen.UNSAFE_getByType('FlashList').props.renderItem({
+      item: { id: 'event' },
+      index: 1
+    });
+    expect(row.type).toBe(TextListItem);
+    expect(row.props.leftImage).toBeUndefined();
+  }
+);
+
+it.each([
+  [QUERY_TYPES.SEARCH, SearchResultSectionList],
+  [QUERY_TYPES.WASTE_STREET, WasteCollectionListItem]
+])('keeps the content-specific %s renderer under a flat remote setting', (query, component) => {
+  const { result } = renderHook(() => useRenderItem(query), {
+    wrapper: withListTypes({ [query]: 'imageTextList' })
+  });
+  const row = result.current({ item: [{ id: 'record' }], index: 1 });
+  expect(row.type).toBe(component);
 });
 
 it('renders flat noticeboard data safely when the remote presentation is grouped', () => {
