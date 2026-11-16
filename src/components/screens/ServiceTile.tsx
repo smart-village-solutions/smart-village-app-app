@@ -247,6 +247,8 @@ export const ServiceTile = ({
                     contentWidth,
                     columns,
                     dimensions,
+                    gridGap,
+                    gridWidth,
                     safeAreaInsets,
                     tileSizeFactor
                   }).bigTile
@@ -275,6 +277,8 @@ export const ServiceTile = ({
                     contentWidth,
                     columns,
                     dimensions,
+                    gridGap,
+                    gridWidth,
                     safeAreaInsets,
                     tileSizeFactor
                   }).bigTileTitle
@@ -342,12 +346,16 @@ const stylesWithProps = ({
   contentWidth,
   columns,
   dimensions,
+  gridGap = 0,
+  gridWidth,
   safeAreaInsets,
   tileSizeFactor = 1
 }: {
   contentWidth?: number;
   columns: number;
   dimensions: { width: number; height: number };
+  gridGap?: number;
+  gridWidth?: number;
   safeAreaInsets: EdgeInsets;
   tileSizeFactor?: number;
 }) => {
@@ -358,7 +366,8 @@ const stylesWithProps = ({
     dimensions.width - safeAreaInsets.left - safeAreaInsets.right - 2 * containerPadding;
 
   // calculate tile sizes based on live window dimensions, safe area insets and padding
-  const tileSize = Math.max(0, availableWidth) / safeColumns;
+  const tileSize =
+    Math.max(0, (gridWidth ?? availableWidth) - gridGap * (safeColumns - 1)) / safeColumns;
   const computedBigTileSize = Math.min(
     tileSize,
     (tileSize - containerPadding / 2) * tileSizeFactor

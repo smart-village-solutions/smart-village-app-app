@@ -62,7 +62,7 @@ jest.mock('../../src/config', () => ({
 }));
 
 jest.mock('../../src/helpers', () => ({
-  imageWidth: () => 320,
+  imageWidth: (_isFullWidth: boolean, contentWidth?: number) => contentWidth ?? 320,
   openLink: jest.fn()
 }));
 
@@ -193,6 +193,7 @@ jest.mock('react-native-render-html', () => {
 });
 
 import { HtmlView } from '../../src/components/HtmlView';
+import { ScreenContentWidthContext } from '../../src/ScreenContentWidthContext';
 
 const renderWithAct = (component: React.ReactElement) => {
   let testRenderer: renderer.ReactTestRenderer;
@@ -255,6 +256,29 @@ describe('HtmlView accessibility', () => {
     ).toBeUndefined();
     expect(fullWidthTree.root.findByType('mock-html').props.contentWidth).toBe(320);
     expect(fullWidthTree.root.findByType('mock-html').props.tagsStyles.img.minWidth).toBe(320);
+  });
+
+  it('bounds full-width HTML images to the safe container and preserves an explicit width cap', () => {
+    const tree = renderWithAct(
+      <ScreenContentWidthContext.Provider value={750}>
+        <HtmlView html={'<img src="https://example.com/full-width.png">'} isImageFullWidth />
+      </ScreenContentWidthContext.Provider>
+    );
+    expect(tree.root.findByType('mock-html').props.contentWidth).toBe(750);
+    expect(tree.root.findByType('mock-html').props.tagsStyles.img.minWidth).toBe(750);
+    renderer.act(() => {
+      tree.update(
+        <ScreenContentWidthContext.Provider value={370}>
+          <HtmlView
+            html={'<img src="https://example.com/full-width.png">'}
+            isImageFullWidth
+            width={300}
+          />
+        </ScreenContentWidthContext.Provider>
+      );
+    });
+    expect(tree.root.findByType('mock-html').props.contentWidth).toBe(300);
+    expect(tree.root.findByType('mock-html').props.tagsStyles.img.minWidth).toBe(300);
   });
 
   it('marks unordered lists and list items with accessibility semantics', () => {

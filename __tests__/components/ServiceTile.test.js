@@ -21,7 +21,7 @@ jest.mock('../../src/config', () => ({
   // Deliberately frozen in landscape: tile sizing must not depend on these values.
   device: { width: 874, height: 402 },
   normalize: (size) => size,
-  Icon: { NamedIcon: () => null }
+  Icon: { NamedIcon: () => null, Visible: () => null, Unvisible: () => null }
 }));
 jest.mock('../../src/helpers', () => ({
   ...jest.requireActual('../../src/helpers/serviceTileStyle'),
@@ -102,5 +102,27 @@ describe('ServiceTile rotation', () => {
     });
     expect(style.width).toBeCloseTo(180.5);
     expect(style.height).toBeCloseTo(180.5);
+  });
+
+  it('keeps images and titles inside gap-adjusted cells with a large tile factor', () => {
+    const style = render('landscape', 874, 402, {
+      contentWidth: 750,
+      gridWidth: 750,
+      gridGap: 5,
+      tileSizeFactor: 1.5
+    });
+    expect(style.width).toBe(146);
+    expect(style.height).toBe(146);
+    const title = tree.root.findByType('BoldText');
+    expect(StyleSheet.flatten(title.props.style).width).toBe(146);
+  });
+
+  it('preserves the gap-free edit grid when measured row sizing is absent', () => {
+    const style = render('landscape', 874, 402, {
+      contentWidth: 750,
+      isEditMode: true,
+      tileSizeFactor: 1.5
+    });
+    expect(style.width).toBe(150);
   });
 });

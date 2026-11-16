@@ -15,6 +15,7 @@ import HTML, {
 import { WebView } from 'react-native-webview';
 
 import { AccessibilityContext } from '../AccessibilityProvider';
+import { ScreenContentWidthContext } from '../ScreenContentWidthContext';
 import { consts, normalize, styles } from '../config';
 import { imageWidth, openLink } from '../helpers';
 import { useTheme } from '../hooks/useTheme';
@@ -375,6 +376,7 @@ export const HtmlView = memo(
     width
   }) => {
     const { colors } = useTheme();
+    const contentWidth = useContext(ScreenContentWidthContext);
     const { isBoldTextEnabled, textScaleMultiplier = 1 } = useContext(AccessibilityContext);
     const themedHtmlStyles = useMemo(() => getThemedHtmlStyles(colors), [colors]);
     const scaledBaseStyle = useMemo(
@@ -398,8 +400,8 @@ export const HtmlView = memo(
 
     let calculatedWidth =
       width !== undefined
-        ? Math.min(imageWidth(isImageFullWidth), width)
-        : imageWidth(isImageFullWidth);
+        ? Math.min(imageWidth(isImageFullWidth, contentWidth), width)
+        : imageWidth(isImageFullWidth, contentWidth);
 
     if (!isImageFullWidth && calculatedWidth > consts.DIMENSIONS.FULL_SCREEN_MAX_WIDTH) {
       // image width should be only 70% on wider screens, as there are 15% padding on each side
