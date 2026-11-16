@@ -201,7 +201,7 @@ export const useRenderItem = (query, navigation, options = {}) => {
         }
 
         // Remote presentation changes do not turn flat data into date-grouped rows.
-        if (!_isArray(item) || !options.queryVariables?.groupKey) {
+        if (!Array.isArray(item) || !options.queryVariables?.groupKey) {
           return (
             <TextListItem
               item={item}
