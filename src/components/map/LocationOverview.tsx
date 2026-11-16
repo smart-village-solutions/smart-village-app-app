@@ -190,7 +190,8 @@ export const LocationOverview = ({
   const {
     data: overviewData,
     loading,
-    refetch
+    refetch,
+    variables: activeQueryVariables
   } = useQuery(getQuery(QUERY_TYPES.POINTS_OF_INTEREST), {
     fetchPolicy,
     variables: {
@@ -291,7 +292,7 @@ export const LocationOverview = ({
         },
         undefined,
         {
-          queryVariables
+          queryVariables: activeQueryVariables
         }
       )?.[0]
     : undefined;
