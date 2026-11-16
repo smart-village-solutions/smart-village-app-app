@@ -24,6 +24,19 @@ const checkboxAccessibilityLabel = (value, checked) =>
       : texts.accessibilityLabels.checkbox.inactive
   })`;
 
+const inlineOptionAccessibilityProps = (entry, multipleSelect) => {
+  const isCheckboxOption = multipleSelect && entry.id !== 0;
+  return {
+    accessibilityLabel: isCheckboxOption
+      ? checkboxAccessibilityLabel(entry.value, !!entry.selected)
+      : `${entry.value} (${a11yLabel.dropDownMenuItem})`,
+    accessibilityRole: isCheckboxOption ? 'checkbox' : 'button',
+    accessibilityState: isCheckboxOption
+      ? { checked: !!entry.selected }
+      : { selected: !!entry.selected }
+  };
+};
+
 export const DropdownSelect = ({
   boldLabel = false,
   data,
@@ -166,6 +179,7 @@ export const DropdownSelect = ({
 
       updatedData[0] = { ...updatedData[0], selected: !anyOtherSelected };
     } else {
+      if (showInlineDropdown) setArrow('down');
       // only trigger onPress if a new selection is made
       if (selectedValue === value) return;
 
@@ -177,7 +191,6 @@ export const DropdownSelect = ({
 
     setData(updatedData);
 
-    if (showInlineDropdown && !multipleSelect) setArrow('down');
     if (multipleSelect) return false;
   };
   // Keep Android filter options inside the filter Modal instead of stacking native Modals.
@@ -260,13 +273,7 @@ export const DropdownSelect = ({
                 <React.Fragment key={`${entry.id}-${entry.value}`}>
                   {visibleIndex > 0 && <View style={styles.dropdownSeparator} />}
                   <TouchableOpacity
-                    accessibilityLabel={
-                      entry.id !== 0
-                        ? checkboxAccessibilityLabel(entry.value, !!entry.selected)
-                        : `${entry.value} (${a11yLabel.dropDownMenuItem})`
-                    }
-                    accessibilityRole={entry.id !== 0 ? 'checkbox' : undefined}
-                    accessibilityState={entry.id !== 0 ? { checked: !!entry.selected } : undefined}
+                    {...inlineOptionAccessibilityProps(entry, multipleSelect)}
                     onPress={() => handleSelect(index, entry.value)}
                   >
                     {renderRow(entry.value, index, false, false)}

@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
-import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
+import { ActivityIndicator, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
 import { normalize } from '../../config';
 import { updateFilters } from '../../helpers';
@@ -14,6 +14,7 @@ type Props = {
   inlineDropdown?: boolean;
   isOverlayFilter?: boolean;
   label?: string;
+  loading?: boolean;
   multipleSelect?: boolean;
   name: keyof FilterProps;
   placeholder?: string;
@@ -30,6 +31,7 @@ export const DropdownFilter = ({
   inlineDropdown,
   isOverlayFilter = false,
   label,
+  loading = false,
   multipleSelect,
   name,
   placeholder,
@@ -43,7 +45,8 @@ export const DropdownFilter = ({
     Array.isArray(value) ? !!value.length : !!value;
 
   const dropdownData = useMemo(() => {
-    const shouldShowPlaceholder = multipleSelect || !data.some((item) => item.selected);
+    const shouldShowPlaceholder =
+      !requireSelection || multipleSelect || !data.some((item) => item.selected);
     const initiallySelectedItem = shouldShowPlaceholder
       ? {
           id: 0,
@@ -63,7 +66,7 @@ export const DropdownFilter = ({
           : item.filterValue === filters[name] || item.value === filters[name]
       }))
     ];
-  }, [data, filters, multipleSelect, name, placeholder]);
+  }, [data, filters, multipleSelect, name, placeholder, requireSelection]);
 
   const handleDropdownDataChange = useCallback(
     (updatedDropdownData: DropdownProps[]) => {
@@ -106,6 +109,14 @@ export const DropdownFilter = ({
   return (
     <>
       <View style={[styles.container, containerStyle]}>
+        {loading && (
+          <ActivityIndicator
+            accessible
+            accessibilityLabel={label}
+            accessibilityRole="progressbar"
+            accessibilityState={{ busy: true }}
+          />
+        )}
         <DropdownSelect
           data={dropdownData}
           isOverlayFilter={isOverlayFilter}
