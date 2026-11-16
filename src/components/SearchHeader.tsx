@@ -6,7 +6,7 @@ import { consts, Icon, normalize } from '../config';
 import { SettingsContext } from '../SettingsProvider';
 import { ScreenName } from '../types';
 import { useThemeStyles } from '../hooks/useThemeStyles';
-import { useTheme } from '../hooks/useTheme';
+import { useHeaderForeground } from '../hooks/useHeaderForeground';
 
 import { HEADER_RIGHT_ICON_SIZE, HEADER_RIGHT_ICON_STROKE_WIDTH } from './headerIconConfig';
 import { HeaderIconButton } from './HeaderIconButton';
@@ -19,7 +19,7 @@ type Props = {
 };
 
 export const SearchHeader = ({ navigation, style }: Props) => {
-  const { colors: colors } = useTheme();
+  const foreground = useHeaderForeground();
 
   const styles = useThemeStyles(createStyles);
   const { globalSettings } = useContext(SettingsContext);
@@ -39,7 +39,7 @@ export const SearchHeader = ({ navigation, style }: Props) => {
       accessibilityHint={a11yLabel.searchHint}
     >
       <Icon.Search
-        color={colors.darkText}
+        color={foreground}
         size={HEADER_RIGHT_ICON_SIZE}
         style={[style, styles.icon]}
         strokeWidth={HEADER_RIGHT_ICON_STROKE_WIDTH}

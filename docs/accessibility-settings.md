@@ -278,6 +278,69 @@ Palette rules:
 - If a critical pair is invalid, translucent, or below the threshold, both tokens in that pair fall back to the built-in palette for that mode. Use opaque values for critical foreground/background tokens.
 - Palette changes received through `globalSettings` are resolved at runtime; no app rebuild is required.
 
+### Municipality header appearance
+
+Configure headers once under `globalSettings.settings.accessibility.header`, with independent
+`light` and `dark` appearances. These settings apply to all shared navigation headers, including
+screens that use `getScreenOptions({})`. Header branding is applied in light mode even when the
+theme selector is disabled. A missing mode uses the existing default surface for that mode.
+
+Each mode accepts `backgroundColor` for a solid header, `gradientColors` for a diagonal gradient
+with at least two stops, and optional `tintColor` shared by titles, back labels and actions.
+Values use the same color formats as palette overrides. Malformed fields are ignored. When
+both background fields are present, `gradientColors` takes precedence. Grayscale converts the
+configured header colors along with the rest of the app.
+
+For example, Kyritz's existing light header uses `#00519E` to `#02284C` with white content.
+The dark appearance below is an example solid header that can be adjusted independently.
+Merge this fragment into the municipality's existing settings.
+
+```json
+{
+  "settings": {
+    "accessibility": {
+      "header": {
+        "light": {
+          "gradientColors": ["#00519E", "#02284C"],
+          "tintColor": "#FFFFFF"
+        },
+        "dark": {
+          "backgroundColor": "#101010",
+          "tintColor": "#FFFFFF"
+        }
+      }
+    }
+  }
+}
+```
+
+For a solid light header, replace its `gradientColors` with `"backgroundColor": "#00519E"`.
+Choose a tint readable across the entire gradient. Automatic foreground selection considers
+contrast at every stop, and status bar icons follow the resolved foreground. Gradients spanning
+very light and very dark colors may require adjusted stops to maintain readable content.
+
+Screen-specific code can override the remote background through either option below. Resolvers
+receive the active theme palette, so they update after a theme change.
+
+```tsx
+getScreenOptions({ headerBackgroundColor: (colors) => colors.primary });
+getScreenOptions({
+  headerGradientColors: (colors) => [colors.primary, colors.secondary]
+});
+```
+
+An explicit `headerGradientColors` wins over an explicit solid background. An explicit solid
+background (including `headerStyle.backgroundColor`) wins over a remote gradient. React
+Navigation's `headerTintColor` overrides remote `tintColor`. The shared `NavigationHeader` owns
+`AppStatusBar` independently of solid, gradient, or custom backgrounds. Automatic status icons use the first gradient stop; `headerStatusBarStyle` remains available for image backgrounds. Translucent or unsupported background colors fall back to the theme surface. Existing custom `headerBackground`
+renderers retain ownership of their background and status bar.
+
+Once this implementation is included in a municipality's app, subsequent remote header changes
+apply when the app receives refreshed `globalSettings`. This follows the existing settings loading
+and caching lifecycle. A rebuild is unnecessary for later color changes. Deploy this shared
+implementation to customer branches and remove any legacy custom header background that should
+be controlled by these settings.
+
 ### Complete remote palette example
 
 The following payload enables theming and supplies every preferred configurable token. It can be
