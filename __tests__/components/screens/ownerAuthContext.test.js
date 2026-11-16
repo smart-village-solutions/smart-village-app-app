@@ -454,7 +454,8 @@ describe('owner auth context for detail screen actions', () => {
   it.each([
     [PointOfInterest, DELETE_POINT_OF_INTEREST],
     [NewsItem, DELETE_NEWS_ITEM],
-    [EventRecord, DELETE_EVENT_RECORD]
+    [EventRecord, DELETE_EVENT_RECORD],
+    [NoticeboardDetail, DELETE_GENERIC_ITEM]
   ])(
     'invalidates loaded overview rows before returning after successful deletion (%#)',
     async (Component, mutation) => {
