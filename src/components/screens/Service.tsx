@@ -83,6 +83,9 @@ export const Service = ({
     typeof tileGridLayout.columns === 'number' && tileGridLayout.columns > 0
       ? tileGridLayout.columns
       : defaultColumnsByOrientation;
+  const tileRowPadding = isEditMode ? normalize(14) : rowHorizontalPadding;
+  const tileContentWidth =
+    contentWidth === undefined ? undefined : contentWidth - 2 * tileRowPadding;
 
   const onPress = useCallback(
     () =>
@@ -100,11 +103,7 @@ export const Service = ({
   const renderItem = useCallback(
     (item: TServiceTile, index: number, shouldAddMargin?: boolean) => (
       <ServiceTile
-        contentWidth={
-          contentWidth === undefined
-            ? undefined
-            : contentWidth - 2 * (isEditMode ? normalize(14) : rowHorizontalPadding)
-        }
+        contentWidth={tileContentWidth}
         draggableId={umlautSwitcher(item.title) || umlautSwitcher(item.accessibilityLabel)}
         draggableKey={`item${item.title || item.accessibilityLabel}-index${index}`}
         hasDiagonalGradientBackground={hasDiagonalGradientBackground}
@@ -131,8 +130,7 @@ export const Service = ({
       />
     ),
     [
-      contentWidth,
-      rowHorizontalPadding,
+      tileContentWidth,
       isEditMode,
       hasDiagonalGradientBackground,
       onToggleVisibility,
