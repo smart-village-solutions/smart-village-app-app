@@ -33,20 +33,20 @@ class AppTemplateTest < Minitest::Test
     assert_equal "./google-services.json", config.fetch("android").fetch("googleServicesFile")
   end
 
-  def test_missing_firebase_fails_for_enabled_or_unknown_push
-    [true, nil, "false", 0].each do |push_setting|
+  def test_missing_firebase_fails_regardless_of_remote_push_settings
+    [true, false, nil, "false", 0].each do |push_setting|
       error = assert_raises(RuntimeError) do
         render(google_services_file_missing: true, push_notifications_enabled: push_setting)
       end
       assert_includes error.message, "google-services.json"
-      assert_includes error.message, "@push_notifications_enabled = false"
+      assert_includes error.message, "waste reminders and future remote push settings"
     end
     assert_raises(RuntimeError) { render(google_services_file_missing: true) }
   end
 
-  def test_explicitly_disabled_push_allows_releases_without_firebase
-    config = render(google_services_file_missing: true, push_notifications_enabled: false)
-    refute config.fetch("android").key?("googleServicesFile")
+  def test_disabled_remote_push_still_keeps_firebase_for_reminders_and_future_settings
+    config = render(google_services_file_missing: false, push_notifications_enabled: false)
+    assert_equal "./google-services.json", config.fetch("android").fetch("googleServicesFile")
     assert_equal "de.example.test", config.fetch("android").fetch("package")
     assert_equal "de.example.test", config.fetch("ios").fetch("bundleIdentifier")
   end

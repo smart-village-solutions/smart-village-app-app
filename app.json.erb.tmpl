@@ -1,5 +1,5 @@
-<% if @google_services_file_missing && @push_notifications_enabled != false
-  raise "Cannot generate Android release without google-services.json: push notifications are enabled or unknown. Provide Firebase configuration, or explicitly set @push_notifications_enabled = false from the tenant's pushNotifications setting."
+<% if @google_services_file_missing
+  raise "Cannot generate Android release without google-services.json. Provide the tenant's Firebase configuration: waste reminders and future remote push settings require a Firebase-equipped native binary."
 end %>
 {
   "expo": {
@@ -72,9 +72,7 @@ end %>
       },
       "package": "<%= @mobile_app_bundle_identifier %>",
       "versionCode": <%= @mobile_app_android_version_number %>,
-<% unless @google_services_file_missing %>
       "googleServicesFile": "./google-services.json",
-<% end %>
       "permissions": ["ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION", "WRITE_EXTERNAL_STORAGE"],
       "blockedPermissions": [
         "FOREGROUND_SERVICE_MEDIA_PLAYBACK",

@@ -3,15 +3,20 @@
 The Main Server release service renders `app.json.erb.tmpl` with an ERB binding.
 Existing callers keep `android.googleServicesFile` pointing to `./google-services.json`.
 
-When the release service detects a missing Firebase file, it may set
-`@google_services_file_missing = true`. Generation then fails unless the caller
-also supplies `@push_notifications_enabled = false`, derived from the tenant's
-`globalSettings.settings.pushNotifications` configuration. Only the boolean
-`false` permits a release without Firebase; missing or unrecognized values fail
-closed with an actionable error. Do not infer disabled push from a missing file.
-Push-enabled tenants must supply their Firebase configuration before releasing.
-The Main Server caller must implement this contract before using the missing-file
-fallback. No Main Server code is changed by this template update.
+Firebase configuration is required for every Android release. When the release
+service detects a missing file, it may set `@google_services_file_missing = true`;
+generation then fails with an actionable error. A disabled tenant
+`globalSettings.settings.pushNotifications` value does not permit omission:
+existing waste-reminder users can still require a server push token, and remote
+settings can enable push after installation. The template always retains
+`android.googleServicesFile`, including for callers without the missing-file flag,
+so the native build also validates the file's presence.
+
+Provide the tenant's valid Firebase configuration before releasing. Do not use an
+empty path or remove the field to bypass that requirement. No Main Server code is
+changed by this template update. Supporting Firebase-free binaries would require
+a separate native capability contract covering every token consumer and settings
+version; this template does not produce those binaries.
 
 Run the rendering regression tests with Ruby (standard-library Minitest):
 
