@@ -1,5 +1,5 @@
 import React, { useContext, useLayoutEffect, useRef, useState } from 'react';
-import { Alert } from 'react-native';
+import { Alert, ScrollView } from 'react-native';
 
 import { AppLanguageNamesContext, AppLanguagesContext } from '../../AppLanguagesProvider';
 import { texts } from '../../config/texts';
@@ -45,17 +45,19 @@ export const LanguageSettings = () => {
   };
 
   return (
-    <WrapperHorizontal>
-      <SettingsRadioGroup
-        title={texts.settingsTitles.language}
-        options={locales.map((language) => ({
-          value: language,
-          label: names[language] ?? languageLabel(language)
-        }))}
-        value={locale}
-        disabled={changingLocale}
-        onChange={confirmLanguageChange}
-      />
-    </WrapperHorizontal>
+    <ScrollView>
+      <WrapperHorizontal>
+        <SettingsRadioGroup
+          title={texts.settingsTitles.language}
+          options={locales.map((language) => ({
+            value: language,
+            label: names[language] ?? languageLabel(language)
+          }))}
+          value={locale}
+          disabled={changingLocale}
+          onChange={confirmLanguageChange}
+        />
+      </WrapperHorizontal>
+    </ScrollView>
   );
 };

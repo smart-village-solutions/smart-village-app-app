@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires, react/prop-types */
 import React from 'react';
-import { Alert } from 'react-native';
+import { Alert, ScrollView } from 'react-native';
 import renderer, { act } from 'react-test-renderer';
 
 import { AppLanguageNamesContext, AppLanguagesContext } from '../../src/AppLanguagesProvider';
@@ -54,6 +54,11 @@ afterEach(async () => {
   });
   setTextsLocale('de');
   jest.restoreAllMocks();
+});
+
+it('puts the language choices inside a scroll view', () => {
+  const scrollView = tree.root.findByType(ScrollView);
+  expect(scrollView.findAllByType(Radiobutton)).toHaveLength(4);
 });
 
 it('shows the languages by name even without Intl.DisplayNames', async () => {
