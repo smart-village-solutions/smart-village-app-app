@@ -352,6 +352,7 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
       />
       <ListComponent
         data={listData}
+        isIndexStartingAt1={!!categoryIdsTabs?.length}
         ListHeaderComponent={ResultListHeaderComponent}
         navigation={navigation}
         query={query}

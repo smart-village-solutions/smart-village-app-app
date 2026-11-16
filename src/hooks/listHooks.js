@@ -130,12 +130,8 @@ export const useRenderItem = (query, navigation, options = {}) => {
           );
         }
 
-        // in special lists such as `EventList`, since the data starts from the 1st index,
-        // `isIndexStartingAt1` and `index` control has been added
-        if (
-          (index === 0 && !options.isIndexStartingAt1) ||
-          (index === 1 && options.isIndexStartingAt1)
-        ) {
+        const isLeadingItem = index === (options.isIndexStartingAt1 ? 1 : 0);
+        if (isLeadingItem) {
           if (!item?.picture?.url) {
             return (
               <TextListItem
@@ -149,7 +145,7 @@ export const useRenderItem = (query, navigation, options = {}) => {
           }
         }
 
-        if (index === 0) {
+        if (isLeadingItem) {
           return (
             <CardListItem
               bigTitle
@@ -179,8 +175,18 @@ export const useRenderItem = (query, navigation, options = {}) => {
       break;
     }
     case LIST_TYPES.GROUPED_LIST: {
-      renderItem = ({ item }) => {
+      // eslint-disable-next-line react/prop-types -- FlashList row metadata is not component props.
+      renderItem = ({ item, target }) => {
         if (typeof item === 'string') {
+          if (query === QUERY_TYPES.EVENT_RECORDS) {
+            return (
+              <View
+                style={target == 'StickyHeader' ? styles.eventStickyHeader : styles.eventHeader}
+              >
+                <EventSectionHeader {...{ item, navigation, options, query }} />
+              </View>
+            );
+          }
           return <GroupedSectionHeader item={item} />;
         }
 
@@ -359,6 +365,7 @@ export const useRenderItem = (query, navigation, options = {}) => {
     listType,
     navigation,
     options.horizontal,
+    options.isIndexStartingAt1,
     options.noSubtitle,
     options.queryVariables
   ]);
