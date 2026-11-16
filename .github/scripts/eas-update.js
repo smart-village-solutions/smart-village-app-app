@@ -25,15 +25,26 @@ if (!process.env.SENTRY_AUTH_TOKEN) {
   throw new Error('SENTRY_AUTH_TOKEN is required to upload OTA source maps.');
 }
 const sourceMapUploader = require.resolve('@sentry/react-native/scripts/expo-upload-sourcemaps');
-// Resolve the installed CLI directly instead of searching PATH for an executable.
-// Support project-local installs and the global npm prefix of the active Node runtime.
-const easCli = createRequire(__filename).resolve('eas-cli/bin/run', {
-  paths: [
-    path.resolve(__dirname, '../..'),
-    path.resolve(path.dirname(process.execPath), '../lib'),
-    path.dirname(process.execPath)
-  ]
-});
+// Prefer an installed module, then support custom npm prefixes and Yarn global installs on PATH.
+let easCommand = process.execPath;
+let easPrefix;
+try {
+  easPrefix = [
+    createRequire(__filename).resolve('eas-cli/bin/run', {
+      paths: [
+        path.resolve(__dirname, '../..'),
+        path.resolve(path.dirname(process.execPath), '../lib'),
+        path.dirname(process.execPath)
+      ]
+    })
+  ];
+} catch (error) {
+  if (error.code !== 'MODULE_NOT_FOUND') throw error;
+  // Fail before modifying app.json if PATH does not provide an executable CLI either.
+  execFileSync('eas', ['--version'], { stdio: 'ignore' });
+  easCommand = 'eas';
+  easPrefix = [];
+}
 
 // Ensure that expo.extra.otaVersion exists and is a number
 if (!appJson.expo || typeof appJson.expo.extra?.otaVersion !== 'number') {
@@ -58,8 +69,8 @@ execSync(`yarn prettier --write ${appJsonPath}`, { stdio: 'inherit' });
 console.log(`✅ expo.extra.otaVersion has been incremented to ${appJson.expo.extra.otaVersion}.`);
 
 execFileSync(
-  process.execPath,
-  [easCli, 'update', '--channel', 'production', '--message', updateMessage],
+  easCommand,
+  [...easPrefix, 'update', '--channel', 'production', '--message', updateMessage],
   {
     stdio: 'inherit'
   }

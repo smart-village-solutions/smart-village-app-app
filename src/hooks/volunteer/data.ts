@@ -54,16 +54,23 @@ export const useVolunteerData = ({
   refetch: () => void;
   userGuid?: string | null;
 } => {
-  const { data, isLoading, isRefetching, refetch } = useQuery(
-    [query, queryVariables],
-    () => getQuery(query)(queryVariables),
-    queryOptions
-  );
+  const {
+    data,
+    isLoading,
+    isRefetching,
+    refetch: refetchQuery
+  } = useQuery([query, queryVariables], () => getQuery(query)(queryVariables), queryOptions);
 
   const [isProcessing, setIsProcessing] = useState(true);
   const [userGuid, setUserGuid] = useState<string | null>();
   const [volunteerData, setVolunteerData] = useState<any[]>([]);
   const processingGeneration = useRef(0);
+  const [processingAttempt, setProcessingAttempt] = useState(0);
+  const refetch = useCallback(() => {
+    // Structurally unchanged cached responses must still retry a failed credential read.
+    setProcessingAttempt((attempt) => attempt + 1);
+    return refetchQuery();
+  }, [refetchQuery]);
 
   const processVolunteerData = useCallback(async () => {
     const generation = ++processingGeneration.current;
@@ -241,7 +248,7 @@ export const useVolunteerData = ({
     return () => {
       processingGeneration.current += 1;
     };
-  }, [processVolunteerData]);
+  }, [processVolunteerData, processingAttempt]);
 
   return {
     data: volunteerData,

@@ -92,6 +92,38 @@ describe('OTA source map publishing', () => {
     expect(execFileSync).not.toHaveBeenCalled();
   });
 
+  it('publishes with a PATH CLI when module resolution misses a custom global install', () => {
+    mockResolveCli.mockImplementationOnce(() => {
+      throw Object.assign(new Error('module not found'), { code: 'MODULE_NOT_FOUND' });
+    });
+    jest.isolateModules(() => require('../../.github/scripts/eas-update'));
+    expect(execFileSync).toHaveBeenNthCalledWith(1, 'eas', ['--version'], { stdio: 'ignore' });
+    expect(execFileSync.mock.invocationCallOrder[0]).toBeLessThan(
+      fs.writeFileSync.mock.invocationCallOrder[0]
+    );
+    expect(execFileSync).toHaveBeenNthCalledWith(
+      2,
+      'eas',
+      ['update', '--channel', 'production', '--message', 'fix "quoted" message'],
+      { stdio: 'inherit' }
+    );
+  });
+
+  it('does not modify config when neither a module nor a PATH CLI is installed', () => {
+    mockResolveCli.mockImplementationOnce(() => {
+      throw Object.assign(new Error('module not found'), { code: 'MODULE_NOT_FOUND' });
+    });
+    execFileSync.mockImplementationOnce(() => {
+      throw Object.assign(new Error('spawn eas ENOENT'), { code: 'ENOENT' });
+    });
+    expect(() => jest.isolateModules(() => require('../../.github/scripts/eas-update'))).toThrow(
+      'spawn eas ENOENT'
+    );
+    expect(fs.writeFileSync).not.toHaveBeenCalled();
+    expect(execSync).not.toHaveBeenCalled();
+    expect(execFileSync).toHaveBeenCalledTimes(1);
+  });
+
   it('does not commit or push after a source map upload failure', () => {
     execFileSync
       .mockImplementationOnce(() => undefined)

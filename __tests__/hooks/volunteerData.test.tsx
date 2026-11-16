@@ -45,6 +45,10 @@ const deferred = <T,>() => {
 };
 
 describe('useVolunteerData', () => {
+  beforeEach(() => {
+    mockUseQuery.mockReset();
+    mockVolunteerUserData.mockReset();
+  });
   it('retains processed data and clears loading when a later credential read fails', async () => {
     jest.spyOn(console, 'warn').mockImplementation(() => {});
     let queryData = { results: [{ id: 'saved' }] };
@@ -73,6 +77,44 @@ describe('useVolunteerData', () => {
     expect(latest!.data).toEqual([{ id: 'saved' }]);
     expect(latest!.userGuid).toBe('saved-user');
     jest.restoreAllMocks();
+  });
+
+  it('retries local processing when refresh returns the identical cached conversation object', async () => {
+    const warning = jest.spyOn(console, 'warn').mockImplementation(() => {});
+    const cachedData = { results: [{ id: 'cached-conversation', updated_at: '2026-11-16' }] };
+    const refetchQuery = jest.fn().mockResolvedValue({ data: cachedData });
+    mockUseQuery.mockReturnValue({
+      data: cachedData,
+      isLoading: false,
+      isRefetching: false,
+      refetch: refetchQuery
+    });
+    mockVolunteerUserData
+      .mockRejectedValueOnce(new Error('device locked'))
+      .mockResolvedValue({ currentUserId: '1', currentUserGuid: 'existing-user' });
+    let latest: ReturnType<typeof useVolunteerData>;
+    const Harness = () => {
+      latest = useVolunteerData({ query: 'volunteerConversations' as never });
+      return null;
+    };
+    try {
+      render(<Harness />);
+      await act(async () => {});
+      expect(latest!.isLoading).toBe(false);
+      expect(latest!.data).toEqual([]);
+      const refresh = latest!.refetch;
+      await act(async () => {
+        await refresh();
+      });
+      expect(latest!.data).toEqual(cachedData.results);
+      expect(latest!.userGuid).toBe('existing-user');
+      expect(latest!.isLoading).toBe(false);
+      expect(latest!.refetch).toBe(refresh);
+      expect(refetchQuery).toHaveBeenCalledTimes(1);
+      expect(mockVolunteerUserData).toHaveBeenCalledTimes(2);
+    } finally {
+      warning.mockRestore();
+    }
   });
 
   it('does not publish an older processing result after the range changes', async () => {
