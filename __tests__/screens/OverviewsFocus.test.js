@@ -164,3 +164,29 @@ it('does not let an older successful refresh undo a newer acknowledged invalidat
   await act(async () => mockFocus());
   expect(mockRefetch).toHaveBeenCalledTimes(2);
 });
+
+it('retains the pre-detail range when an awaited news deletion refetch first shrinks the cache', async () => {
+  mockRefetch.mockResolvedValue({ data: {} });
+  const tree = await renderNews();
+  let blur;
+  act(() => {
+    blur = mockFocus();
+  });
+  expect(mockRefetch).not.toHaveBeenCalled();
+  act(() => blur());
+  // NewsItem awaits Apollo's ordinary first-page refetch before onCompleted emits the event.
+  mockData = { newsItems: mockData.newsItems.slice(0, 20) };
+  await act(async () => tree.update(newsScreen()));
+  act(() => DeviceEventEmitter.emit(DETAIL_REFRESH_EVENT));
+  await act(async () => mockFocus());
+  expect(mockRefetch).toHaveBeenLastCalledWith({ limit: 40, categoryIds: ['a'] });
+  // An explicit refresh and the next detail visit use the newly visible first-page range.
+  await act(async () => tree.root.findByType(ListComponent).props.refreshControl.props.onRefresh());
+  act(() => {
+    blur = mockFocus();
+  });
+  act(() => blur());
+  act(() => DeviceEventEmitter.emit(DETAIL_REFRESH_EVENT));
+  await act(async () => mockFocus());
+  expect(mockRefetch).toHaveBeenLastCalledWith({ limit: 20, categoryIds: ['a'] });
+});

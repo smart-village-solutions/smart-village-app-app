@@ -1,6 +1,7 @@
 import { useFocusEffect } from 'expo-router/react-navigation';
 import * as Location from 'expo-location';
 import _camelCase from 'lodash/camelCase';
+import _isEqual from 'lodash/isEqual';
 import _uniqBy from 'lodash/uniqBy';
 import PropTypes from 'prop-types';
 import React, {
@@ -476,6 +477,7 @@ export const Overviews = ({ navigation, route }) => {
 
   const hasLoadedMore = useRef(false);
   const loadedCount = useRef(0);
+  const lastViewedRange = useRef();
   const detailRevision = useRef(0);
   const reconciledDetailRevision = useRef(0);
   useEffect(() => {
@@ -492,16 +494,31 @@ export const Overviews = ({ navigation, route }) => {
 
   useFocusEffect(
     useCallback(() => {
+      const rememberViewedRange = () => {
+        lastViewedRange.current = {
+          query,
+          variables: networkQueryVariables,
+          count: loadedCount.current
+        };
+      };
       const hasDetailChanges = detailRevision.current > reconciledDetailRevision.current;
       // Unchanged detail visits retain their pages; successful edits must reconcile membership.
       if (!isConnected || !query || (hasLoadedMore.current && !hasDetailChanges)) {
-        return undefined;
+        return rememberViewedRange;
       }
 
+      const viewedCount =
+        lastViewedRange.current?.query === query &&
+        _isEqual(lastViewedRange.current?.variables, networkQueryVariables)
+          ? lastViewedRange.current.count
+          : 0;
       const revision = detailRevision.current;
       const variables = {
         ...networkQueryVariables,
-        limit: hasDetailChanges && pageSize ? Math.max(pageSize, loadedCount.current) : pageSize
+        limit:
+          hasDetailChanges && pageSize
+            ? Math.max(pageSize, loadedCount.current, viewedCount)
+            : pageSize
       };
       void Promise.resolve(refetch?.(variables))
         .then(() => {
@@ -511,7 +528,7 @@ export const Overviews = ({ navigation, route }) => {
           // Keep the invalidation pending so a later focus/reconnect can retry it.
         });
 
-      return undefined;
+      return rememberViewedRange;
     }, [isConnected, query, refetch, networkQueryVariables, pageSize])
   );
 
