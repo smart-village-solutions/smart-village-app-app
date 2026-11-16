@@ -18,7 +18,7 @@ import { VoucherWidget } from './VoucherWidget';
 import { WaterTemperatureWidget } from './WaterTemperatureWidget';
 import { WeatherWidget } from './WeatherWidget';
 import { WebWidget } from './WebWidget';
-import { WidgetLayoutContext } from './WidgetLayoutContext';
+import { WidgetLayoutContext, type WidgetLayoutMode } from './WidgetLayoutContext';
 
 const WIDGET_CONTAINER_PADDING = 16;
 const WIDGET_COLUMN_PADDING = 4;
@@ -51,24 +51,10 @@ const EXISTING_WIDGETS: {
   web: WebWidget
 };
 
-export const Widgets = ({ widgetConfigs, widgetStyle }: Props) => {
-  const { fontScale, width } = useWindowDimensions();
-  const { globalSettings } = useContext(SettingsContext);
-  const balanceWidgetRows =
-    globalSettings?.settings?.accessibility?.enabledFeatures?.balanceWidgetRows === true;
-  const safeAreaInsets = useSafeAreaInsets();
-  const { textScaleMultiplier = 1 } = useContext(AccessibilityContext);
-  const [labelWidths, setLabelWidths] = useState<Record<string, number>>({});
-  const onLabelWidth = useCallback((key: string, measuredWidth: number) => {
-    setLabelWidths((current) =>
-      current[key] === measuredWidth ? current : { ...current, [key]: measuredWidth }
-    );
-  }, []);
-  const [containerMeasurement, setContainerMeasurement] = useState({
-    measuredWidth: width,
-    hasMeasured: false,
-    windowWidth: width
-  });
+const getWidgetComponents = (
+  widgetConfigs: Props['widgetConfigs'],
+  widgetStyle: Props['widgetStyle']
+) => {
   const visibleWidgetConfigs = (widgetConfigs ?? []).filter((widgetConfig) => {
     if (typeof widgetConfig === 'string') return widgetConfig !== 'search';
 
@@ -77,7 +63,7 @@ export const Widgets = ({ widgetConfigs, widgetStyle }: Props) => {
       widgetConfig.additionalProps?.routeName !== ScreenName.Search
     );
   });
-  const widgetComponents = visibleWidgetConfigs.flatMap((widgetConfig, index) => {
+  return visibleWidgetConfigs.flatMap((widgetConfig, index) => {
     const widgetName = typeof widgetConfig === 'string' ? widgetConfig : widgetConfig.widgetName;
     const widgetText = typeof widgetConfig === 'string' ? undefined : widgetConfig.text;
     const additionalProps =
@@ -100,6 +86,68 @@ export const Widgets = ({ widgetConfigs, widgetStyle }: Props) => {
       }
     ];
   });
+};
+
+const WidgetItem = ({
+  children,
+  columns,
+  columnPadding,
+  isGrid,
+  mode,
+  measurementKey,
+  measurementId,
+  onLabelWidth
+}: {
+  children: React.ReactNode;
+  columns: number;
+  columnPadding: number;
+  isGrid: boolean;
+  mode: WidgetLayoutMode;
+  measurementKey: string;
+  measurementId: string;
+  onLabelWidth?: (key: string, width: number) => void;
+}) => {
+  const reportLabelWidth = useCallback(
+    (width: number) => onLabelWidth?.(measurementId, width),
+    [measurementId, onLabelWidth]
+  );
+  const value = useMemo(
+    () => ({ mode, measurementKey, onLabelWidth: onLabelWidth ? reportLabelWidth : undefined }),
+    [mode, measurementKey, onLabelWidth, reportLabelWidth]
+  );
+  return (
+    <WidgetLayoutContext.Provider value={value}>
+      <View
+        style={[
+          isGrid && styles.gridItem,
+          { paddingHorizontal: columnPadding, width: `${100 / columns}%` }
+        ]}
+      >
+        {children}
+      </View>
+    </WidgetLayoutContext.Provider>
+  );
+};
+
+export const Widgets = ({ widgetConfigs, widgetStyle }: Props) => {
+  const { fontScale, width } = useWindowDimensions();
+  const { globalSettings } = useContext(SettingsContext);
+  const balanceWidgetRows =
+    globalSettings?.settings?.accessibility?.enabledFeatures?.balanceWidgetRows === true;
+  const safeAreaInsets = useSafeAreaInsets();
+  const { textScaleMultiplier = 1 } = useContext(AccessibilityContext);
+  const [labelWidths, setLabelWidths] = useState<Record<string, number>>({});
+  const onLabelWidth = useCallback((key: string, measuredWidth: number) => {
+    setLabelWidths((current) =>
+      current[key] === measuredWidth ? current : { ...current, [key]: measuredWidth }
+    );
+  }, []);
+  const [containerMeasurement, setContainerMeasurement] = useState({
+    measuredWidth: width,
+    hasMeasured: false,
+    windowWidth: width
+  });
+  const widgetComponents = getWidgetComponents(widgetConfigs, widgetStyle);
   const horizontalPadding = normalize(WIDGET_CONTAINER_PADDING);
   const columnPadding = normalize(WIDGET_COLUMN_PADDING);
   const rowGap = normalize(WIDGET_ROW_GAP);
@@ -139,7 +187,7 @@ export const Widgets = ({ widgetConfigs, widgetStyle }: Props) => {
       }),
     [availableWidth, balanceWidgetRows, effectiveTextScale, minItemWidth, widgetComponents.length]
   );
-  const itemColumns = layout.rowSizes?.flatMap((size) => Array<number>(size).fill(size));
+  const itemColumns = layout.rowSizes?.flatMap((size) => new Array<number>(size).fill(size));
   const layoutContext = useMemo(
     () => ({
       mode:
@@ -184,28 +232,18 @@ export const Widgets = ({ widgetConfigs, widgetStyle }: Props) => {
         ]}
       >
         {widgetComponents.map((entry, index) => (
-          <WidgetLayoutContext.Provider
+          <WidgetItem
             key={entry.key}
-            value={{
-              ...layoutContext,
-              measurementKey,
-              onLabelWidth: balanceWidgetRows
-                ? (value) => onLabelWidth(getMeasurementKey(entry.key), value)
-                : undefined
-            }}
+            columns={itemColumns?.[index] ?? layout.columns}
+            columnPadding={columnPadding}
+            isGrid={layout.columns > 1}
+            mode={layoutContext.mode}
+            measurementKey={measurementKey}
+            measurementId={getMeasurementKey(entry.key)}
+            onLabelWidth={balanceWidgetRows ? onLabelWidth : undefined}
           >
-            <View
-              style={[
-                layout.columns > 1 && styles.gridItem,
-                {
-                  paddingHorizontal: columnPadding,
-                  width: `${100 / (itemColumns?.[index] ?? layout.columns)}%`
-                }
-              ]}
-            >
-              {entry.component}
-            </View>
-          </WidgetLayoutContext.Provider>
+            {entry.component}
+          </WidgetItem>
         ))}
       </View>
     </WidgetLayoutContext.Provider>
