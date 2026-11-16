@@ -20,6 +20,8 @@ const mockUseMutation = jest.fn();
 const mockUseQuery = jest.fn();
 const mockUseProfileContext = jest.fn();
 const mockUseFocusEffect = jest.fn();
+let mockMapProps;
+const mockMapUnmount = jest.fn();
 
 jest.mock('react-apollo', () => ({
   useMutation: (...args) => mockUseMutation(...args),
@@ -98,6 +100,7 @@ jest.mock('../../../src/config', () => ({
   },
   normalize: (value) => value,
   texts: {
+    detailTitles: { pointOfInterest: 'Ort' },
     noticeboard: {
       abort: 'Abort',
       alerts: {
@@ -159,6 +162,7 @@ jest.mock('../../../src/queries', () => ({
 
 jest.mock('../../../src/types', () => ({
   ScreenName: {
+    Detail: 'Detail',
     NoticeboardForm: 'NoticeboardForm',
     NoticeboardMemberIndex: 'NoticeboardMemberIndex',
     ProfileCreateContentForm: 'ProfileCreateContentForm',
@@ -294,7 +298,11 @@ jest.mock('../../../src/components/map', () => {
   const { View } = require('react-native');
 
   return {
-    MapLibre: () => <View />
+    MapLibre: (props) => {
+      mockMapProps = props;
+      React.useEffect(() => () => mockMapUnmount(), []);
+      return <View />;
+    }
   };
 });
 
@@ -377,14 +385,17 @@ const navigation = {
 const route = { params: {} };
 
 const renderComponent = async (component) => {
+  let tree;
   await act(async () => {
-    renderer.create(component);
+    tree = renderer.create(component);
   });
+  return tree;
 };
 
 describe('owner auth context for detail screen actions', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockMapProps = undefined;
     isValidGeoLocation.mockReturnValue(false);
 
     mockUseMutation.mockImplementation(() => [jest.fn(), {}]);
@@ -406,7 +417,11 @@ describe('owner auth context for detail screen actions', () => {
 
   it('passes user auth context to owner delete mutations for content detail screens', async () => {
     await renderComponent(
-      <EventRecord data={{ id: 'event-1', dataProvider: { id: 'provider-1' } }} navigation={navigation} route={route} />
+      <EventRecord
+        data={{ id: 'event-1', dataProvider: { id: 'provider-1' } }}
+        navigation={navigation}
+        route={route}
+      />
     );
     await renderComponent(
       <NewsItem
@@ -470,9 +485,88 @@ describe('owner auth context for detail screen actions', () => {
       GET_POINT_OF_INTEREST_MAP_MARKERS,
       expect.objectContaining({
         skip: false,
-        variables: { category: 'Hotels, Pensionen etc.', categoryIds: undefined }
+        variables: {
+          category: 'Hotels, Pensionen etc.',
+          categoryId: undefined,
+          categoryIds: undefined
+        }
       })
     );
+  });
+
+  it('retains the overview category IDs when navigating between detail-map peers', async () => {
+    isValidGeoLocation.mockReturnValue(true);
+    await renderComponent(
+      <PointOfInterest
+        data={{
+          id: 'poi-1',
+          addresses: [{ geoLocation: { latitude: 52, longitude: 13 } }],
+          categories: [
+            { id: 'a', name: 'A' },
+            { id: 'b', name: 'B' }
+          ],
+          payload: {}
+        }}
+        navigation={navigation}
+        route={{ params: { rootRouteName: 'Places', queryVariables: { categoryIds: ['a'] } } }}
+      />
+    );
+    expect(mockUseQuery).toHaveBeenCalledWith(
+      GET_POINT_OF_INTEREST_MAP_MARKERS,
+      expect.objectContaining({
+        variables: { category: undefined, categoryId: undefined, categoryIds: ['a'] }
+      })
+    );
+    act(() => mockMapProps.onMarkerPress('poi-2'));
+    expect(navigation.push).toHaveBeenCalledWith(
+      'Detail',
+      expect.objectContaining({
+        queryVariables: {
+          id: 'poi-2',
+          categoryName: undefined,
+          categoryId: undefined,
+          categoryIds: ['a']
+        },
+        rootRouteName: 'Places'
+      })
+    );
+  });
+
+  it('keeps the selected map mounted while peer markers load and then adds peers', async () => {
+    isValidGeoLocation.mockReturnValue(true);
+    let result = { loading: true, data: undefined };
+    mockUseQuery.mockImplementation(() => result);
+    const element = () => (
+      <PointOfInterest
+        data={{
+          id: 'poi-1',
+          addresses: [{ geoLocation: { latitude: 52, longitude: 13 } }],
+          payload: {}
+        }}
+        navigation={navigation}
+        route={{ params: { queryVariables: { categoryIds: ['a'] } } }}
+      />
+    );
+    const tree = await renderComponent(element());
+    expect(mockMapProps.selectedMarker).toBe('poi-1');
+    expect(mockMapProps.locations.map((marker) => marker.id)).toEqual(['poi-1']);
+
+    result = {
+      loading: false,
+      data: {
+        pointsOfInterest: [
+          {
+            id: 'poi-2',
+            name: 'Peer',
+            visible: true,
+            addresses: [{ geoLocation: { latitude: 52.1, longitude: 13.1 } }]
+          }
+        ]
+      }
+    };
+    await act(async () => tree.update(element()));
+    expect(mockMapProps.locations.map((marker) => marker.id)).toEqual(['poi-1', 'poi-2']);
+    expect(mockMapUnmount).not.toHaveBeenCalled();
   });
 
   it('passes user auth context only to noticeboard conversation hooks', async () => {

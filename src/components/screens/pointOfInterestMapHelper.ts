@@ -26,6 +26,29 @@ export const getPointOfInterestMapCategoryIds = (
   return [...new Set(ids)];
 };
 
+type MapCategoryFilters = {
+  categoryName?: string;
+  categoryId?: string | number;
+  categoryIds?: Array<string | number>;
+};
+
+export const getPointOfInterestMapFilters = (
+  categories: Category[] | undefined,
+  queryVariables: MapCategoryFilters = {}
+) => {
+  const { categoryName, categoryId } = queryVariables;
+  const hasCategoryId = categoryId != null && categoryId !== '';
+  let categoryIds = queryVariables.categoryIds?.length ? queryVariables.categoryIds : undefined;
+  if (!categoryIds && !hasCategoryId && !categoryName) {
+    categoryIds = getPointOfInterestMapCategoryIds(categories, undefined);
+  }
+  return {
+    category: categoryName || undefined,
+    categoryId: hasCategoryId ? categoryId : undefined,
+    categoryIds
+  };
+};
+
 export const getPointOfInterestMapMarkers = (
   currentMarker: MapMarker,
   pointsOfInterest: RelatedPointOfInterest[] | undefined

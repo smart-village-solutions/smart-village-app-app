@@ -47,7 +47,7 @@ import { PriceCard } from './PriceCard';
 import { TravelTimes } from './TravelTimes';
 import { isOpeningTimesGroupingEnabled } from './openingTimesSettings';
 import {
-  getPointOfInterestMapCategoryIds,
+  getPointOfInterestMapFilters,
   getPointOfInterestMapMarkers
 } from './pointOfInterestMapHelper';
 
@@ -108,27 +108,21 @@ export const PointOfInterest = ({
   const hasGeoCoordinates = isValidGeoLocation(geoLocation);
   const latitude = geoLocation?.latitude;
   const longitude = geoLocation?.longitude;
-  const categoryName = route.params?.queryVariables?.categoryName;
-  const categoryIds = useMemo(
-    () => getPointOfInterestMapCategoryIds(categories, categoryName),
-    [categories, categoryName]
+  const queryVariables = route.params?.queryVariables;
+  const categoryName = queryVariables?.categoryName;
+  const mapCategoryFilters = useMemo(
+    () => getPointOfInterestMapFilters(categories, queryVariables),
+    [categories, queryVariables]
   );
-  const { data: mapMarkerData, loading: mapMarkerLoading } = useQuery(
-    GET_POINT_OF_INTEREST_MAP_MARKERS,
-    {
-      fetchPolicy: graphqlFetchPolicy({ isConnected, isMainserverUp }),
-      skip:
-        hideMap ||
-        !hasGeoCoordinates ||
-        !isConnected ||
-        !isMainserverUp ||
-        (!categoryName && !categoryIds.length),
-      variables: {
-        category: categoryName || undefined,
-        categoryIds: categoryName ? undefined : categoryIds
-      }
-    }
-  );
+  const hasMapCategoryFilter =
+    !!mapCategoryFilters.category ||
+    mapCategoryFilters.categoryId != null ||
+    !!mapCategoryFilters.categoryIds?.length;
+  const { data: mapMarkerData } = useQuery(GET_POINT_OF_INTEREST_MAP_MARKERS, {
+    fetchPolicy: graphqlFetchPolicy({ isConnected, isMainserverUp }),
+    skip: hideMap || !hasGeoCoordinates || !isConnected || !isMainserverUp || !hasMapCategoryFilter,
+    variables: mapCategoryFilters
+  });
   const currentMapMarker = useMemo(
     () => ({
       id,
@@ -410,29 +404,28 @@ export const PointOfInterest = ({
       {!hideMap && hasGeoCoordinates && isConnected && isMainserverUp && (
         <WrapperVertical>
           <SectionHeader title={texts.pointOfInterest.location} />
-          {mapMarkerLoading ? (
-            <View style={styles.mapStyle}>
-              <LoadingSpinner loading />
-            </View>
-          ) : (
-            <MapLibre
-              isMultipleMarkersMap={false}
-              isMyLocationButtonVisible={false}
-              locations={mapMarkers}
-              mapStyle={styles.mapStyle}
-              onMarkerPress={(markerId) => {
-                if (!markerId || markerId === id) return;
+          <MapLibre
+            isMultipleMarkersMap={false}
+            isMyLocationButtonVisible={false}
+            locations={mapMarkers}
+            mapStyle={styles.mapStyle}
+            onMarkerPress={(markerId) => {
+              if (!markerId || markerId === id) return;
 
-                navigation.push(ScreenName.Detail, {
-                  title: texts.detailTitles.pointOfInterest,
-                  query: QUERY_TYPES.POINT_OF_INTEREST,
-                  queryVariables: { id: markerId, categoryName },
-                  rootRouteName: route.params?.rootRouteName
-                });
-              }}
-              selectedMarker={id}
-            />
-          )}
+              navigation.push(ScreenName.Detail, {
+                title: texts.detailTitles.pointOfInterest,
+                query: QUERY_TYPES.POINT_OF_INTEREST,
+                queryVariables: {
+                  id: markerId,
+                  categoryName: mapCategoryFilters.category,
+                  categoryId: mapCategoryFilters.categoryId,
+                  categoryIds: mapCategoryFilters.categoryIds
+                },
+                rootRouteName: route.params?.rootRouteName
+              });
+            }}
+            selectedMarker={id}
+          />
         </WrapperVertical>
       )}
 

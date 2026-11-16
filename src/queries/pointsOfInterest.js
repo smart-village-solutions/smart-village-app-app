@@ -100,8 +100,8 @@ export const GET_POINTS_OF_INTEREST = gql`
 `;
 
 export const GET_POINT_OF_INTEREST_MAP_MARKERS = gql`
-  query PointOfInterestMapMarkers($category: String, $categoryIds: [ID]) {
-    pointsOfInterest(category: $category, categoryIds: $categoryIds) {
+  query PointOfInterestMapMarkers($category: String, $categoryId: ID, $categoryIds: [ID]) {
+    pointsOfInterest(category: $category, categoryId: $categoryId, categoryIds: $categoryIds) {
       id
       name
       visible

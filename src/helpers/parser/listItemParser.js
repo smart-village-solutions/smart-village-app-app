@@ -252,7 +252,12 @@ const parsePointOfInterest = (data, skipLastDivider = false, queryVariables = un
     params: {
       title: texts.detailTitles.pointOfInterest,
       query: QUERY_TYPES.POINT_OF_INTEREST,
-      queryVariables: { id: `${pointOfInterest.id}`, categoryName: queryVariables?.category },
+      queryVariables: {
+        id: `${pointOfInterest.id}`,
+        categoryName: queryVariables?.category,
+        ...(queryVariables?.categoryId != null ? { categoryId: queryVariables.categoryId } : {}),
+        ...(queryVariables?.categoryIds?.length ? { categoryIds: queryVariables.categoryIds } : {})
+      },
       rootRouteName: ROOT_ROUTE_NAMES.POINTS_OF_INTEREST_AND_TOURS,
       shareContent: {
         message: shareMessage(pointOfInterest, QUERY_TYPES.POINT_OF_INTEREST)
@@ -361,8 +366,12 @@ const parseCategories = (data, skipLastDivider, routeName, queryVariables, query
   return categories;
 };
 
-const parsePointsOfInterestAndTours = (data) => {
-  const pointsOfInterest = parsePointOfInterest(data?.[QUERY_TYPES.POINTS_OF_INTEREST]);
+const parsePointsOfInterestAndTours = (data, queryVariables) => {
+  const pointsOfInterest = parsePointOfInterest(
+    data?.[QUERY_TYPES.POINTS_OF_INTEREST],
+    false,
+    queryVariables
+  );
   const tours = parseTours(data?.[QUERY_TYPES.TOURS]);
 
   return _shuffle([...(pointsOfInterest || []), ...(tours || [])]);
@@ -468,7 +477,7 @@ export const parseListItemsFromQuery = (query, data, titleDetail = '', options =
         query
       );
     case QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS:
-      return parsePointsOfInterestAndTours(data);
+      return parsePointsOfInterestAndTours(data, queryVariables);
     case QUERY_TYPES.WASTE_STREET:
       return parseWasteData(data);
     case QUERY_TYPES.PROFILE.GET_CONVERSATIONS:

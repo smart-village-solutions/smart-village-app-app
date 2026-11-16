@@ -1,9 +1,32 @@
 import {
   getPointOfInterestMapCategoryIds,
+  getPointOfInterestMapFilters,
   getPointOfInterestMapMarkers
 } from '../../../src/components/screens/pointOfInterestMapHelper';
 
 describe('point of interest detail map', () => {
+  const categories = [
+    { id: 'a', name: 'A' },
+    { id: 'b', name: 'B' }
+  ];
+
+  it.each([
+    [{ categoryIds: ['a'] }, { category: undefined, categoryId: undefined, categoryIds: ['a'] }],
+    [{ categoryId: 'a' }, { category: undefined, categoryId: 'a', categoryIds: undefined }],
+    [{ categoryId: 0 }, { category: undefined, categoryId: 0, categoryIds: undefined }],
+    [{ categoryName: 'A' }, { category: 'A', categoryId: undefined, categoryIds: undefined }],
+    [
+      { categoryName: 'A', categoryId: 'a', categoryIds: ['b'] },
+      { category: 'A', categoryId: 'a', categoryIds: ['b'] }
+    ],
+    [{}, { category: undefined, categoryId: undefined, categoryIds: ['a', 'b'] }]
+  ])(
+    'preserves active filters or falls back to the current POI categories: %j',
+    (filters, expected) => {
+      expect(getPointOfInterestMapFilters(categories, filters)).toEqual(expected);
+    }
+  );
+
   it('uses the opened subcategory when available and never substitutes the primary category', () => {
     const categories = [
       { id: 'park', name: 'Parks' },

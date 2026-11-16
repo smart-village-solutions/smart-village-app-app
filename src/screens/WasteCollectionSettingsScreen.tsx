@@ -752,7 +752,10 @@ export const WasteCollectionSettingsScreen = () => {
       if (
         !hasStartedLoadingStoredSettingsFromServer.current &&
         !loadedStoredSettingsInitially &&
-        ((!_isEmpty(typeSettings) &&
+        !typesLoading &&
+        !streetLoading &&
+        ((usedTypes &&
+          (usedTypeKeys.length === 0 || !_isEmpty(typeSettings)) &&
           (!!effectiveStreetName || waste.streetId !== selectedStreetId)) ||
           (!selectedStreetId && !_isEmpty(disruptionTypes)))
       ) {
@@ -768,7 +771,11 @@ export const WasteCollectionSettingsScreen = () => {
     loadStoredSettingsFromServer,
     loadedStoredSettingsInitially,
     selectedStreetId,
+    streetLoading,
     typeSettings,
+    typesLoading,
+    usedTypeKeys,
+    usedTypes,
     disruptionTypes,
     waste.streetId
   ]);
@@ -1284,6 +1291,7 @@ const LegacyGlobalReminderSettings = ({
       <Divider style={styles.divider} />
       <LegacyDayBeforeSelector
         areWasteReminderControlsDisabled={areWasteReminderControlsDisabled}
+        colors={colors}
         onDayBefore={onDayBefore}
         onPressUpdateOnDayBefore={onPressUpdateOnDayBefore}
         styles={styles}
@@ -1585,6 +1593,7 @@ const ReminderSettingsPanel = ({
 
 type LegacyDayBeforeSelectorProps = {
   areWasteReminderControlsDisabled: boolean;
+  colors: { surface: string; shadowRgba: string };
   onDayBefore: boolean;
   onPressUpdateOnDayBefore: (value: boolean) => void;
   styles: ReturnType<typeof createStyles>;
@@ -1594,6 +1603,7 @@ type LegacyDayBeforeSelectorProps = {
 
 const LegacyDayBeforeSelector = ({
   areWasteReminderControlsDisabled,
+  colors,
   onDayBefore,
   onPressUpdateOnDayBefore,
   styles,

@@ -84,6 +84,7 @@ jest.mock('../../src/config', () => ({
 jest.mock('../../src/helpers', () => ({
   addToStore: jest.fn(),
   createMatomoUserId: jest.fn(),
+  getAccessibilitySettingsEntryEnabled: jest.fn(() => false),
   matomoSettings: jest.fn(),
   readFromStore: jest.fn(),
   removeMatomoUserId: jest.fn()
@@ -111,7 +112,13 @@ jest.mock('../../src/ReactQueryProvider', () => ({
 }));
 
 import { clearPersistentCaches } from '../../src/ReactQueryProvider';
-import { SettingsScreen, confirmResetPersistentCaches } from '../../src/screens/SettingsScreen';
+import {
+  SettingsScreen,
+  confirmResetPersistentCaches,
+  onActivatePushNotifications,
+  onDeactivatePushNotifications
+} from '../../src/screens/SettingsScreen';
+import { handleSystemPermissions, setInAppPermission } from '../../src/pushNotifications';
 import { SettingsContext, initialContext } from '../../src/SettingsProvider';
 
 describe('SettingsScreen', () => {
@@ -197,5 +204,58 @@ describe('SettingsScreen', () => {
     );
     warnSpy.mockRestore();
     alertSpy.mockRestore();
+  });
+});
+
+describe('push notification toggle completion', () => {
+  beforeEach(() => jest.clearAllMocks());
+
+  it('waits for registration before reporting successful activation', async () => {
+    handleSystemPermissions.mockResolvedValue(true);
+    let complete;
+    setInAppPermission.mockReturnValue(
+      new Promise((resolve) => {
+        complete = resolve;
+      })
+    );
+    const revert = jest.fn();
+    let settled = false;
+    const result = onActivatePushNotifications(revert).then((value) => {
+      settled = true;
+      return value;
+    });
+    await Promise.resolve();
+    expect(settled).toBe(false);
+    complete(true);
+    await expect(result).resolves.toBe(true);
+    expect(revert).not.toHaveBeenCalled();
+  });
+
+  it('reports denied system permission as an unsuccessful activation', async () => {
+    handleSystemPermissions.mockResolvedValue(false);
+    const revert = jest.fn();
+    await expect(onActivatePushNotifications(revert)).resolves.toBe(false);
+    expect(revert).toHaveBeenCalledTimes(1);
+    expect(setInAppPermission).not.toHaveBeenCalled();
+  });
+
+  it.each([onActivatePushNotifications, onDeactivatePushNotifications])(
+    'reverts the toggle on failed server transitions',
+    async (toggle) => {
+      handleSystemPermissions.mockResolvedValue(true);
+      setInAppPermission.mockResolvedValue(false);
+      const revert = jest.fn();
+      await expect(toggle(revert)).resolves.toBe(false);
+      expect(revert).toHaveBeenCalledTimes(1);
+    }
+  );
+
+  it('reverts activation when reading system permissions rejects', async () => {
+    handleSystemPermissions.mockRejectedValue(new Error('permission read failed'));
+    const warn = jest.spyOn(console, 'warn').mockImplementation(() => {});
+    const revert = jest.fn();
+    await expect(onActivatePushNotifications(revert)).resolves.toBe(false);
+    expect(revert).toHaveBeenCalledTimes(1);
+    warn.mockRestore();
   });
 });
