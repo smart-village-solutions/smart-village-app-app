@@ -51,6 +51,20 @@ describe('SUE feedback delivery', () => {
     ]);
   });
 
+  it.each(['https://test.example.test', 'https://test.example.test///'])(
+    'normalizes trailing slashes in the selected customer API %s',
+    async (serverUrl) => {
+      (storageHelper.configurations as jest.Mock).mockResolvedValue({
+        sueConfig: { apiConfig: { serverUrl, apiKey: 'test-key' } }
+      });
+      await sendUserFeedback({ message: 'Feedback', rating: 3 });
+      expect(global.fetch).toHaveBeenCalledWith(
+        'https://test.example.test/support/sendUserFeedback',
+        expect.any(Object)
+      );
+    }
+  );
+
   it('allows rating-only feedback without an app version', async () => {
     await sendUserFeedback({ message: '', rating: 5 });
 

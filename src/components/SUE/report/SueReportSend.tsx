@@ -83,7 +83,8 @@ export const SueReportSend = ({
           }
         }
       ]);
-    } catch (error) {
+    } catch {
+      // Keep the feedback for retry and show a generic failure without logging private transport details.
       Alert.alert(texts.feedbackScreen.alert.errorTitle, texts.feedbackScreen.alert.errorMessage);
     } finally {
       submitting.current = false;
