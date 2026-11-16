@@ -19,15 +19,20 @@ import {
 } from '../../src/queries/SUE/submitRequest';
 
 const mockCopy = jest.fn().mockResolvedValue(undefined);
+const mockDeleteDirectory = jest.fn();
 jest.mock('expo-file-system', () => ({
   Paths: { document: 'file:///documents' },
   Directory: class {
     uri: string;
+    exists = true;
     constructor(...parts: string[]) {
       this.uri = parts.join('/');
     }
     create() {
       /* directory created */
+    }
+    delete() {
+      mockDeleteDirectory(this.uri);
     }
   },
   File: class {
@@ -207,6 +212,7 @@ it('does not enqueue or send when image persistence fails', async () => {
     enqueueSueReport(entry({ payload: { images: '[{"uri":"file:///photo.jpg"}]' } }))
   ).rejects.toThrow('Disk full');
   expect(await readSueOutbox()).toEqual([]);
+  expect(mockDeleteDirectory).toHaveBeenCalledWith('file:///documents/sue-reports/local-1');
   await syncSueOutbox();
   expect(postRequests).not.toHaveBeenCalled();
 });
@@ -261,6 +267,10 @@ it('replaces only an explicitly rejected report after its edited copy is durably
     deliveryStatus: 'pending',
     payload: { title: 'Corrected' }
   });
+  expect(mockDeleteDirectory).toHaveBeenCalledWith('file:///documents/sue-reports/local-1');
+  expect((AsyncStorage.setItem as jest.Mock).mock.invocationCallOrder.at(-1)).toBeLessThan(
+    mockDeleteDirectory.mock.invocationCallOrder.at(-1)!
+  );
 });
 
 it('keeps the original rejected report if persisting an edit fails', async () => {
@@ -269,6 +279,37 @@ it('keeps the original rejected report if persisting an edit fails', async () =>
   await expect(enqueueSueReport(entry({ localId: 'edited-1' }), 'local-1')).rejects.toThrow(
     'Disk full'
   );
+  expect((await readSueOutbox())[0].localId).toBe('local-1');
+  expect(mockDeleteDirectory).toHaveBeenCalledWith('file:///documents/sue-reports/edited-1');
+  expect(mockDeleteDirectory).not.toHaveBeenCalledWith('file:///documents/sue-reports/local-1');
+});
+
+it('waits for all partial copies before removing a failed replacement directory', async () => {
+  await enqueueSueReport(entry({ deliveryStatus: 'failed' }));
+  let finishCopy: () => void = () => undefined;
+  mockCopy.mockRejectedValueOnce(new Error('Copy failed'));
+  mockCopy.mockImplementationOnce(
+    () =>
+      new Promise<void>((resolve) => {
+        finishCopy = resolve;
+      })
+  );
+  const saving = enqueueSueReport(
+    entry({
+      localId: 'edited-1',
+      payload: {
+        images: JSON.stringify([{ uri: 'file:///one.jpg' }, { uri: 'file:///two.jpg' }])
+      }
+    }),
+    'local-1'
+  );
+  const rejected = expect(saving).rejects.toThrow('Copy failed');
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  expect(mockDeleteDirectory).not.toHaveBeenCalled();
+  finishCopy();
+  await rejected;
+  expect(mockDeleteDirectory).toHaveBeenCalledTimes(1);
+  expect(mockDeleteDirectory).toHaveBeenCalledWith('file:///documents/sue-reports/edited-1');
   expect((await readSueOutbox())[0].localId).toBe('local-1');
 });
 

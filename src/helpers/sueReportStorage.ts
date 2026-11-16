@@ -72,24 +72,68 @@ export const readSueOutbox = async (): Promise<SueOutboxReport[]> => {
   });
 };
 
+const serializeOutboxOperation = <T>(operation: () => Promise<T>): Promise<T> => {
+  const result = storageOperation.then(operation);
+  storageOperation = result.catch(() => undefined);
+  return result;
+};
+
+const saveOutbox = async (reports: SueOutboxReport[]) => {
+  await addToStore(SUE_OUTBOX, { version: 1, reports });
+  listeners.forEach((listener) => {
+    try {
+      listener();
+    } catch {
+      // A subscriber failure must not roll back attachments after the queue was saved.
+      console.error('Could not notify SUE outbox subscriber');
+    }
+  });
+};
+
 export const updateSueOutbox = <T>(
   update: (reports: SueOutboxReport[]) => T | Promise<T>
-): Promise<T> => {
-  const operation = storageOperation.then(async () => {
+): Promise<T> =>
+  serializeOutboxOperation(async () => {
     const reports = await readSueOutbox();
     const before = JSON.stringify(reports);
     const result = await update(reports);
-    if (before === JSON.stringify(reports)) return result;
-    await addToStore(SUE_OUTBOX, { version: 1, reports });
-    listeners.forEach((listener) => listener());
+    if (before !== JSON.stringify(reports)) await saveOutbox(reports);
     return result;
   });
-  storageOperation = operation.catch(() => undefined);
-  return operation;
+
+const removeAttachments = (localId: string) => {
+  try {
+    const directory = new Directory(Paths.document, 'sue-reports', localId);
+    if (directory.exists) directory.delete();
+  } catch {
+    // Storage may be temporarily unavailable. Keep the durable report and its receipt intact.
+    console.error('Could not remove unused SUE attachments');
+  }
 };
 
-export const enqueueSueReport = async (entry: SueOutboxReport, replaceRejectedId?: string) =>
-  updateSueOutbox(async (reports) => {
+const copyAttachments = async (entry: SueOutboxReport) => {
+  const images: SueReportImage[] = JSON.parse(entry.payload.images || '[]');
+  if (!Array.isArray(images)) throw new Error('Invalid SUE images');
+  const directory = new Directory(Paths.document, 'sue-reports', entry.localId);
+  if (images.length) directory.create({ intermediates: true, idempotent: true });
+  // Wait for every copy to finish before rollback can remove the directory.
+  const copies = await Promise.allSettled(
+    images.map(async (image, index) => {
+      const source = new File(image.uri);
+      const target = new File(directory, `image-${index}`);
+      if (!source.exists) throw new Error('SUE attachment is missing');
+      await source.copy(target, { overwrite: true });
+      return { ...image, uri: target.uri };
+    })
+  );
+  const failure = copies.find((copy) => copy.status === 'rejected');
+  if (failure?.status === 'rejected') throw failure.reason;
+  return copies.map((copy) => (copy as PromiseFulfilledResult<SueReportImage>).value);
+};
+
+export const enqueueSueReport = (entry: SueOutboxReport, replaceRejectedId?: string) =>
+  serializeOutboxOperation(async () => {
+    const reports = await readSueOutbox();
     const existing = reports.find((report) => report.localId === entry.localId);
     if (existing) return existing;
     const rejected = reports.find((report) => report.localId === replaceRejectedId);
@@ -100,33 +144,32 @@ export const enqueueSueReport = async (entry: SueOutboxReport, replaceRejectedId
       throw new Error('Only a rejected report from the same backend can be replaced');
     }
 
-    const images: SueReportImage[] = JSON.parse(entry.payload.images || '[]');
-    if (!Array.isArray(images)) throw new Error('Invalid SUE images');
-    const directory = new Directory(Paths.document, 'sue-reports', entry.localId);
-    if (images.length) directory.create({ intermediates: true, idempotent: true });
-    const savedImages: SueReportImage[] = [];
-    for (const [index, image] of images.entries()) {
-      const source = new File(image.uri);
-      const target = new File(directory, `image-${index}`);
-      if (!source.exists) throw new Error('SUE attachment is missing');
-      await source.copy(target, { overwrite: true });
-      savedImages.push({ ...image, uri: target.uri });
+    let saved: SueOutboxReport;
+    try {
+      const savedImages = await copyAttachments(entry);
+      saved = {
+        ...entry,
+        payload: { ...entry.payload, images: JSON.stringify(savedImages) },
+        report: {
+          ...entry.report,
+          mediaUrl: savedImages.map((image, index) => ({
+            id: `local-${index}`,
+            url: image.uri,
+            visible: true,
+            contentType: 'image'
+          }))
+        }
+      };
+      if (rejected) reports.splice(reports.indexOf(rejected), 1);
+      reports.unshift(saved);
+      await saveOutbox(reports);
+    } catch (error) {
+      // Still inside the storage lock: a concurrent retry cannot reuse this directory yet.
+      removeAttachments(entry.localId);
+      throw error;
     }
-    const saved = {
-      ...entry,
-      payload: { ...entry.payload, images: JSON.stringify(savedImages) },
-      report: {
-        ...entry.report,
-        mediaUrl: savedImages.map((image, index) => ({
-          id: `local-${index}`,
-          url: image.uri,
-          visible: true,
-          contentType: 'image'
-        }))
-      }
-    };
-    if (rejected) reports.splice(reports.indexOf(rejected), 1);
-    reports.unshift(saved);
+    // The superseded report's files remain recoverable until replacement is durable.
+    if (rejected) removeAttachments(rejected.localId);
     return saved;
   });
 
@@ -146,7 +189,11 @@ export const updateSueOutboxStatuses = async (updates: Record<string, unknown>[]
   await updateSueOutbox((reports) => {
     updates.forEach((update) => {
       const entry = reports.find((report) => report.localId === update.localId);
-      if (entry?.deliveryStatus === 'sent' && update.lastStatusCheck) {
+      if (
+        entry?.deliveryStatus === 'sent' &&
+        typeof update.lastStatusCheck === 'number' &&
+        !(Number(entry.report.lastStatusCheck) > update.lastStatusCheck)
+      ) {
         entry.report = {
           ...entry.report,
           status: update.status,

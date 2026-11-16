@@ -4,9 +4,11 @@ import { Alert } from 'react-native';
 import renderer from 'react-test-renderer';
 
 import { ConfigurationsContext } from '../../src/ConfigurationsProvider';
-import { readFromStore } from '../../src/helpers';
+import { readSueReportDraftForEndpoint as readFromStore } from '../../src/helpers/sueReportDraftHelper';
 import { enqueueSueReport, readSueOutbox } from '../../src/helpers/sueReportStorage';
 import { syncSueOutbox } from '../../src/helpers/sueReportSync';
+import { fetchSueEndpoints } from '../../src/helpers/sueHelper';
+import { texts } from '../../src/config/texts';
 import { SueReportScreen } from '../../src/screens/SUE/SueReportScreen';
 
 const mockValues: Record<string, unknown> = {
@@ -76,6 +78,14 @@ jest.mock('../../src/helpers/sueHelper', () => ({
     .fn()
     .mockResolvedValue({ apiKey: 'test-key', suePostRequest: 'https://example.test/requests' })
 }));
+jest.mock('../../src/helpers/sueReportDraftHelper', () => ({
+  readSueReportDraftForEndpoint: jest.fn(),
+  storeSueReportDraftForEndpoint: jest.fn().mockResolvedValue(undefined),
+  removeSueReportDraftForEndpoint: (endpoint: string) =>
+    jest
+      .requireMock('@react-native-async-storage/async-storage')
+      .removeItem(`sueReportDraftV2:${endpoint}`)
+}));
 jest.mock('../../src/helpers/sueReportStorage', () => ({
   enqueueSueReport: jest.fn(),
   readSueOutbox: jest.fn()
@@ -91,13 +101,13 @@ jest.mock('../../src/queries', () => ({
   getQuery: jest.fn()
 }));
 
-const mount = async (sueConfig?: Record<string, unknown>) => {
+const mount = async (sueConfig?: Record<string, unknown>, params = {}) => {
   let tree: renderer.ReactTestRenderer;
   await renderer.act(async () => {
     const screen = (
       <SueReportScreen
         navigation={{ setOptions: jest.fn(), addListener: () => jest.fn() }}
-        route={{ params: {} }}
+        route={{ params }}
       />
     );
     tree = renderer.create(
@@ -115,6 +125,17 @@ const mount = async (sueConfig?: Record<string, unknown>) => {
 
 beforeEach(() => {
   jest.clearAllMocks();
+  (fetchSueEndpoints as jest.Mock).mockResolvedValue({
+    apiKey: 'test-key',
+    suePostRequest: 'https://example.test/requests'
+  });
+  Object.keys(mockValues).forEach((key) => delete mockValues[key]);
+  Object.assign(mockValues, {
+    title: 'Test report',
+    images: '[]',
+    phone: '',
+    description: 'Description'
+  });
   (readFromStore as jest.Mock).mockResolvedValue({
     service: { serviceCode: 'waste', serviceName: 'Waste' },
     clientSubmissionId: 'existing-draft-id'
@@ -130,7 +151,83 @@ afterEach(() => {
   jest.restoreAllMocks();
 });
 
-it('restores a legacy draft without automatically submitting it', async () => {
+it('refuses submission when the configured endpoint changes after draft restoration', async () => {
+  const tree = await mount();
+  (fetchSueEndpoints as jest.Mock).mockResolvedValue({
+    apiKey: 'other',
+    suePostRequest: 'https://production.test/requests'
+  });
+  await renderer.act(async () => tree.root.findByType('mock-Button').props.onPress());
+  expect(enqueueSueReport).not.toHaveBeenCalled();
+  expect(syncSueOutbox).not.toHaveBeenCalled();
+  expect(Alert.alert).toHaveBeenCalledWith('Hinweis', texts.sue.delivery.saveError);
+  renderer.act(() => tree.unmount());
+});
+
+it('uses the corrected category, coordinates and address when replacing a rejected report', async () => {
+  (readSueOutbox as jest.Mock).mockResolvedValue([
+    {
+      localId: 'rejected',
+      endpoint: 'https://example.test/requests',
+      deliveryStatus: 'failed',
+      payload: {
+        title: 'Rejected',
+        images: '[]',
+        serviceCode: 'old',
+        lat: 1,
+        long: 2,
+        addressString: 'Old address'
+      },
+      report: { serviceName: 'Old category' }
+    }
+  ]);
+  const tree = await mount(
+    {
+      sueProgress: [
+        { content: 'category', inputs: [], requiredInputs: [] },
+        { content: 'location', inputs: [], requiredInputs: [] }
+      ]
+    },
+    { rejectedReportId: 'rejected' }
+  );
+  for (const key of ['serviceCode', 'lat', 'long', 'addressString']) {
+    expect(mockSetValue).not.toHaveBeenCalledWith(key, expect.anything());
+  }
+  Object.assign(mockValues, {
+    street: 'New street',
+    houseNumber: '4',
+    postalCode: '12345',
+    city: 'New city',
+    serviceCode: 'stale',
+    lat: 1,
+    long: 2,
+    addressString: 'Stale'
+  });
+  await renderer.act(async () => {
+    tree.root
+      .findByType('mock-SueReportServices')
+      .props.setService({ serviceCode: 'new', serviceName: 'New category' });
+    tree.root
+      .findByType('mock-SueReportLocation')
+      .props.setSelectedPosition({ latitude: 52, longitude: 13 });
+  });
+  await renderer.act(async () => tree.root.findByType('mock-Button').props.onPress());
+  await renderer.act(async () => tree.root.findAllByType('mock-Button').at(-1)!.props.onPress());
+  expect(enqueueSueReport).toHaveBeenCalledWith(
+    expect.objectContaining({
+      payload: expect.objectContaining({
+        serviceCode: 'new',
+        lat: 52,
+        long: 13,
+        addressString: 'New street; 4; 12345; New city'
+      })
+    }),
+    'rejected'
+  );
+  renderer.act(() => tree.unmount());
+});
+
+it('restores an endpoint-bound draft without automatically submitting it', async () => {
   const tree = await mount();
   expect(enqueueSueReport).not.toHaveBeenCalled();
   expect(syncSueOutbox).not.toHaveBeenCalled();

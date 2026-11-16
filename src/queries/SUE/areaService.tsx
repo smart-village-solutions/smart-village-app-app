@@ -1,5 +1,3 @@
-import _uniq from 'lodash/uniq';
-
 import { storageHelper } from '../../helpers/storageHelper';
 import { withSueResourceCache } from '../../helpers/sueResourceCache';
 
@@ -33,9 +31,13 @@ export const areaService = async () => {
     );
 
     return {
-      postalCodes: _uniq(
-        postalCodes?.values?.flatMap((item: { postalCodes?: string[] }) => item.postalCodes || [])
-      )
+      postalCodes: [
+        ...new Set(
+          postalCodes?.values?.flatMap(
+            (item: { postalCodes?: string[] }) => item.postalCodes || []
+          ) || []
+        )
+      ]
     };
   });
 };

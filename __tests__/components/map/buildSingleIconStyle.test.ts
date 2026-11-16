@@ -19,4 +19,19 @@ describe('buildSingleIconStyle', () => {
       textSize: 12
     });
   });
+
+  it('sorts marker icons and labels together when marker sorting is enabled', () => {
+    expect(
+      buildSingleIconStyle({
+        labelStyles: {},
+        ownLocationPin: 'ownLocationPin',
+        showMarkerLabels: true,
+        sortMarkers: true,
+        singleIconStyle: { iconAnchor: 'bottom', iconSize: 1.5 }
+      })
+    ).toMatchObject({
+      symbolSortKey: ['get', 'sortKey'],
+      symbolZOrder: 'source'
+    });
+  });
 });

@@ -1,4 +1,3 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Location from 'expo-location';
 import { randomUUID } from 'expo-crypto';
 import { StackScreenProps } from 'expo-router/js-stack';
@@ -36,14 +35,13 @@ import {
   SueReportUser,
   Wrapper
 } from '../../components';
-import { SUE_REPORT_VALUES, consts, device, normalize, texts } from '../../config';
+import { consts, device, normalize, texts } from '../../config';
+import { formatSizeStandard, getInitialSueStatus, getSueLimitOfAreaCity } from '../../helpers';
 import {
-  addToStore,
-  formatSizeStandard,
-  getInitialSueStatus,
-  getSueLimitOfAreaCity,
-  readFromStore
-} from '../../helpers';
+  readSueReportDraftForEndpoint,
+  storeSueReportDraftForEndpoint,
+  removeSueReportDraftForEndpoint
+} from '../../helpers/sueReportDraftHelper';
 import { useKeyboardHeight } from '../../hooks';
 import { useTheme } from '../../hooks/useTheme';
 import { useThemeStyles } from '../../hooks/useThemeStyles';
@@ -313,6 +311,10 @@ export const SueReportScreen = ({
   const [service, setService] = useState<TService>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isLoadingStoredData, setIsLoadingStoredData] = useState<boolean>(true);
+  const [draftRestoreFailed, setDraftRestoreFailed] = useState(false);
+  const [draftRestoreAttempt, setDraftRestoreAttempt] = useState(0);
+  const hasRestoredDraftRef = useRef(false);
+  const draftEndpoint = useRef<string | undefined>(undefined);
   const [selectedPosition, setSelectedPosition] = useState<Location.LocationObjectCoords>();
   const [isDone, setIsDone] = useState(false);
   const [deliveryStatus, setDeliveryStatus] = useState<SueDeliveryStatus>();
@@ -491,84 +493,109 @@ export const SueReportScreen = ({
     return alertText;
   };
 
-  useEffect(() => {
-    readReportValuesFromStore();
-  }, []);
-
   const sueProgressWithConfig = useMemo(
     () => sueProgressWithRequiredInputs(requiredFields, geoMap, sueProgress),
     [requiredFields, geoMap, sueProgress]
   );
 
+  const hasConfiguredReportSteps =
+    !!sueProgressWithConfig.length &&
+    sueProgressWithConfig.every(({ content }) =>
+      ['category', 'description', 'location', 'user'].includes(content)
+    );
+
   const storeReportValues = useCallback(
     async (progress = currentProgress) => {
-      await addToStore(SUE_REPORT_VALUES, {
-        clientSubmissionId: clientSubmissionId.current,
-        rejectedReportId: rejectedReportId.current,
-        currentProgress: progress,
-        selectedPosition,
-        service,
-        ...getValues()
-      });
+      const { suePostRequest } = await fetchSueEndpoints();
+      if (!draftEndpoint.current || draftEndpoint.current !== suePostRequest) {
+        throw new Error('SUE draft backend changed');
+      }
+      await storeSueReportDraftForEndpoint(
+        {
+          clientSubmissionId: clientSubmissionId.current,
+          rejectedReportId: rejectedReportId.current,
+          currentProgress: progress,
+          selectedPosition,
+          service,
+          ...getValues()
+        },
+        draftEndpoint.current
+      );
     },
     [currentProgress, selectedPosition, service, getValues]
   );
 
-  async function readReportValuesFromStore() {
-    let savedValues = (await readFromStore(SUE_REPORT_VALUES)) as TStoredValues | undefined;
-    if (route.params?.rejectedReportId) {
-      const entry = (await readSueOutbox()).find(
-        (item) => item.localId === route.params.rejectedReportId
-      );
-      if (entry?.deliveryStatus === 'failed') {
-        savedValues = {
-          ...entry.payload,
-          rejectedReportId: entry.localId,
-          currentProgress: 0,
-          clientSubmissionId: randomUUID(),
-          service: {
-            serviceCode: entry.payload.serviceCode,
-            serviceName: entry.report.serviceName
-          },
-          selectedPosition:
-            entry.payload.lat != null && entry.payload.long != null
-              ? { latitude: entry.payload.lat, longitude: entry.payload.long }
-              : undefined
-        } as TStoredValues;
+  const readReportValuesFromStore = useCallback(
+    async (isCancelled: () => boolean) => {
+      const { suePostRequest } = await fetchSueEndpoints();
+      if (isCancelled()) return;
+      draftEndpoint.current = suePostRequest;
+      let savedValues = (await readSueReportDraftForEndpoint(suePostRequest)) as
+        | TStoredValues
+        | undefined;
+      if (route.params?.rejectedReportId) {
+        const entry = (await readSueOutbox()).find(
+          (item) => item.localId === route.params.rejectedReportId
+        );
+        if (entry?.deliveryStatus === 'failed' && entry.endpoint === suePostRequest) {
+          savedValues = {
+            ...entry.payload,
+            rejectedReportId: entry.localId,
+            currentProgress: 0,
+            clientSubmissionId: randomUUID(),
+            service: {
+              serviceCode: entry.payload.serviceCode,
+              serviceName: entry.report.serviceName
+            },
+            selectedPosition:
+              entry.payload.lat != null && entry.payload.long != null
+                ? { latitude: entry.payload.lat, longitude: entry.payload.long }
+                : undefined
+          } as TStoredValues;
+        } else throw new Error('Cannot edit a report from another SUE backend');
       }
-    }
 
-    if (savedValues) {
-      rejectedReportId.current = savedValues.rejectedReportId;
-      if (savedValues.clientSubmissionId)
-        clientSubmissionId.current = savedValues.clientSubmissionId;
-      const restoredProgress = clampProgress(
-        savedValues.currentProgress,
-        sueProgressWithConfig.length - 1
-      );
-      setStoredValues(savedValues);
-      setService(savedValues.service);
-      setSelectedPosition(savedValues.selectedPosition);
-      setCurrentProgress(restoredProgress);
-      Object.entries(savedValues).forEach(([key, value]) => {
-        if (
-          key !== 'rejectedReportId' &&
-          key !== 'clientSubmissionId' &&
-          key !== 'currentProgress' &&
-          key !== 'service' &&
-          key !== 'selectedPosition'
-        ) {
-          setValue(key as keyof TValues, value);
-        }
-      });
-    }
+      if (isCancelled()) return;
+      hasRestoredDraftRef.current = true;
 
-    setIsLoadingStoredData(false);
-  }
+      if (savedValues) {
+        rejectedReportId.current = savedValues.rejectedReportId;
+        if (savedValues.clientSubmissionId)
+          clientSubmissionId.current = savedValues.clientSubmissionId;
+        const restoredProgress = clampProgress(
+          savedValues.currentProgress,
+          sueProgressWithConfig.length - 1
+        );
+        setStoredValues(savedValues);
+        setService(savedValues.service);
+        setSelectedPosition(savedValues.selectedPosition);
+        setCurrentProgress(restoredProgress);
+        Object.entries(savedValues).forEach(([key, value]) => {
+          if (key in getValues()) {
+            setValue(key as keyof TValues, value);
+          }
+        });
+      }
+
+      setIsLoadingStoredData(false);
+    },
+    [getValues, route.params, setValue, sueProgressWithConfig.length]
+  );
+
+  useEffect(() => {
+    if (!hasConfiguredReportSteps || hasRestoredDraftRef.current) return;
+    let cancelled = false;
+    readReportValuesFromStore(() => cancelled).catch(() => {
+      if (!cancelled) setDraftRestoreFailed(true);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [draftRestoreAttempt, hasConfiguredReportSteps, readReportValuesFromStore]);
 
   const resetStoredValues = useCallback(async () => {
     setIsLoadingStoredData(true);
-    await AsyncStorage.removeItem(SUE_REPORT_VALUES);
+    if (draftEndpoint.current) await removeSueReportDraftForEndpoint(draftEndpoint.current);
     clientSubmissionId.current = randomUUID();
     rejectedReportId.current = undefined;
     setStoredValues(undefined);
@@ -585,21 +612,27 @@ export const SueReportScreen = ({
     setIsLoadingStoredData(false);
   }, [reset]);
 
-  useEffect(() => {
-    if (isLoadingStoredData || hasAppliedInitialProgressRef.current) {
-      return;
-    }
+  const restoreScrollPosition = useCallback(
+    (contentWidth: number) => {
+      if (
+        isLoadingStoredData ||
+        hasAppliedInitialProgressRef.current ||
+        !scrollViewRef.current ||
+        contentWidth < device.width * (currentProgress + 1)
+      ) {
+        return;
+      }
 
-    if (currentProgress > 0) {
-      scrollViewRef?.current?.scrollTo({
+      // Wait for the restored page to be laid out before issuing a native scroll.
+      scrollViewRef.current.scrollTo({
         x: device.width * currentProgress,
         y: 0,
         animated: false
       });
-    }
-
-    hasAppliedInitialProgressRef.current = true;
-  }, [isLoadingStoredData, currentProgress]);
+      hasAppliedInitialProgressRef.current = true;
+    },
+    [isLoadingStoredData, currentProgress]
+  );
 
   const handleNextPage = useCallback(async () => {
     Keyboard.dismiss();
@@ -675,11 +708,11 @@ export const SueReportScreen = ({
       }
 
       const formData = {
+        ...sueReportData,
         addressString,
         lat: selectedPosition?.latitude,
         long: selectedPosition?.longitude,
         serviceCode: service?.serviceCode,
-        ...sueReportData,
         phone: parsePhoneNumber(sueReportData.phone, 'DE')?.formatInternational() || '',
         description: sueReportData.description || '-'
       };
@@ -688,7 +721,12 @@ export const SueReportScreen = ({
       let queuedId: string | undefined;
       try {
         const { suePostRequest, apiKey } = await fetchSueEndpoints();
-        if (!apiKey || !suePostRequest || suePostRequest.startsWith('undefined')) {
+        if (
+          !apiKey ||
+          !suePostRequest ||
+          suePostRequest.startsWith('undefined') ||
+          suePostRequest !== draftEndpoint.current
+        ) {
           throw new Error('Missing SUE configuration');
         }
         const entry = await enqueueSueReport(
@@ -730,7 +768,8 @@ export const SueReportScreen = ({
           (await readSueOutbox()).find((entry) => entry.localId === queuedId)?.deliveryStatus ||
           'pending';
       } catch {
-        // The durable entry was already written successfully.
+        // Keep the durable entry; a transient read failure cannot confirm delivery.
+        console.warn('Could not read saved SUE delivery status');
       }
       setDeliveryStatus(status);
       setIsDone(true);
@@ -794,11 +833,26 @@ export const SueReportScreen = ({
     }
   }, [navigation, resetStoredValues, route, storedValues]);
 
-  if (!sueProgressWithConfig.length) {
+  if (!hasConfiguredReportSteps) {
     return null;
   }
 
-  if (areaServiceLoading) {
+  if (draftRestoreFailed) {
+    return (
+      <Wrapper>
+        <BoldText>{texts.sue.report.draftRestoreError}</BoldText>
+        <Button
+          title={texts.sue.report.retry}
+          onPress={() => {
+            setDraftRestoreFailed(false);
+            setDraftRestoreAttempt((attempt) => attempt + 1);
+          }}
+        />
+      </Wrapper>
+    );
+  }
+
+  if (areaServiceLoading || isLoadingStoredData) {
     return (
       <LoadingContainer>
         <ActivityIndicator color={colors.refreshControl} />
@@ -828,6 +882,7 @@ export const SueReportScreen = ({
         <ScrollView
           keyboardShouldPersistTaps="handled"
           horizontal
+          onContentSizeChange={restoreScrollPosition}
           pagingEnabled
           ref={scrollViewRef}
           scrollEnabled={false}

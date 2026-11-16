@@ -66,16 +66,12 @@ export const SueReportSend = ({
   });
 
   const isQueued = isDone && deliveryStatus && deliveryStatus !== 'sent';
-  const title = isQueued
-    ? texts.sue.delivery.labels[deliveryStatus]
-    : isDone
-    ? doneTitle
-    : loadingTitle;
-  const subtitle = isQueued
-    ? texts.sue.delivery.messages[deliveryStatus]
-    : isDone
-    ? doneSubtitle
-    : loadingSubtitle;
+  let title = isDone ? doneTitle : loadingTitle;
+  let subtitle = isDone ? doneSubtitle : loadingSubtitle;
+  if (isQueued) {
+    title = texts.sue.delivery.labels[deliveryStatus];
+    subtitle = texts.sue.delivery.messages[deliveryStatus];
+  }
 
   const [createAppUserContent, { loading }] = useMutation(
     createQuery(QUERY_TYPES.APP_USER_CONTENT)

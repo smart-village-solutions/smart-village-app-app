@@ -13,7 +13,7 @@ export const SueReportRuntime = () => {
   const { isConnected } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
   const settings = globalSettings.settings as {
-    sue?: Parameters<typeof hasSueApiConfiguration>[0];
+    sue: Parameters<typeof hasSueApiConfiguration>[0];
   };
   const enabled = hasSueApiConfiguration(settings?.sue);
   const queryClient = useQueryClient();

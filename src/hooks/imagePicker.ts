@@ -5,15 +5,14 @@ import {
   PermissionStatus,
   requestCameraPermissionsAsync
 } from 'expo-image-picker';
+import { getPermissionsAsync, requestPermissionsAsync } from 'expo-media-library';
 import {
   addAssetsToAlbumAsync,
   createAlbumAsync,
   createAssetAsync,
   getAlbumAsync,
-  getPermissionsAsync,
-  requestPermissionsAsync,
   saveToLibraryAsync
-} from 'expo-media-library';
+} from 'expo-media-library/legacy';
 import { useCallback, useState } from 'react';
 import { Alert, Linking } from 'react-native';
 
@@ -39,7 +38,16 @@ const prepareImage = async (asset: ImagePickerAsset) => {
   }
 };
 
-const saveImageToGallery = async (uri: string) => {
+const openImageSettings = async (onBeforeOpenSettings?: () => Promise<void>) => {
+  try {
+    await onBeforeOpenSettings?.();
+    await Linking.openSettings();
+  } catch {
+    Alert.alert(texts.errors.image.title, texts.errors.image.cameraBody);
+  }
+};
+
+const saveImageToGallery = async (uri: string, onBeforeOpenSettings?: () => Promise<void>) => {
   if (device.platform === 'android') {
     try {
       await saveToLibraryAsync(uri);
@@ -68,7 +76,10 @@ const saveImageToGallery = async (uri: string) => {
     if (!canAskAgain) {
       Alert.alert(texts.errors.image.title, texts.errors.image.saveBody, [
         { text: texts.errors.image.cancel, style: 'cancel' },
-        { text: texts.errors.image.openSettings, onPress: () => Linking.openSettings() }
+        {
+          text: texts.errors.image.openSettings,
+          onPress: () => openImageSettings(onBeforeOpenSettings)
+        }
       ]);
       return;
     }
@@ -78,7 +89,10 @@ const saveImageToGallery = async (uri: string) => {
     if (status !== PermissionStatus.GRANTED) {
       Alert.alert(texts.errors.image.title, texts.errors.image.saveBody, [
         { text: texts.errors.image.cancel, style: 'cancel' },
-        { text: texts.errors.image.openSettings, onPress: () => Linking.openSettings() }
+        {
+          text: texts.errors.image.openSettings,
+          onPress: () => openImageSettings(onBeforeOpenSettings)
+        }
       ]);
       return;
     }
@@ -148,6 +162,7 @@ export const useCaptureImage = ({
   mediaTypes = MediaTypeOptions.Images,
   onChange,
   quality = 1,
+  onBeforeOpenSettings,
   saveImage = false
 }: {
   allowsEditing?: boolean;
@@ -158,6 +173,7 @@ export const useCaptureImage = ({
     setter: React.Dispatch<React.SetStateAction<T>>
   ) => React.Dispatch<React.SetStateAction<T>>;
   quality?: number;
+  onBeforeOpenSettings?: () => Promise<void>;
   saveImage?: boolean;
 } = {}) => {
   const [imageUri, setImageUri] = useState<string>();
@@ -168,7 +184,10 @@ export const useCaptureImage = ({
     if (status !== PermissionStatus.GRANTED) {
       Alert.alert(texts.errors.image.title, texts.errors.image.cameraBody, [
         { text: texts.errors.image.cancel, style: 'cancel' },
-        { text: texts.errors.image.openSettings, onPress: () => Linking.openSettings() }
+        {
+          text: texts.errors.image.openSettings,
+          onPress: () => openImageSettings(onBeforeOpenSettings)
+        }
       ]);
       return;
     }
@@ -192,7 +211,7 @@ export const useCaptureImage = ({
       // Run gallery save flow without blocking the image selection result.
       if (saveImage) {
         if (device.platform === 'android') {
-          void saveImageToGallery(uri);
+          void saveImageToGallery(uri, onBeforeOpenSettings);
         } else {
           void (async () => {
             try {
@@ -204,11 +223,11 @@ export const useCaptureImage = ({
                   { text: texts.errors.image.cancel, style: 'cancel' },
                   {
                     text: texts.errors.image.save,
-                    onPress: async () => await saveImageToGallery(uri)
+                    onPress: async () => await saveImageToGallery(uri, onBeforeOpenSettings)
                   }
                 ]);
               } else {
-                await saveImageToGallery(uri);
+                await saveImageToGallery(uri, onBeforeOpenSettings);
               }
             } catch (error) {
               console.error('Non-blocking gallery save flow failed', error);
@@ -219,7 +238,7 @@ export const useCaptureImage = ({
 
       return asset;
     }
-  }, [allowsEditing, aspect, exif, mediaTypes, onChange, quality, saveImage]);
+  }, [allowsEditing, aspect, exif, mediaTypes, onChange, onBeforeOpenSettings, quality, saveImage]);
 
   return { imageUri, captureImage };
 };

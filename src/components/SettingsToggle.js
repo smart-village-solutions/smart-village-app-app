@@ -76,7 +76,7 @@ export const SettingsToggle = ({ item, needsConnection = true }) => {
         {!!description && <RegularText small>{description}</RegularText>}
       </ListItem.Content>
 
-      <WrapperRow>
+      <WrapperRow centerVertical style={styles.controls}>
         <ActivityIndicator
           color={colors.refreshControl}
           style={[styles.loadingIndicator, !loading && styles.loadingIndicatorHidden]}
@@ -101,10 +101,12 @@ const createStyles = (colors) =>
       paddingHorizontal: 0,
       paddingVertical: device.isTablet ? normalize(16) : normalize(10)
     },
+    controls: {
+      columnGap: normalize(8)
+    },
     loadingIndicator: {
       alignItems: 'center',
       justifyContent: 'center',
-      marginRight: device.isTablet ? normalize(7) : -normalize(2),
       width: normalize(18)
     },
     loadingIndicatorHidden: {

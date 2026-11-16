@@ -196,6 +196,7 @@ export const mapToMapMarkers = (
         [MAP.DEFAULT_PIN]: 1,
         id: item.id.toString(),
         label: String(index + 1),
+        sortKey: index,
         position: {
           latitude,
           longitude

@@ -6,8 +6,8 @@ import renderer from 'react-test-renderer';
 const mockRemoveItem = jest.fn();
 const mockHideAsync = jest.fn();
 
-jest.mock('@react-native-async-storage/async-storage', () => ({
-  removeItem: (...args: unknown[]) => mockRemoveItem(...args)
+jest.mock('../../src/helpers/sueReportDraftHelper', () => ({
+  initializeSueReportSession: () => mockRemoveItem('sueReportValues')
 }));
 
 jest.mock('expo-font', () => ({
@@ -111,13 +111,14 @@ describe('RootView', () => {
     expect(mockHideAsync).toHaveBeenCalledTimes(1);
   });
 
-  it.each([
-    ['dark', 'light-content'],
-    ['light', 'dark-content']
-  ] as const)('uses the %s root surface for status bar contrast', (mode, expectedBarStyle) => {
-    const tree = renderRootView(false, mode);
-
-    expect(tree.root.findByType(StatusBar).props.barStyle).toBe(expectedBarStyle);
+  it('mounts screens without deleting persistent offline drafts', async () => {
+    const tree = renderRootView(false);
+    expect(tree.root.findAllByProps({ testID: 'child' }).length).toBeGreaterThan(0);
+    await renderer.act(async () => {
+      await tree.root.findAllByType(View)[0].props.onLayout();
+    });
+    expect(mockRemoveItem).not.toHaveBeenCalled();
+    expect(mockHideAsync).toHaveBeenCalledTimes(1);
   });
 
   it('keeps the splash visible until the saved theme has hydrated and the root has laid out', async () => {

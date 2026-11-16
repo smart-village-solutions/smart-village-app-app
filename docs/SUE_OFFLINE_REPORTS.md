@@ -28,9 +28,12 @@ written. An interrupted draft cleanup cannot enqueue the same UUID twice.
 
 - `sueMyReports` retains its existing format and records. These records are never enqueued or
   resubmitted, including records without an ID or records whose public lookup returns 404.
-- `sueReportValues` remains a form draft, not a send queue. Drafts from earlier versions are
-  restored for editing; they are never sent without the user pressing Send. Startup no longer
-  deletes this key.
+- New form drafts use endpoint-specific `sueReportDraftV2:*` keys with a versioned envelope
+  containing their original POST endpoint. Test and production drafts remain separate across
+  restarts. Saving and submission both check that the current backend still matches the draft.
+- The legacy `sueReportValues` key is retained without deletion. Its backend is unknown, so it
+  is not automatically restored or assigned to the currently configured municipality. Users
+  must re-enter an unbound legacy draft; the stored legacy data remains available for recovery.
 - New reports use a separate, versioned `sueOutboxV1` key. Confirmed entries remain there as
   local history, and “Meine Meldungen” combines both stores. Unknown versions and malformed
   storage are not replaced with empty state.
@@ -74,6 +77,11 @@ proof that an unpublished report was never accepted.
 Editing is limited to explicitly rejected reports. The original remains stored until the
 corrected replacement and its attachments have been saved. Uncertain and confirmed reports
 cannot be replaced through this edit action.
+Only editable fields enter the restored form; category, coordinates and formatted address are
+derived again on submission. The old attachment directory is removed after the replacement is
+durably saved. Failed copies or queue writes remove the new directory while retaining the old
+report and files. Copies and cleanup share the serialized storage operation so concurrent retries
+cannot delete each other's attachments.
 
 ## Manual verification on an existing installation
 

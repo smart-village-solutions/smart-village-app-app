@@ -1,6 +1,17 @@
-import { launchCameraAsync, launchImageLibraryAsync } from 'expo-image-picker';
-import { createAssetAsync, saveToLibraryAsync } from 'expo-media-library';
-import { Alert } from 'react-native';
+import {
+  launchCameraAsync,
+  launchImageLibraryAsync,
+  requestCameraPermissionsAsync
+} from 'expo-image-picker';
+import { requestPermissionsAsync } from 'expo-media-library';
+import {
+  addAssetsToAlbumAsync,
+  createAlbumAsync,
+  createAssetAsync,
+  getAlbumAsync,
+  saveToLibraryAsync
+} from 'expo-media-library/legacy';
+import { Alert, Linking } from 'react-native';
 
 import { device } from '../../src/config';
 import { useCaptureImage, useSelectImage } from '../../src/hooks/imagePicker';
@@ -21,7 +32,11 @@ jest.mock('../../src/config', () => ({
 }));
 jest.mock('expo-media-library', () => ({
   getPermissionsAsync: jest.fn(async () => ({ status: 'granted' })),
+  requestPermissionsAsync: jest.fn(async () => ({ status: 'granted' }))
+}));
+jest.mock('expo-media-library/legacy', () => ({
   createAssetAsync: jest.fn(async () => ({})),
+  createAlbumAsync: jest.fn(async () => ({})),
   saveToLibraryAsync: jest.fn(async () => undefined),
   getAlbumAsync: jest.fn(async () => ({})),
   addAssetsToAlbumAsync: jest.fn()
@@ -145,6 +160,37 @@ it.each(['ios', 'android'])(
   }
 );
 
+it('saves an Android camera photo once without requesting library access when saving succeeds', async () => {
+  device.platform = 'android';
+  const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => undefined);
+
+  await useCaptureImage({ saveImage: true }).captureImage();
+  await new Promise((resolve) => setImmediate(resolve));
+
+  expect(saveToLibraryAsync).toHaveBeenCalledTimes(1);
+  expect(requestPermissionsAsync).not.toHaveBeenCalled();
+  expect(errorSpy).not.toHaveBeenCalled();
+});
+
+it('adds an iOS camera photo to the existing app album', async () => {
+  await useCaptureImage({ saveImage: true }).captureImage();
+  await new Promise((resolve) => setImmediate(resolve));
+
+  expect(createAssetAsync).toHaveBeenCalledWith('file:///converted.jpg');
+  expect(addAssetsToAlbumAsync).toHaveBeenCalledWith([{}], {}, true);
+  expect(createAlbumAsync).not.toHaveBeenCalled();
+});
+
+it('creates the iOS app album when saving the first camera photo', async () => {
+  (getAlbumAsync as jest.Mock).mockResolvedValueOnce(null);
+
+  await useCaptureImage({ saveImage: true }).captureImage();
+  await new Promise((resolve) => setImmediate(resolve));
+
+  expect(createAlbumAsync).toHaveBeenCalledWith(expect.any(String), {}, true);
+  expect(addAssetsToAlbumAsync).not.toHaveBeenCalled();
+});
+
 it('does not publish or save a camera image if the native decoder fails', async () => {
   mockRenderAsync.mockRejectedValueOnce(new Error('unsupported codec'));
   expect(await useCaptureImage({ saveImage: true }).captureImage()).toBeUndefined();
@@ -179,4 +225,42 @@ it.each(['jpg', 'png'])('leaves camera %s unchanged', async (extension) => {
   (launchCameraAsync as jest.Mock).mockResolvedValue({ canceled: false, assets: [photo] });
   expect(await useCaptureImage().captureImage()).toBe(photo);
   expect(mockManipulate).not.toHaveBeenCalled();
+});
+
+it('saves a recovery snapshot before opening camera permission settings', async () => {
+  (requestCameraPermissionsAsync as jest.Mock).mockResolvedValueOnce({ status: 'denied' });
+  const openSettings = jest.spyOn(Linking, 'openSettings').mockResolvedValue();
+  let finishSaving: () => void = () => undefined;
+  const saveDraft = jest.fn(
+    () =>
+      new Promise<void>((resolve) => {
+        finishSaving = resolve;
+      })
+  );
+
+  await useCaptureImage({ onBeforeOpenSettings: saveDraft }).captureImage();
+  expect(saveDraft).not.toHaveBeenCalled();
+  expect(launchCameraAsync).not.toHaveBeenCalled();
+
+  const settingsButton = (Alert.alert as jest.Mock).mock.calls[0][2][1];
+  const opening = settingsButton.onPress();
+  expect(saveDraft).toHaveBeenCalledTimes(1);
+  expect(openSettings).not.toHaveBeenCalled();
+  finishSaving();
+  await opening;
+  expect(openSettings).toHaveBeenCalledTimes(1);
+});
+
+it('keeps the form in the app if saving before settings fails', async () => {
+  (requestCameraPermissionsAsync as jest.Mock).mockResolvedValueOnce({ status: 'denied' });
+  const openSettings = jest.spyOn(Linking, 'openSettings').mockResolvedValue();
+  const saveDraft = jest.fn(async () => {
+    throw new Error('Storage unavailable');
+  });
+
+  await useCaptureImage({ onBeforeOpenSettings: saveDraft }).captureImage();
+  await (Alert.alert as jest.Mock).mock.calls[0][2][1].onPress();
+
+  expect(openSettings).not.toHaveBeenCalled();
+  expect(Alert.alert).toHaveBeenCalledTimes(2);
 });

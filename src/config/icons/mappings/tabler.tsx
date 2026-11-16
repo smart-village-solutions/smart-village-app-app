@@ -99,6 +99,17 @@ export const tablerIconMapping: Record<string, string> = {
   play: 'player-play-filled',
   pause: 'player-pause',
 
+  // Accessibility & Read Aloud
+  accessible: 'accessible',
+  volume: 'volume',
+  'player-play': 'player-play',
+  'player-pause': 'player-pause',
+  'player-skip-back': 'player-skip-back',
+  'player-skip-forward': 'player-skip-forward',
+  eye: 'eye',
+  'eye-off': 'eye-off',
+  'chevron-down': 'chevron-down',
+
   // Visibility
   visible: 'eye',
   unvisible: 'eye-off',

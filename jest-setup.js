@@ -5,6 +5,32 @@ import mockReact from 'react';
 import { Image as MockReactNativeImage } from 'react-native';
 import { setUpTests } from 'react-native-reanimated';
 
+jest.mock(
+  './src/config/secrets',
+  () => ({
+    encounterApi: {
+      serverUrl: 'https://example.test',
+      version: '/v1',
+      qr: '/qr',
+      user: '/user',
+      support: { create: '/support' }
+    },
+    secrets: {
+      [require('./app.json').expo.slug]: {
+        serverUrl: 'https://example.test',
+        graphqlEndpoint: '/graphql',
+        rest: {
+          pushDevicesDelete: '/notification/devices/0',
+          pushDevicesRegister: '/notification/devices',
+          pushDevicesDataProviders: '/notification/devices/0/data_providers',
+          pushDevicesAddAssignment: '/notification/device_assignments',
+          pushDevicesRemoveAssignment: '/notification/device_assignments/0'
+        }
+      }
+    }
+  }),
+  { virtual: true }
+);
 jest.mock('@react-native-async-storage/async-storage', () => mockAsyncStorage);
 jest.mock('@react-native-community/netinfo', () =>
   require('@react-native-community/netinfo/jest/netinfo-mock')
@@ -34,11 +60,14 @@ jest.mock('expo-in-app-updates', () => ({
   startUpdate: jest.fn(async () => undefined)
 }));
 jest.mock('expo-media-library', () => ({
+  requestPermissionsAsync: jest.fn(async () => ({ status: 'granted' }))
+}));
+jest.mock('expo-media-library/legacy', () => ({
   addAssetsToAlbumAsync: jest.fn(async () => undefined),
   createAlbumAsync: jest.fn(async () => undefined),
   createAssetAsync: jest.fn(async (uri) => ({ uri })),
   getAlbumAsync: jest.fn(async () => null),
-  requestPermissionsAsync: jest.fn(async () => ({ status: 'granted' }))
+  saveToLibraryAsync: jest.fn(async () => undefined)
 }));
 jest.mock('expo-video', () => ({
   useVideoPlayer: jest.fn((_source, setup) => {

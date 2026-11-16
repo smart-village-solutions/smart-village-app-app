@@ -57,8 +57,41 @@ const sendClaimedReport = async (
   }
 };
 
+const isBackendHealthy = async (endpoints: Awaited<ReturnType<typeof fetchSueEndpoints>>) => {
+  try {
+    return (await fetchSueWithTimeout(endpoints.sueServicesUrl, endpoints.sueFetchObj)).ok;
+  } catch {
+    // No POST has happened: retrying this health check is safe.
+    return false;
+  }
+};
+
+const sendPendingReport = async (candidate: SueOutboxReport, force: boolean) => {
+  if (!isDue(candidate, force)) return true;
+  if (!(await maySend())) return false;
+  const endpoints = await fetchSueEndpoints();
+  // Never redirect a queued report when its customer configuration changes.
+  if (!endpoints.apiKey || candidate.endpoint !== endpoints.suePostRequest) return true;
+  if (!(await isBackendHealthy(endpoints))) {
+    await updateSueOutbox((reports) => {
+      const entry = reports.find((item) => item.localId === candidate.localId);
+      if (entry?.deliveryStatus === 'pending') deferReport(entry);
+    });
+    return true;
+  }
+  if (!(await maySend())) return false;
+  const claimed = await updateSueOutbox((reports) => {
+    const entry = reports.find((item) => item.localId === candidate.localId);
+    if (entry?.deliveryStatus !== 'pending') return;
+    entry.deliveryStatus = 'sending';
+    return entry;
+  });
+  if (claimed) await sendClaimedReport(claimed, endpoints);
+  return true;
+};
+
 const sendPendingReports = async (force: boolean) => {
-  // A process may have died after POST. Without backend idempotency support its result is unknown.
+  // A process may have died after POST. Without backend idempotency its result is unknown.
   const stored = await readSueOutbox();
   if (stored.some((entry) => entry.deliveryStatus === 'sending')) {
     await updateSueOutbox((reports) => {
@@ -67,39 +100,13 @@ const sendPendingReports = async (force: boolean) => {
       });
     });
   }
-
-  for (const candidate of await readSueOutbox()) {
-    if (!isDue(candidate, force)) continue;
-    if (!(await maySend())) return;
-    const endpoints = await fetchSueEndpoints();
-    // Keep queued data bound to its original backend; never redirect reports after a config switch.
-    if (!endpoints.apiKey || candidate.endpoint !== endpoints.suePostRequest) continue;
-
-    let healthy = false;
-    try {
-      healthy = (await fetchSueWithTimeout(endpoints.sueServicesUrl, endpoints.sueFetchObj)).ok;
-    } catch {
-      // No POST has happened: retrying the health check is safe.
-    }
-    if (!healthy) {
-      await updateSueOutbox((reports) => {
-        const entry = reports.find((item) => item.localId === candidate.localId);
-        if (entry?.deliveryStatus === 'pending') deferReport(entry);
-      });
-      continue;
-    }
-    if (!(await maySend())) return;
-
-    const claimed = await updateSueOutbox((reports) => {
-      const entry = reports.find((item) => item.localId === candidate.localId);
-      if (entry?.deliveryStatus !== 'pending') return;
-      entry.deliveryStatus = 'sending';
-      return entry;
-    });
-    if (!claimed) continue;
-
-    await sendClaimedReport(claimed, endpoints);
-  }
+  // Deliberately serialize submissions and stop starting requests after background/offline.
+  await (
+    await readSueOutbox()
+  ).reduce(async (previous, candidate) => {
+    if (!(await previous)) return false;
+    return sendPendingReport(candidate, force);
+  }, Promise.resolve(true));
 };
 
 export const syncSueOutbox = (force = false): Promise<void> => {

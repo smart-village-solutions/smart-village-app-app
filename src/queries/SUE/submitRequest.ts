@@ -57,7 +57,10 @@ export const postRequests = async (
     };
 
     Object.entries(fieldMappings).forEach(([key, formKey]) => {
-      if (data[key] != null) formData.append(formKey, String(data[key]));
+      const value = data[key];
+      if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+        formData.append(formKey, String(value));
+      }
     });
   }
 
