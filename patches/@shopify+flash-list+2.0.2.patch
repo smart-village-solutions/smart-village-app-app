@@ -1,0 +1,19 @@
+diff --git a/node_modules/@shopify/flash-list/dist/recyclerview/RecyclerView.js b/node_modules/@shopify/flash-list/dist/recyclerview/RecyclerView.js
+--- a/node_modules/@shopify/flash-list/dist/recyclerview/RecyclerView.js
++++ b/node_modules/@shopify/flash-list/dist/recyclerview/RecyclerView.js
+@@ -74,4 +74,4 @@
+             var firstItemOffset = horizontal
+-                ? firstChildViewLayout.x - outerViewLayout.x
+-                : firstChildViewLayout.y - outerViewLayout.y;
++                ? firstChildViewLayout.x
++                : firstChildViewLayout.y;
+             // Update the RecyclerView manager with window dimensions
+diff --git a/node_modules/@shopify/flash-list/src/recyclerview/RecyclerView.tsx b/node_modules/@shopify/flash-list/src/recyclerview/RecyclerView.tsx
+--- a/node_modules/@shopify/flash-list/src/recyclerview/RecyclerView.tsx
++++ b/node_modules/@shopify/flash-list/src/recyclerview/RecyclerView.tsx
+@@ -160,3 +160,3 @@
+       const firstItemOffset = horizontal
+-        ? firstChildViewLayout.x - outerViewLayout.x
+-        : firstChildViewLayout.y - outerViewLayout.y;
++        ? firstChildViewLayout.x
++        : firstChildViewLayout.y;
