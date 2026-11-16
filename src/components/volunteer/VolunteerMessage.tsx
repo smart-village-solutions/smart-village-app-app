@@ -3,6 +3,7 @@ import { useMutation, useQuery } from 'react-query';
 
 import { consts } from '../../config';
 import { volunteerMessageMedia, volunteerUserData } from '../../helpers';
+import { useVolunteerStoredValue } from '../../hooks/volunteer/storedValue';
 import {
   conversationNewEntry,
   conversationRecipients,
@@ -10,6 +11,8 @@ import {
 } from '../../queries/volunteer';
 import { VolunteerConversation } from '../../types';
 import { Chat } from '../Chat';
+
+import { VolunteerStorageError } from './VolunteerStorageError';
 
 const { GUID_REGEX, IMAGE_TYPE_REGEX, PDF_TYPE_REGEX, VIDEO_TYPE_REGEX } = consts;
 
@@ -69,18 +72,17 @@ export const VolunteerMessage = ({
   refetch: () => void;
 }) => {
   const [messageData, setMessageData] = useState<any>([]);
-  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const {
+    value: storedUser,
+    error: storedUserError,
+    retry
+  } = useVolunteerStoredValue(volunteerUserData);
+  const currentUserId = storedUser?.currentUserId;
 
   const { data: dataRecipients, isLoading } = useQuery(
     ['conversationRecipients', conversationId],
     () => conversationRecipients(conversationId)
   );
-
-  useEffect(() => {
-    volunteerUserData().then((volunteerUser) => {
-      setCurrentUserId(volunteerUser.currentUserId);
-    });
-  }, []);
 
   useEffect(() => {
     const messageArray: {
@@ -139,21 +141,25 @@ export const VolunteerMessage = ({
     mutateAsync(conversationNewEntryData);
   };
 
-  if (isLoading || !dataRecipients || !currentUserId) return null;
+  const storageError = storedUserError ? <VolunteerStorageError onRetry={retry} /> : null;
+  if (isLoading || !dataRecipients || !currentUserId) return storageError;
 
   return (
-    <Chat
-      data={messageData}
-      onSendButton={(message) =>
-        onSend({
-          id: [conversationId],
-          medias: message.medias,
-          message: message.text,
-          title: ''
-        }).then(refetch)
-      }
-      showActionButton
-      userId={currentUserId}
-    />
+    <>
+      {storageError}
+      <Chat
+        data={messageData}
+        onSendButton={(message) =>
+          onSend({
+            id: [conversationId],
+            medias: message.medias,
+            message: message.text,
+            title: ''
+          }).then(refetch)
+        }
+        showActionButton
+        userId={currentUserId}
+      />
+    </>
   );
 };

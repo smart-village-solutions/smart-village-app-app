@@ -10,6 +10,7 @@ import type { VolunteerCalendarDateRange } from '../types';
 
 import { eventDate } from './dateTimeHelper';
 import { currentDateInTimeZone, currentDateTimeInTimeZone } from './momentHelper';
+import { readSecureStoreItem } from './secureStore';
 import { subtitle } from './textHelper';
 
 const namespace = appJson.expo.slug as keyof typeof secrets;
@@ -56,18 +57,7 @@ export const storeVolunteerAuthToken = (authToken?: string) => {
   }
 };
 
-export const volunteerAuthToken = async () => {
-  let authToken = null;
-
-  try {
-    authToken = await SecureStore.getItemAsync(VOLUNTEER_AUTH_TOKEN);
-  } catch {
-    // Token deleted here so that it can be recreated
-    SecureStore.deleteItemAsync(VOLUNTEER_AUTH_TOKEN);
-  }
-
-  return authToken;
-};
+export const volunteerAuthToken = () => readSecureStoreItem(VOLUNTEER_AUTH_TOKEN);
 
 export const storeVolunteerUserData = (userData?: {
   id: number;
@@ -93,22 +83,11 @@ export const volunteerUserData = async (): Promise<{
   currentUserGuid: string | null;
   currentUserContentContainerId: string | null;
 }> => {
-  let currentUserId = null;
-  let currentUserGuid = null;
-  let currentUserContentContainerId = null;
-
-  try {
-    currentUserId = await SecureStore.getItemAsync(VOLUNTEER_CURRENT_USER_ID);
-    currentUserGuid = await SecureStore.getItemAsync(VOLUNTEER_CURRENT_USER_GUID);
-    currentUserContentContainerId = await SecureStore.getItemAsync(
-      VOLUNTEER_CURRENT_USER_CONTENT_CONTAINER_ID
-    );
-  } catch {
-    // Token deleted here so that it can be recreated
-    await SecureStore.deleteItemAsync(VOLUNTEER_CURRENT_USER_ID);
-    await SecureStore.deleteItemAsync(VOLUNTEER_CURRENT_USER_GUID);
-    await SecureStore.deleteItemAsync(VOLUNTEER_CURRENT_USER_CONTENT_CONTAINER_ID);
-  }
+  const [currentUserId, currentUserGuid, currentUserContentContainerId] = await Promise.all([
+    readSecureStoreItem(VOLUNTEER_CURRENT_USER_ID),
+    readSecureStoreItem(VOLUNTEER_CURRENT_USER_GUID),
+    readSecureStoreItem(VOLUNTEER_CURRENT_USER_CONTENT_CONTAINER_ID)
+  ]);
 
   return {
     currentUserId,

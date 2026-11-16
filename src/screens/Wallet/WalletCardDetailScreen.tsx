@@ -1,7 +1,6 @@
 import { RouteProp } from 'expo-router/react-navigation';
 import { StackNavigationProp } from 'expo-router/js-stack';
 import { File, Paths } from 'expo-file-system';
-import * as Sharing from 'expo-sharing';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
@@ -15,6 +14,7 @@ import { BarcodeCreatorView, BarcodeFormat } from 'react-native-barcode-creator'
 import { Divider } from 'react-native-elements';
 import ViewShot from 'react-native-view-shot';
 
+import { shareWalletFile } from '../../helpers/wallet/shareWalletFile';
 import {
   BoldText,
   Button,
@@ -156,7 +156,7 @@ export const WalletCardDetailScreen = ({
         encoding: 'base64'
       });
 
-      await Sharing.shareAsync(file.uri);
+      await shareWalletFile(file.uri);
     } catch (e) {
       console.error(e);
       Alert.alert(texts.wallet.detail.errorTitle, texts.wallet.detail.shareErrorMessage);

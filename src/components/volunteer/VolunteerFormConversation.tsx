@@ -1,13 +1,14 @@
 import { useIsFocused } from 'expo-router/react-navigation';
 import { StackScreenProps } from 'expo-router/js-stack';
 import _sortBy from 'lodash/sortBy';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { Alert } from 'react-native';
 import { useMutation, useQuery } from 'react-query';
 
 import { texts } from '../../config';
 import { isAccount, volunteerUserData } from '../../helpers';
+import { useVolunteerStoredValue } from '../../hooks/volunteer/storedValue';
 import { QUERY_TYPES } from '../../queries';
 import { conversationNew, users } from '../../queries/volunteer';
 import { VolunteerConversation } from '../../types';
@@ -18,6 +19,8 @@ import { LoadingSpinner } from '../LoadingSpinner';
 import { RegularText } from '../Text';
 import { Touchable } from '../Touchable';
 import { Wrapper } from '../Wrapper';
+
+import { VolunteerStorageError } from './VolunteerStorageError';
 
 // eslint-disable-next-line complexity
 export const VolunteerFormConversation = ({
@@ -41,32 +44,29 @@ export const VolunteerFormConversation = ({
     QUERY_TYPES.VOLUNTEER.USERS,
     users
   );
-  const [userDropdownData, setUserDropdownData] = useState<DropdownInputProps['data'] | []>([]);
-  const [isProcessingUserDropdownData, setIsProcessingUserDropdownData] = useState(true);
+  const {
+    value: storedUser,
+    loading: isLoadingStoredUser,
+    error: storedUserError,
+    retry
+  } = useVolunteerStoredValue(volunteerUserData);
   const [selectedUserDisplayName, setSelectedUserDisplayName] = useState<string | undefined>();
 
-  const filterUserDropDownData = useCallback(async () => {
-    setIsProcessingUserDropdownData(true);
-    if (dataUsers?.results?.length) {
-      const { currentUserId } = await volunteerUserData();
+  const userDropdownData = useMemo<DropdownInputProps['data']>(() => {
+    if (storedUser && dataUsers?.results?.length) {
+      const { currentUserId } = storedUser;
       // show only others users, which are set to visible
-      let filteredUserDropDownData = dataUsers.results
+      const filteredUserDropDownData = dataUsers.results
         ?.filter(
           (item: { account: { id: number; visibility: number } }) =>
             !isAccount(currentUserId, item.account) && item.account.visibility == 1
         )
         ?.map((item) => ({ ...item, value: item.display_name }));
 
-      filteredUserDropDownData = _sortBy(filteredUserDropDownData, 'value');
-
-      filteredUserDropDownData?.length && setUserDropdownData(filteredUserDropDownData);
+      return _sortBy(filteredUserDropDownData, 'value');
     }
-    setIsProcessingUserDropdownData(false);
-  }, [dataUsers?.results]);
-
-  useEffect(() => {
-    filterUserDropDownData();
-  }, [filterUserDropDownData]);
+    return [];
+  }, [dataUsers?.results, storedUser]);
 
   const isFocused = useIsFocused();
 
@@ -79,9 +79,11 @@ export const VolunteerFormConversation = ({
     scrollToTop();
   }
 
-  if (isLoadingUsers || isProcessingUserDropdownData) {
+  if (isLoadingUsers || isLoadingStoredUser) {
     return <LoadingSpinner loading />;
   }
+
+  if (storedUserError) return <VolunteerStorageError onRetry={retry} />;
 
   if (!userDropdownData.length) {
     return (

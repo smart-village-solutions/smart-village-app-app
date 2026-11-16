@@ -1,11 +1,12 @@
 import { StackScreenProps } from 'expo-router/js-stack';
 import _shuffle from 'lodash/shuffle';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { FlatList, TouchableOpacity } from 'react-native';
 import { UseMutateAsyncFunction, useQuery } from 'react-query';
 
 import { consts, texts } from '../../config';
 import { isApplicant, isMember, volunteerUserData } from '../../helpers';
+import { useVolunteerStoredValue } from '../../hooks/volunteer/storedValue';
 import { QUERY_TYPES } from '../../queries';
 import { groupMembership } from '../../queries/volunteer';
 import { MEMBER_STATUS_TYPES, ScreenName, VolunteerUser } from '../../types';
@@ -13,6 +14,7 @@ import { BoldText } from '../Text';
 import { Wrapper } from '../Wrapper';
 
 import { VolunteerAvatar } from './VolunteerAvatar';
+import { VolunteerStorageError } from './VolunteerStorageError';
 
 const { ROOT_ROUTE_NAMES } = consts;
 
@@ -52,42 +54,38 @@ export const VolunteerGroupMembersAndApplicants = ({
   const { data, refetch } = useQuery(['groupMembership', groupId], () =>
     groupMembership({ id: groupId })
   );
-  const [groupMembers, setGroupMembers] = useState<{ user: VolunteerUser }[]>();
-  const [groupApplicants, setGroupApplicants] = useState<{ user: VolunteerUser }[]>();
+  const {
+    value: storedUser,
+    error: storedUserError,
+    retry
+  } = useVolunteerStoredValue(volunteerUserData);
 
-  const setMembersAndApplicants = useCallback(async () => {
-    const { currentUserId } = await volunteerUserData();
+  const membership = useMemo(() => {
+    if (!storedUser) return;
+    const { currentUserId } = storedUser;
 
     const applicants = data?.results?.filter(
       (applicant: { status: number }) => applicant.status === MEMBER_STATUS_TYPES.APPLICANT
     );
 
-    setIsGroupApplicant(isApplicant(currentUserId, applicants));
-
-    if (isGroupOwner) {
-      const fewShuffledApplicants = _shuffle(applicants?.slice(0, MAX_AVATARS_COUNT + 1)) as [
-        { user: VolunteerUser }
-      ];
-
-      setGroupApplicants(fewShuffledApplicants);
-    }
-
     const members = data?.results?.filter(
       (member: { status: number }) => member.status === MEMBER_STATUS_TYPES.MEMBER
     );
 
-    setIsGroupMember(isMember(currentUserId, members));
-
-    const fewShuffledMembers = _shuffle(members?.slice(0, MAX_AVATARS_COUNT + 1)) as [
-      { user: VolunteerUser }
-    ];
-
-    setGroupMembers(fewShuffledMembers);
-  }, [data, isGroupOwner]);
+    return {
+      applicant: isApplicant(currentUserId, applicants),
+      member: isMember(currentUserId, members),
+      groupApplicants: isGroupOwner ? _shuffle(applicants?.slice(0, MAX_AVATARS_COUNT + 1)) : [],
+      groupMembers: _shuffle(members?.slice(0, MAX_AVATARS_COUNT + 1))
+    };
+  }, [data, isGroupOwner, storedUser]);
+  const { groupMembers, groupApplicants } = membership || {};
 
   useEffect(() => {
-    setMembersAndApplicants();
-  }, [setMembersAndApplicants]);
+    if (!membership) return;
+    setIsGroupApplicant(membership.applicant);
+    setIsGroupMember(membership.member);
+  }, [membership, setIsGroupApplicant, setIsGroupMember]);
 
   useEffect(() => {
     refetch();
@@ -98,10 +96,12 @@ export const VolunteerGroupMembersAndApplicants = ({
     isRefetching && refetch();
   }, [isRefetching]);
 
-  if (!groupMembers?.length && !groupApplicants?.length) return null;
+  const storageError = storedUserError ? <VolunteerStorageError onRetry={retry} /> : null;
+  if (!groupMembers?.length && !groupApplicants?.length) return storageError;
 
   return (
     <>
+      {storageError}
       {!hideMembers && !!groupMembers?.length && (
         <Wrapper>
           <TouchableOpacity

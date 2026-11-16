@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { useMutation, useQuery } from 'react-query';
 
@@ -17,6 +17,8 @@ import { SettingsToggle } from '../SettingsToggle';
 import { RegularText } from '../Text';
 import { Wrapper, WrapperHorizontal } from '../Wrapper';
 
+import { VolunteerStorageError } from './VolunteerStorageError';
+
 const keyExtractor = (item, index) => `index${index}-id${item.key}`;
 
 const TARGET_MOBILE = 'mobile';
@@ -32,7 +34,21 @@ export const VolunteerUserNotificationSettings = () => {
   const { mutateAsync: mutateUserNotificationSettings } = useMutation(
     userNotificationSettingsUpdate
   );
-  const { mutate: mutateStorePushToken } = useMutation(storePushToken);
+  const { mutateAsync: mutateStorePushToken } = useMutation(storePushToken);
+  const [syncError, setSyncError] = useState(false);
+  const syncPushToken = useCallback(async () => {
+    setSyncError(false);
+    try {
+      const authToken = await volunteerAuthToken();
+      if (authToken) {
+        const response = await mutateStorePushToken(authToken);
+        if (!response?.ok) throw new Error('Push token synchronization failed');
+      }
+    } catch {
+      // The settings update is already saved; retain it and allow token sync to be retried.
+      setSyncError(true);
+    }
+  }, [mutateStorePushToken]);
 
   const { categories, settings } = dataUserNotificationSettings?.data || {};
   const mobileSettings = settings?.filter(
@@ -45,23 +61,26 @@ export const VolunteerUserNotificationSettings = () => {
   );
 
   const onUpdate = useCallback(
-    ({ category, isEnabled, target }, revert) => {
-      mutateUserNotificationSettings({
-        category,
-        isEnabled: !isEnabled,
-        target
-      }).then((response) => {
-        if (response?.code === 200) {
-          refetchUserNotificationSettings();
-          volunteerAuthToken().then((authToken: string | null) => {
-            !!authToken && mutateStorePushToken(authToken);
-          });
-        } else {
-          revert?.();
-        }
-      });
+    async ({ category, isEnabled, target }, revert) => {
+      let response;
+      try {
+        response = await mutateUserNotificationSettings({
+          category,
+          isEnabled: !isEnabled,
+          target
+        });
+      } catch {
+        revert?.();
+        return;
+      }
+      if (response?.code === 200) {
+        refetchUserNotificationSettings();
+        await syncPushToken();
+      } else {
+        revert?.();
+      }
     },
-    [mutateUserNotificationSettings, refetchUserNotificationSettings, mutateStorePushToken]
+    [mutateUserNotificationSettings, refetchUserNotificationSettings, syncPushToken]
   );
 
   if (isLoadingUserNotificationSettings) {
@@ -83,6 +102,7 @@ export const VolunteerUserNotificationSettings = () => {
 
   return (
     <>
+      {syncError && <VolunteerStorageError onRetry={syncPushToken} />}
       <SectionHeader title={texts.volunteer.notificationsTitle} big center />
 
       {mobileSettings?.map((setting, index: number) => (
