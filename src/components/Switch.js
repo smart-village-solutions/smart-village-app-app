@@ -1,6 +1,13 @@
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
-import { Platform, Pressable, StyleSheet, Switch as RNSwitch, View } from 'react-native';
+import {
+  Platform,
+  Pressable,
+  StyleSheet,
+  Switch as RNSwitch,
+  useWindowDimensions,
+  View
+} from 'react-native';
 import Animated from 'react-native-reanimated';
 
 import { AccessibilityContext } from '../AccessibilityProvider';
@@ -85,8 +92,22 @@ const AppControlledSwitch = ({
   switchValue,
   toggleSwitch
 }) => {
+  // Refresh track and thumb dimensions together when a tablet or desktop window changes size.
+  useWindowDimensions();
+  const trackWidth = normalize(39);
+  const trackHeight = normalize(24);
+  const thumbSize = normalize(20);
+  const thumbGap = (trackHeight - thumbSize) / 2;
+  // Absolute child offsets start inside the track's border, including a transparent border.
+  const borderWidth = StyleSheet.hairlineWidth;
+  const thumbInset = thumbGap - borderWidth;
+  const controlStyle = { height: normalize(32), width: normalize(47) };
   const animationDuration = isReduceMotionEnabled ? 0 : 180;
   const trackStyle = {
+    borderWidth,
+    borderRadius: trackHeight / 2,
+    height: trackHeight,
+    width: trackWidth,
     backgroundColor: switchValue ? colors.primary : colors.gray60,
     borderColor: !switchValue && isReduceTransparencyEnabled ? colors.border : colors.transparent,
     transitionDuration: animationDuration,
@@ -94,8 +115,13 @@ const AppControlledSwitch = ({
     transitionTimingFunction: 'ease-out'
   };
   const thumbStyle = {
+    borderRadius: thumbSize / 2,
+    height: thumbSize,
+    left: thumbInset,
+    top: thumbInset,
+    width: thumbSize,
     backgroundColor: isDisabled ? colors.gray40 : colors.onPrimary,
-    transform: [{ translateX: switchValue ? normalize(15) : 0 }],
+    transform: [{ translateX: switchValue ? trackWidth - thumbSize - 2 * thumbGap : 0 }],
     transitionDuration: animationDuration,
     transitionProperty: 'transform',
     transitionTimingFunction: 'ease-out'
@@ -109,13 +135,17 @@ const AppControlledSwitch = ({
       disabled={isDisabled}
       hitSlop={normalize(8)}
       onPress={() => toggleSwitch(!switchValue)}
-      style={[styles.appControlledSwitch, isDisabled && styles.disabled]}
+      style={[styles.appControlledSwitch, controlStyle, isDisabled && styles.disabled]}
     >
-      <Animated.View style={[styles.appControlledTrack, trackStyle]}>
+      <Animated.View style={[styles.appControlledTrack, trackStyle]} testID="switch-track">
         {isSwitchLabelsEnabled && (
           <SwitchStateIndicator colors={colors} switchValue={switchValue} />
         )}
-        <Animated.View pointerEvents="none" style={[styles.appControlledThumb, thumbStyle]} />
+        <Animated.View
+          pointerEvents="none"
+          style={[styles.appControlledThumb, thumbStyle]}
+          testID="switch-thumb"
+        />
       </Animated.View>
     </Pressable>
   );
@@ -174,25 +204,14 @@ export const Switch = ({
 const styles = StyleSheet.create({
   appControlledSwitch: {
     alignItems: 'center',
-    height: normalize(32),
-    justifyContent: 'center',
-    width: normalize(47)
+    justifyContent: 'center'
   },
   appControlledThumb: {
-    borderRadius: normalize(10),
-    height: normalize(20),
-    left: normalize(2),
-    position: 'absolute',
-    top: normalize(2),
-    width: normalize(20)
+    position: 'absolute'
   },
   appControlledTrack: {
-    borderRadius: normalize(12),
-    borderWidth: StyleSheet.hairlineWidth,
-    height: normalize(24),
     overflow: 'hidden',
-    position: 'relative',
-    width: normalize(39)
+    position: 'relative'
   },
   disabled: {
     opacity: 0.65

@@ -16,6 +16,12 @@ This document defines how AI agents should work in this repository.
 - Update tests/documentation when behavior changes.
 - Do not introduce unrelated refactors in the same change.
 
+### Municipality variants and integration into `master`
+
+- At the start of every task, check whether the change affects shared behavior or a municipality-specific feature, layout, or asset. For a municipality-specific change, identify how it can coexist with other variants before implementing it.
+- Reuse existing instance settings, feature flags, or branding and asset configuration. Keep shared code reusable and preserve the current default behavior for instances without an override. Keep municipality-specific values in instance configuration and update the generation template when needed. Verify both the default and the configured variant.
+- Use `master` as the base for shared changes whenever possible. If implementation starts on a municipality release or staging branch, also prepare the reusable change against `master`. Bring over only the relevant changes and keep municipality-specific settings on the release branch. At handoff, link the `master` commit, branch, or PR, or state what is still open. A release alone does not complete integration into `master`.
+
 ### Icon library mappings (v5.0.0+)
 
 - The app supports multiple icon libraries through `src/IconProvider.tsx`. Whenever adding or renaming a shared icon (including `Icon` entries and `Icon.NamedIcon` usages in `src/config/icons/Icon.tsx` or elsewhere), update its unified name in **all eight** library mapping files under `src/config/icons/mappings/`: `tabler.tsx`, `ionicons.tsx`, `fontawesome.tsx`, `fontawesome5.tsx`, `fontawesome6.tsx`, `materialicons.tsx`, `materialcommunityicons.tsx`, and `simplelineicons.tsx`.
@@ -90,7 +96,7 @@ Note: `.gitignore` already covers these rules; this section makes the agent beha
 
 ### Customer app configuration
 
-- Check that shared changes preserve customer-specific API endpoints, feature flags, and branding. Flag hard-coded customer values in shared code or configuration changes that leave the corresponding generation templates inconsistent. Respect intentional differences between customer release branches.
+- Check that shared changes preserve customer-specific API endpoints, feature flags, and branding. Flag hard-coded customer values in shared code or configuration changes that leave the corresponding generation templates inconsistent. For municipality-specific changes, check the existing default, the configured variant, and the path back to `master`.
 
 ### Native and OTA compatibility
 
