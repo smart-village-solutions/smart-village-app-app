@@ -1,6 +1,11 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React from 'react';
 import renderer, { act } from 'react-test-renderer';
+import { renderHook } from '@testing-library/react-native';
+import { ApolloClient } from 'apollo-client';
+import { InMemoryCache } from 'apollo-cache-inmemory';
+import { ApolloLink, Observable } from 'apollo-link';
+import gql from 'graphql-tag';
 
 import { LocationOverview } from '../../src/components/map/LocationOverview';
 import { parseListItemsFromQuery } from '../../src/helpers';
@@ -70,4 +75,46 @@ it('passes the current Apollo category filter after a chip refetch, rather than 
   });
   expect(parseListItemsFromQuery.mock.calls.at(-1)[3].queryVariables).toEqual(mockActiveVariables);
   expect(initialVariables.categoryIds).toEqual(['A', 'B']);
+});
+
+it('the installed Apollo hook exposes refetched observable variables after chip-style updates', async () => {
+  const { ApolloProvider } = jest.requireActual('@apollo/react-common');
+  const { useQuery } = jest.requireActual('@apollo/react-hooks');
+  const document = gql`
+    query ActiveCategories($categoryIds: [ID]) {
+      pointsOfInterest(categoryIds: $categoryIds) {
+        id
+      }
+    }
+  `;
+  const requests = [];
+  const client = new ApolloClient({
+    cache: new InMemoryCache(),
+    link: new ApolloLink(
+      (operation) =>
+        new Observable((observer) => {
+          requests.push(operation.variables);
+          observer.next({
+            data: {
+              pointsOfInterest: operation.variables.categoryIds.map((id) => ({
+                id,
+                __typename: 'PointOfInterest'
+              }))
+            }
+          });
+          observer.complete();
+        })
+    )
+  });
+  const wrapper = ({ children }) => <ApolloProvider client={client}>{children}</ApolloProvider>;
+  const { result, unmount } = renderHook(
+    () => useQuery(document, { variables: { categoryIds: ['A', 'B'] } }),
+    { wrapper }
+  );
+  await act(async () => {});
+  await act(async () => result.current.refetch({ categoryIds: ['A'], limit: undefined }));
+  expect(result.current.variables.categoryIds).toEqual(['A']);
+  expect(requests.at(-1).categoryIds).toEqual(['A']);
+  unmount();
+  client.stop();
 });

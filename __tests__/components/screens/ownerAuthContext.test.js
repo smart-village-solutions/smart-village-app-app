@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import renderer, { act } from 'react-test-renderer';
+import { waitFor } from '@testing-library/react-native';
 
 import { AUTH_MODE_USER, getApolloAuthContext } from '../../../src/graphqlAuth';
 import { isValidGeoLocation } from '../../../src/helpers';
@@ -18,6 +19,9 @@ import { DELETE_GENERIC_ITEM } from '../../../src/queries/genericItem';
 
 const mockUseMutation = jest.fn();
 const mockUseQuery = jest.fn();
+const mockUseMarkerQuery = jest.fn();
+const mockMarkerRequest = jest.fn();
+const mockMarkerRefetch = jest.fn();
 const mockUseProfileContext = jest.fn();
 const mockUseFocusEffect = jest.fn();
 let mockMapProps;
@@ -26,6 +30,13 @@ const mockMapUnmount = jest.fn();
 jest.mock('react-apollo', () => ({
   useMutation: (...args) => mockUseMutation(...args),
   useQuery: (...args) => mockUseQuery(...args)
+}));
+jest.mock('react-query', () => ({
+  ...jest.requireActual('react-query'),
+  useQuery: (...args) => mockUseMarkerQuery(...args)
+}));
+jest.mock('../../../src/ReactQueryClient', () => ({
+  ReactQueryClient: async () => ({ request: mockMarkerRequest })
 }));
 
 jest.mock('expo-router/react-navigation', () => ({
@@ -404,6 +415,8 @@ describe('owner auth context for detail screen actions', () => {
       loading: false,
       refetch: jest.fn()
     }));
+    mockUseMarkerQuery.mockImplementation(() => ({ data: {}, refetch: mockMarkerRefetch }));
+    mockMarkerRequest.mockResolvedValue({ pointsOfInterest: [] });
     mockUseProfileContext.mockReturnValue({
       currentUserData: {
         member: { id: 'member-1' },
@@ -481,16 +494,17 @@ describe('owner auth context for detail screen actions', () => {
       />
     );
 
-    expect(mockUseQuery).toHaveBeenCalledWith(
-      GET_POINT_OF_INTEREST_MAP_MARKERS,
-      expect.objectContaining({
-        skip: false,
-        variables: {
+    expect(mockUseMarkerQuery).toHaveBeenCalledWith(
+      [
+        'pointOfInterestMapMarkers',
+        {
           category: 'Hotels, Pensionen etc.',
           categoryId: undefined,
           categoryIds: undefined
         }
-      })
+      ],
+      expect.any(Function),
+      { enabled: true }
     );
   });
 
@@ -511,11 +525,13 @@ describe('owner auth context for detail screen actions', () => {
         route={{ params: { rootRouteName: 'Places', queryVariables: { categoryIds: ['a'] } } }}
       />
     );
-    expect(mockUseQuery).toHaveBeenCalledWith(
-      GET_POINT_OF_INTEREST_MAP_MARKERS,
-      expect.objectContaining({
-        variables: { category: undefined, categoryId: undefined, categoryIds: ['a'] }
-      })
+    expect(mockUseMarkerQuery).toHaveBeenCalledWith(
+      [
+        'pointOfInterestMapMarkers',
+        { category: undefined, categoryId: undefined, categoryIds: ['a'] }
+      ],
+      expect.any(Function),
+      { enabled: true }
     );
     act(() => mockMapProps.onMarkerPress('poi-2'));
     expect(navigation.push).toHaveBeenCalledWith(
@@ -535,7 +551,7 @@ describe('owner auth context for detail screen actions', () => {
   it('keeps the selected map mounted while peer markers load and then adds peers', async () => {
     isValidGeoLocation.mockReturnValue(true);
     let result = { loading: true, data: undefined };
-    mockUseQuery.mockImplementation(() => result);
+    mockUseMarkerQuery.mockImplementation(() => result);
     const element = () => (
       <PointOfInterest
         data={{
@@ -567,6 +583,82 @@ describe('owner auth context for detail screen actions', () => {
     await act(async () => tree.update(element()));
     expect(mockMapProps.locations.map((marker) => marker.id)).toEqual(['poi-1', 'poi-2']);
     expect(mockMapUnmount).not.toHaveBeenCalled();
+  });
+
+  it.each([true, false])(
+    'refreshes related markers only when the map is eligible (%s)',
+    async (hideMap) => {
+      isValidGeoLocation.mockReturnValue(true);
+      await renderComponent(
+        <PointOfInterest
+          hideMap={hideMap}
+          data={{
+            id: 'poi-1',
+            addresses: [{ geoLocation: { latitude: 52, longitude: 13 } }],
+            payload: {}
+          }}
+          navigation={navigation}
+          route={{ params: { queryVariables: { categoryIds: ['a'] } } }}
+        />
+      );
+      const refresh = jest.requireMock('../../../src/hooks').useDetailRefresh.mock.calls.at(-1)[0];
+      refresh();
+      expect(mockMarkerRefetch).toHaveBeenCalledTimes(hideMap ? 0 : 1);
+    }
+  );
+
+  it('uses the shared React Query client, reuses cached peers and refreshes them on detail refresh', async () => {
+    const actual = jest.requireActual('react-query');
+    const client = new actual.QueryClient({
+      defaultOptions: {
+        queries: { retry: false, staleTime: 60000, cacheTime: Infinity, refetchOnMount: false }
+      }
+    });
+    mockUseMarkerQuery.mockImplementation((...args) => actual.useQuery(...args));
+    isValidGeoLocation.mockReturnValue(true);
+    const peer = (id) => ({
+      id,
+      visible: true,
+      addresses: [{ geoLocation: { latitude: 52.1, longitude: 13.1 } }]
+    });
+    mockMarkerRequest.mockResolvedValue({ pointsOfInterest: [peer('old-peer')] });
+    const element = (ids) => (
+      <actual.QueryClientProvider client={client}>
+        <PointOfInterest
+          data={{
+            id: 'poi-1',
+            addresses: [{ geoLocation: { latitude: 52, longitude: 13 } }],
+            payload: {}
+          }}
+          navigation={navigation}
+          route={{ params: { queryVariables: { categoryIds: ids } } }}
+        />
+      </actual.QueryClientProvider>
+    );
+    const tree = await renderComponent(element(['a']));
+    await waitFor(() =>
+      expect(mockMapProps.locations.map((x) => x.id)).toEqual(['poi-1', 'old-peer'])
+    );
+    expect(mockMarkerRequest).toHaveBeenCalledWith(GET_POINT_OF_INTEREST_MAP_MARKERS, {
+      category: undefined,
+      categoryId: undefined,
+      categoryIds: ['a']
+    });
+    expect(mockMapProps.locations.map((x) => x.id)).toEqual(['poi-1', 'old-peer']);
+    await act(async () => tree.update(element(['b'])));
+    await waitFor(() => expect(mockMarkerRequest).toHaveBeenCalledTimes(2));
+    expect(mockMarkerRequest).toHaveBeenCalledTimes(2);
+    await act(async () => tree.update(element(['a'])));
+    expect(mockMarkerRequest).toHaveBeenCalledTimes(2);
+    mockMarkerRequest.mockResolvedValue({ pointsOfInterest: [peer('new-peer')] });
+    jest.requireMock('../../../src/hooks').useDetailRefresh.mock.calls.at(-1)[0]();
+    await waitFor(() =>
+      expect(mockMapProps.locations.map((x) => x.id)).toEqual(['poi-1', 'new-peer'])
+    );
+    expect(mockMarkerRequest).toHaveBeenCalledTimes(3);
+    expect(mockMapProps.locations.map((x) => x.id)).toEqual(['poi-1', 'new-peer']);
+    act(() => tree.unmount());
+    client.clear();
   });
 
   it('passes user auth context only to noticeboard conversation hooks', async () => {

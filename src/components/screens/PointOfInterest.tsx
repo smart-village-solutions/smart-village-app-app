@@ -1,18 +1,15 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
-import { useMutation, useQuery } from 'react-apollo';
+import { useMutation } from 'react-apollo';
 import { Alert, FlatList, StyleSheet, View } from 'react-native';
+import { useQuery } from 'react-query';
 
 import { NetworkContext } from '../../NetworkProvider';
+import { ReactQueryClient } from '../../ReactQueryClient';
 import { useProfileContext } from '../../ProfileProvider';
 import { SettingsContext } from '../../SettingsProvider';
 import { Icon, consts, normalize, texts } from '../../config';
 import { AUTH_MODE_USER, getApolloAuthContext } from '../../graphqlAuth';
-import {
-  graphqlFetchPolicy,
-  isValidGeoLocation,
-  matomoTrackingString,
-  parseListItemsFromQuery
-} from '../../helpers';
+import { isValidGeoLocation, matomoTrackingString, parseListItemsFromQuery } from '../../helpers';
 import { useDetailRefresh, useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
 import { useTheme } from '../../hooks/useTheme';
 import { QUERY_TYPES } from '../../queries';
@@ -118,11 +115,16 @@ export const PointOfInterest = ({
     !!mapCategoryFilters.category ||
     mapCategoryFilters.categoryId != null ||
     !!mapCategoryFilters.categoryIds?.length;
-  const { data: mapMarkerData } = useQuery(GET_POINT_OF_INTEREST_MAP_MARKERS, {
-    fetchPolicy: graphqlFetchPolicy({ isConnected, isMainserverUp }),
-    skip: hideMap || !hasGeoCoordinates || !isConnected || !isMainserverUp || !hasMapCategoryFilter,
-    variables: mapCategoryFilters
-  });
+  const canLoadMapMarkers =
+    !hideMap && hasGeoCoordinates && !!isConnected && !!isMainserverUp && hasMapCategoryFilter;
+  const { data: mapMarkerData, refetch: refetchMapMarkers } = useQuery(
+    ['pointOfInterestMapMarkers', mapCategoryFilters],
+    async () => {
+      const client = await ReactQueryClient();
+      return client.request(GET_POINT_OF_INTEREST_MAP_MARKERS, mapCategoryFilters);
+    },
+    { enabled: canLoadMapMarkers }
+  );
   const currentMapMarker = useMemo(
     () => ({
       id,
@@ -204,6 +206,7 @@ export const PointOfInterest = ({
   });
   useDetailRefresh(() => {
     refetch?.();
+    if (canLoadMapMarkers) void refetchMapMarkers();
   });
 
   let nestedCategory;
