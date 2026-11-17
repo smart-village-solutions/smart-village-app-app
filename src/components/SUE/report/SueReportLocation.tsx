@@ -13,6 +13,7 @@ import { ConfigurationsContext } from '../../../ConfigurationsProvider';
 import { SettingsContext } from '../../../SettingsProvider';
 import { SUE_STATUS, consts, device, normalize, texts } from '../../../config';
 import { parseListItemsFromQuery } from '../../../helpers';
+import { SueAddress, withSueLocationTimeout } from '../../../helpers/sueReportLocation';
 import { SueCoordinates, SueLocationRequest } from '../../../hooks/useSueReportLocation';
 import {
   useLastKnownPosition,
@@ -110,7 +111,7 @@ export const SueReportLocation = ({
   };
   control: any;
   errorMessage: string;
-  invalidateLocation: () => void;
+  invalidateLocation: (change?: Partial<SueAddress>) => void;
   isFullscreenMap: boolean;
   requiredInputs?: (keyof TValues)[];
   resolveManualLocation: () => Promise<boolean | undefined>;
@@ -197,19 +198,10 @@ export const SueReportLocation = ({
     return <LoadingSpinner loading />;
   }
 
-  const clearAddressFields = () => {
-    setValue('city', '');
-    setValue('houseNumber', '');
-    setValue('street', '');
-    setValue('postalCode', '');
-  };
-
   const selectMapPosition = async (position: SueCoordinates, request: SueLocationRequest) => {
     if (!request.isLatestRequest()) return;
     setShowCoordinatesFromImageAlert(true);
     setUpdateRegionFromImage(false);
-    setSelectedPosition(undefined);
-    clearAddressFields();
 
     try {
       const result = await reverseGeocode({
@@ -223,7 +215,6 @@ export const SueReportLocation = ({
       if (request.isLatestRequest() && result.isWithinArea) setSelectedPosition(position);
     } catch (error) {
       if (request.isLatestRequest()) {
-        clearAddressFields();
         Alert.alert(texts.sue.report.alerts.hint, error?.message);
       }
     } finally {
@@ -275,11 +266,13 @@ export const SueReportLocation = ({
 
       const request = beginLocationUpdate();
       try {
-        const permissionResponse = await Location.getForegroundPermissionsAsync();
-        if (!request.isLatestRequest()) return false;
+        const resolvedPosition = await withSueLocationTimeout(async () => {
+          const permissionResponse = await Location.getForegroundPermissionsAsync();
+          if (!request.isLatestRequest()) return;
 
-        const hasPermission = permissionResponse.status === Location.PermissionStatus.GRANTED;
-        const resolvedPosition = hasPermission ? await resolvePosition() : undefined;
+          const hasPermission = permissionResponse.status === Location.PermissionStatus.GRANTED;
+          return hasPermission ? resolvePosition() : undefined;
+        });
         if (!request.isLatestRequest()) return false;
 
         if (!resolvedPosition?.coords) {
@@ -293,6 +286,11 @@ export const SueReportLocation = ({
 
         await selectMapPosition(resolvedPosition.coords, request);
         return request.isLatestRequest();
+      } catch (error) {
+        if (request.isLatestRequest()) {
+          Alert.alert(texts.sue.report.alerts.hint, error?.message);
+        }
+        return false;
       } finally {
         request.finish();
       }
@@ -363,7 +361,9 @@ export const SueReportLocation = ({
           placeholder={texts.sue.report.street}
           textContentType="streetAddressLine1"
           control={control}
-          onChange={invalidateLocation}
+          onChange={({ nativeEvent }: { nativeEvent: { text: string } }) =>
+            invalidateLocation({ street: nativeEvent.text })
+          }
           ref={streetInputRef}
           onSubmitEditing={() => houseNumberInputRef.current?.focus()}
         />
@@ -381,7 +381,9 @@ export const SueReportLocation = ({
           placeholder={texts.sue.report.houseNumber}
           textContentType="off"
           control={control}
-          onChange={invalidateLocation}
+          onChange={({ nativeEvent }: { nativeEvent: { text: string } }) =>
+            invalidateLocation({ houseNumber: nativeEvent.text })
+          }
           ref={houseNumberInputRef}
           onSubmitEditing={() => postalCodeInputRef.current?.focus()}
         />
@@ -401,7 +403,9 @@ export const SueReportLocation = ({
           keyboardType="numeric"
           textContentType="postalCode"
           control={control}
-          onChange={invalidateLocation}
+          onChange={({ nativeEvent }: { nativeEvent: { text: string } }) =>
+            invalidateLocation({ postalCode: nativeEvent.text })
+          }
           ref={postalCodeInputRef}
           onSubmitEditing={() => cityInputRef.current?.focus()}
         />
@@ -419,7 +423,9 @@ export const SueReportLocation = ({
           placeholder={texts.sue.report.city}
           control={control}
           textContentType="addressCity"
-          onChange={invalidateLocation}
+          onChange={({ nativeEvent }: { nativeEvent: { text: string } }) =>
+            invalidateLocation({ city: nativeEvent.text })
+          }
           ref={cityInputRef}
         />
       </Wrapper>

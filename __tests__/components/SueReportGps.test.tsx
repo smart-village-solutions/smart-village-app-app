@@ -1,14 +1,18 @@
 /* eslint-disable @typescript-eslint/no-var-requires, react/prop-types */
 import { Camera, Map } from '@maplibre/maplibre-react-native';
+import * as Location from 'expo-location';
 import React from 'react';
-import { TouchableOpacity } from 'react-native';
+import { Alert, TouchableOpacity } from 'react-native';
 import renderer, { act } from 'react-test-renderer';
 
 import { SueReportLocation } from '../../src/components/SUE/report/SueReportLocation';
 import { useSueReportLocation } from '../../src/hooks/useSueReportLocation';
 
 const mockReverseGeocode = jest.fn();
+let mockUseRealReverse = false;
+let mockHasCachedGps = true;
 const gps = { latitude: 54.39, longitude: 10.17 };
+let mockSelection: ReturnType<typeof useSueReportLocation>;
 const pin = { latitude: 54.36, longitude: 10.13 };
 
 jest.mock('@maplibre/maplibre-react-native', () => {
@@ -24,7 +28,9 @@ jest.mock('expo-router/js-tabs', () => ({ useBottomTabBarHeight: () => 0 }));
 jest.mock('expo-router/react-navigation', () => ({ useNavigation: () => ({}) }));
 jest.mock('expo-location', () => ({
   PermissionStatus: { GRANTED: 'granted' },
-  getForegroundPermissionsAsync: async () => ({ status: 'granted' })
+  getForegroundPermissionsAsync: jest.fn(async () => ({ status: 'granted' })),
+  getCurrentPositionAsync: jest.fn(),
+  getLastKnownPositionAsync: jest.fn()
 }));
 jest.mock('react-native-safe-area-context', () => ({
   useSafeAreaInsets: () => ({ top: 0, bottom: 0 })
@@ -49,9 +55,12 @@ jest.mock('../../src/helpers', () => ({ parseListItemsFromQuery: () => [] }));
 jest.mock('../../src/hooks', () => ({
   useLocationSettings: () => ({ locationSettings: { locationService: true } }),
   useMapFeatureConfig: () => ({}),
-  usePosition: () => ({ position: { coords: gps } }),
+  usePosition: () => ({ position: mockHasCachedGps ? { coords: gps } : undefined }),
   useLastKnownPosition: () => ({}),
-  useReverseGeocode: () => mockReverseGeocode,
+  useReverseGeocode: () =>
+    mockUseRealReverse
+      ? jest.requireActual('../../src/hooks/reverseGeocode').useReverseGeocode()
+      : mockReverseGeocode,
   useSystemPermission: () => ({ status: 'granted' })
 }));
 jest.mock('../../src/hooks/useTheme', () => ({ useTheme: () => ({ colors: {} }) }));
@@ -67,17 +76,27 @@ jest.mock('../../src/components/map', () =>
   jest.requireActual('../../src/components/map/MapLibre')
 );
 
-function ReportMap() {
+function ReportMap({ confirmed = false }: { confirmed?: boolean }) {
   const [isFullscreenMap, setIsFullscreenMap] = React.useState(false);
-  const selection = useSueReportLocation(() => ({
-    street: '',
-    houseNumber: '',
-    city: '',
-    postalCode: ''
-  }));
+  const address = React.useRef({
+    street: 'Koloniestraße',
+    houseNumber: '2',
+    city: 'Kiel',
+    postalCode: '24159'
+  });
+  const getAddress = React.useCallback(() => address.current, []);
+  const selection = useSueReportLocation(getAddress);
+  React.useEffect(() => {
+    mockSelection = selection;
+  });
+  const { setSelectedPosition } = selection;
+  React.useEffect(() => {
+    if (confirmed) setSelectedPosition(pin);
+  }, [confirmed, setSelectedPosition]);
   return (
     <SueReportLocation
       {...selection}
+      areaServiceData={{ postalCodes: ['24159'] }}
       configuration={{ geoMap: { clusterDistance: 0, clusterThreshold: 0 } }}
       control={{}}
       errorMessage=""
@@ -86,7 +105,9 @@ function ReportMap() {
       setIsFullscreenMap={setIsFullscreenMap}
       setShowCoordinatesFromImageAlert={jest.fn()}
       setUpdateRegionFromImage={jest.fn()}
-      setValue={jest.fn()}
+      setValue={(key, value) => {
+        address.current[key] = value;
+      }}
       updateRegionFromImage={false}
     />
   );
@@ -144,3 +165,97 @@ it.each([true, false])(
     }
   }
 );
+
+it.each(['empty', 'timeout', 'outside', 'cancelled'])(
+  'keeps a confirmed address and pin when a map lookup fails (%s)',
+  async (failure) => {
+    jest.useFakeTimers();
+    mockUseRealReverse = true;
+    const fetchSpy = jest.spyOn(global, 'fetch');
+    const alertSpy = jest.spyOn(Alert, 'alert').mockImplementation(() => {});
+    let tree: renderer.ReactTestRenderer | undefined;
+    try {
+      if (failure === 'timeout' || failure === 'cancelled')
+        fetchSpy.mockReturnValue(new Promise(() => {}));
+      else
+        fetchSpy.mockResolvedValue({
+          ok: true,
+          json: async () =>
+            failure === 'empty' ? {} : { address: { city: 'Augsburg', postcode: '86199' } }
+        } as Response);
+      await act(async () => {
+        tree = renderer.create(<ReportMap confirmed />);
+      });
+      const root = tree?.root;
+      if (!root) throw new Error('Map did not render');
+      act(() => {
+        root
+          .findByType(Map)
+          .props.onPress({ nativeEvent: { lngLat: [gps.longitude, gps.latitude] } });
+      });
+      if (failure === 'cancelled') {
+        await act(async () => {
+          await jest.advanceTimersByTimeAsync(50);
+          mockSelection.cancelLocationUpdate();
+        });
+      }
+      await act(async () => jest.advanceTimersByTimeAsync(10_050));
+      const report = root.findByType(SueReportLocation).props;
+      expect(report.selectedPosition).toEqual(pin);
+      expect(
+        mockSelection.getConfirmedLocation({
+          street: 'Koloniestraße',
+          houseNumber: '2',
+          city: 'Kiel',
+          postalCode: '24159'
+        })?.position
+      ).toEqual(pin);
+      if (failure === 'cancelled') expect(alertSpy).not.toHaveBeenCalled();
+      else expect(alertSpy).toHaveBeenCalled();
+    } finally {
+      if (tree) act(() => tree?.unmount());
+      fetchSpy.mockRestore();
+      alertSpy.mockRestore();
+      mockUseRealReverse = false;
+      jest.useRealTimers();
+    }
+  }
+);
+
+it('releases a stalled uncached GPS acquisition without applying its late result', async () => {
+  jest.useFakeTimers();
+  mockHasCachedGps = false;
+  let completeGps: (value: unknown) => void = () => {};
+  (Location.getCurrentPositionAsync as jest.Mock).mockImplementationOnce(
+    () =>
+      new Promise((resolve) => {
+        completeGps = resolve;
+      })
+  );
+  const alertSpy = jest.spyOn(Alert, 'alert').mockImplementation(() => {});
+  let tree: renderer.ReactTestRenderer | undefined;
+  try {
+    act(() => {
+      tree = renderer.create(<ReportMap confirmed />);
+    });
+    const root = tree?.root;
+    if (!root) throw new Error('Map did not render');
+    const [myLocation, maximize] = root.findAllByType(TouchableOpacity);
+    act(() => maximize.props.onPress());
+    await act(async () => {
+      void myLocation.props.onPress();
+    });
+    await act(async () => jest.advanceTimersByTimeAsync(10_000));
+    const report = root.findByType(SueReportLocation).props;
+    expect(mockSelection.isLocationPending()).toBe(false);
+    expect(report.selectedPosition).toEqual(pin);
+    await act(async () => completeGps({ coords: gps }));
+    expect(root.findByType(SueReportLocation).props.selectedPosition).toEqual(pin);
+    expect(root.findByType(Camera).props.trackUserLocation).toBeUndefined();
+  } finally {
+    if (tree) act(() => tree?.unmount());
+    alertSpy.mockRestore();
+    mockHasCachedGps = true;
+    jest.useRealTimers();
+  }
+});

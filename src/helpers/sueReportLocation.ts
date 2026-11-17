@@ -61,11 +61,11 @@ const matchesAddress = (address: SearchResult['address'], input: SueAddress) =>
     normalizeAddressPart(address.house_number) === normalizeAddressPart(input.houseNumber));
 
 const getCoordinate = (value?: string) =>
-  Number(typeof value === 'string' && value.trim() ? value : NaN);
+  Number(typeof value === 'string' && value.trim() ? value : Number.NaN);
 
 const GEOCODE_TIMEOUT_MS = 10_000;
 
-export const fetchSueGeocode = async (url: string) => {
+export const withSueLocationTimeout = async <T>(operation: (signal: AbortSignal) => Promise<T>) => {
   const controller = new AbortController();
   let timeout: ReturnType<typeof setTimeout> | undefined;
   const deadline = new Promise<never>((_, reject) => {
@@ -76,16 +76,21 @@ export const fetchSueGeocode = async (url: string) => {
   });
 
   try {
-    const result = fetch(url, {
-      signal: controller.signal,
-      headers: { 'User-Agent': `${appJson.expo.scheme}/${appJson.expo.version}` }
-    }).then((response) => (response.ok ? response.json() : undefined));
+    const result = operation(controller.signal);
 
     return await Promise.race([result, deadline]);
   } finally {
     clearTimeout(timeout);
   }
 };
+
+export const fetchSueGeocode = (url: string) =>
+  withSueLocationTimeout((signal) =>
+    fetch(url, {
+      signal,
+      headers: { 'User-Agent': `${appJson.expo.scheme}/${appJson.expo.version}` }
+    }).then((response) => (response.ok ? response.json() : undefined))
+  );
 
 export const geocodeSueAddress = async (
   input: SueAddress,

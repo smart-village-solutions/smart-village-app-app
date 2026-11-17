@@ -3,10 +3,10 @@ import React from 'react';
 import { Alert } from 'react-native';
 import renderer, { act } from 'react-test-renderer';
 
-import { Button, SueReportLocation } from '../../src/components';
+import { Button, SueReportDescription, SueReportLocation } from '../../src/components';
 import { consts, texts } from '../../src/config';
 import { ConfigurationsContext } from '../../src/ConfigurationsProvider';
-import { readFromStore } from '../../src/helpers';
+import { addToStore, readFromStore } from '../../src/helpers';
 import { getSueAddressKey } from '../../src/helpers/sueReportLocation';
 import { postRequests } from '../../src/queries/SUE';
 import { SueReportScreen } from '../../src/screens/SUE/SueReportScreen';
@@ -56,8 +56,9 @@ jest.mock('../../src/hooks/useThemeStyles', () => ({
 }));
 jest.mock('../../src/queries', () => ({ QUERY_TYPES: { SUE: {} }, getQuery: jest.fn() }));
 jest.mock('../../src/queries/SUE', () => ({ postRequests: jest.fn(async () => undefined) }));
+let mockAreaLoading = false;
 jest.mock('react-query', () => ({
-  useQuery: () => ({}),
+  useQuery: () => ({ isLoading: mockAreaLoading }),
   useMutation: (post) => ({ mutateAsync: post })
 }));
 
@@ -87,6 +88,7 @@ let fetchSpy: jest.SpyInstance;
 
 async function openWizard({
   step = 2,
+  areaId = '',
   required = true,
   streetRequired = required,
   area = true,
@@ -96,6 +98,7 @@ async function openWizard({
   confirmedLocationAddress
 }: {
   step?: number;
+  areaId?: string;
   required?: boolean;
   streetRequired?: boolean;
   area?: boolean;
@@ -116,7 +119,11 @@ async function openWizard({
     termsOfService: true
   });
   const sueConfig = {
-    geoMap: { locationIsRequired: required, locationStreetIsRequired: streetRequired },
+    geoMap: {
+      areas: areaId ? [{ id: areaId }] : [],
+      locationIsRequired: required,
+      locationStreetIsRequired: streetRequired
+    },
     limitOfArea,
     sueProgress: ['category', 'description', 'location', 'user'].map((content) => ({
       content,
@@ -148,6 +155,7 @@ function location() {
 
 beforeEach(() => {
   jest.clearAllMocks();
+  mockAreaLoading = false;
   fetchSpy = jest.spyOn(global, 'fetch').mockRejectedValue(new Error('Unexpected fetch'));
   jest.spyOn(Alert, 'alert').mockImplementation(() => {});
 });
@@ -403,3 +411,110 @@ it('matches a district in the suburb field when street, number and postcode matc
     expect.any(Object)
   );
 });
+
+it.each(['KIEL', 'Kiel  '])(
+  'keeps the precise confirmed pin for an equivalent address edit (%s)',
+  async (city) => {
+    await openWizard({ position: kielPosition, confirmedLocationAddress: getSueAddressKey(kiel) });
+    const request = location().beginLocationUpdate();
+    act(() => {
+      location().invalidateLocation({ city });
+      location().setValue('city', city);
+    });
+    expect(request.isLatestRequest()).toBe(false);
+    expect(location().selectedPosition).toEqual(kielPosition);
+
+    await act(async () => press(texts.sue.report.next));
+    await act(async () => press(texts.sue.report.sendReport));
+    expect(fetchSpy).not.toHaveBeenCalled();
+    expect(postRequests).toHaveBeenCalledWith(
+      expect.objectContaining({ lat: kielPosition.latitude, long: kielPosition.longitude }),
+      expect.any(Object)
+    );
+  }
+);
+
+it('drops coordinates for a meaningful address edit', async () => {
+  await openWizard({ position: kielPosition, confirmedLocationAddress: getSueAddressKey(kiel) });
+  act(() => {
+    location().invalidateLocation({ houseNumber: '3' });
+    location().setValue('houseNumber', '3');
+  });
+  expect(location().selectedPosition).toBeUndefined();
+});
+
+it.each([{ postalCodes: ['24159'] }, { zipCodes: ['24159'] }])(
+  'uses configured postcodes while an area-service request is pending (%j)',
+  async (limitOfArea) => {
+    mockAreaLoading = true;
+    await openWizard({ areaId: 'fixture', limitOfArea, step: 3 });
+    expect(location().areaServiceData).toEqual({ postalCodes: ['24159'] });
+    await act(async () => press(texts.sue.report.sendReport));
+    expect(postRequests).toHaveBeenCalled();
+  }
+);
+
+it('persists the confirmed pin while a different location lookup is pending', async () => {
+  await openWizard({
+    step: 1,
+    position: kielPosition,
+    confirmedLocationAddress: getSueAddressKey(kiel)
+  });
+  const request = location().beginLocationUpdate();
+  await act(async () => tree.root.findByType(SueReportDescription).props.storeReportValues());
+  expect(addToStore).toHaveBeenLastCalledWith(
+    'sueReportValues',
+    expect.objectContaining({
+      selectedPosition: kielPosition,
+      confirmedLocationAddress: getSueAddressKey(kiel)
+    })
+  );
+  request.finish();
+});
+
+it('preserves the old location when returning from a pending map lookup', async () => {
+  await openWizard({ position: kielPosition, confirmedLocationAddress: getSueAddressKey(kiel) });
+  const request = location().beginLocationUpdate();
+  await act(async () => press(texts.sue.report.back));
+  expect(request.isLatestRequest()).toBe(false);
+  expect(location().selectedPosition).toEqual(kielPosition);
+  expect(addToStore).toHaveBeenLastCalledWith(
+    'sueReportValues',
+    expect.objectContaining({
+      selectedPosition: kielPosition,
+      confirmedLocationAddress: getSueAddressKey(kiel)
+    })
+  );
+});
+
+it('keeps a confirmed pin in a draft saved while a photo lookup is pending', async () => {
+  await openWizard({
+    step: 1,
+    position: kielPosition,
+    confirmedLocationAddress: getSueAddressKey(kiel)
+  });
+  const request = location().beginLocationUpdate();
+  await act(async () => tree.root.findByType(SueReportDescription).props.storeReportValues());
+  expect(addToStore).toHaveBeenCalledWith(
+    'sueReportValues',
+    expect.objectContaining({
+      selectedPosition: kielPosition,
+      confirmedLocationAddress: getSueAddressKey(kiel)
+    })
+  );
+  request.finish();
+});
+
+it.each(['postalCodes', 'zipCodes'] as const)(
+  'uses configured %s while an area-id lookup is still loading',
+  async (key) => {
+    mockAreaLoading = true;
+    await openWizard({ step: 3, areaId: 'configured-area', limitOfArea: { [key]: ['24159'] } });
+    expect(tree.root.findByType(SueReportLocation)).toBeDefined();
+    await act(async () => press(texts.sue.report.sendReport));
+    expect(postRequests).toHaveBeenCalledWith(
+      expect.objectContaining({ addressString: 'Koloniestraße; 2; 24159; Kiel' }),
+      expect.any(Object)
+    );
+  }
+);

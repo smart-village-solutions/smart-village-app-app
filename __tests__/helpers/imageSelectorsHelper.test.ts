@@ -105,3 +105,42 @@ it('keeps an attached image without overwriting a newer location', async () => {
     expect.objectContaining({ uri: 'file:///late.jpg' })
   ]);
 });
+
+it('attaches a photo and preserves the existing location on reverse lookup timeout', async () => {
+  const coordinateCheck = {
+    setValue: jest.fn(),
+    setSelectedPosition: jest.fn(),
+    setUpdateRegionFromImage: jest.fn(),
+    setShowCoordinatesFromImageAlert: jest.fn()
+  };
+  const setImagesAttributes = jest.fn();
+  const log = jest.spyOn(console, 'error').mockImplementation(() => {});
+  try {
+    await onImageSelect({
+      configuration: { limitation: { allowedAttachmentTypes: { value: 'jpg' } } },
+      coordinateCheck,
+      errorType: consts.IMAGE_SELECTOR_ERROR_TYPES.SUE,
+      imageFunction: async () => ({
+        uri: 'file:///timeout.jpg',
+        width: 100,
+        height: 100,
+        exif: { GPSLatitude: 48.3415792, GPSLongitude: 10.8650444 }
+      }),
+      imagesAttributes: [],
+      infoAndErrorText: '',
+      maxFileSize: 31457280,
+      reverseGeocode: jest.fn().mockRejectedValue(new Error('Location timeout')),
+      selectorType: consts.IMAGE_SELECTOR_TYPES.SUE,
+      setImagesAttributes,
+      setInfoAndErrorText: jest.fn()
+    });
+
+    expect(coordinateCheck.setValue).not.toHaveBeenCalled();
+    expect(coordinateCheck.setSelectedPosition).not.toHaveBeenCalled();
+    expect(setImagesAttributes).toHaveBeenCalledWith([
+      expect.objectContaining({ uri: 'file:///timeout.jpg' })
+    ]);
+  } finally {
+    log.mockRestore();
+  }
+});

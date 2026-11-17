@@ -133,7 +133,7 @@ export type TService = {
 type TContent = {
   areaServiceData?: { postalCodes?: string[] };
   beginLocationUpdate: () => SueLocationRequest;
-  invalidateLocation: () => void;
+  invalidateLocation: (change?: Partial<SueAddress>) => void;
   configuration: {
     geoMap: {
       areas: any[];
@@ -395,6 +395,7 @@ export const SueReportScreen = ({
 
   const {
     beginLocationUpdate,
+    cancelLocationUpdate,
     getConfirmedLocation,
     invalidateLocation,
     isLocationPending,
@@ -691,7 +692,7 @@ export const SueReportScreen = ({
   const handlePrevPage = useCallback(() => {
     Keyboard.dismiss();
     if (currentProgress > 0) {
-      if (currentProgress === locationStep && isLocationPending()) invalidateLocation();
+      if (currentProgress === locationStep && isLocationPending()) cancelLocationUpdate();
       const prevProgress = currentProgress - 1;
       void storeReportValues(prevProgress);
       setCurrentProgress(prevProgress);
@@ -701,7 +702,7 @@ export const SueReportScreen = ({
         animated: true
       });
     }
-  }, [currentProgress, invalidateLocation, isLocationPending, locationStep, storeReportValues]);
+  }, [cancelLocationUpdate, currentProgress, isLocationPending, locationStep, storeReportValues]);
 
   // Ensure map fullscreen mode is exited when navigating between steps
   useEffect(() => {
@@ -864,7 +865,7 @@ export const SueReportScreen = ({
     return null;
   }
 
-  if (areaServiceLoading) {
+  if (areaServiceLoading && !areaServiceData?.postalCodes?.length) {
     return (
       <LoadingContainer>
         <ActivityIndicator color={colors.refreshControl} />

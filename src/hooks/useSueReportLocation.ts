@@ -6,7 +6,7 @@ export type SueCoordinates = { latitude: number; longitude: number };
 export type SueLocationRequest = { isLatestRequest: () => boolean; finish: () => void };
 
 export const useSueReportLocation = (getAddress: () => SueAddress) => {
-  const [selectedPosition, setPosition] = useState<SueCoordinates>();
+  const [position, setPosition] = useState<SueCoordinates>();
   const confirmed = useRef<{ addressKey: string; position: SueCoordinates } | undefined>(undefined);
   const revision = useRef(0);
   const pending = useRef(false);
@@ -26,11 +26,21 @@ export const useSueReportLocation = (getAddress: () => SueAddress) => {
     [getAddress]
   );
 
-  const invalidateLocation = useCallback(() => {
+  const cancelLocationUpdate = useCallback(() => {
     revision.current += 1;
     pending.current = false;
-    setSelectedPosition(undefined);
-  }, [setSelectedPosition]);
+  }, []);
+
+  const invalidateLocation = useCallback(
+    (change?: Partial<SueAddress>) => {
+      cancelLocationUpdate();
+      const address = { ...getAddress(), ...change };
+      if (!change || confirmed.current?.addressKey !== getSueAddressKey(address)) {
+        setSelectedPosition(undefined);
+      }
+    },
+    [cancelLocationUpdate, getAddress, setSelectedPosition]
+  );
 
   const beginLocationUpdate = useCallback((): SueLocationRequest => {
     const requestId = ++revision.current;
@@ -47,17 +57,18 @@ export const useSueReportLocation = (getAddress: () => SueAddress) => {
 
   const getConfirmedLocation = useCallback((address: SueAddress) => {
     const location = confirmed.current;
-    if (!pending.current && location?.addressKey === getSueAddressKey(address)) return location;
+    if (location?.addressKey === getSueAddressKey(address)) return location;
   }, []);
 
   const isLocationPending = useCallback(() => pending.current, []);
 
   return {
     beginLocationUpdate,
+    cancelLocationUpdate,
     getConfirmedLocation,
     invalidateLocation,
     isLocationPending,
-    selectedPosition,
+    selectedPosition: position,
     setSelectedPosition
   };
 };

@@ -61,11 +61,6 @@ export const useReverseGeocode = () => {
           return { isStale: false, isWithinArea: true };
         }
 
-        setValue('city', '');
-        setValue('houseNumber', '');
-        setValue('street', '');
-        setValue('postalCode', '');
-
         throw new Error(errorMessage);
       } catch (error) {
         if (!shouldApplyResult()) {
