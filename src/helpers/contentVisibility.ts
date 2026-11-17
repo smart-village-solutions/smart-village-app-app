@@ -24,10 +24,10 @@ const compareParts = (left: number[], right: number[]) => {
 const versionParts = (value: unknown) => {
   if (typeof value !== 'string') return;
   const match =
-    /^(\d+\.\d+\.\d+)(?:-([\da-zA-Z-]+(?:\.[\da-zA-Z-]+)*))?(?:\+[\da-zA-Z-]+(?:\.[\da-zA-Z-]+)*)?$/.exec(
-      value
-    );
+    /^(\d+\.\d+\.\d+)(?:-([\da-zA-Z-]+(?:\.[\da-zA-Z-]+)*))?(?:\+([\da-zA-Z.-]+))?$/.exec(value);
   if (!match) return;
+  // Build metadata may contain leading zeroes, but identifiers must not be empty.
+  if (match[3]?.split('.').includes('')) return;
   if (match[1].split('.').some((part) => /^0\d+$/.test(part))) return;
   if (match[2]?.split('.').some((part) => /^0\d+$/.test(part))) return;
   const core = numericParts(match[1]);

@@ -110,24 +110,18 @@ export const DetailScreen = ({ navigation, route }) => {
   const queryVariables = route.params?.queryVariables || (id ? { id } : {});
   const authMode = route.params?.authMode ?? AUTH_MODE_PUBLIC;
   const rawDetails = route.params?.details;
-  const visibleDetails = visibleContent(rawDetails);
+  const visibleDetails = useMemo(() => visibleContent(rawDetails), [rawDetails]);
   const details = visibleDetails ?? {};
   const hasValidDetailParams = !!query && !!queryVariables?.id;
-  const isSueDetail = query === QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID;
+  const isSueDetail =
+    query === QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID ||
+    query === QUERY_TYPES.SUE.MY_REQUEST_WITH_SERVICE_REQUEST_ID;
 
   const [refreshing, setRefreshing] = useState(false);
   const refreshTime = useRefreshTime(`${query}-${queryVariables.id}`, getRefreshInterval(query));
   const scrollContentContainerStyle = useReadAloudScrollContentContainerStyle();
 
   useRootRouteByCategory(details, navigation);
-
-  // Render SUE detail screen without the need of processing the rest of the code here
-  if (
-    query === QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID ||
-    query === QUERY_TYPES.SUE.MY_REQUEST_WITH_SERVICE_REQUEST_ID
-  ) {
-    return <SueDetailScreen navigation={navigation} route={route} />;
-  }
 
   const refresh = async (refetch) => {
     setRefreshing(true);
@@ -161,9 +155,9 @@ export const DetailScreen = ({ navigation, route }) => {
       enabled: !!refreshTime && hasValidDetailParams && !isSueDetail
     }
   );
-  const data = visibleContent(rawData);
+  const data = useMemo(() => visibleContent(rawData), [rawData]);
   const isRestricted = rawData?.[query] ? !data?.[query] : rawDetails && !visibleDetails;
-  const detailData = !isRestricted && ((data && data[query]) || details);
+  const detailData = !isRestricted && (data?.[query] || details);
   const detailSpeechItems = useMemo(
     () => getDetailSpeechItems({ detail: detailData, query }),
     [detailData, query]

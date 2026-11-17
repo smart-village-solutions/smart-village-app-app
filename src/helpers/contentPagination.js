@@ -17,6 +17,7 @@ export const createContentPagination = ({
   let generation = 0;
   let exhaustedAt;
   let automaticAttemptAt;
+  let nextOffset;
   const isPaginated = Number.isFinite(pageSize) && pageSize > 0;
   const emptyResult = () => ({ data: { [query]: [] } });
   const hasDisplayedItems = (rows) => (getVisibleItems ? getVisibleItems(rows) : rows).length > 0;
@@ -26,6 +27,7 @@ export const createContentPagination = ({
     pending = undefined;
     exhaustedAt = undefined;
     automaticAttemptAt = undefined;
+    nextOffset = undefined;
   };
 
   const shouldLoadMore = (data) => {
@@ -49,7 +51,7 @@ export const createContentPagination = ({
     if (rows.length === exhaustedAt) return Promise.resolve(emptyResult());
 
     const requestGeneration = generation;
-    let offset = rows.length;
+    let offset = Math.max(nextOffset ?? 0, rows.length);
     let cachedCount = rows.length;
     const seen = new Set(rows.map((row) => row?.id));
     let versionFiltered = visibleContent(rows) !== rows;
@@ -75,12 +77,18 @@ export const createContentPagination = ({
           exhaustedAt = cachedCount;
           return result;
         }
+        nextOffset = offset + page.length;
         const eligible = visibleContent(page);
         versionFiltered = versionFiltered || eligible !== page;
         // Without version filtering, keep the existing one-page request behavior.
-        if (!isPaginated || !versionFiltered || hasDisplayedItems(eligible)) return result;
+        if (
+          !isPaginated ||
+          !versionFiltered ||
+          hasDisplayedItems(eligible.filter((row) => !seen.has(row?.id)))
+        )
+          return result;
         page.forEach((row) => seen.add(row?.id));
-        offset += page.length;
+        offset = nextOffset;
       }
       return emptyResult();
     };

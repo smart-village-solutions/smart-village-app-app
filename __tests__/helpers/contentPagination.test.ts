@@ -161,3 +161,29 @@ it('does not automatically paginate queries without a fetch-more document', () =
   expect(pagination.shouldLoadMore(test.initialData)).toBe(false);
   expect(test.fetchMore).not.toHaveBeenCalled();
 });
+
+it('skips cached visible duplicates and preserves raw offsets across later loads', async () => {
+  const test = setup(
+    'newsItems',
+    [[normal('2'), hidden('3')], [normal('4')], [normal('5')]],
+    [normal('1'), normal('2')]
+  );
+  await test.paginator.loadMore(test.initialData);
+  expect(test.fetchMore.mock.calls.map(([options]) => options.variables.offset)).toEqual([2, 4]);
+  await test.paginator.loadMore(test.cache());
+  expect(test.fetchMore.mock.calls.map(([options]) => options.variables.offset)).toEqual([2, 4, 5]);
+  expect(test.cache().newsItems.map(({ id }) => id)).toEqual(['1', '2', '3', '4', '5']);
+});
+
+it('does not move backwards when another consumer extends the shared cache', async () => {
+  const test = setup(
+    'newsItems',
+    [[normal('3'), normal('4')], [normal('7')]],
+    [normal('1'), normal('2')]
+  );
+  await test.paginator.loadMore(test.initialData);
+  await test.paginator.loadMore({
+    newsItems: [...test.cache().newsItems, normal('5'), normal('6')]
+  });
+  expect(test.fetchMore.mock.calls.map(([options]) => options.variables.offset)).toEqual([2, 6]);
+});

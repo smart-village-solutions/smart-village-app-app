@@ -41,7 +41,16 @@ it.each([
   ['invalid', '5.0.0', false],
   ['5.0.0', 'invalid', false],
   ['5.00.0', '5.0.0', false],
-  ['5.0.0-beta.01', '5.0.0-beta.1', false]
+  ['5.0.0-beta.01', '5.0.0-beta.1', false],
+  ['5.0.0+build.001', '5.0.0', true],
+  ['5.0.0-alpha.10+build.001', '5.0.0-alpha.2', true],
+  ['5.0.0+meta..1', '5.0.0', false],
+  ['5.0.0+.meta', '5.0.0', false],
+  ['5.0.0+meta.', '5.0.0', false],
+  ['5.0.0+', '5.0.0', false],
+  ['5.0.0+meta+extra', '5.0.0', false],
+  ['5.0.0+meta_1', '5.0.0', false],
+  ['5.0.0', '5.0.0+meta..1', false]
 ])('compares versions numerically: %s >= %s', (version, min, expected) => {
   expect(meetsMinimumVersion(version, min)).toBe(expected);
 });
@@ -93,7 +102,7 @@ it('filters nested lists, details and offline snapshots without changing cache, 
   });
   expect(visibleContent(JSON.parse(serialized))).toEqual(visibleContent(data));
   expect(JSON.stringify(data)).toBe(serialized);
-  expect(data.pointsOfInterest.length).toBe(2);
+  expect(data.pointsOfInterest).toHaveLength(2);
   expect(visibleContent(data).genericItems[0]).toBe(ordinary);
   expect(filterContentByVersion(data, { version: '5.0.0', build: '1573' })).toBe(data);
 });
