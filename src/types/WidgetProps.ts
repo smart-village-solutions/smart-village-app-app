@@ -1,9 +1,10 @@
 import { ComponentProps } from 'react';
 
+import type { KlimaTalerWidgetOptions } from '../klimaTaler/widgetConfiguration';
 import { IconSet } from '../config';
 
 export type WidgetProps = {
-  additionalProps?: {
+  additionalProps?: KlimaTalerWidgetOptions & {
     accessibilityActionLabel?: string;
     accessibilityLabel?: string;
     dataProviderId?: string;

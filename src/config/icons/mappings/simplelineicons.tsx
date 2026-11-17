@@ -36,6 +36,7 @@ export const simplelineiconsIconMapping: Record<string, string> = {
   copy: 'docs',
 
   // Status & Feedback
+  medal: 'badge',
   check: 'check',
   'circle-check-filled': 'check',
   'alert-hexagon-filled': 'exclamation',

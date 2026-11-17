@@ -92,3 +92,7 @@ See [Disturber theme configuration](./disturber-theming.md) for static-content d
 
 For the complete app, Main-Server and remote configuration checklist see the
 [v4.3.0 to v5.0.0 migration guide](./MIGRATION_V4.3.0_TO_V5.0.0.md).
+
+## Klima-Taler
+
+See [Klima-Taler integration](./KLIMA_TALER.md) for customer activation, native build setup, SDK compatibility and testing.

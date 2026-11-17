@@ -36,6 +36,7 @@ export const materialcommunityiconsIconMapping: Record<string, string> = {
   copy: 'content-copy',
 
   // Status & Feedback
+  medal: 'medal-outline',
   check: 'check-circle',
   'circle-check-filled': 'check-circle',
   'alert-hexagon-filled': 'alert',

@@ -35,6 +35,7 @@ export const materialiconsIconMapping: Record<string, string> = {
   copy: 'content-copy',
 
   // Status & Feedback
+  medal: 'military-tech',
   check: 'check-circle',
   'circle-check-filled': 'check-circle',
   'alert-hexagon-filled': 'warning',
