@@ -99,10 +99,12 @@ const configured = (additionalProps: KlimaTalerWidgetOptions) => (
   <KlimaTalerWidget additionalProps={additionalProps} />
 );
 
-test('shortcuts show honest placeholders and remote settings can hide or redirect each action', () => {
+test('explicit shortcuts show honest placeholders and remote settings can hide or redirect each action', () => {
   mockState = { phase: 'ready', coins: 0 };
   const alert = jest.spyOn(Alert, 'alert').mockImplementation(() => undefined);
-  const screen = render(configured({}));
+  const screen = render(
+    configured({ actions: { wallet: true, map: true, badges: true, settings: true } })
+  );
   ['Wallet', 'Karte', 'Abzeichen', 'Einstellungen'].forEach((name) => {
     fireEvent.press(screen.getByRole('button', { name }));
   });
@@ -196,6 +198,7 @@ test('high contrast overrides branding colors and keeps all actions separately a
   const screen = render(
     <AccessibilityContext.Provider value={{ isHighContrastEnabled: true } as never}>
       {configured({
+        actions: { wallet: true, map: true, badges: true, settings: true },
         styles: {
           card: { backgroundColor: '#ffff00', opacity: 0.2 },
           balance: { color: '#eeeeee' }
@@ -261,4 +264,14 @@ test('configured dark colors follow live theme changes without affecting the lig
   });
   screen.rerender(themed(false));
   expect(screen.getByTestId('klimaTalerCard')).toHaveStyle({ backgroundColor: '#123456' });
+});
+
+test('unconfigured shortcuts stay hidden without inventing badges or redirecting destinations', () => {
+  mockState = { phase: 'ready', coins: 42 };
+  const screen = render(<KlimaTalerWidget />);
+  expect(screen.getAllByRole('button')).toHaveLength(1);
+  expect(screen.getByRole('button', { name: 'Mein Bereich' })).toBeTruthy();
+  for (const name of ['Wallet', 'Karte', 'Abzeichen', 'Einstellungen']) {
+    expect(screen.queryByRole('button', { name })).toBeNull();
+  }
 });
