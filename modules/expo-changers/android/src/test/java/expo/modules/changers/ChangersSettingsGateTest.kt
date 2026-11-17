@@ -73,7 +73,7 @@ class ChangersSettingsGateTest {
     try {
       gate.update(false, {}, { error("vendor stop failed") })
       fail("Expected vendor error")
-    } catch (_: IllegalStateException) {}
+    } catch (error: IllegalStateException) { assertEquals("vendor stop failed", error.message) }
     assertFalse(saved)
     ChangersSettingsGate({ saved }, { true }).restore(true) { fail("SDK resumed after disable") }
   }
