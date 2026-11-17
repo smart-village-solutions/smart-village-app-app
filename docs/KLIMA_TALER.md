@@ -126,15 +126,15 @@ Android uses the OkHttp 5.1.0 BOM to align MotionTag's HTTP client with React Na
 
 The last known gate is intentionally used while JS/network configuration is unavailable. A remote change cannot take effect until received. A successfully persisted disable survives process recreation; a storage failure is reported and stop is still requested. Never-activated, disabled, unreadable-gate or unconfigured installations do not initialize from the background. Re-enabling initializes the SDK if necessary but does not override a provider pause/withdrawn consent state; reopen the provider to manage tracking.
 
-| Lifecycle event | Host behavior / remaining limit |
-| --- | --- |
-| Process death / OS eviction | On the next OS-created process, restore the saved gate and activation. No guarantee that the OS immediately recreates it. |
-| Task dismissed | Does not call logout or stop; vendor service declares `stopWithTask=false`. OEM restrictions still apply. |
-| User force-stop | No host workaround; user interaction is needed to leave Android's stopped state. |
-| Reboot / package update | Initialize under the saved gate, then delegate the broadcast. This is implemented; actual route recording is not yet device-verified. |
-| Permission revoked / provider consent withdrawn | Do not call start or grant consent; the provider and OS enforce eligibility. Tracking status remains unknown. |
-| Remote disable | Persist gate, close UI and request stop, retaining identity. Offline installations cannot observe new settings immediately. |
-| Re-enable | Initialize if required; do not automatically undo a provider stop or consent withdrawal. |
+| Lifecycle event                                 | Host behavior / remaining limit                                                                                                       |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| Process death / OS eviction                     | On the next OS-created process, restore the saved gate and activation. No guarantee that the OS immediately recreates it.             |
+| Task dismissed                                  | Does not call logout or stop; vendor service declares `stopWithTask=false`. OEM restrictions still apply.                             |
+| User force-stop                                 | No host workaround; user interaction is needed to leave Android's stopped state.                                                      |
+| Reboot / package update                         | Initialize under the saved gate, then delegate the broadcast. This is implemented; actual route recording is not yet device-verified. |
+| Permission revoked / provider consent withdrawn | Do not call start or grant consent; the provider and OS enforce eligibility. Tracking status remains unknown.                         |
+| Remote disable                                  | Persist gate, close UI and request stop, retaining identity. Offline installations cannot observe new settings immediately.           |
+| Re-enable                                       | Initialize if required; do not automatically undo a provider stop or consent withdrawal.                                              |
 
 See Android's [background service restrictions](https://developer.android.com/develop/background-work/services/fgs/restrictions-bg-start) and [stopped-state behavior](https://developer.android.com/about/versions/15/behavior-changes-all#stopped-state).
 
@@ -198,42 +198,43 @@ The pinned Changers 4.2.0 public Swift interface stores authentication/setup/sta
 
 Accordingly the unresolved operation is still quarantined after `E_TIMEOUT`; freeing it would allow an old callback to settle a newer request or mutate its session. Late completion releases the slot and cannot settle the timed-out promise twice. If no callback arrives, a process restart is still required; **the permanent busy defect is not fixed**. Provider delivery needed: cancellable operations with completion acknowledgment, request-scoped delegates, or a documented reset that preserves identity and prevents late callbacks/session mutation. Registration outcomes also remain uncertain across restart, so restarting is not permission to repeat signup.
 
-
 ## Validation and handover — 2026-10-13
+
+> Historical record: the commit IDs, test counts and local build observations below describe the original 13 October snapshot. They are not fresh acceptance evidence for the rebased code. The 17 November integration is a sequence of open PRs starting at [#1606](https://github.com/smart-village-solutions/smart-village-app-app/pull/1606); no PRs have been merged into the epic or master during that work. Consult each PR for current commit IDs and validation results.
 
 ### Code and ticket review
 
 Read epic SVAK-223, its 18 child tickets (224–240 and 242), and the 13 October review comments in the authenticated Jira UI. No comments, descriptions, statuses, assignments or links were changed. The three existing commits were verified as a linear chain and integrated locally by fast-forward; none were recreated or cherry-picked.
 
-| Branch | Commit | Result |
-| --- | --- | --- |
-| `feature/SVAK-227-changers-expo-integration` | `2da4e19ff` | Existing native integration retained |
-| `feature/SVAK-230-klima-taler-entry` | `48b70442d` | Existing provider entry retained |
-| `feature/SVAK-231-klima-taler-widget` | `75255e59a` | Existing widget and ordering retained |
-| `fix/SVAK-239-config-test-isolation` | `078d77594` | Config tests run without the private secrets module |
-| `fix/SVAK-228-registration-recovery` | `63704d715` | Separate activation/registration history; retry undispatched signup, preserve ambiguous outcomes |
-| `fix/SVAK-227-background-initialization` | `e8aab7a95` | Restore Android gate at process startup, report storage failures |
-| `fix/SVAK-231-widget-unavailable-actions` | `e9ffcfb23` | Hide absent shortcut configuration, retain explicit customer choices |
+| Branch                                       | Commit      | Result                                                                                           |
+| -------------------------------------------- | ----------- | ------------------------------------------------------------------------------------------------ |
+| `feature/SVAK-227-changers-expo-integration` | `2da4e19ff` | Existing native integration retained                                                             |
+| `feature/SVAK-230-klima-taler-entry`         | `48b70442d` | Existing provider entry retained                                                                 |
+| `feature/SVAK-231-klima-taler-widget`        | `75255e59a` | Existing widget and ordering retained                                                            |
+| `fix/SVAK-239-config-test-isolation`         | `078d77594` | Config tests run without the private secrets module                                              |
+| `fix/SVAK-228-registration-recovery`         | `63704d715` | Separate activation/registration history; retry undispatched signup, preserve ambiguous outcomes |
+| `fix/SVAK-227-background-initialization`     | `e8aab7a95` | Restore Android gate at process startup, report storage failures                                 |
+| `fix/SVAK-231-widget-unavailable-actions`    | `e9ffcfb23` | Hide absent shortcut configuration, retain explicit customer choices                             |
 
-All implementation commits above are integrated into local `epic/klima-taler`. This handover is committed under `docs/SVAK-239-validation-evidence` and then fast-forwarded into the epic. No remote push, PR merge, store release or Jira transition is part of this work.
+The table identifies the original local commits before rebase. This handover originated on `docs/SVAK-239-validation-evidence`; its original local integration notes do not describe the current stacked-PR workflow. The current integration leaves every PR open for review and does not perform a merge, store release or Jira transition.
 
 Reviewed the pinned [iOS vendor repository](https://github.com/Changers/changers-ios-sdk/tree/33c65f9b8db1618dfff3530c73a061935a66a9ff) and [Android sample](https://github.com/Changers/Sample-Android-SDK). The local iOS framework metadata confirms Changers 4.2.0 and MotionTag 6.3.4; the public Swift interface was read at the pinned commit. Inspected JVM classes were byte-for-byte checked against the resolved sdkstaging 1.20.6 and MotionTag 7.2.5 AARs before relying on their lifecycle/statistics behavior. No second MotionTag wrapper was introduced.
 
-### Current test results
+### Test results recorded on 2026-10-13
 
 Commands ran with Node 22.13.0 and Yarn 1.22.22 using the existing installed dependencies. This is not a clean-install or release acceptance report.
 
-| Check | Before changes | Final result |
-| --- | --- | --- |
-| `yarn lint` | 982 errors, 159 warnings | Same 982 errors, 159 warnings; diagnostic entries identical |
-| `yarn test --runInBand` | 169 suites passed, 50 failed; 1035 tests passed, 8 failed, 2 skipped | 170 suites passed, 49 failed; 1044 tests passed, 8 failed, 2 skipped |
-| Klima-Taler + widget layout/reordering suites | Config suite could not load missing secrets | 15 suites / 134 tests passed |
-| Android native Debug / Release | 7 tests per variant (existing results were up-to-date) | 13 tests per variant executed and passed, including 6 gate tests |
-| Native Swift registration harness | Not present | 10 assertions passed, including offline/restart and ambiguous-attempt preservation |
-| iOS compatibility Ruby harness | Re-executed | 2 tests / 24 assertions passed |
-| UIKit presentation harness, iPhone 17 Pro simulator / iOS 26.5 | Re-executed | 43 checks passed; no vendor SDK/account |
-| Swift device-target typecheck | — | Runtime/journal typechecked against pinned Changers/MotionTag frameworks; Expo Promise/subscriber were minimal stubs, not a full app build |
-| Isolated Expo prebuild | — | iOS + Android generated; repeat with `--no-clean --no-install` left all 56 native files unchanged |
+| Check                                                          | Before changes                                                       | Final result                                                                                                                               |
+| -------------------------------------------------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `yarn lint`                                                    | 982 errors, 159 warnings                                             | Same 982 errors, 159 warnings; diagnostic entries identical                                                                                |
+| `yarn test --runInBand`                                        | 169 suites passed, 50 failed; 1035 tests passed, 8 failed, 2 skipped | 170 suites passed, 49 failed; 1044 tests passed, 8 failed, 2 skipped                                                                       |
+| Klima-Taler + widget layout/reordering suites                  | Config suite could not load missing secrets                          | 15 suites / 134 tests passed                                                                                                               |
+| Android native Debug / Release                                 | 7 tests per variant (existing results were up-to-date)               | 13 tests per variant executed and passed, including 6 gate tests                                                                           |
+| Native Swift registration harness                              | Not present                                                          | 10 assertions passed, including offline/restart and ambiguous-attempt preservation                                                         |
+| iOS compatibility Ruby harness                                 | Re-executed                                                          | 2 tests / 24 assertions passed                                                                                                             |
+| UIKit presentation harness, iPhone 17 Pro simulator / iOS 26.5 | Re-executed                                                          | 43 checks passed; no vendor SDK/account                                                                                                    |
+| Swift device-target typecheck                                  | —                                                                    | Runtime/journal typechecked against pinned Changers/MotionTag frameworks; Expo Promise/subscriber were minimal stubs, not a full app build |
+| Isolated Expo prebuild                                         | —                                                                    | iOS + Android generated; repeat with `--no-clean --no-install` left all 56 native files unchanged                                          |
 
 The prebuild fixture used test-only connection strings in a temporary project. Expo 57 defaults to recreating native directories: an initial clean repetition changed generated Xcode object IDs; the non-clean repeat was byte-identical. Existing workspace native projects were not regenerated.
 
