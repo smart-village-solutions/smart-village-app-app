@@ -5,6 +5,7 @@ import appJson from '../../app.json';
 import { AccessibilityContext } from '../AccessibilityProvider';
 import { consts, device, texts } from '../config';
 import { hasSueApiConfiguration } from '../helpers';
+import { isKlimaTalerConfigured } from '../klimaTaler/settings';
 import { SettingsContext } from '../SettingsProvider';
 import { useThemeStyles } from '../hooks/useThemeStyles';
 
@@ -21,6 +22,7 @@ export const VersionNumber = () => {
   const { settings = {} } = globalSettings;
   const { search, sue } = settings;
   const isSueEnabled = hasSueApiConfiguration(sue);
+  const klimaTalerVersion = appJson.expo.extra.klimaTalerVersion;
   const buildNumber =
     device.platform === 'ios' ? appJson.expo.ios.buildNumber : appJson.expo.android.versionCode;
 
@@ -37,7 +39,10 @@ export const VersionNumber = () => {
               `Build: ${buildNumber}`,
               `OTA: ${appJson.expo.extra.otaVersion}`,
               search ? `Suche: ${appJson.expo.extra.searchVersion}` : undefined,
-              isSueEnabled ? `SUE: ${appJson.expo.extra.sueVersion}` : undefined
+              isSueEnabled ? `SUE: ${appJson.expo.extra.sueVersion}` : undefined,
+              isKlimaTalerConfigured(globalSettings) && klimaTalerVersion
+                ? `Klima-Taler: ${klimaTalerVersion}`
+                : undefined
             ]
               .filter(Boolean)
               .join('\n')

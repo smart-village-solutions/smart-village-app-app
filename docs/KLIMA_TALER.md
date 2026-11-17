@@ -4,6 +4,8 @@ Klima-Taler uses the Changers native SDK for provider screens, onboarding, conse
 
 For clean-checkout iOS framework preparation and native build requirements, see [Native build setup](KLIMA_TALER_NATIVE_SETUP.md). Historical device notes are not current release acceptance evidence.
 
+The SVA module version is recorded as `expo.extra.klimaTalerVersion` in `app.json` and `app.json.erb.tmpl`, matching `modules/expo-changers/package.json`. About's version information shows it when Klima-Taler is enabled. This integration version is separate from the vendor's iOS and Android SDK versions; older app configurations without the field omit the entry.
+
 ## Customer configuration
 
 Enable the integration with `globalSettings.settings["klima-taler"]`:
