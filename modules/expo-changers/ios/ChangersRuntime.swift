@@ -2,9 +2,17 @@
 import ExpoModulesCore
 import ChangersSDK
 import UIKit
+import Network
 
 final class ChangersRuntime {
   static let shared = ChangersRuntime()
+  private let pathMonitor = NWPathMonitor()
+  private var networkAvailable: Bool?
+  private init() {
+    pathMonitor.pathUpdateHandler = { [weak self] path in self?.networkAvailable = path.status == .satisfied }
+    pathMonitor.start(queue: .main)
+  }
+  private let registration = ChangersRegistration()
   private let activationKey = "expo.changers.activated.v1"
   private(set) var initialized = false
   private(set) var enabled = false
@@ -40,6 +48,7 @@ final class ChangersRuntime {
   func accept(_ promise: Promise) {
     guard enabled else { promise.reject("E_DISABLED", "Klima-Taler ist deaktiviert."); return }
     guard configured else { promise.reject("E_CONFIGURATION", "Die Changers-Zugangsdaten fehlen."); return }
+    registration.prepareActivation(wasActivated: activated, hasIdentity: ChangersInstance.shared().userUUID != nil)
     UserDefaults.standard.set(true, forKey: activationKey)
     initialize(); promise.resolve(status())
   }
@@ -75,12 +84,22 @@ final class ChangersRuntime {
     ["platform": "ios", "environment": config["environment"] ?? "stage", "sdkVersion": "4.2.0", "motionTagVersion": "6.3.4",
      "state": state,
      "activated": activated, "initialized": initialized, "authenticated": initialized && ChangersInstance.shared().isLoggedIn,
+     "registrationState": registration.state(activated: activated, hasIdentity: ChangersInstance.shared().userUUID != nil).rawValue,
      "tracking": "unknown", "providerOpen": controller?.presentingViewController != nil || opening]
   }
   func authenticate(_ uuid: String?, promise: Promise) {
     guard requireReady(promise) else { return }
     guard operation == nil else { promise.reject("E_BUSY", "Eine andere SDK-Anfrage wird bereits bearbeitet."); return }
     guard !ChangersInstance.shared().isLoggedIn else { promise.reject("E_ALREADY_AUTHENTICATED", "Bitte zuerst vom aktuellen Konto abmelden."); return }
+    if uuid == nil {
+      switch registration.begin(activated: activated, hasIdentity: ChangersInstance.shared().userUUID != nil, networkAvailable: networkAvailable) {
+      case .offline:
+        promise.reject("E_NETWORK", "Keine Verbindung. Die Registrierung wurde noch nicht gestartet."); return
+      case .uncertain:
+        promise.reject("E_REGISTRATION_UNCERTAIN", "Die frühere Registrierung muss vom Anbieter geklärt werden. Es wird kein weiteres Konto erstellt."); return
+      case .ready: break
+      }
+    }
     let op = ChangersOperation(promise: promise); operation = op
     if let uuid {
       guard !uuid.isEmpty, uuid.count <= 128 else { op.fail("E_INVALID_ARGUMENT"); return }

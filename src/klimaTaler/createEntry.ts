@@ -1,7 +1,12 @@
 import { ChangersError, createChangers } from '../../modules/expo-changers/src/api';
+import type { Status } from '../../modules/expo-changers/src/types';
 
 type Client = ReturnType<typeof createChangers>;
 type EntryState = { phase: 'idle' | 'opening' | 'open' | 'error'; errorCode?: string };
+
+const canRegister = (status: Status, firstActivation: boolean) =>
+  status.registrationState === 'notStarted' ||
+  (status.registrationState === undefined && firstActivation);
 
 // One coordinator for every native entry. It never stores credentials or logs SDK errors.
 export const createEntry = (
@@ -40,11 +45,14 @@ export const createEntry = (
     checkCurrent();
     if (uuid) {
       await client.loginUser(uuid);
-    } else if (firstActivation) {
+    } else if (canRegister(status, firstActivation)) {
       await client.registerUser();
     } else {
       // A lost/invalid existing session must not silently create a second account.
-      throw new ChangersError('E_AUTHENTICATION', '');
+      throw new ChangersError(
+        status.registrationState === 'uncertain' ? 'E_REGISTRATION_UNCERTAIN' : 'E_AUTHENTICATION',
+        ''
+      );
     }
   };
   const open = (): Promise<void> => {
@@ -80,7 +88,7 @@ export const createEntry = (
     getSnapshot: () => state,
     subscribe: (listener: () => void) => {
       listeners.add(listener);
-      if (!subscription) subscription = client.addProviderClosedListener(closed);
+      subscription ??= client.addProviderClosedListener(closed);
       return () => {
         listeners.delete(listener);
         if (!listeners.size) {

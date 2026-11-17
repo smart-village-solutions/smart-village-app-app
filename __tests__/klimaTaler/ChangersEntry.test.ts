@@ -164,3 +164,84 @@ test('a disabled entry can be cancelled and reopened without retaining its settl
   expect(entry.getSnapshot().errorCode).toBe('E_DISABLED');
   expect(native.getStatus).not.toHaveBeenCalled();
 });
+
+test('a definitely undispatched signup can retry after activation and coordinator restart', async () => {
+  const { native } = setup();
+  let activated = false;
+  let attempted = false;
+  let online = false;
+  const current = () =>
+    status({
+      activated,
+      initialized: activated,
+      authenticated: false,
+      registrationState: attempted ? 'uncertain' : 'notStarted'
+    });
+  native.getStatus.mockImplementation(async () => current());
+  native.activate.mockImplementation(async () => {
+    activated = true;
+    return current();
+  });
+  native.registerUser.mockImplementation(async () => {
+    if (!online) throw { code: 'E_NETWORK' };
+    attempted = true;
+    return 'fixture-account';
+  });
+  const client = createChangers(native as unknown as ChangersNative, 'ios');
+  const first = createEntry(client, () => true);
+  await first.open();
+  expect(first.getSnapshot().errorCode).toBe('E_NETWORK');
+  online = true;
+  const restarted = createEntry(client, () => true);
+  await Promise.all([restarted.open(), restarted.open()]);
+  expect(restarted.getSnapshot().phase).toBe('open');
+  expect(native.registerUser).toHaveBeenCalledTimes(2);
+  expect(native.activate).toHaveBeenCalledTimes(1);
+});
+
+test('an uncertain signup never repeats, including after restart or stopTracking', async () => {
+  const { native } = setup();
+  native.getStatus.mockResolvedValue(
+    status({ authenticated: false, registrationState: 'uncertain' })
+  );
+  const client = createChangers(native as unknown as ChangersNative, 'ios');
+  for (let restart = 0; restart < 2; restart++) {
+    const entry = createEntry(client, () => true);
+    await entry.open();
+    expect(entry.getSnapshot().errorCode).toBe('E_REGISTRATION_UNCERTAIN');
+  }
+  native.getStatus.mockResolvedValue(
+    status({ activated: false, authenticated: false, registrationState: 'uncertain' })
+  );
+  native.activate.mockResolvedValue(
+    status({ authenticated: false, registrationState: 'uncertain' })
+  );
+  await createEntry(client, () => true).open();
+  expect(native.registerUser).not.toHaveBeenCalled();
+  expect(native.openProvider).not.toHaveBeenCalled();
+});
+
+test('an existing UUID survives a temporary login failure and never falls back to signup', async () => {
+  const { native, entry } = setup();
+  native.getStatus.mockResolvedValue(
+    status({ authenticated: false, registrationState: 'existing' })
+  );
+  native.getUserUUID.mockResolvedValue('existing-account');
+  native.loginUser.mockRejectedValueOnce({ code: 'E_NETWORK' });
+  await entry.open();
+  expect(entry.getSnapshot().errorCode).toBe('E_NETWORK');
+  await entry.open();
+  expect(native.loginUser).toHaveBeenNthCalledWith(2, 'existing-account');
+  expect(native.registerUser).not.toHaveBeenCalled();
+  expect(entry.getSnapshot().phase).toBe('open');
+});
+
+test('a missing identity after provider deletion does not create another account', async () => {
+  const { native, entry } = setup();
+  native.getStatus.mockResolvedValue(
+    status({ authenticated: false, registrationState: 'existing' })
+  );
+  await entry.open();
+  expect(entry.getSnapshot().errorCode).toBe('E_AUTHENTICATION');
+  expect(native.registerUser).not.toHaveBeenCalled();
+});

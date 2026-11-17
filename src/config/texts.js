@@ -6,6 +6,8 @@ export const texts = {
     opening: 'Klima-Taler wird geöffnet …',
     retry: 'Erneut versuchen',
     errors: {
+      E_REGISTRATION_UNCERTAIN:
+        'Der Ausgang der bisherigen Registrierung ist unklar. Bitte wende dich an den Klima-Taler-Support, damit dein Konto wiederhergestellt werden kann. Es wird kein zweites Konto erstellt.',
       E_DISABLED: 'Klima-Taler ist in dieser App noch nicht aktiviert.',
       E_NATIVE_UNAVAILABLE: 'Klima-Taler benötigt eine neue Version dieser App.',
       E_SIMULATOR_UNSUPPORTED:

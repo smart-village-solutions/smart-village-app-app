@@ -28,7 +28,9 @@ export const openKlimaTaler = (): Promise<void> => {
       texts.klimaTaler.errors.E_PROVIDER;
     Alert.alert(texts.klimaTaler.title, message, [
       { text: texts.accessibilityLabels.actions.cancel, style: 'cancel' },
-      { text: texts.klimaTaler.retry, onPress: () => void openKlimaTaler() }
+      ...(state.errorCode === 'E_REGISTRATION_UNCERTAIN'
+        ? []
+        : [{ text: texts.klimaTaler.retry, onPress: () => void openKlimaTaler() }])
     ]);
   });
   return opening;
