@@ -49,7 +49,7 @@ const WidgetVisual = ({ Icon, count, iconStyle, image, svg }: WidgetVisualProps)
   const iconSize = normalize(WIDGET_ICON_SIZE);
 
   return (
-    <WrapperRow center>
+    <WrapperRow center style={styles.visual}>
       {image?.uri ? (
         <Image
           source={image}
@@ -70,7 +70,7 @@ const WidgetVisual = ({ Icon, count, iconStyle, image, svg }: WidgetVisualProps)
         <Icon size={iconSize} style={visualStyle} {...themedIconProps} />
       )}
       {count !== undefined && (
-        <BoldText primary big>
+        <BoldText primary big style={styles.count}>
           {count}
         </BoldText>
       )}
@@ -121,7 +121,15 @@ export const DefaultWidget = ({
 };
 
 const styles = StyleSheet.create({
+  count: {
+    flexShrink: 1,
+    maxWidth: '100%'
+  },
   iconWithCount: {
     paddingRight: normalize(8)
+  },
+  visual: {
+    flexWrap: 'wrap',
+    maxWidth: '100%'
   }
 });

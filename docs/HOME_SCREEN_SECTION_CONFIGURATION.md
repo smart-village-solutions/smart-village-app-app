@@ -54,6 +54,9 @@ Font, icon, background, border, margin, and theme overrides retain their existin
 paths. Responsive dimensions remain controlled by the widget layout and the minimum touch
 target remains 48 points.
 
+Icon/value groups wrap within narrow columns, and their visual row has a minimum height rather
+than a fixed height so wrapped values can grow without overlapping the label.
+
 Existing instances that configured padding to compensate for the former nested padding should
 review that value: it now describes the final container inset. No new instance flag is required.
 

@@ -23,7 +23,7 @@ export const WidgetContent = ({ label, labelStyle, visual }: Props) => {
         center
         style={[
           styles.visualRow,
-          isList ? { minHeight: normalize(48) } : { height: normalize(48) },
+          { minHeight: normalize(48) },
           isList && styles.listVisualRow,
           isList && { marginRight: normalize(12), minWidth: normalize(72) }
         ]}
@@ -75,6 +75,7 @@ const styles = StyleSheet.create({
     flexShrink: 0
   },
   visualRow: {
-    alignItems: 'center'
+    alignItems: 'center',
+    maxWidth: '100%'
   }
 });

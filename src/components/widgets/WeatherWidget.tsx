@@ -57,7 +57,7 @@ export const WeatherWidget = ({ text, widgetStyle }: WidgetProps) => {
         label={text ?? texts.widgets.weather}
         labelStyle={normalizedFontStyle}
         visual={
-          <WrapperRow center itemsCenter>
+          <WrapperRow center itemsCenter style={styles.visual}>
             <View style={[styles.iconContainer, normalizedIconStyle]}>
               <Image
                 source={{
@@ -68,7 +68,7 @@ export const WeatherWidget = ({ text, widgetStyle }: WidgetProps) => {
                 resizeMode="contain"
               />
             </View>
-            <BoldText primary big>
+            <BoldText primary big style={styles.temperature}>
               {roundedTemperature}°C
             </BoldText>
           </WrapperRow>
@@ -79,6 +79,14 @@ export const WeatherWidget = ({ text, widgetStyle }: WidgetProps) => {
 };
 
 const styles = StyleSheet.create({
+  temperature: {
+    flexShrink: 1,
+    maxWidth: '100%'
+  },
+  visual: {
+    flexWrap: 'wrap',
+    maxWidth: '100%'
+  },
   icon: {
     aspectRatio: 1,
     width: normalize(40)

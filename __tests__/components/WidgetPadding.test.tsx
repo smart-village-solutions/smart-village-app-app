@@ -5,6 +5,7 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { WidgetContainer } from '../../src/components/widgets/WidgetContainer';
 import { WidgetContent } from '../../src/components/widgets/WidgetContent';
 import { Widgets } from '../../src/components/widgets/Widgets';
+import { WrapperRow } from '../../src/components/Wrapper';
 import { resolveAppDesignSystem } from '../../src/helpers/appDesignSystemHelper';
 
 jest.mock('expo-router/react-navigation', () => ({
@@ -130,6 +131,9 @@ describe.each(['single', 'multiple'] as const)('%s home widgets', (layout) => {
             expect(style.paddingTop).toBeUndefined();
             expect(style.paddingBottom).toBeUndefined();
           });
+          const visualRow = content.findAllByType(WrapperRow)[0];
+          expect(StyleSheet.flatten(visualRow.props.style).height).toBeUndefined();
+          expect(StyleSheet.flatten(visualRow.props.style).minHeight).toBe(48);
         });
     }
   );
