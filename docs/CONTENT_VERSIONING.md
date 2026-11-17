@@ -33,3 +33,22 @@ Run `yarn lint` and `yarn test`. Focused coverage is in contentVisibility.test.t
 contentVisibilityParser.test.ts and VoucherContentVisibility.test.ts. Verify mixed
 restricted/unrestricted records in lists, maps, counts, bookmarks, direct details
 and offline cache reads, including version/build boundaries.
+
+
+## Using the filter in another customer app
+
+Integrate this shared change into that app's source branch and release a compatible
+client build or OTA update. No Klima-Taler module, customer ID or feature flag is
+required. Existing content remains visible when its payload has no requirements.
+
+Set requirements on the affected records in that customer's API/importer, using
+the app's actual native version and build numbers. A single `minBuild` requirement
+applies to both iOS and Android, so check both platforms before choosing a value.
+If only a version boundary is needed, omit `minBuild`; if only a build boundary
+is needed, omit `minVersion`. Higher app versions still need to satisfy an explicit
+build requirement.
+
+Before rollout, test one unrestricted record and records below/at/above the chosen
+version/build boundary in lists, map pins and direct details. Refresh records online,
+then repeat with cached data offline. An installed client without this patch does
+not interpret the new fields.
