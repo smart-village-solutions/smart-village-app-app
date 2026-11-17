@@ -159,7 +159,13 @@ export const Disturber = ({ navigation, publicJsonFile }: Props) => {
             )}
 
             {!!headline && (
-              <Wrapper>
+              <Wrapper
+                style={
+                  !pictures?.length && showButtonToClose
+                    ? styles.headlineWithCloseButton
+                    : undefined
+                }
+              >
                 <WrapperHorizontal>
                   <HeadlineText center uppercase style={styles.headlineText}>
                     {headline}
@@ -244,6 +250,12 @@ const createStyles = (colors) => ({
   contentBelowCloseButton: {
     // Keep the first text below the close control when there is no image or headline.
     paddingTop: normalize(16) + normalize(32)
+  },
+
+  headlineWithCloseButton: {
+    // Keep wrapped headlines clear of the close control without shifting their center.
+    paddingLeft: normalize(16) + normalize(32),
+    paddingRight: normalize(16) + normalize(32)
   },
 
   headlineText: {
