@@ -87,8 +87,11 @@ export const createSummary = (
     if (!['loading', 'error', 'disabled'].includes(state.phase)) validatedAt = Date.now();
   };
   // Invalidation hides stale results, but the native read still owns the SDK operation slot.
-  const waitForIdle = async () => {
-    while (statisticsPending) await statisticsPending.catch(() => undefined);
+  const waitForIdle = async (): Promise<void> => {
+    const request = statisticsPending;
+    if (!request) return;
+    await request.catch(() => undefined);
+    if (statisticsPending) return waitForIdle();
   };
   const readStatistics = async () => {
     const request = client.fetchStatistics();
