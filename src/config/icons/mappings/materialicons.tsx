@@ -3,9 +3,11 @@
  * Maps unified icon names to MaterialIcons icon names
  */
 
+import { refreshIconNames } from './refresh';
+
 export const materialiconsIconMapping: Record<string, string> = {
   // Navigation & Actions
-  refresh: 'refresh',
+  refresh: refreshIconNames.materialicons,
   about: 'more-vert',
   'arrow-down': 'arrow-downward',
   'arrow-down-circle': 'arrow-circle-down',

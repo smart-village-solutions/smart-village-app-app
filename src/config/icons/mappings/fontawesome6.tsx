@@ -5,9 +5,11 @@
  * Note: Many icon names have been updated from v5 (e.g. times→xmark, home→house)
  */
 
+import { refreshIconNames } from './refresh';
+
 export const fontawesome6IconMapping: Record<string, string> = {
   // Navigation & Actions
-  refresh: 'arrows-rotate',
+  refresh: refreshIconNames.fontawesome6,
   about: 'ellipsis-vertical',
   'arrow-down': 'arrow-down',
   'arrow-down-circle': 'circle-arrow-down',

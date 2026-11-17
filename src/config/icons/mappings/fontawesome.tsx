@@ -3,9 +3,11 @@
  * Maps unified icon names to FontAwesome icon names
  */
 
+import { refreshIconNames } from './refresh';
+
 export const fontawesomeIconMapping: Record<string, string> = {
   // Navigation & Actions
-  refresh: 'refresh',
+  refresh: refreshIconNames.fontawesome,
   about: 'ellipsis-v',
   'arrow-down': 'arrow-down',
   'arrow-down-circle': 'arrow-circle-down',

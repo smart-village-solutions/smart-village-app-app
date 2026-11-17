@@ -4,9 +4,11 @@
  * Note: This is the largest icon library with 7000+ icons
  */
 
+import { refreshIconNames } from './refresh';
+
 export const materialcommunityiconsIconMapping: Record<string, string> = {
   // Navigation & Actions
-  refresh: 'refresh',
+  refresh: refreshIconNames.materialcommunityicons,
   about: 'dots-vertical',
   'arrow-down': 'arrow-down',
   'arrow-down-circle': 'arrow-down-circle',

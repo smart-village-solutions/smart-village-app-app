@@ -3,9 +3,11 @@
  * Maps unified icon names to Ionicons icon names
  */
 
+import { refreshIconNames } from './refresh';
+
 export const ioniconsIconMapping: Record<string, string> = {
   // Navigation & Actions
-  refresh: 'refresh',
+  refresh: refreshIconNames.ionicons,
   about: 'ellipsis-vertical',
   'arrow-down': 'arrow-down',
   'arrow-down-circle': 'arrow-down-circle',
