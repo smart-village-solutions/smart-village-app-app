@@ -60,13 +60,18 @@ export const KlimaTalerCard = ({ state, opening = false, config, onAction }: Pro
         <CardSummary state={state} config={config} promo={promo} />
         {action('settings')}
       </View>
-      {!promo && config.show.status && !!status && (
+      {!promo && config.show.status && (
         <Text
+          testID="klimaTalerStatus"
           italic={false}
           style={[styles.status, { color: config.colors.text }, config.styles.status]}
-          accessibilityLiveRegion="polite"
+          accessible={!!status}
+          accessibilityElementsHidden={!status}
+          importantForAccessibility={status ? 'auto' : 'no-hide-descendants'}
+          accessibilityLiveRegion={status ? 'polite' : 'none'}
         >
-          {status}
+          {/* Keep one scaled line in the layout when a refresh finishes. */}
+          {status || '\u00a0'}
         </Text>
       )}
       <View style={[styles.actions, config.styles.actions]}>
