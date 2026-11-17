@@ -120,6 +120,10 @@ export const Disturber = ({ navigation, publicJsonFile }: Props) => {
 
   const showButton = !!button && !!button.title && !!button.navigationTo && !!button.params;
   const showContent = !!headline || !!title || !!description || showButton;
+  const textOnlyCloseButtonPadding =
+    !pictures?.length && showButtonToClose && !headline
+      ? styles.contentBelowCloseButton
+      : undefined;
 
   return (
     <Wrapper>
@@ -165,7 +169,7 @@ export const Disturber = ({ navigation, publicJsonFile }: Props) => {
             )}
 
             {!!title && (
-              <Wrapper noPaddingTop={!!headline}>
+              <Wrapper noPaddingTop={!!headline} style={textOnlyCloseButtonPadding}>
                 <WrapperHorizontal>
                   <HeadlineText center big>
                     {title}
@@ -175,7 +179,10 @@ export const Disturber = ({ navigation, publicJsonFile }: Props) => {
             )}
 
             {!!description && (
-              <Wrapper noPaddingTop={!!headline || !!title}>
+              <Wrapper
+                noPaddingTop={!!headline || !!title}
+                style={!title ? textOnlyCloseButtonPadding : undefined}
+              >
                 <WrapperHorizontal>
                   <RegularText center big>
                     {description}
@@ -185,7 +192,10 @@ export const Disturber = ({ navigation, publicJsonFile }: Props) => {
             )}
 
             {showButton && (
-              <Wrapper noPaddingTop={!!headline || !!title || !!description}>
+              <Wrapper
+                noPaddingTop={!!headline || !!title || !!description}
+                style={!title && !description ? textOnlyCloseButtonPadding : undefined}
+              >
                 <WrapperHorizontal>
                   <Button
                     big
@@ -229,6 +239,11 @@ const createStyles = (colors) => ({
 
   containerRadius: {
     borderRadius: normalize(8)
+  },
+
+  contentBelowCloseButton: {
+    // Keep the first text below the close control when there is no image or headline.
+    paddingTop: normalize(16) + normalize(32)
   },
 
   headlineText: {

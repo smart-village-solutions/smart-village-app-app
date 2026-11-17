@@ -76,6 +76,15 @@ describe('Disturber layout', () => {
 
     expect(wrappers).toHaveLength(2);
     expect(wrappers[1].props.noPaddingTop).toBe(false);
+    expect(wrappers[1].props.style).toMatchObject({ paddingTop: 48 });
+  });
+
+  it('uses standard text padding when no close button needs space', async () => {
+    mockData = [{ id: 1, title: 'Welcome', showButtonToClose: false }];
+    const tree = await renderDisturber();
+
+    expect(tree.root.findAllByType(Wrapper)[1].props.style).toBeUndefined();
+    expect(tree.root.findAllByType(TouchableOpacity)).toHaveLength(0);
   });
 
   it('preserves image-only cards without an empty content section', async () => {
