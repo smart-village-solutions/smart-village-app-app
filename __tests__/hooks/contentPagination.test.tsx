@@ -94,3 +94,34 @@ it('does not restart pagination when a refetch resolves after unmount', async ()
   });
   expect(test.props.fetchMore).not.toHaveBeenCalled();
 });
+
+it('invalidates pending pages when the effective list predicate changes', async () => {
+  const test = setup([hidden('1'), hidden('2')], [[normal('3')]]);
+  let finishOldPage!: () => void;
+  test.props.fetchMore.mockImplementationOnce(
+    (options) =>
+      new Promise((resolve) => {
+        finishOldPage = () => {
+          const response = { data: { newsItems: [hidden('stale')] } };
+          expect(options.updateQuery(test.cache(), { fetchMoreResult: response.data })).toBe(
+            test.cache()
+          );
+          resolve(response);
+        };
+      })
+  );
+  const initialProps = { ...test.props, getVisibleItems: (rows: Row[]) => rows };
+  const hook = renderHook((props) => useContentPagination(props), { initialProps });
+  const focusRefetch = hook.result.current.refetchVisible;
+  hook.rerender({
+    ...test.props,
+    getVisibleItems: (rows: Row[]) => rows.filter(({ id }) => id !== 'excluded')
+  });
+  await waitFor(() => expect(test.cache().newsItems).toHaveLength(3));
+  await act(async () => {
+    finishOldPage();
+  });
+  expect(hook.result.current.refetchVisible).toBe(focusRefetch);
+  expect(test.cache().newsItems.map(({ id }) => id)).toEqual(['1', '2', '3']);
+  expect(test.props.fetchMore).toHaveBeenCalledTimes(2);
+});

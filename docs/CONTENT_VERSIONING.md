@@ -19,7 +19,11 @@ Shared list parsing, maps, details, voucher categories/counts and event calendar
 use the same projection. Restricted details show the existing unavailable-content
 message before voucher redemption controls or read-aloud content are exposed.
 Paginated lists continue past hidden-only pages using raw offsets and the existing
-page size. They stop at visible records, an empty page or a duplicate-only response.
+page size. When version filtering hides records, pagination uses the same list
+parser and date/publication filtering as the rendered list.
+It stops at a displayed record, an empty page or a duplicate-only response. Records
+are never removed from the raw cache and offsets count raw rows. If version
+requirements hide nothing, the existing one-page request behavior remains unchanged.
 
 Importers must merge requirements into both POI and voucher payloads while
 preserving all other metadata and existing IDs. Requirements are generic: no
@@ -34,7 +38,10 @@ Run `yarn lint` and `yarn test`. Focused coverage is in contentVisibility.test.t
 contentVisibilityParser.test.ts and VoucherContentVisibility.test.ts. Verify mixed
 restricted/unrestricted records in lists, maps, counts, bookmarks, direct details
 and offline cache reads, including version/build boundaries. Pagination regression
-coverage is in the helper and hook `contentPagination` tests; Generic Item calendar visibility is
+coverage is in the helper and hook `contentPagination` tests. The
+`contentPaginationVisibility.test.tsx` regression tests exercise the actual parser
+with mixed version-restricted, expired, unpublished and eligible Generic Items.
+Generic Item calendar visibility is
 covered by `genericItemEventsVisibility.test.tsx` with the real occurrence parser.
 
 Generic Item calendar sources are filtered before conversion into occurrences, so

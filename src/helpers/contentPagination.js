@@ -7,6 +7,7 @@ const rowsFor = (data, query) => (Array.isArray(data?.[query]) ? data[query] : [
 // Keep raw Apollo pages intact; only skip ahead when a page adds no visible rows.
 export const createContentPagination = ({
   fetchMore,
+  getVisibleItems,
   query,
   queryDocument,
   variables,
@@ -18,6 +19,7 @@ export const createContentPagination = ({
   let automaticAttemptAt;
   const isPaginated = Number.isFinite(pageSize) && pageSize > 0;
   const emptyResult = () => ({ data: { [query]: [] } });
+  const hasDisplayedItems = (rows) => (getVisibleItems ? getVisibleItems(rows) : rows).length > 0;
 
   const reset = () => {
     generation += 1;
@@ -28,13 +30,15 @@ export const createContentPagination = ({
 
   const shouldLoadMore = (data) => {
     const rows = rowsFor(data, query);
+    const eligible = visibleContent(rows);
     return (
       !!queryDocument &&
       isPaginated &&
       rows.length > 0 &&
       rows.length !== exhaustedAt &&
       rows.length !== automaticAttemptAt &&
-      visibleContent(rows).length === 0
+      eligible !== rows &&
+      !hasDisplayedItems(eligible)
     );
   };
 
@@ -48,6 +52,7 @@ export const createContentPagination = ({
     let offset = rows.length;
     let cachedCount = rows.length;
     const seen = new Set(rows.map((row) => row?.id));
+    let versionFiltered = visibleContent(rows) !== rows;
 
     const run = async () => {
       while (requestGeneration === generation) {
@@ -70,7 +75,10 @@ export const createContentPagination = ({
           exhaustedAt = cachedCount;
           return result;
         }
-        if (!isPaginated || visibleContent(page).length > 0) return result;
+        const eligible = visibleContent(page);
+        versionFiltered = versionFiltered || eligible !== page;
+        // Without version filtering, keep the existing one-page request behavior.
+        if (!isPaginated || !versionFiltered || hasDisplayedItems(eligible)) return result;
         page.forEach((row) => seen.add(row?.id));
         offset += page.length;
       }

@@ -5,6 +5,7 @@ import { createContentPagination } from '../helpers/contentPagination';
 export const useContentPagination = ({
   data,
   fetchMore,
+  getVisibleItems,
   isConnected,
   loading,
   pageSize,
@@ -14,8 +15,16 @@ export const useContentPagination = ({
   variables
 }) => {
   const pagination = useMemo(
-    () => createContentPagination({ fetchMore, query, queryDocument, variables, pageSize }),
-    [fetchMore, pageSize, query, queryDocument, variables]
+    () =>
+      createContentPagination({
+        fetchMore,
+        getVisibleItems,
+        query,
+        queryDocument,
+        variables,
+        pageSize
+      }),
+    [fetchMore, getVisibleItems, pageSize, query, queryDocument, variables]
   );
   const paginationRef = useRef(pagination);
   useEffect(() => {

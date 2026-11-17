@@ -318,7 +318,7 @@ export const Overviews = ({ navigation, route }) => {
   const bookmarkable = route.params?.bookmarkable;
   // HINT: defined on a nested category list screen.
   const categories = visibleContent({ categories: route.params?.categories }).categories;
-  const subQuery = route.params?.subQuery ?? {};
+  const subQuery = useMemo(() => route.params?.subQuery ?? {}, [route.params?.subQuery]);
   const openWebScreen = useOpenWebScreen(title, categoryListFooter?.url);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
   const htmlContentName =
@@ -365,17 +365,6 @@ export const Overviews = ({ navigation, route }) => {
     fetchPolicy,
     variables: requestVariables
   });
-  const { fetchMoreData, refetchVisible } = useContentPagination({
-    data,
-    fetchMore,
-    isConnected,
-    loading,
-    pageSize: requestVariables.limit,
-    query,
-    queryDocument: getFetchMoreQuery(query),
-    refetch,
-    variables: networkQueryVariables
-  });
 
   const participationProjectStatusCounts = useMemo(
     () =>
@@ -390,42 +379,79 @@ export const Overviews = ({ navigation, route }) => {
     [queryVariables]
   );
 
-  const listItems = useMemo(() => {
-    const shouldHideInvisible =
-      hideInvisible && QUERIES_WITH_VISIBILITY_FILTER.has(query) && Array.isArray(data?.[query]);
-    const parsedData = shouldHideInvisible
-      ? {
-          ...data,
-          [query]: data[query].filter((item) => item?.visible !== false)
-        }
-      : data;
-    let parsedListItems = parseListItemsFromQuery(query, parsedData, titleDetail, {
+  const parseVisibleListItems = useCallback(
+    (response) => {
+      const shouldHideInvisible =
+        hideInvisible &&
+        QUERIES_WITH_VISIBILITY_FILTER.has(query) &&
+        Array.isArray(response?.[query]);
+      const parsedData = shouldHideInvisible
+        ? {
+            ...response,
+            [query]: response[query].filter((item) => item?.visible !== false)
+          }
+        : response;
+      let parsedListItems = parseListItemsFromQuery(query, parsedData, titleDetail, {
+        bookmarkable,
+        dateTimeFormat,
+        queryVariables,
+        subQuery,
+        withDate: false
+      });
+
+      if (queryVariables.onlyCurrentlyOpen) {
+        parsedListItems = parsedListItems?.filter(
+          (entry) => isOpen(entry.params?.details?.openingHours)?.open
+        );
+      }
+
+      if (queryVariables?.genericType === GenericType.Voucher) {
+        parsedListItems = parsedListItems?.filter(
+          (entry) => !!entry.params?.details?.vouchers?.length
+        );
+      }
+
+      if (isParticipationProjectOverview) {
+        parsedListItems = parsedListItems?.filter((entry) =>
+          selectedParticipationProjectStatuses.some((status) =>
+            isParticipationProjectStatus(entry.params?.details, status)
+          )
+        );
+      }
+
+      return parsedListItems;
+    },
+    [
       bookmarkable,
       dateTimeFormat,
+      hideInvisible,
+      isParticipationProjectOverview,
+      query,
       queryVariables,
+      selectedParticipationProjectStatuses,
       subQuery,
-      withDate: false
-    });
+      titleDetail
+    ]
+  );
+  const getVisibleItems = useCallback(
+    (rows) => parseVisibleListItems({ [query]: rows }),
+    [parseVisibleListItems, query]
+  );
+  const { fetchMoreData, refetchVisible } = useContentPagination({
+    data,
+    fetchMore,
+    getVisibleItems,
+    isConnected,
+    loading,
+    pageSize: requestVariables.limit,
+    query,
+    queryDocument: getFetchMoreQuery(query),
+    refetch,
+    variables: networkQueryVariables
+  });
 
-    if (queryVariables.onlyCurrentlyOpen) {
-      parsedListItems = parsedListItems?.filter(
-        (entry) => isOpen(entry.params?.details?.openingHours)?.open
-      );
-    }
-
-    if (queryVariables?.genericType === GenericType.Voucher) {
-      parsedListItems = parsedListItems?.filter(
-        (entry) => !!entry.params?.details?.vouchers?.length
-      );
-    }
-
-    if (isParticipationProjectOverview) {
-      parsedListItems = parsedListItems?.filter((entry) =>
-        selectedParticipationProjectStatuses.some((status) =>
-          isParticipationProjectStatus(entry.params?.details, status)
-        )
-      );
-    }
+  const listItems = useMemo(() => {
+    let parsedListItems = parseVisibleListItems(data);
 
     if (sortByDistance && currentPosition && parsedListItems?.length) {
       parsedListItems = sortPOIsByDistanceFromPosition(parsedListItems, currentPosition.coords);
@@ -457,23 +483,16 @@ export const Overviews = ({ navigation, route }) => {
 
     return parsedListItems;
   }, [
-    bookmarkable,
     currentPosition,
     data,
-    dateTimeFormat,
     isLocationAlertShow,
-    isParticipationProjectOverview,
     locationSettings,
     navigation,
-    hideInvisible,
-    query,
+    parseVisibleListItems,
     queryVariables,
     radiusSearchByDistance,
-    selectedParticipationProjectStatuses,
     setIsLocationAlertShow,
-    sortByDistance,
-    subQuery,
-    titleDetail
+    sortByDistance
   ]);
 
   const hasParticipationProjectMapItems =
