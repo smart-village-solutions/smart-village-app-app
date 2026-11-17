@@ -1742,6 +1742,9 @@ export const texts = {
         invalidPhone: 'Die eingegebene Telefonnummer ist nicht gültig.',
         limitOfArea: (city) => `Bitte geben Sie nur Standorte für ${city} ein.`,
         location: 'Bitte wählen Sie einen Ort auf der Karte aus.',
+        locationPending: 'Der Standort wird gerade ermittelt. Bitte warten Sie einen Moment.',
+        locationUnconfirmed:
+          'Prüfen Sie die Adresse und zeigen Sie sie auf der Karte an oder wählen Sie einen Ort auf der Karte aus.',
         missingAnyInput: 'Bitte füllen Sie alle Pflichtfelder aus',
         no: 'Nein',
         myLocation: 'Möchten Sie Ihren aktuellen Standort als Adresse übernehmen?',
@@ -1765,6 +1768,7 @@ export const texts = {
       errorText: 'muss ausgefüllt werden',
       firstName: 'Vorname',
       houseNumber: 'Hausnummer',
+      showAddressOnMap: 'Adresse auf Karte anzeigen',
       imageHint: (maxFileCount) => `ⓘ Es können bis zu ${maxFileCount} Fotos hochgeladen werden`,
       lastName: 'Nachname',
       mapHint:

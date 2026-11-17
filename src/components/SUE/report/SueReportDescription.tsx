@@ -1,9 +1,9 @@
-import * as Location from 'expo-location';
 import React, { memo, useMemo, useRef } from 'react';
 import { Controller, UseFormSetValue } from 'react-hook-form';
 import { StyleSheet, View } from 'react-native';
 
 import { consts, normalize, texts } from '../../../config';
+import { SueCoordinates, SueLocationRequest } from '../../../hooks/useSueReportLocation';
 import { TValues } from '../../../screens';
 import { Wrapper } from '../../Wrapper';
 import { Input } from '../../form';
@@ -15,6 +15,7 @@ const MemoizedImageSelector = memo((props) => <MultiImageSelector {...props} />)
 
 export const SueReportDescription = ({
   areaServiceData,
+  beginLocationUpdate,
   configuration,
   control,
   errorMessage,
@@ -27,13 +28,14 @@ export const SueReportDescription = ({
   setValue
 }: {
   areaServiceData?: { postalCodes?: string[] };
+  beginLocationUpdate: () => SueLocationRequest;
   configuration: any;
   control: any;
   errorMessage: string;
-  requiredInputs: keyof TValues[];
-  selectedPosition?: Location.LocationObjectCoords;
+  requiredInputs?: (keyof TValues)[];
+  selectedPosition?: SueCoordinates;
   storeReportValues: () => Promise<void>;
-  setSelectedPosition: (position?: Location.LocationObjectCoords) => void;
+  setSelectedPosition: (position?: SueCoordinates) => void;
   setShowCoordinatesFromImageAlert: (value: boolean) => void;
   setUpdateRegionFromImage: (value: boolean) => void;
   setValue: UseFormSetValue<TValues>;
@@ -53,6 +55,7 @@ export const SueReportDescription = ({
       control,
       coordinateCheck: {
         areaServiceData,
+        beginLocationUpdate,
         errorMessage,
         selectedPosition,
         setSelectedPosition,
@@ -74,6 +77,7 @@ export const SueReportDescription = ({
       configuration,
       control,
       areaServiceData,
+      beginLocationUpdate,
       errorMessage,
       selectedPosition,
       storeReportValues,

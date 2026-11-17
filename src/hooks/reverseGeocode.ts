@@ -1,21 +1,11 @@
-import { LocationObjectCoords } from 'expo-location';
 import { useCallback } from 'react';
 import { UseFormSetValue } from 'react-hook-form';
 
 import appJson from '../../app.json';
-import { TValues } from '../screens';
+import { isSuePostalCodeAllowed, SUE_CITY_KEYS } from '../helpers/sueReportLocation';
+import type { TValues } from '../screens';
 
-const CITY_FALLBACK_KEYS = [
-  'city',
-  'town',
-  'village',
-  'municipality',
-  'city_district',
-  'county'
-] as const;
-
-const normalizePostalCode = (postalCode?: string) =>
-  (postalCode || '').replace(/\s+/g, '').trim();
+import type { SueCoordinates } from './useSueReportLocation';
 
 export const useReverseGeocode = () => {
   return useCallback(
@@ -29,7 +19,7 @@ export const useReverseGeocode = () => {
       areaServiceData?: { postalCodes?: string[] };
       errorMessage: string;
       isLatestRequest?: () => boolean;
-      position: LocationObjectCoords;
+      position: SueCoordinates;
       setValue: UseFormSetValue<TValues>;
     }): Promise<{ isStale: boolean; isWithinArea: boolean }> => {
       const shouldApplyResult = isLatestRequest || (() => true);
@@ -38,39 +28,31 @@ export const useReverseGeocode = () => {
 
       try {
         // https://operations.osmfoundation.org/policies/nominatim/
-        const response = await (
-          await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`,
-            {
-              headers: {
-                'User-Agent': `${appJson.expo.scheme}/${appJson.expo.version}`
-              }
+        const result = await fetch(
+          `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`,
+          {
+            headers: {
+              'User-Agent': `${appJson.expo.scheme}/${appJson.expo.version}`
             }
-          )
-        ).json();
-
-        if (!shouldApplyResult()) {
-          return staleResult;
-        }
+          }
+        );
+        if (!result.ok) throw new Error(errorMessage);
+        const { address = {} } = await result.json();
+        if (!shouldApplyResult()) return staleResult;
 
         // Nominatim jsonv2 maps address parts from OSM tags, so settlement fields may vary.
         const city =
-          CITY_FALLBACK_KEYS.map((key) => response?.address?.[key]).find(
+          SUE_CITY_KEYS.map((key) => address[key]).find(
             (value) => typeof value === 'string' && value.length > 0
           ) || '';
-        const houseNumber = response?.address?.house_number || '';
-        const street = response?.address?.road || '';
-        const postalCode = response?.address?.postcode || '';
-        const normalizedPostalCode = normalizePostalCode(postalCode);
-        const isWithinArea =
-          !!normalizedPostalCode &&
-          !!areaServiceData?.postalCodes?.some(
-            (value) => normalizePostalCode(value) === normalizedPostalCode
-          );
-
-        if (!shouldApplyResult()) {
-          return staleResult;
-        }
+        const {
+          house_number: houseNumber = '',
+          road: street = '',
+          postcode: postalCode = ''
+        } = address;
+        const isWithinArea = areaServiceData
+          ? isSuePostalCodeAllowed(postalCode, areaServiceData.postalCodes || [])
+          : [city, street, postalCode].some(Boolean);
 
         if (isWithinArea) {
           setValue('city', city);

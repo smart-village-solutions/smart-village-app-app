@@ -23,7 +23,7 @@ it.each(['image/jpeg', undefined])(
       setUpdateRegionFromImage: jest.fn(),
       setShowCoordinatesFromImageAlert: jest.fn()
     };
-    const reverseGeocode = jest.fn().mockResolvedValue(undefined);
+    const reverseGeocode = jest.fn().mockResolvedValue({ isWithinArea: true });
     (getFileSize as jest.Mock).mockReturnValue(2345678);
 
     await onImageSelect({
@@ -68,3 +68,40 @@ it.each(['image/jpeg', undefined])(
 );
 
 beforeEach(() => jest.clearAllMocks());
+
+it('keeps an attached image without overwriting a newer location', async () => {
+  let latest = true;
+  const setSelectedPosition = jest.fn();
+  const setImagesAttributes = jest.fn();
+  const isLatestRequest = () => latest;
+  const reverseGeocode = jest.fn(async () => {
+    latest = false;
+    return { isStale: true, isWithinArea: false };
+  });
+
+  await onImageSelect({
+    configuration: { limitation: { allowedAttachmentTypes: { value: 'jpg' } } },
+    coordinateCheck: { setSelectedPosition },
+    errorType: consts.IMAGE_SELECTOR_ERROR_TYPES.SUE,
+    imageFunction: async () => ({
+      uri: 'file:///late.jpg',
+      width: 100,
+      height: 100,
+      exif: { GPSLatitude: 48.3415792, GPSLongitude: 10.8650444 }
+    }),
+    imagesAttributes: [],
+    infoAndErrorText: '',
+    locationRequest: { isLatestRequest, finish: jest.fn() },
+    maxFileSize: 31457280,
+    reverseGeocode,
+    selectorType: consts.IMAGE_SELECTOR_TYPES.SUE,
+    setImagesAttributes,
+    setInfoAndErrorText: jest.fn()
+  });
+
+  expect(reverseGeocode).toHaveBeenCalledWith(expect.objectContaining({ isLatestRequest }));
+  expect(setSelectedPosition).not.toHaveBeenCalled();
+  expect(setImagesAttributes).toHaveBeenCalledWith([
+    expect.objectContaining({ uri: 'file:///late.jpg' })
+  ]);
+});

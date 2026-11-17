@@ -2,6 +2,7 @@ import { ImagePickerAsset } from 'expo-image-picker';
 import { Alert } from 'react-native';
 
 import { consts, texts } from '../../config';
+import type { SueLocationRequest } from '../../hooks/useSueReportLocation';
 import { deleteMediaContent } from '../../queries/mediaContent';
 import { calendarDeleteFile } from '../../queries/volunteer';
 import { errorTextGenerator } from '../consul';
@@ -121,6 +122,7 @@ export const onImageSelect = async ({
   imagesAttributes,
   infoAndErrorText,
   lastKnownPosition,
+  locationRequest,
   maxFileSize,
   position,
   reverseGeocode,
@@ -136,6 +138,7 @@ export const onImageSelect = async ({
   imagesAttributes: any[];
   infoAndErrorText: string;
   lastKnownPosition?: any;
+  locationRequest?: SueLocationRequest;
   maxFileSize: number;
   position?: any;
   reverseGeocode?: any;
@@ -165,7 +168,7 @@ export const onImageSelect = async ({
     };
   }
 
-  const { areaServiceData = {}, errorMessage = '', setValue = () => {} } = coordinateCheck || {};
+  const { areaServiceData, errorMessage = '', setValue = () => {} } = coordinateCheck || {};
 
   /* used to specify the mimeType when uploading to the server */
   const imageType = IMAGE_TYPE_REGEX.exec(uri)?.[1]?.toLowerCase();
@@ -182,26 +185,36 @@ export const onImageSelect = async ({
       return Alert.alert(texts.sue.report.alerts.hint, texts.sue.report.alerts.imageType);
     }
 
-    if (Number.isFinite(location.latitude) && Number.isFinite(location.longitude)) {
+    const isLatestRequest = locationRequest?.isLatestRequest || (() => true);
+    if (
+      Number.isFinite(location.latitude) &&
+      Number.isFinite(location.longitude) &&
+      isLatestRequest()
+    ) {
       try {
-        await reverseGeocode({
+        const result = await reverseGeocode({
           areaServiceData,
           errorMessage,
+          isLatestRequest,
           position: location,
           setValue
         });
 
-        coordinateCheck.setSelectedPosition(location);
-        coordinateCheck.setUpdateRegionFromImage(true);
-        coordinateCheck.setShowCoordinatesFromImageAlert(false);
+        if (isLatestRequest() && result?.isWithinArea) {
+          coordinateCheck.setSelectedPosition(location);
+          coordinateCheck.setUpdateRegionFromImage(true);
+          coordinateCheck.setShowCoordinatesFromImageAlert(false);
+        }
       } catch (error) {
-        coordinateCheck.setSelectedPosition(undefined);
-        coordinateCheck.setUpdateRegionFromImage(false);
-        setValue('city', '');
-        setValue('houseNumber', '');
-        setValue('street', '');
-        setValue('postalCode', '');
-        console.error(error);
+        if (isLatestRequest()) {
+          coordinateCheck.setSelectedPosition(undefined);
+          coordinateCheck.setUpdateRegionFromImage(false);
+          setValue('city', '');
+          setValue('houseNumber', '');
+          setValue('street', '');
+          setValue('postalCode', '');
+          console.error(error);
+        }
       }
     }
   }

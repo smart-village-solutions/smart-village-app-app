@@ -61,6 +61,7 @@ This release introduces app-wide accessibility settings and dark mode, participa
 - fixed waste reminder synchronization after token, permission and address changes, duplicate scheduling and cleanup when push notifications are disabled
 - fixed waste calendar crashes, loading states after street changes and autocomplete keyboard handling
 - fixed camera and gallery crashes, report draft loss and Android image-saving permission flows in SUE
+- kept SUE report addresses and coordinates matched when editing, restoring or submitting a report
 - fixed HEIC and HEIF conversion, image MIME types and filenames, and multipart uploads for shared files, defect reports, SUE and Encounter images
 - fixed defect report category refresh, search, keyboard visibility and selection update loops
 - fixed Volunteer calendar pagination, duplicate event requests, recurring-event sharing and participation event calendar export

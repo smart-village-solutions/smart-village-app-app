@@ -1,5 +1,4 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as Location from 'expo-location';
 import { StackScreenProps } from 'expo-router/js-stack';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import parsePhoneNumber from 'libphonenumber-js';
@@ -13,7 +12,7 @@ import React, {
   useRef,
   useState
 } from 'react';
-import { UseFormGetValues, UseFormSetValue, useForm } from 'react-hook-form';
+import { UseFormSetValue, useForm } from 'react-hook-form';
 import { ActivityIndicator, Alert, Keyboard, ScrollView, View } from 'react-native';
 import { Divider } from 'react-native-elements';
 import { useMutation, useQuery } from 'react-query';
@@ -43,7 +42,18 @@ import {
   getSueLimitOfAreaCity,
   readFromStore
 } from '../../helpers';
+import {
+  geocodeSueAddress,
+  getSueAddressKey,
+  isSuePostalCodeAllowed,
+  SueAddress
+} from '../../helpers/sueReportLocation';
 import { useKeyboardHeight } from '../../hooks';
+import {
+  SueCoordinates,
+  SueLocationRequest,
+  useSueReportLocation
+} from '../../hooks/useSueReportLocation';
 import { useTheme } from '../../hooks/useTheme';
 import { useThemeStyles } from '../../hooks/useThemeStyles';
 import { QUERY_TYPES, getQuery } from '../../queries';
@@ -75,9 +85,7 @@ const sueProgressWithRequiredInputs = (
   requiredInputs[INPUT_KEYS.SUE.STREET] = !!geoMap?.locationStreetIsRequired;
 
   return progress.map((item) => {
-    item.requiredInputs = (item.requiredInputs || []).filter(
-      (key: string) => requiredInputs?.[key]
-    );
+    item.requiredInputs = (item.requiredInputs || []).filter((key) => requiredInputs?.[key]);
 
     for (const key of item.inputs || []) {
       if (requiredInputs[key] && !item.requiredInputs.includes(key)) {
@@ -104,10 +112,10 @@ export type TValues = {
   city: string;
   description: string;
   email: string;
-  familyName: string;
+  lastName: string;
   houseNumber: string;
   images: string;
-  name: string;
+  firstName: string;
   phone: string;
   postalCode: string;
   street: string;
@@ -124,6 +132,8 @@ export type TService = {
 
 type TContent = {
   areaServiceData?: { postalCodes?: string[] };
+  beginLocationUpdate: () => SueLocationRequest;
+  invalidateLocation: () => void;
   configuration: {
     geoMap: {
       areas: any[];
@@ -141,14 +151,14 @@ type TContent = {
   control: any;
   errorMessage: string;
   errors: any;
-  getValues: UseFormGetValues<TValues>;
   isFullscreenMap: boolean;
-  requiredInputs: keyof TValues[];
-  selectedPosition?: Location.LocationObjectCoords;
+  requiredInputs?: (keyof TValues)[];
+  resolveManualLocation: () => Promise<boolean | undefined>;
+  selectedPosition?: SueCoordinates;
   service?: TService;
   storeReportValues: () => Promise<void>;
   setIsFullscreenMap: (value: boolean) => void;
-  setSelectedPosition: (position?: Location.LocationObjectCoords) => void;
+  setSelectedPosition: (position?: SueCoordinates) => void;
   setService: any;
   setShowCoordinatesFromImageAlert: (value: boolean) => void;
   setUpdateRegionFromImage: (value: boolean) => void;
@@ -158,14 +168,16 @@ type TContent = {
 
 const Content = ({
   areaServiceData,
+  beginLocationUpdate,
   configuration,
   content,
   control,
   errorMessage,
   errors,
-  getValues,
   isFullscreenMap,
+  invalidateLocation,
   requiredInputs,
+  resolveManualLocation,
   selectedPosition,
   service,
   storeReportValues,
@@ -182,6 +194,7 @@ const Content = ({
       return (
         <SueReportDescription
           areaServiceData={areaServiceData}
+          beginLocationUpdate={beginLocationUpdate}
           configuration={configuration}
           control={control}
           errorMessage={errorMessage}
@@ -198,12 +211,14 @@ const Content = ({
       return (
         <SueReportLocation
           areaServiceData={areaServiceData}
+          beginLocationUpdate={beginLocationUpdate}
           configuration={configuration}
           control={control}
           errorMessage={errorMessage}
-          getValues={getValues}
+          invalidateLocation={invalidateLocation}
           isFullscreenMap={isFullscreenMap}
           requiredInputs={requiredInputs}
+          resolveManualLocation={resolveManualLocation}
           selectedPosition={selectedPosition}
           setIsFullscreenMap={setIsFullscreenMap}
           setSelectedPosition={setSelectedPosition}
@@ -227,32 +242,17 @@ const Content = ({
   }
 };
 
-type TReports = {
-  category: string;
-  city: string;
-  description: string;
-  email: string;
-  familyName: string;
-  houseNumber: string;
-  images: { uri: string; mimeType: string }[];
-  name: string;
-  phone: string;
-  postalCode: string;
-  street: string;
-  termsOfService: string;
-  title: string;
-};
-
-type TStoredValues = Partial<TReports> & {
+type TStoredValues = Partial<TValues> & {
+  confirmedLocationAddress?: string;
   currentProgress?: number;
-  selectedPosition?: Location.LocationObjectCoords;
+  selectedPosition?: SueCoordinates;
   service?: TService;
 };
 
 type TProgress = {
   content: 'category' | 'description' | 'location' | 'user';
-  inputs: string[];
-  requiredInputs?: keyof TReports[];
+  inputs: (keyof TValues)[];
+  requiredInputs?: (keyof TValues)[];
   serviceCode: string;
   title: string;
 };
@@ -295,7 +295,10 @@ export const SueReportScreen = ({
     (sueConfig as { apiConfig?: { areaService?: { id?: string } } })?.apiConfig?.areaService?.id ||
     '';
   const errorMessage =
-    configuredErrorMessage || texts.sue.report.alerts.limitOfArea(limitOfAreaCity);
+    configuredErrorMessage ||
+    (limitOfAreaCity
+      ? texts.sue.report.alerts.limitOfArea(limitOfAreaCity)
+      : texts.sue.report.alerts.locationUnconfirmed);
 
   // useRef instead of useState: the flag must be read synchronously inside
   // alertTextGeneratorForMissingData to prevent React async-batching from
@@ -308,7 +311,6 @@ export const SueReportScreen = ({
   const [service, setService] = useState<TService>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isLoadingStoredData, setIsLoadingStoredData] = useState<boolean>(true);
-  const [selectedPosition, setSelectedPosition] = useState<Location.LocationObjectCoords>();
   const [isDone, setIsDone] = useState(false);
   const [storedValues, setStoredValues] = useState<TStoredValues>();
   const [updateRegionFromImage, setUpdateRegionFromImage] = useState(false);
@@ -324,8 +326,8 @@ export const SueReportScreen = ({
     [limitation, geoMap, requiredFields]
   );
 
-  const scrollViewRef = useRef(null);
-  const scrollViewContentRef = useRef([]);
+  const scrollViewRef = useRef<ScrollView>(null);
+  const scrollViewContentRef = useRef<(ScrollView | null)[]>([]);
   const hasAppliedInitialProgressRef = useRef(false);
 
   const keyboardHeight = useKeyboardHeight();
@@ -359,7 +361,7 @@ export const SueReportScreen = ({
     getValues,
     setValue,
     reset
-  } = useForm({
+  } = useForm<TValues>({
     mode: 'onBlur',
     defaultValues: {
       [INPUT_KEYS.SUE.CITY]: '',
@@ -377,18 +379,39 @@ export const SueReportScreen = ({
     }
   });
 
-  const { data: areaServiceData, isLoading: areaServiceLoading } = useQuery(
+  const { data: areaServiceResult, isLoading: areaServiceLoading } = useQuery(
     [QUERY_TYPES.SUE.AREA_SERVICE, areaServiceAreaId, limitOfAreaCity],
     () => getQuery(QUERY_TYPES.SUE.AREA_SERVICE)(),
-    { enabled: !!limitOfAreaCity }
+    { enabled: !!(areaServiceAreaId || limitOfAreaCity) }
   );
 
+  const areaServiceData = useMemo(() => {
+    if (areaServiceResult?.postalCodes?.length) return areaServiceResult;
+    if (limitOfPostalCodes.length) return { postalCodes: limitOfPostalCodes };
+    return areaServiceAreaId || limitOfAreaCity ? { postalCodes: [] } : undefined;
+  }, [areaServiceAreaId, areaServiceResult, limitOfPostalCodes, limitOfAreaCity]);
+
+  const {
+    beginLocationUpdate,
+    getConfirmedLocation,
+    invalidateLocation,
+    isLocationPending,
+    selectedPosition,
+    setSelectedPosition
+  } = useSueReportLocation(getValues);
   const { mutateAsync } = useMutation(postRequests);
 
-  const alertTextGeneratorForMissingData = () => {
+  const alertTextGeneratorForMissingData = (requireConfirmedLocation = true) => {
     const requiredInputs = sueProgressWithConfig?.[currentProgress]?.requiredInputs;
-    const isAnyInputMissing = requiredInputs?.some((inputKey: string) => !getValues(inputKey));
+    const isAnyInputMissing = requiredInputs?.some((inputKey) => !getValues(inputKey));
     let alertText = '';
+
+    if (sueProgressWithConfig?.[currentProgress]?.content === 'location') {
+      return (
+        getLocationError(getValues(), requireConfirmedLocation) ||
+        (isAnyInputMissing ? texts.sue.report.alerts.missingAnyInput : '')
+      );
+    }
 
     switch (currentProgress) {
       case 0:
@@ -437,34 +460,6 @@ export const SueReportScreen = ({
           alertText = texts.sue.report.alerts.missingAnyInput;
         }
         break;
-      case 2:
-        if (getValues(INPUT_KEYS.SUE.HOUSE_NUMBER) && !getValues(INPUT_KEYS.SUE.STREET)) {
-          alertText = texts.sue.report.alerts.street;
-        } else if (getValues(INPUT_KEYS.SUE.CITY)) {
-          if (!getValues(INPUT_KEYS.SUE.POSTAL_CODE)) {
-            alertText = texts.sue.report.alerts.postalCode;
-          } else if (
-            !areaServiceData?.postalCodes?.includes(getValues(INPUT_KEYS.SUE.POSTAL_CODE))
-          ) {
-            alertText = errorMessage;
-          }
-        } else if (getValues(INPUT_KEYS.SUE.POSTAL_CODE)) {
-          if (getValues(INPUT_KEYS.SUE.POSTAL_CODE).length !== 5) {
-            alertText = texts.sue.report.alerts.postalCodeLength;
-          } else if (!getValues(INPUT_KEYS.SUE.CITY)) {
-            alertText = texts.sue.report.alerts.city;
-          } else if (
-            !!limitOfPostalCodes.length &&
-            !limitOfPostalCodes.includes(getValues(INPUT_KEYS.SUE.POSTAL_CODE))
-          ) {
-            alertText = errorMessage;
-          }
-        }
-
-        if (isAnyInputMissing) {
-          alertText = texts.sue.report.alerts.missingAnyInput;
-        }
-        break;
       case 3:
         if (isAnyInputMissing) {
           alertText = texts.sue.report.alerts.missingAnyInput;
@@ -493,16 +488,95 @@ export const SueReportScreen = ({
     [requiredFields, geoMap, sueProgress]
   );
 
+  const locationStep = sueProgressWithConfig.findIndex(({ content }) => content === 'location');
+  const getLocationError = useCallback(
+    (address: SueAddress, requireConfirmedLocation = true) => {
+      if (locationStep < 0) return '';
+      if (isLocationPending()) return texts.sue.report.alerts.locationPending;
+      if (address.houseNumber && !address.street) return texts.sue.report.alerts.street;
+      if (address.city && !address.postalCode) return texts.sue.report.alerts.postalCode;
+      if (address.postalCode && address.postalCode.replace(/\s/g, '').length !== 5) {
+        return texts.sue.report.alerts.postalCodeLength;
+      }
+      if (address.postalCode && !address.city) return texts.sue.report.alerts.city;
+      if (
+        (geoMap.locationStreetIsRequired && !address.street.trim()) ||
+        (geoMap.locationIsRequired && (!address.city.trim() || !address.postalCode))
+      ) {
+        return texts.sue.report.alerts.missingAnyInput;
+      }
+      if (
+        address.postalCode &&
+        areaServiceData?.postalCodes &&
+        !isSuePostalCodeAllowed(address.postalCode, areaServiceData.postalCodes)
+      ) {
+        return errorMessage;
+      }
+      if (
+        requireConfirmedLocation &&
+        (geoMap.locationIsRequired || geoMap.locationStreetIsRequired) &&
+        !getConfirmedLocation(address)
+      ) {
+        return texts.sue.report.alerts.locationUnconfirmed;
+      }
+
+      return '';
+    },
+    [
+      areaServiceData,
+      errorMessage,
+      geoMap.locationIsRequired,
+      geoMap.locationStreetIsRequired,
+      getConfirmedLocation,
+      isLocationPending,
+      locationStep
+    ]
+  );
+
+  const resolveManualLocation = useCallback(async () => {
+    if (isLocationPending()) return;
+    const address = getValues();
+    const addressKey = getSueAddressKey(address);
+    const request = beginLocationUpdate();
+    const canApplyResult = () =>
+      request.isLatestRequest() && addressKey === getSueAddressKey(getValues());
+    setSelectedPosition(undefined);
+    setShowCoordinatesFromImageAlert(true);
+    setUpdateRegionFromImage(false);
+
+    try {
+      const position = await geocodeSueAddress(address, areaServiceData?.postalCodes);
+      if (!canApplyResult()) return;
+
+      setSelectedPosition(position);
+      return !!position;
+    } catch {
+      if (canApplyResult()) return false;
+    } finally {
+      request.finish();
+    }
+  }, [
+    areaServiceData,
+    beginLocationUpdate,
+    getValues,
+    isLocationPending,
+    setSelectedPosition,
+    setShowCoordinatesFromImageAlert
+  ]);
+
   const storeReportValues = useCallback(
     async (progress = currentProgress) => {
+      const values = getValues();
+      const location = getConfirmedLocation(values);
       await addToStore(SUE_REPORT_VALUES, {
         currentProgress: progress,
-        selectedPosition,
+        confirmedLocationAddress: location?.addressKey,
+        selectedPosition: location?.position,
         service,
-        ...getValues()
+        ...values
       });
     },
-    [currentProgress, selectedPosition, service, getValues]
+    [currentProgress, service, getValues, getConfirmedLocation]
   );
 
   const storeMyReportsValues = async (newReport: any) => {
@@ -531,24 +605,25 @@ export const SueReportScreen = ({
       );
       setStoredValues(savedValues);
       setService(savedValues.service);
-      setSelectedPosition(savedValues.selectedPosition);
       setCurrentProgress(restoredProgress);
-      Object.entries(savedValues).forEach(([key, value]) => {
-        if (key !== 'currentProgress' && key !== 'service' && key !== 'selectedPosition') {
-          setValue(key as keyof TValues, value);
-        }
-      });
+      const fields = Object.keys(getValues()) as (keyof TValues)[];
+      for (const key of fields) {
+        if (savedValues[key] !== undefined) setValue(key, savedValues[key]);
+      }
+      if (savedValues.confirmedLocationAddress === getSueAddressKey(getValues())) {
+        setSelectedPosition(savedValues.selectedPosition);
+      }
     }
 
     setIsLoadingStoredData(false);
   }
 
   const resetStoredValues = useCallback(async () => {
+    invalidateLocation();
     setIsLoadingStoredData(true);
     await AsyncStorage.removeItem(SUE_REPORT_VALUES);
     setStoredValues(undefined);
     setService(undefined);
-    setSelectedPosition(undefined);
     reset();
     scrollViewRef?.current?.scrollTo({
       x: 0,
@@ -558,7 +633,7 @@ export const SueReportScreen = ({
     setCurrentProgress(0);
     hasAppliedInitialProgressRef.current = false;
     setIsLoadingStoredData(false);
-  }, [reset]);
+  }, [invalidateLocation, reset]);
 
   useEffect(() => {
     if (isLoadingStoredData || hasAppliedInitialProgressRef.current) {
@@ -576,11 +651,26 @@ export const SueReportScreen = ({
     hasAppliedInitialProgressRef.current = true;
   }, [isLoadingStoredData, currentProgress]);
 
-  const handleNextPage = useCallback(async () => {
+  const handleNextPage = async () => {
     Keyboard.dismiss();
 
-    if (alertTextGeneratorForMissingData()) {
-      return Alert.alert(texts.sue.report.alerts.hint, alertTextGeneratorForMissingData());
+    const validationError = alertTextGeneratorForMissingData(false);
+    if (validationError) return Alert.alert(texts.sue.report.alerts.hint, validationError);
+
+    if (currentProgress === locationStep) {
+      const address = getValues();
+      if (
+        address.street.trim() &&
+        address.city.trim() &&
+        address.postalCode &&
+        !getConfirmedLocation(address) &&
+        (await resolveManualLocation()) === undefined
+      ) {
+        return;
+      }
+
+      const locationError = getLocationError(getValues());
+      if (locationError) return Alert.alert(texts.sue.report.alerts.hint, locationError);
     }
 
     const nextProgress = Math.min(currentProgress + 1, sueProgressWithConfig.length - 1);
@@ -594,16 +684,12 @@ export const SueReportScreen = ({
         animated: true
       });
     }
-  }, [
-    alertTextGeneratorForMissingData,
-    storeReportValues,
-    currentProgress,
-    sueProgressWithConfig.length
-  ]);
+  };
 
   const handlePrevPage = useCallback(() => {
     Keyboard.dismiss();
     if (currentProgress > 0) {
+      if (currentProgress === locationStep && isLocationPending()) invalidateLocation();
       const prevProgress = currentProgress - 1;
       void storeReportValues(prevProgress);
       setCurrentProgress(prevProgress);
@@ -613,7 +699,7 @@ export const SueReportScreen = ({
         animated: true
       });
     }
-  }, [currentProgress, storeReportValues]);
+  }, [currentProgress, invalidateLocation, isLocationPending, locationStep, storeReportValues]);
 
   // Ensure map fullscreen mode is exited when navigating between steps
   useEffect(() => {
@@ -621,7 +707,7 @@ export const SueReportScreen = ({
   }, [currentProgress]);
 
   const onSubmit = useCallback(
-    async (sueReportData: TReports) => {
+    async (sueReportData: TValues) => {
       Keyboard.dismiss();
 
       await storeReportValues();
@@ -630,6 +716,14 @@ export const SueReportScreen = ({
         return Alert.alert(texts.sue.report.alerts.hint, alertTextGeneratorForMissingData());
       }
 
+      const locationError = getLocationError(sueReportData);
+      if (locationError) {
+        setCurrentProgress(locationStep);
+        scrollViewRef.current?.scrollTo({ x: device.width * locationStep, animated: true });
+        return Alert.alert(texts.sue.report.alerts.hint, locationError);
+      }
+
+      const position = getConfirmedLocation(sueReportData)?.position;
       let addressString;
       if (
         !!sueReportData.street ||
@@ -641,11 +735,11 @@ export const SueReportScreen = ({
       }
 
       const formData = {
-        addressString,
-        lat: selectedPosition?.latitude,
-        long: selectedPosition?.longitude,
-        serviceCode: service?.serviceCode,
         ...sueReportData,
+        addressString,
+        lat: position?.latitude,
+        long: position?.longitude,
+        serviceCode: service?.serviceCode,
         phone: parsePhoneNumber(sueReportData.phone, 'DE')?.formatInternational() || '',
         description: sueReportData.description || '-'
       };
@@ -709,7 +803,9 @@ export const SueReportScreen = ({
     },
     [
       alertTextGeneratorForMissingData,
-      selectedPosition,
+      getConfirmedLocation,
+      getLocationError,
+      locationStep,
       service,
       mutateAsync,
       resetStoredValues,
@@ -798,7 +894,9 @@ export const SueReportScreen = ({
             <ScrollView
               key={index}
               contentContainerStyle={styles.contentContainer}
-              ref={(e) => (scrollViewContentRef.current[index] = e)}
+              ref={(view) => {
+                scrollViewContentRef.current[index] = view;
+              }}
               onContentSizeChange={(contentHeight: number) =>
                 handleContentSizeChange(index, contentHeight)
               }
@@ -810,14 +908,16 @@ export const SueReportScreen = ({
               ) : (
                 <MemoizedContent
                   areaServiceData={areaServiceData}
+                  beginLocationUpdate={beginLocationUpdate}
                   configuration={memoizedConfiguration}
                   content={item.content}
                   control={control}
                   errorMessage={errorMessage}
                   errors={errors}
-                  getValues={getValues}
                   isFullscreenMap={isFullscreenMap}
+                  invalidateLocation={invalidateLocation}
                   requiredInputs={item.requiredInputs}
+                  resolveManualLocation={resolveManualLocation}
                   selectedPosition={selectedPosition}
                   service={service}
                   storeReportValues={storeReportValues}

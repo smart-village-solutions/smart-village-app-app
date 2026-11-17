@@ -231,7 +231,7 @@ type Props = {
     isFullScreenMap?: boolean;
   }) => void | Promise<void>;
   selectedMarker?: string;
-  selectedPosition?: LocationObjectCoords;
+  selectedPosition?: Pick<LocationObjectCoords, 'latitude' | 'longitude'>;
   setPinEnabled?: boolean;
   showMapFilter?: boolean;
   showMarkerLabels?: boolean;
