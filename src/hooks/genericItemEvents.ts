@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useQueries } from 'react-query';
 
+import { visibleContent } from '../helpers/contentVisibility';
 import { parseGenericItemEvents } from '../helpers/genericItemEventHelper';
 import { getQuery } from '../queries';
 import { QUERY_TYPES } from '../queries/types';
@@ -48,7 +49,11 @@ export const useGenericItemEvents = ({ dateRange, enabled = true, sources = [] }
     const merged = validSources.flatMap((source) => {
       const index = genericTypes.indexOf(`${source.genericType}`);
       const result = queries[index]?.data as Record<string, unknown[]> | undefined;
-      return parseGenericItemEvents(result?.[QUERY_TYPES.GENERIC_ITEMS], source, dateRange);
+      return parseGenericItemEvents(
+        visibleContent(result?.[QUERY_TYPES.GENERIC_ITEMS]),
+        source,
+        dateRange
+      );
     });
     return Array.from(new Map(merged.map((item) => [item.id, item])).values()).sort(
       (a, b) =>

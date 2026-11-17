@@ -28,6 +28,7 @@ export const GET_NEWS_ITEMS = gql`
       categoryIds: $categoryIds
     ) {
       id
+      payload
       mainTitle: title
       createdAt
       publishedAt
@@ -102,6 +103,7 @@ export const GET_NEWS_ITEMS_AND_DATA_PROVIDERS = gql`
       categoryIds: $categoryIds
     ) {
       id
+      payload
       mainTitle: title
       publishedAt
       visible
@@ -153,6 +155,7 @@ export const GET_NEWS_ITEM = gql`
   query NewsItem($id: ID!) {
     newsItem(id: $id) {
       id
+      payload
       mainTitle: title
       publishedAt
       contentBlocks {

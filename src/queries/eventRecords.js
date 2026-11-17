@@ -2,6 +2,7 @@ import gql from 'graphql-tag';
 
 const defaultFragment = `
   id
+  payload
   title
   createdAt
   listDate
@@ -120,6 +121,7 @@ export const GET_EVENT_RECORDS_COUNT = gql`
       dataProviderId: $dataProviderId
     ) {
       id
+      payload
       ...dateFields
     }
   }
@@ -133,6 +135,7 @@ export const GET_EVENT_RECORDS_AND_CATEGORIES = gql`
   query EventRecordsAndCategories {
     eventRecords {
       id
+      payload
       ...dateFields
     }
     categories {

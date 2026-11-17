@@ -210,6 +210,7 @@ export const GET_VOUCHER = gql`
 export const GET_VOUCHERS_CATEGORIES = gql`
   query GenericItems($categoryId: ID) {
     genericItems(categoryId: $categoryId, genericType: "Voucher") {
+      payload
       categories {
         name
         id

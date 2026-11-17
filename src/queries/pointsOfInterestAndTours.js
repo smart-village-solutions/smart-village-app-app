@@ -12,6 +12,7 @@ export const GET_POINTS_OF_INTEREST_AND_TOURS = gql`
     pointsOfInterest(ids: $idsPoi, limit: $limit, order: $orderPoi, onlyWithImage: $onlyWithImage) {
       id
       name
+      payload
       category {
         id
         name
@@ -57,6 +58,7 @@ export const GET_POINTS_OF_INTEREST_AND_TOURS = gql`
     tours(ids: $idsTour, limit: $limit, order: $orderTour, onlyWithImage: $onlyWithImage) {
       id
       name
+      payload
       category {
         id
         name

@@ -20,6 +20,7 @@ import {
 } from '../../components';
 import { texts } from '../../config';
 import { graphqlFetchPolicy, parseListItemsFromQuery } from '../../helpers';
+import { visibleContent } from '../../helpers/contentVisibility';
 import { useVoucher } from '../../hooks';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { ScreenName, TCategory, TVoucherItem } from '../../types';
@@ -91,7 +92,7 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
   const dropdownData = useMemo(() => {
     const categories: TCategory[] = [];
 
-    vouchersCategories?.[queryKey]?.forEach((voucher: TVoucherItem) =>
+    visibleContent(vouchersCategories)?.[queryKey]?.forEach((voucher: TVoucherItem) =>
       voucher.categories?.forEach((category) => categories.push(category))
     );
 

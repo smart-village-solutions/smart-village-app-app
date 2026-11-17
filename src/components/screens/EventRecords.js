@@ -18,6 +18,10 @@ import {
   parseListItemsFromQuery,
   volunteerEventOverlapsDate
 } from '../../helpers';
+import {
+  fetchVisibleContentPage,
+  getNextContentPageOffset
+} from '../../helpers/contentInfinitePagination';
 import { visibleAdditionalEventData } from '../../helpers/eventListHelper';
 import { updateResourceFiltersStateHelper } from '../../helpers/updateResourceFiltersStateHelper';
 import {
@@ -108,27 +112,32 @@ export const EventRecords = ({ navigation, route }) => {
   const { data, isLoading, refetch, isRefetching, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery(
       [QUERY_TYPES.EVENT_RECORDS, queryVariables],
-      async ({ pageParam = 0 }) => {
+      async ({ pageParam = 0, signal }) => {
         const client = await ReactQueryClient();
-
-        return await client.request(
-          getQuery(QUERY_TYPES.EVENT_RECORDS),
-          {
-            ...queryVariables,
-            offset: pageParam
-          },
-          { authMode }
-        );
+        return fetchVisibleContentPage({
+          fetchPage: (offset) =>
+            client.request(
+              getQuery(QUERY_TYPES.EVENT_RECORDS),
+              { ...queryVariables, offset },
+              { authMode }
+            ),
+          query: QUERY_TYPES.EVENT_RECORDS,
+          offset: pageParam,
+          pageSize: queryVariables.limit,
+          getVisibleItems: (rows) =>
+            hideInvisible ? rows.filter((row) => row?.visible !== false) : rows,
+          signal
+        });
       },
       {
         enabled: !showCalendar,
-        getNextPageParam: (lastPage, allPages) => {
-          if (lastPage?.[QUERY_TYPES.EVENT_RECORDS]?.length < queryVariables.limit) {
-            return undefined;
-          }
-
-          return allPages.length * queryVariables.limit;
-        }
+        getNextPageParam: (lastPage, allPages) =>
+          getNextContentPageOffset(
+            lastPage,
+            allPages,
+            QUERY_TYPES.EVENT_RECORDS,
+            queryVariables.limit
+          )
       }
     );
 

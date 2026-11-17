@@ -1,7 +1,6 @@
 import { useFocusEffect } from 'expo-router/react-navigation';
 import * as Location from 'expo-location';
 import _camelCase from 'lodash/camelCase';
-import _uniqBy from 'lodash/uniqBy';
 import PropTypes from 'prop-types';
 import React, {
   useCallback,
@@ -41,6 +40,8 @@ import {
   PARTICIPATION_PROJECT_STATUS_POSITION_PARAM,
   sortPOIsByDistanceFromPosition
 } from '../../helpers';
+import { visibleContent } from '../../helpers/contentVisibility';
+import { useContentPagination } from '../../hooks/contentPagination';
 import { compareParticipationProjects } from '../../helpers/participationProjectSortHelper';
 import { updateResourceFiltersStateHelper } from '../../helpers/updateResourceFiltersStateHelper';
 import {
@@ -315,8 +316,9 @@ export const Overviews = ({ navigation, route }) => {
   const titleDetail = route.params?.titleDetail ?? '';
   const authMode = route.params?.authMode;
   const bookmarkable = route.params?.bookmarkable;
-  const categories = route.params?.categories; // HINT: defined on a nested category list screen
-  const subQuery = route.params?.subQuery ?? {};
+  // HINT: defined on a nested category list screen.
+  const categories = visibleContent({ categories: route.params?.categories }).categories;
+  const subQuery = useMemo(() => route.params?.subQuery ?? {}, [route.params?.subQuery]);
   const openWebScreen = useOpenWebScreen(title, categoryListFooter?.url);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
   const htmlContentName =
@@ -341,22 +343,27 @@ export const Overviews = ({ navigation, route }) => {
     return participationQueryVariables;
   }, [isParticipationProjectOverview, queryVariables]);
 
-  const { data, loading, fetchMore, refetch } = useQuery(getQuery(query, { showNewsFilter }), {
-    ...(authMode ? getApolloAuthContext(authMode) : {}),
-    fetchPolicy,
-    variables: {
+  const requestVariables = useMemo(
+    () => ({
       ...networkQueryVariables,
-      // if we want to sort by distance, we need to fetch all the entries at once. this is not a
-      // big issue if we want to sort by distance, because getting the location usually takes longer
-      // than fetching all entries.
-      // if we filter by opening times, we need to also remove the limit as otherwise we might not
-      // have any open POIs in the next batch that would result in the list not getting any new
-      // items and not reliably triggering another `fetchMore`
+      // Distance and opening-time filters still need the complete POI dataset.
       limit:
         isParticipationProjectOverview || sortByDistance || queryVariables.onlyCurrentlyOpen
           ? undefined
           : route.params?.queryVariables?.limit
-    }
+    }),
+    [
+      isParticipationProjectOverview,
+      networkQueryVariables,
+      queryVariables.onlyCurrentlyOpen,
+      route.params?.queryVariables?.limit,
+      sortByDistance
+    ]
+  );
+  const { data, loading, fetchMore, refetch } = useQuery(getQuery(query, { showNewsFilter }), {
+    ...(authMode ? getApolloAuthContext(authMode) : {}),
+    fetchPolicy,
+    variables: requestVariables
   });
 
   const participationProjectStatusCounts = useMemo(
@@ -372,42 +379,79 @@ export const Overviews = ({ navigation, route }) => {
     [queryVariables]
   );
 
-  const listItems = useMemo(() => {
-    const shouldHideInvisible =
-      hideInvisible && QUERIES_WITH_VISIBILITY_FILTER.has(query) && Array.isArray(data?.[query]);
-    const parsedData = shouldHideInvisible
-      ? {
-          ...data,
-          [query]: data[query].filter((item) => item?.visible !== false)
-        }
-      : data;
-    let parsedListItems = parseListItemsFromQuery(query, parsedData, titleDetail, {
+  const parseVisibleListItems = useCallback(
+    (response) => {
+      const shouldHideInvisible =
+        hideInvisible &&
+        QUERIES_WITH_VISIBILITY_FILTER.has(query) &&
+        Array.isArray(response?.[query]);
+      const parsedData = shouldHideInvisible
+        ? {
+            ...response,
+            [query]: response[query].filter((item) => item?.visible !== false)
+          }
+        : response;
+      let parsedListItems = parseListItemsFromQuery(query, parsedData, titleDetail, {
+        bookmarkable,
+        dateTimeFormat,
+        queryVariables,
+        subQuery,
+        withDate: false
+      });
+
+      if (queryVariables.onlyCurrentlyOpen) {
+        parsedListItems = parsedListItems?.filter(
+          (entry) => isOpen(entry.params?.details?.openingHours)?.open
+        );
+      }
+
+      if (queryVariables?.genericType === GenericType.Voucher) {
+        parsedListItems = parsedListItems?.filter(
+          (entry) => !!entry.params?.details?.vouchers?.length
+        );
+      }
+
+      if (isParticipationProjectOverview) {
+        parsedListItems = parsedListItems?.filter((entry) =>
+          selectedParticipationProjectStatuses.some((status) =>
+            isParticipationProjectStatus(entry.params?.details, status)
+          )
+        );
+      }
+
+      return parsedListItems;
+    },
+    [
       bookmarkable,
       dateTimeFormat,
+      hideInvisible,
+      isParticipationProjectOverview,
+      query,
       queryVariables,
+      selectedParticipationProjectStatuses,
       subQuery,
-      withDate: false
-    });
+      titleDetail
+    ]
+  );
+  const getVisibleItems = useCallback(
+    (rows) => parseVisibleListItems({ [query]: rows }),
+    [parseVisibleListItems, query]
+  );
+  const { fetchMoreData, refetchVisible } = useContentPagination({
+    data,
+    fetchMore,
+    getVisibleItems,
+    isConnected,
+    loading,
+    pageSize: requestVariables.limit,
+    query,
+    queryDocument: getFetchMoreQuery(query),
+    refetch,
+    variables: networkQueryVariables
+  });
 
-    if (queryVariables.onlyCurrentlyOpen) {
-      parsedListItems = parsedListItems?.filter(
-        (entry) => isOpen(entry.params?.details?.openingHours)?.open
-      );
-    }
-
-    if (queryVariables?.genericType === GenericType.Voucher) {
-      parsedListItems = parsedListItems?.filter(
-        (entry) => !!entry.params?.details?.vouchers?.length
-      );
-    }
-
-    if (isParticipationProjectOverview) {
-      parsedListItems = parsedListItems?.filter((entry) =>
-        selectedParticipationProjectStatuses.some((status) =>
-          isParticipationProjectStatus(entry.params?.details, status)
-        )
-      );
-    }
+  const listItems = useMemo(() => {
+    let parsedListItems = parseVisibleListItems(data);
 
     if (sortByDistance && currentPosition && parsedListItems?.length) {
       parsedListItems = sortPOIsByDistanceFromPosition(parsedListItems, currentPosition.coords);
@@ -439,23 +483,16 @@ export const Overviews = ({ navigation, route }) => {
 
     return parsedListItems;
   }, [
-    bookmarkable,
     currentPosition,
     data,
-    dateTimeFormat,
     isLocationAlertShow,
-    isParticipationProjectOverview,
     locationSettings,
     navigation,
-    hideInvisible,
-    query,
+    parseVisibleListItems,
     queryVariables,
     radiusSearchByDistance,
-    selectedParticipationProjectStatuses,
     setIsLocationAlertShow,
-    sortByDistance,
-    subQuery,
-    titleDetail
+    sortByDistance
   ]);
 
   const hasParticipationProjectMapItems =
@@ -471,10 +508,10 @@ export const Overviews = ({ navigation, route }) => {
   const refresh = useCallback(() => {
     setRefreshing(true);
     if (isConnected) {
-      refetch();
+      refetchVisible().catch(() => {});
     }
     setRefreshing(false);
-  }, [isConnected, setRefreshing, refetch]);
+  }, [isConnected, setRefreshing, refetchVisible]);
 
   useFocusEffect(
     useCallback(() => {
@@ -482,10 +519,10 @@ export const Overviews = ({ navigation, route }) => {
         return undefined;
       }
 
-      refetch?.();
+      refetchVisible().catch(() => {});
 
       return undefined;
-    }, [isConnected, query, refetch])
+    }, [isConnected, query, refetchVisible])
   );
 
   const filterTypes = useMemo(() => {
@@ -595,26 +632,6 @@ export const Overviews = ({ navigation, route }) => {
       });
     }
   }, [query, showMap]);
-
-  const fetchMoreData = useCallback(() => {
-    return fetchMore({
-      query: getFetchMoreQuery(query),
-      variables: {
-        ...networkQueryVariables,
-        offset: data?.[query]?.length
-      },
-      updateQuery: (prevResult, { fetchMoreResult }) => {
-        if (!fetchMoreResult?.[query]?.length) return prevResult;
-
-        const uniqueData = _uniqBy([...prevResult[query], ...fetchMoreResult[query]], 'id');
-
-        return {
-          ...prevResult,
-          [query]: uniqueData
-        };
-      }
-    });
-  }, [data, query, networkQueryVariables, fetchMore]);
 
   const hasNestedPoiCategories = useMemo(
     () => hasNestedPointsOfInterestCategories(categories),

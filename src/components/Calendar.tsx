@@ -18,6 +18,11 @@ import {
   volunteerEventDates,
   volunteerEventOverlapsDate
 } from '../helpers';
+import {
+  fetchVisibleContentPage,
+  getNextContentPageOffset
+} from '../helpers/contentInfinitePagination';
+import { visibleContent } from '../helpers/contentVisibility';
 import { getCalendarTheme, setupLocales } from '../helpers/calendarHelper';
 import { useVolunteerData } from '../hooks';
 import { QUERY_TYPES, getQuery } from '../queries';
@@ -134,25 +139,29 @@ export const Calendar = ({
     hasNextPage: hasNextPageSubList
   } = useInfiniteQuery(
     [QUERY_TYPES.EVENT_RECORDS, queryVariablesWithDateRangeSubList],
-    async ({ pageParam = 0 }) => {
+    async ({ pageParam = 0, signal }) => {
       const client = await ReactQueryClient();
-
-      return await client.request(getQuery(QUERY_TYPES.EVENT_RECORDS), {
-        ...queryVariablesWithDateRangeSubList,
-        offset: pageParam
+      return fetchVisibleContentPage({
+        fetchPage: (offset) =>
+          client.request(getQuery(QUERY_TYPES.EVENT_RECORDS), {
+            ...queryVariablesWithDateRangeSubList,
+            offset
+          }),
+        query: QUERY_TYPES.EVENT_RECORDS,
+        offset: pageParam,
+        pageSize: queryVariablesWithDateRangeSubList.limit,
+        signal
       });
     },
     {
       enabled: query === QUERY_TYPES.EVENT_RECORDS && subList,
-      getNextPageParam: (lastPage, allPages) => {
-        if (
-          lastPage?.[QUERY_TYPES.EVENT_RECORDS]?.length < queryVariablesWithDateRangeSubList.limit
-        ) {
-          return undefined;
-        }
-
-        return allPages.length * queryVariablesWithDateRangeSubList.limit;
-      }
+      getNextPageParam: (lastPage, allPages) =>
+        getNextContentPageOffset(
+          lastPage,
+          allPages,
+          QUERY_TYPES.EVENT_RECORDS,
+          queryVariablesWithDateRangeSubList.limit
+        )
     }
   );
 
@@ -218,7 +227,7 @@ export const Calendar = ({
     const eventRecords =
       query === QUERY_TYPES.EVENT_RECORDS
         ? [
-            ...(data?.[query] || []),
+            ...(visibleContent(data)?.[query] || []),
             ...(additionalData || []),
             ...(includeVolunteerEvents ? volunteerCalendarData || [] : [])
           ]

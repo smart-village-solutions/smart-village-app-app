@@ -4,6 +4,7 @@ import React, { useCallback, useContext, useState } from 'react';
 import { useQuery } from 'react-query';
 
 import { consts, Icon, texts } from '../../config';
+import { visibleContent } from '../../helpers/contentVisibility';
 import { useGenericItemEvents, useHomeRefresh, useVolunteerData } from '../../hooks';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { ReactQueryClient } from '../../ReactQueryClient';
@@ -89,7 +90,7 @@ export const EventWidget = ({ text, additionalProps, widgetStyle }: WidgetProps)
   });
 
   const count =
-    (data?.eventRecords?.length || 0) +
+    (visibleContent(data)?.eventRecords?.length || 0) +
     (dataVolunteerEvents?.length || 0) +
     genericItemEvents.length;
 
