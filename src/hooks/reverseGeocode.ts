@@ -3,6 +3,8 @@ import { UseFormSetValue } from 'react-hook-form';
 
 import {
   fetchSueGeocode,
+  hasRequiredSueAddress,
+  SueAddressRequirements,
   isSuePostalCodeAllowed,
   getSueLocalityNames,
   SUE_ROAD_KEYS
@@ -18,12 +20,14 @@ export const useReverseGeocode = () => {
       errorMessage,
       isLatestRequest,
       position,
+      requirements,
       setValue
     }: {
       areaServiceData?: { postalCodes?: string[] };
       errorMessage: string;
       isLatestRequest?: () => boolean;
       position: SueCoordinates;
+      requirements?: SueAddressRequirements;
       setValue: UseFormSetValue<TValues>;
     }): Promise<{ isStale: boolean; isWithinArea: boolean }> => {
       const shouldApplyResult = isLatestRequest || (() => true);
@@ -40,7 +44,7 @@ export const useReverseGeocode = () => {
         if (!shouldApplyResult()) return staleResult;
 
         // Nominatim jsonv2 maps address parts from OSM tags, so settlement fields may vary.
-        const city = getSueLocalityNames(address)[0] || '';
+        const city = getSueLocalityNames(address)[0];
         const street =
           SUE_ROAD_KEYS.map((key) => address[key]).find(
             (value) => typeof value === 'string' && value.trim()
@@ -50,7 +54,11 @@ export const useReverseGeocode = () => {
           ? isSuePostalCodeAllowed(postalCode, areaServiceData.postalCodes || [])
           : [city, street, postalCode].some(Boolean);
 
-        if (isWithinArea) {
+        const hasRequiredFields = hasRequiredSueAddress(
+          { city, houseNumber, street, postalCode },
+          requirements
+        );
+        if (isWithinArea && hasRequiredFields) {
           setValue('city', city);
           setValue('houseNumber', houseNumber);
           setValue('street', street);

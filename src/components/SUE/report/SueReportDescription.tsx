@@ -57,6 +57,7 @@ export const SueReportDescription = ({
         areaServiceData,
         beginLocationUpdate,
         errorMessage,
+        requirements: configuration.geoMap,
         selectedPosition,
         setSelectedPosition,
         setShowCoordinatesFromImageAlert,

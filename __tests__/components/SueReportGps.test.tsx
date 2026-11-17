@@ -76,7 +76,15 @@ jest.mock('../../src/components/map', () =>
   jest.requireActual('../../src/components/map/MapLibre')
 );
 
-function ReportMap({ confirmed = false }: { confirmed?: boolean }) {
+function ReportMap({
+  confirmed = false,
+  area = true,
+  requirements = {}
+}: {
+  confirmed?: boolean;
+  area?: boolean;
+  requirements?: { locationIsRequired?: boolean; locationStreetIsRequired?: boolean };
+}) {
   const [isFullscreenMap, setIsFullscreenMap] = React.useState(false);
   const address = React.useRef({
     street: 'Koloniestraße',
@@ -96,8 +104,8 @@ function ReportMap({ confirmed = false }: { confirmed?: boolean }) {
   return (
     <SueReportLocation
       {...selection}
-      areaServiceData={{ postalCodes: ['24159'] }}
-      configuration={{ geoMap: { clusterDistance: 0, clusterThreshold: 0 } }}
+      areaServiceData={area ? { postalCodes: ['24159'] } : undefined}
+      configuration={{ geoMap: { clusterDistance: 0, clusterThreshold: 0, ...requirements } }}
       control={{}}
       errorMessage=""
       isFullscreenMap={isFullscreenMap}
@@ -326,6 +334,94 @@ it.each(['pedestrian', 'residential', 'footway', 'cycleway', 'path'])(
     } finally {
       if (tree) act(() => tree?.unmount());
       fetchSpy.mockRestore();
+      mockUseRealReverse = false;
+      jest.useRealTimers();
+    }
+  }
+);
+
+it.each(['cancel', 'dismiss', 'accept', 'reject'])(
+  'waits for the normal-map confirmation before deciding GPS tracking (%s)',
+  async (choice) => {
+    jest.useFakeTimers();
+    const alertSpy = jest.spyOn(Alert, 'alert').mockImplementation(() => {});
+    mockReverseGeocode
+      .mockReset()
+      .mockResolvedValue({ isWithinArea: choice === 'accept', isStale: false });
+    let tree: renderer.ReactTestRenderer | undefined;
+    try {
+      await act(async () => {
+        tree = renderer.create(<ReportMap confirmed />);
+      });
+      const root = tree?.root;
+      if (!root) throw new Error('Map did not render');
+      const myLocation = root.findAllByType(TouchableOpacity)[0];
+      let press: Promise<void> | undefined;
+      await act(async () => {
+        press = myLocation.props.onPress();
+      });
+      expect(root.findByType(Camera).props.trackUserLocation).toBeUndefined();
+      expect(mockReverseGeocode).not.toHaveBeenCalled();
+      const [, , buttons, options] = alertSpy.mock.calls[0];
+      await act(async () => {
+        if (choice === 'dismiss') options?.onDismiss?.();
+        else if (choice === 'cancel') buttons?.[0].onPress?.();
+        else await buttons?.[1].onPress?.();
+        await press;
+      });
+      expect(root.findByType(Camera).props.trackUserLocation).toBe(
+        choice === 'accept' ? 'default' : undefined
+      );
+    } finally {
+      if (tree) act(() => tree?.unmount());
+      alertSpy.mockRestore();
+      jest.useRealTimers();
+    }
+  }
+);
+
+it.each([
+  { requirements: { locationIsRequired: true }, candidate: { road: 'Another street' } },
+  {
+    requirements: { locationStreetIsRequired: true },
+    candidate: { city: 'Kiel', postcode: '24159' }
+  }
+])(
+  'preserves the previous location when reverse data misses tenant-required fields (%j)',
+  async ({ requirements, candidate }) => {
+    mockUseRealReverse = true;
+    jest.useFakeTimers();
+    const fetchSpy = jest.spyOn(global, 'fetch').mockResolvedValue({
+      ok: true,
+      json: async () => ({ address: candidate })
+    } as Response);
+    const alertSpy = jest.spyOn(Alert, 'alert').mockImplementation(() => {});
+    let tree: renderer.ReactTestRenderer | undefined;
+    try {
+      await act(async () => {
+        tree = renderer.create(<ReportMap confirmed area={false} requirements={requirements} />);
+      });
+      const root = tree?.root;
+      if (!root) throw new Error('Map did not render');
+      await act(async () => {
+        root
+          .findByType(Map)
+          .props.onPress({ nativeEvent: { lngLat: [gps.longitude, gps.latitude] } });
+        await jest.advanceTimersByTimeAsync(50);
+      });
+      expect(
+        mockSelection.getConfirmedLocation({
+          street: 'Koloniestraße',
+          houseNumber: '2',
+          city: 'Kiel',
+          postalCode: '24159'
+        })?.position
+      ).toEqual(pin);
+      expect(alertSpy).toHaveBeenCalled();
+    } finally {
+      if (tree) act(() => tree?.unmount());
+      fetchSpy.mockRestore();
+      alertSpy.mockRestore();
       mockUseRealReverse = false;
       jest.useRealTimers();
     }

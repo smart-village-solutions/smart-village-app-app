@@ -35,9 +35,16 @@ export const useSueReportLocation = (getAddress: () => SueAddress) => {
     (change?: Partial<SueAddress>) => {
       cancelLocationUpdate();
       const address = { ...getAddress(), ...change };
-      if (!change || confirmed.current?.addressKey !== getSueAddressKey(address)) {
+      if (!change) {
         setSelectedPosition(undefined);
+        return;
       }
+
+      const matchingPosition =
+        confirmed.current?.addressKey === getSueAddressKey(address)
+          ? confirmed.current.position
+          : undefined;
+      setPosition(matchingPosition);
     },
     [cancelLocationUpdate, getAddress, setSelectedPosition]
   );

@@ -46,6 +46,8 @@ import {
   geocodeSueAddress,
   getSueAddressKey,
   isSuePostalCodeAllowed,
+  isSuePostalCodeValid,
+  withSueLocationTimeout,
   SueAddress
 } from '../../helpers/sueReportLocation';
 import { useKeyboardHeight } from '../../hooks';
@@ -382,7 +384,7 @@ export const SueReportScreen = ({
 
   const { data: areaServiceResult, isLoading: areaServiceLoading } = useQuery(
     [QUERY_TYPES.SUE.AREA_SERVICE, areaServiceAreaId, limitOfAreaCity],
-    () => getQuery(QUERY_TYPES.SUE.AREA_SERVICE)(),
+    () => withSueLocationTimeout(() => getQuery(QUERY_TYPES.SUE.AREA_SERVICE)()),
     { enabled: !!(areaServiceAreaId || limitOfAreaCity) }
   );
 
@@ -498,7 +500,7 @@ export const SueReportScreen = ({
       if (isLocationPending()) return texts.sue.report.alerts.locationPending;
       if (address.houseNumber && !address.street) return texts.sue.report.alerts.street;
       if (address.city && !address.postalCode) return texts.sue.report.alerts.postalCode;
-      if (address.postalCode && address.postalCode.replace(/\s/g, '').length !== 5) {
+      if (address.postalCode && !isSuePostalCodeValid(address.postalCode)) {
         return texts.sue.report.alerts.postalCodeLength;
       }
       if (address.postalCode && !address.city) return texts.sue.report.alerts.city;
@@ -542,7 +544,6 @@ export const SueReportScreen = ({
     const request = beginLocationUpdate();
     const canApplyResult = () =>
       request.isLatestRequest() && addressKey === getSueAddressKey(getValues());
-    setSelectedPosition(undefined);
     setShowCoordinatesFromImageAlert(true);
     setUpdateRegionFromImage(false);
 
@@ -550,7 +551,7 @@ export const SueReportScreen = ({
       const position = await geocodeSueAddress(address, areaServiceData?.postalCodes);
       if (!canApplyResult()) return;
 
-      setSelectedPosition(position);
+      if (position) setSelectedPosition(position);
       return !!position;
     } catch {
       if (canApplyResult()) return false;

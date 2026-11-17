@@ -105,6 +105,8 @@ export const SueReportLocation = ({
   beginLocationUpdate: () => SueLocationRequest;
   configuration: {
     geoMap: {
+      locationIsRequired?: boolean;
+      locationStreetIsRequired?: boolean;
       clusterDistance: number;
       clusterThreshold: number;
     };
@@ -209,6 +211,7 @@ export const SueReportLocation = ({
         errorMessage,
         isLatestRequest: request.isLatestRequest,
         position,
+        requirements: configuration.geoMap,
         setValue
       });
 
@@ -298,19 +301,22 @@ export const SueReportLocation = ({
       }
     };
 
-    if (!isFullScreenMap) {
-      Alert.alert(texts.sue.report.alerts.hint, texts.sue.report.alerts.myLocation, [
-        {
-          text: texts.sue.report.alerts.no
-        },
-        {
-          text: texts.sue.report.alerts.yes,
-          onPress: applyCurrentPosition
-        }
-      ]);
-    } else {
-      return applyCurrentPosition();
-    }
+    if (isFullScreenMap) return applyCurrentPosition();
+
+    return new Promise<boolean>((resolve) => {
+      Alert.alert(
+        texts.sue.report.alerts.hint,
+        texts.sue.report.alerts.myLocation,
+        [
+          { text: texts.sue.report.alerts.no, onPress: () => resolve(false) },
+          {
+            text: texts.sue.report.alerts.yes,
+            onPress: async () => resolve(await applyCurrentPosition())
+          }
+        ],
+        { cancelable: true, onDismiss: () => resolve(false) }
+      );
+    });
   };
 
   return (

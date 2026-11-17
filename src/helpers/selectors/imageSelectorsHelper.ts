@@ -10,6 +10,7 @@ import { errorTextGenerator } from '../consul';
 import { deleteArrayItem } from '../deleteArrayItem';
 import { getFileSize } from '../fileSystem';
 import { imageUploadMetadata } from '../imageUploadMetadata';
+import type { SueAddressRequirements } from '../sueReportLocation';
 
 const { IMAGE_FROM, IMAGE_TYPE_REGEX, URL_REGEX, IMAGE_SELECTOR_TYPES } = consts;
 
@@ -122,6 +123,7 @@ const updateSueImageLocation = async ({
   coordinateCheck: {
     areaServiceData?: { postalCodes?: string[] };
     errorMessage?: string;
+    requirements?: SueAddressRequirements;
     setValue?: Parameters<ReturnType<typeof useReverseGeocode>>[0]['setValue'];
     setSelectedPosition: (position: SueCoordinates) => void;
     setUpdateRegionFromImage: (value: boolean) => void;
@@ -142,7 +144,7 @@ const updateSueImageLocation = async ({
   }
 
   const position = { latitude: location.latitude, longitude: location.longitude };
-  const { areaServiceData, errorMessage = '', setValue = () => {} } = coordinateCheck;
+  const { areaServiceData, errorMessage = '', requirements, setValue = () => {} } = coordinateCheck;
   coordinateCheck.setShowCoordinatesFromImageAlert(true);
   try {
     const result = await reverseGeocode({
@@ -150,6 +152,7 @@ const updateSueImageLocation = async ({
       errorMessage,
       isLatestRequest,
       position,
+      requirements,
       setValue
     });
 

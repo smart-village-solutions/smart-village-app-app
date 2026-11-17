@@ -8,6 +8,7 @@ import { consts, texts } from '../../src/config';
 import { ConfigurationsContext } from '../../src/ConfigurationsProvider';
 import { addToStore, readFromStore } from '../../src/helpers';
 import { getSueAddressKey } from '../../src/helpers/sueReportLocation';
+import { getQuery } from '../../src/queries';
 import { postRequests } from '../../src/queries/SUE';
 import { SueReportScreen } from '../../src/screens/SUE/SueReportScreen';
 
@@ -57,12 +58,16 @@ jest.mock('../../src/hooks/useThemeStyles', () => ({
 jest.mock('../../src/queries', () => ({ QUERY_TYPES: { SUE: {} }, getQuery: jest.fn() }));
 jest.mock('../../src/queries/SUE', () => ({ postRequests: jest.fn(async () => undefined) }));
 let mockAreaLoading = false;
+let mockAreaQuery: () => Promise<unknown>;
 let mockServicePostcodes: string[] | undefined;
 jest.mock('react-query', () => ({
-  useQuery: () => ({
-    isLoading: mockAreaLoading,
-    data: mockServicePostcodes && { postalCodes: mockServicePostcodes }
-  }),
+  useQuery: (_key, query) => {
+    mockAreaQuery = query;
+    return {
+      isLoading: mockAreaLoading,
+      data: mockServicePostcodes && { postalCodes: mockServicePostcodes }
+    };
+  },
   useMutation: (post) => ({ mutateAsync: post })
 }));
 
@@ -541,4 +546,47 @@ it('uses the area service restrictions when no explicit tenant list exists', asy
   await openWizard({ step: 3, areaId: 'configured', limitOfArea: {} });
   await act(async () => press(texts.sue.report.sendReport));
   expect(postRequests).not.toHaveBeenCalled();
+});
+
+it('restores the precise pin after undoing a meaningful address edit', async () => {
+  await openWizard({ position: kielPosition, confirmedLocationAddress: getSueAddressKey(kiel) });
+  for (const city of ['', 'K', 'Ki', 'Kiel']) {
+    act(() => {
+      location().invalidateLocation({ city });
+      location().setValue('city', city);
+    });
+    expect(location().selectedPosition).toEqual(city === 'Kiel' ? kielPosition : undefined);
+  }
+  await act(async () => press(texts.sue.report.next));
+  await act(async () => press(texts.sue.report.sendReport));
+  expect(fetchSpy).not.toHaveBeenCalled();
+  expect(postRequests).toHaveBeenCalledWith(
+    expect.objectContaining({ lat: kielPosition.latitude, long: kielPosition.longitude }),
+    expect.any(Object)
+  );
+});
+
+it.each(['abcde', '1234a', '１２３４５', '1234', '123456'])(
+  'rejects an invalid German postcode in a restored draft (%s)',
+  async (postalCode) => {
+    await openWizard({ step: 3, required: false, area: false, address: { ...kiel, postalCode } });
+    await act(async () => press(texts.sue.report.sendReport));
+    expect(postRequests).not.toHaveBeenCalled();
+    expect(Alert.alert).toHaveBeenCalledWith(alert.hint, alert.postalCodeLength);
+  }
+);
+
+it('bounds the area-service lookup even without configured postcode fallbacks', async () => {
+  jest.useFakeTimers();
+  try {
+    mockAreaLoading = true;
+    (getQuery as jest.Mock).mockReturnValue(() => new Promise(() => {}));
+    await openWizard({ areaId: 'remote-area', limitOfArea: {} });
+    const query = mockAreaQuery();
+    const rejection = expect(query).rejects.toThrow(alert.locationTimeout);
+    await jest.advanceTimersByTimeAsync(10_000);
+    await rejection;
+  } finally {
+    jest.useRealTimers();
+  }
 });

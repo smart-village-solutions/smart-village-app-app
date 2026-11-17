@@ -10,6 +10,11 @@ export type SueAddress = {
   city: string;
 };
 
+export type SueAddressRequirements = {
+  locationIsRequired?: boolean;
+  locationStreetIsRequired?: boolean;
+};
+
 export const SUE_CITY_KEYS = [
   'city',
   'town',
@@ -25,6 +30,22 @@ const normalizeAddressPart = (value?: string) =>
 
 const normalizePostalCode = (value?: string) =>
   typeof value === 'string' ? value.replace(/\s+/g, '') : '';
+
+export const isSuePostalCodeValid = (value: string) => /^\d{5}$/.test(normalizePostalCode(value));
+
+export const hasRequiredSueAddress = (
+  address: SueAddress,
+  requirements: SueAddressRequirements = {}
+) => {
+  if (
+    requirements.locationIsRequired &&
+    (!address.city.trim() || !isSuePostalCodeValid(address.postalCode))
+  ) {
+    return false;
+  }
+
+  return !requirements.locationStreetIsRequired || !!address.street.trim();
+};
 
 export const isSuePostalCodeAllowed = (postalCode: string, allowedPostalCodes: string[]) =>
   !!normalizePostalCode(postalCode) &&
@@ -114,7 +135,8 @@ export const geocodeSueAddress = async (
   const postcode = normalizePostalCode(postalCode);
 
   if (
-    ![street.trim(), city.trim(), postcode].every(Boolean) ||
+    ![street.trim(), city.trim()].every(Boolean) ||
+    !isSuePostalCodeValid(postcode) ||
     (allowedPostalCodes && !isSuePostalCodeAllowed(postcode, allowedPostalCodes))
   ) {
     return;
