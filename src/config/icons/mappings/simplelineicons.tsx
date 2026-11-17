@@ -4,8 +4,11 @@
  * Reference: http://simplelineicons.com/
  */
 
+import { refreshIconNames } from './refresh';
+
 export const simplelineiconsIconMapping: Record<string, string> = {
   // Navigation & Actions
+  refresh: refreshIconNames.simplelineicons,
   about: 'options-vertical',
   'arrow-down': 'arrow-down',
   'arrow-down-circle': 'arrow-down-circle',

@@ -3,8 +3,11 @@
  * Maps unified icon names to Tabler icon names
  */
 
+import { refreshIconNames } from './refresh';
+
 export const tablerIconMapping: Record<string, string> = {
   // Navigation & Actions
+  refresh: refreshIconNames.tabler,
   about: 'dots-vertical',
   'arrow-down': 'arrow-down',
   'arrow-down-circle': 'circle-arrow-down-filled',

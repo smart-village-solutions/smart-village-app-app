@@ -10,23 +10,38 @@ import { useIconLibraries } from '../../src/IconProvider';
 jest.mock('../../src/IconProvider', () => ({ useIconLibraries: jest.fn() }));
 
 const cases = [
-  ['fontawesome', 'trophy', VectorIcons.FontAwesome, 'FontAwesome'],
-  ['fontawesome5', 'medal', VectorIcons.FontAwesome5, 'FontAwesome5Free'],
-  ['fontawesome6', 'medal', VectorIcons.FontAwesome6, 'FontAwesome6Free'],
-  ['ionicons', 'medal-outline', VectorIcons.Ionicons, 'Ionicons'],
-  ['materialicons', 'military-tech', VectorIcons.MaterialIcons, 'MaterialIcons'],
+  ['medal', 'fontawesome', 'trophy', VectorIcons.FontAwesome, 'FontAwesome'],
+  ['medal', 'fontawesome5', 'medal', VectorIcons.FontAwesome5, 'FontAwesome5Free'],
+  ['medal', 'fontawesome6', 'medal', VectorIcons.FontAwesome6, 'FontAwesome6Free'],
+  ['medal', 'ionicons', 'medal-outline', VectorIcons.Ionicons, 'Ionicons'],
+  ['medal', 'materialicons', 'military-tech', VectorIcons.MaterialIcons, 'MaterialIcons'],
   [
+    'medal',
     'materialcommunityicons',
     'medal-outline',
     VectorIcons.MaterialCommunityIcons,
     'MaterialCommunityIcons'
   ],
-  ['simplelineicons', 'badge', VectorIcons.SimpleLineIcons, 'SimpleLineIcons'],
-  ['tabler', 'medal', Tabler.IconMedal, null]
+  ['medal', 'simplelineicons', 'badge', VectorIcons.SimpleLineIcons, 'SimpleLineIcons'],
+  ['medal', 'tabler', 'medal', Tabler.IconMedal, null],
+  ['refresh', 'fontawesome', 'refresh', VectorIcons.FontAwesome, 'FontAwesome'],
+  ['refresh', 'fontawesome5', 'sync-alt', VectorIcons.FontAwesome5, 'FontAwesome5Free'],
+  ['refresh', 'fontawesome6', 'arrows-rotate', VectorIcons.FontAwesome6, 'FontAwesome6Free'],
+  ['refresh', 'ionicons', 'refresh', VectorIcons.Ionicons, 'Ionicons'],
+  ['refresh', 'materialicons', 'refresh', VectorIcons.MaterialIcons, 'MaterialIcons'],
+  [
+    'refresh',
+    'materialcommunityicons',
+    'refresh',
+    VectorIcons.MaterialCommunityIcons,
+    'MaterialCommunityIcons'
+  ],
+  ['refresh', 'simplelineicons', 'refresh', VectorIcons.SimpleLineIcons, 'SimpleLineIcons'],
+  ['refresh', 'tabler', 'refresh', Tabler.IconRefresh, null]
 ] as const;
 
 // Verify real installed glyphs, not only a nonempty mapping or the raw-name fallback.
-describe.each(cases)('medal in %s', (library, glyph, Component, glyphFile) => {
+describe.each(cases)('%s in %s', (name, library, glyph, Component, glyphFile) => {
   beforeEach(() => {
     jest.mocked(useIconLibraries).mockReturnValue({
       iconLibraries: [library, 'tabler'],
@@ -35,7 +50,7 @@ describe.each(cases)('medal in %s', (library, glyph, Component, glyphFile) => {
   });
 
   it('maps to an installed icon', () => {
-    expect(getMappedIconName('medal', library)).toBe(glyph);
+    expect(getMappedIconName(name, library)).toBe(glyph);
     if (glyphFile) {
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       const glyphs = require(`@expo/vector-icons/build/vendor/react-native-vector-icons/glyphmaps/${glyphFile}.json`);
@@ -51,7 +66,7 @@ describe.each(cases)('medal in %s', (library, glyph, Component, glyphFile) => {
       let tree: renderer.ReactTestRenderer;
       renderer.act(() => {
         tree = renderer.create(
-          <Icon.NamedIcon name="medal" {...(explicit ? { iconSet: library } : {})} />
+          <Icon.NamedIcon name={name} {...(explicit ? { iconSet: library } : {})} />
         );
       });
       const icon = tree!.root.findByType(Component);
