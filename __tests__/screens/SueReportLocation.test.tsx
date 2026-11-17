@@ -88,18 +88,24 @@ let fetchSpy: jest.SpyInstance;
 async function openWizard({
   step = 2,
   required = true,
+  streetRequired = required,
   area = true,
+  limitOfArea = area ? { city: 'Kiel', postalCodes: ['24159'] } : {},
+  address = kiel,
   position,
   confirmedLocationAddress
 }: {
   step?: number;
   required?: boolean;
+  streetRequired?: boolean;
   area?: boolean;
+  limitOfArea?: { city?: string; postalCodes?: string[]; zipCodes?: string[] };
+  address?: typeof kiel;
   position?: typeof kielPosition;
   confirmedLocationAddress?: string;
 } = {}) {
   (readFromStore as jest.Mock).mockResolvedValue({
-    ...kiel,
+    ...address,
     currentProgress: step,
     images: '[]',
     firstName: 'Erika',
@@ -110,8 +116,8 @@ async function openWizard({
     termsOfService: true
   });
   const sueConfig = {
-    geoMap: { locationIsRequired: required, locationStreetIsRequired: required },
-    limitOfArea: area ? { city: 'Kiel', postalCodes: ['24159'] } : {},
+    geoMap: { locationIsRequired: required, locationStreetIsRequired: streetRequired },
+    limitOfArea,
     sueProgress: ['category', 'description', 'location', 'user'].map((content) => ({
       content,
       inputs:
@@ -198,30 +204,27 @@ it('keeps a later map selection when an older manual result arrives', async () =
   );
 });
 
-it.each(['pending', 'empty', 'error'])(
-  'blocks submission with a required %s lookup',
-  async (outcome) => {
-    await openWizard({ step: 3, position: augsburgPosition });
-    let finish: (() => void) | undefined;
-    if (outcome === 'pending') {
-      act(() => {
-        finish = location().beginLocationUpdate().finish;
-      });
-    } else {
-      if (outcome === 'empty') fetchSpy.mockResolvedValue(reply([]));
-      else fetchSpy.mockRejectedValue(new Error('Offline'));
-      await act(async () => expect(await location().resolveManualLocation()).toBe(false));
-    }
+it('blocks submission while a location request is pending', async () => {
+  await openWizard({ step: 3, position: augsburgPosition });
+  const request = location().beginLocationUpdate();
+  await act(async () => press(texts.sue.report.sendReport));
+  expect(postRequests).not.toHaveBeenCalled();
+  expect(Alert.alert).toHaveBeenCalledWith(alert.hint, alert.locationPending);
+  request.finish();
+});
 
-    await act(async () => press(texts.sue.report.sendReport));
-    expect(postRequests).not.toHaveBeenCalled();
-    expect(Alert.alert).toHaveBeenCalledWith(
-      alert.hint,
-      outcome === 'pending' ? alert.locationPending : alert.locationUnconfirmed
-    );
-    finish?.();
-  }
-);
+it.each(['empty', 'error'])('omits unconfirmed coordinates after an %s result', async (outcome) => {
+  await openWizard({ step: 3, position: augsburgPosition });
+  if (outcome === 'empty') fetchSpy.mockResolvedValue(reply([]));
+  else fetchSpy.mockRejectedValue(new Error('Offline'));
+  await act(async () => expect(await location().resolveManualLocation()).toBe(false));
+  await act(async () => press(texts.sue.report.sendReport));
+
+  expect(postRequests).toHaveBeenCalledWith(
+    expect.objectContaining({ lat: undefined, long: undefined }),
+    expect.any(Object)
+  );
+});
 
 it('discards legacy draft coordinates for an optional address without an area restriction', async () => {
   await openWizard({ step: 3, required: false, area: false, position: augsburgPosition });
@@ -289,4 +292,114 @@ it('checks the configured area at submit even when resuming on the final step', 
   expect(fetchSpy).not.toHaveBeenCalled();
   expect(postRequests).not.toHaveBeenCalled();
   expect(Alert.alert).toHaveBeenCalledWith(alert.hint, alert.limitOfArea('Kiel'));
+});
+
+it('previews the confirmed incident pin at its original coordinates', async () => {
+  const position = { latitude: 54.3912114, longitude: 10.1737416 };
+  await openWizard({ position, confirmedLocationAddress: getSueAddressKey(kiel) });
+  fetchSpy.mockResolvedValue(reply([kielHit]));
+  const previousPosition = location().selectedPosition;
+  await act(async () => expect(await location().resolveManualLocation()).toBe(true));
+  expect(location().selectedPosition).toEqual(position);
+  expect(location().selectedPosition).not.toBe(previousPosition);
+  expect(fetchSpy).not.toHaveBeenCalled();
+
+  await act(async () => press(texts.sue.report.next));
+  await act(async () => press(texts.sue.report.sendReport));
+  expect(postRequests).toHaveBeenCalledWith(
+    expect.objectContaining({ lat: position.latitude, long: position.longitude }),
+    expect.any(Object)
+  );
+});
+
+it.each([
+  {
+    required: true,
+    streetRequired: false,
+    address: { ...kiel, street: '', houseNumber: '' },
+    text: '; ; 24159; Kiel'
+  },
+  {
+    required: false,
+    streetRequired: true,
+    address: { ...kiel, postalCode: '', city: '' },
+    text: 'Koloniestraße; 2; ; '
+  }
+])(
+  'accepts an address that meets the configured field requirements',
+  async ({ text, ...options }) => {
+    await openWizard(options);
+    await act(async () => press(texts.sue.report.next));
+    await act(async () => press(texts.sue.report.sendReport));
+    expect(fetchSpy).not.toHaveBeenCalled();
+    expect(postRequests).toHaveBeenCalledWith(
+      expect.objectContaining({ addressString: text, lat: undefined, long: undefined }),
+      expect.any(Object)
+    );
+  }
+);
+
+it.each(['headers', 'body'])(
+  'continues without coordinates when the provider stalls on %s',
+  async (stall) => {
+    jest.useFakeTimers();
+    try {
+      await openWizard({ required: false, position: augsburgPosition });
+      const noResponse = new Promise<never>(() => {});
+      if (stall === 'headers') fetchSpy.mockReturnValue(noResponse);
+      else fetchSpy.mockResolvedValue({ ok: true, json: () => noResponse });
+      act(() => {
+        void press(texts.sue.report.next);
+      });
+      await act(async () => jest.advanceTimersByTimeAsync(15_000));
+
+      expect(fetchSpy.mock.calls[0][1]?.signal?.aborted).toBe(true);
+      await act(async () => press(texts.sue.report.sendReport));
+      expect(postRequests).toHaveBeenCalledWith(
+        expect.objectContaining({
+          addressString: 'Koloniestraße; 2; 24159; Kiel',
+          lat: undefined,
+          long: undefined
+        }),
+        expect.any(Object)
+      );
+    } finally {
+      jest.useRealTimers();
+    }
+  }
+);
+
+it('honors a legacy tenant postcode list without a configured city or area service', async () => {
+  await openWizard({
+    step: 3,
+    required: false,
+    limitOfArea: { zipCodes: ['24159'] },
+    address: { ...kiel, city: 'Augsburg', postalCode: '86199' }
+  });
+  await act(async () => press(texts.sue.report.sendReport));
+
+  expect(postRequests).not.toHaveBeenCalled();
+  expect(fetchSpy).not.toHaveBeenCalled();
+  expect(Alert.alert).toHaveBeenCalledWith(alert.hint, expect.any(String));
+});
+
+it('matches a district in the suburb field when street, number and postcode match', async () => {
+  await openWizard({ address: { ...kiel, city: 'Friedrichsort' } });
+  fetchSpy.mockResolvedValue(
+    reply([
+      { ...augsburgHit, address: { ...augsburgHit.address, suburb: 'Friedrichsort' } },
+      { ...kielHit, address: { ...kielHit.address, suburb: 'Friedrichsort' } }
+    ])
+  );
+  await act(async () => press(texts.sue.report.next));
+  await act(async () => press(texts.sue.report.sendReport));
+
+  expect(postRequests).toHaveBeenCalledWith(
+    expect.objectContaining({
+      addressString: 'Koloniestraße; 2; 24159; Friedrichsort',
+      lat: kielPosition.latitude,
+      long: kielPosition.longitude
+    }),
+    expect.any(Object)
+  );
 });

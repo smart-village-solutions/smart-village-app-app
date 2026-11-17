@@ -1,6 +1,7 @@
 import type { LocationObjectCoords } from 'expo-location';
 
 import appJson from '../../app.json';
+import { texts } from '../config/texts';
 
 export type SueAddress = {
   street: string;
@@ -15,7 +16,8 @@ export const SUE_CITY_KEYS = [
   'village',
   'municipality',
   'city_district',
-  'county'
+  'county',
+  'suburb'
 ] as const;
 
 const normalizeAddressPart = (value?: string) =>
@@ -61,6 +63,30 @@ const matchesAddress = (address: SearchResult['address'], input: SueAddress) =>
 const getCoordinate = (value?: string) =>
   Number(typeof value === 'string' && value.trim() ? value : NaN);
 
+const GEOCODE_TIMEOUT_MS = 10_000;
+
+export const fetchSueGeocode = async (url: string) => {
+  const controller = new AbortController();
+  let timeout: ReturnType<typeof setTimeout> | undefined;
+  const deadline = new Promise<never>((_, reject) => {
+    timeout = setTimeout(() => {
+      reject(new Error(texts.sue.report.alerts.locationTimeout));
+      controller.abort();
+    }, GEOCODE_TIMEOUT_MS);
+  });
+
+  try {
+    const result = fetch(url, {
+      signal: controller.signal,
+      headers: { 'User-Agent': `${appJson.expo.scheme}/${appJson.expo.version}` }
+    }).then((response) => (response.ok ? response.json() : undefined));
+
+    return await Promise.race([result, deadline]);
+  } finally {
+    clearTimeout(timeout);
+  }
+};
+
 export const geocodeSueAddress = async (
   input: SueAddress,
   allowedPostalCodes?: string[]
@@ -83,13 +109,7 @@ export const geocodeSueAddress = async (
     postalcode: postcode,
     countrycodes: 'de'
   });
-  const response = await fetch(`https://nominatim.openstreetmap.org/search?${params}`, {
-    headers: { 'User-Agent': `${appJson.expo.scheme}/${appJson.expo.version}` }
-  });
-
-  if (!response.ok) return;
-
-  const results = await response.json();
+  const results = await fetchSueGeocode(`https://nominatim.openstreetmap.org/search?${params}`);
   if (!Array.isArray(results)) return;
 
   for (const result of results as SearchResult[]) {

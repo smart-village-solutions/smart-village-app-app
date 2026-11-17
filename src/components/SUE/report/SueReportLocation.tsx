@@ -270,17 +270,17 @@ export const SueReportLocation = ({
           locationServiceEnabled: false,
           navigation
         });
-        return;
+        return false;
       }
 
       const request = beginLocationUpdate();
       try {
         const permissionResponse = await Location.getForegroundPermissionsAsync();
-        if (!request.isLatestRequest()) return;
+        if (!request.isLatestRequest()) return false;
 
         const hasPermission = permissionResponse.status === Location.PermissionStatus.GRANTED;
         const resolvedPosition = hasPermission ? await resolvePosition() : undefined;
-        if (!request.isLatestRequest()) return;
+        if (!request.isLatestRequest()) return false;
 
         if (!resolvedPosition?.coords) {
           locationServiceEnabledAlert({
@@ -288,10 +288,11 @@ export const SueReportLocation = ({
             locationServiceEnabled: true,
             navigation
           });
-          return;
+          return false;
         }
 
         await selectMapPosition(resolvedPosition.coords, request);
+        return request.isLatestRequest();
       } finally {
         request.finish();
       }
@@ -308,7 +309,7 @@ export const SueReportLocation = ({
         }
       ]);
     } else {
-      await applyCurrentPosition();
+      return applyCurrentPosition();
     }
   };
 

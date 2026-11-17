@@ -1,8 +1,11 @@
 import { useCallback } from 'react';
 import { UseFormSetValue } from 'react-hook-form';
 
-import appJson from '../../app.json';
-import { isSuePostalCodeAllowed, SUE_CITY_KEYS } from '../helpers/sueReportLocation';
+import {
+  fetchSueGeocode,
+  isSuePostalCodeAllowed,
+  SUE_CITY_KEYS
+} from '../helpers/sueReportLocation';
 import type { TValues } from '../screens';
 
 import type { SueCoordinates } from './useSueReportLocation';
@@ -28,16 +31,11 @@ export const useReverseGeocode = () => {
 
       try {
         // https://operations.osmfoundation.org/policies/nominatim/
-        const result = await fetch(
-          `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`,
-          {
-            headers: {
-              'User-Agent': `${appJson.expo.scheme}/${appJson.expo.version}`
-            }
-          }
+        const result = await fetchSueGeocode(
+          `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`
         );
-        if (!result.ok) throw new Error(errorMessage);
-        const { address = {} } = await result.json();
+        if (!result) throw new Error(errorMessage);
+        const { address = {} } = result;
         if (!shouldApplyResult()) return staleResult;
 
         // Nominatim jsonv2 maps address parts from OSM tags, so settlement fields may vary.

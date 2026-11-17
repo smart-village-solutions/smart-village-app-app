@@ -284,6 +284,7 @@ export const SueReportScreen = ({
   const {
     city: limitOfCity = '',
     postalCodes: limitOfPostalCodes = [],
+    zipCodes: legacyZipCodes = [],
     errorMessage: configuredErrorMessage = ''
   } = limitOfArea;
   const limitOfAreaCity = getSueLimitOfAreaCity({
@@ -298,7 +299,7 @@ export const SueReportScreen = ({
     configuredErrorMessage ||
     (limitOfAreaCity
       ? texts.sue.report.alerts.limitOfArea(limitOfAreaCity)
-      : texts.sue.report.alerts.locationUnconfirmed);
+      : texts.sue.report.alerts.locationOutsideArea);
 
   // useRef instead of useState: the flag must be read synchronously inside
   // alertTextGeneratorForMissingData to prevent React async-batching from
@@ -388,8 +389,9 @@ export const SueReportScreen = ({
   const areaServiceData = useMemo(() => {
     if (areaServiceResult?.postalCodes?.length) return areaServiceResult;
     if (limitOfPostalCodes.length) return { postalCodes: limitOfPostalCodes };
+    if (legacyZipCodes.length) return { postalCodes: legacyZipCodes };
     return areaServiceAreaId || limitOfAreaCity ? { postalCodes: [] } : undefined;
-  }, [areaServiceAreaId, areaServiceResult, limitOfPostalCodes, limitOfAreaCity]);
+  }, [areaServiceAreaId, areaServiceResult, limitOfPostalCodes, legacyZipCodes, limitOfAreaCity]);
 
   const {
     beginLocationUpdate,
@@ -401,14 +403,14 @@ export const SueReportScreen = ({
   } = useSueReportLocation(getValues);
   const { mutateAsync } = useMutation(postRequests);
 
-  const alertTextGeneratorForMissingData = (requireConfirmedLocation = true) => {
+  const alertTextGeneratorForMissingData = () => {
     const requiredInputs = sueProgressWithConfig?.[currentProgress]?.requiredInputs;
     const isAnyInputMissing = requiredInputs?.some((inputKey) => !getValues(inputKey));
     let alertText = '';
 
     if (sueProgressWithConfig?.[currentProgress]?.content === 'location') {
       return (
-        getLocationError(getValues(), requireConfirmedLocation) ||
+        getLocationError(getValues()) ||
         (isAnyInputMissing ? texts.sue.report.alerts.missingAnyInput : '')
       );
     }
@@ -490,7 +492,7 @@ export const SueReportScreen = ({
 
   const locationStep = sueProgressWithConfig.findIndex(({ content }) => content === 'location');
   const getLocationError = useCallback(
-    (address: SueAddress, requireConfirmedLocation = true) => {
+    (address: SueAddress) => {
       if (locationStep < 0) return '';
       if (isLocationPending()) return texts.sue.report.alerts.locationPending;
       if (address.houseNumber && !address.street) return texts.sue.report.alerts.street;
@@ -512,13 +514,6 @@ export const SueReportScreen = ({
       ) {
         return errorMessage;
       }
-      if (
-        requireConfirmedLocation &&
-        (geoMap.locationIsRequired || geoMap.locationStreetIsRequired) &&
-        !getConfirmedLocation(address)
-      ) {
-        return texts.sue.report.alerts.locationUnconfirmed;
-      }
 
       return '';
     },
@@ -527,7 +522,6 @@ export const SueReportScreen = ({
       errorMessage,
       geoMap.locationIsRequired,
       geoMap.locationStreetIsRequired,
-      getConfirmedLocation,
       isLocationPending,
       locationStep
     ]
@@ -536,6 +530,13 @@ export const SueReportScreen = ({
   const resolveManualLocation = useCallback(async () => {
     if (isLocationPending()) return;
     const address = getValues();
+    const confirmedLocation = getConfirmedLocation(address);
+    if (confirmedLocation) {
+      // A new position reference recenters the camera on the same pin.
+      setSelectedPosition({ ...confirmedLocation.position });
+      return true;
+    }
+
     const addressKey = getSueAddressKey(address);
     const request = beginLocationUpdate();
     const canApplyResult = () =>
@@ -558,6 +559,7 @@ export const SueReportScreen = ({
   }, [
     areaServiceData,
     beginLocationUpdate,
+    getConfirmedLocation,
     getValues,
     isLocationPending,
     setSelectedPosition,
@@ -654,7 +656,7 @@ export const SueReportScreen = ({
   const handleNextPage = async () => {
     Keyboard.dismiss();
 
-    const validationError = alertTextGeneratorForMissingData(false);
+    const validationError = alertTextGeneratorForMissingData();
     if (validationError) return Alert.alert(texts.sue.report.alerts.hint, validationError);
 
     if (currentProgress === locationStep) {

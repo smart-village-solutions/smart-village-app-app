@@ -1742,6 +1742,8 @@ export const texts = {
         invalidPhone: 'Die eingegebene Telefonnummer ist nicht gültig.',
         limitOfArea: (city) => `Bitte geben Sie nur Standorte für ${city} ein.`,
         location: 'Bitte wählen Sie einen Ort auf der Karte aus.',
+        locationOutsideArea: 'Der Standort liegt außerhalb des Meldegebiets.',
+        locationTimeout: 'Die Standortsuche hat zu lange gedauert. Bitte versuchen Sie es erneut.',
         locationPending: 'Der Standort wird gerade ermittelt. Bitte warten Sie einen Moment.',
         locationUnconfirmed:
           'Prüfen Sie die Adresse und zeigen Sie sie auf der Karte an oder wählen Sie einen Ort auf der Karte aus.',
