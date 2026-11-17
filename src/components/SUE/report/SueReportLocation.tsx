@@ -199,7 +199,7 @@ export const SueReportLocation = ({
   }
 
   const selectMapPosition = async (position: SueCoordinates, request: SueLocationRequest) => {
-    if (!request.isLatestRequest()) return;
+    if (!request.isLatestRequest()) return false;
     setShowCoordinatesFromImageAlert(true);
     setUpdateRegionFromImage(false);
 
@@ -212,11 +212,14 @@ export const SueReportLocation = ({
         setValue
       });
 
-      if (request.isLatestRequest() && result.isWithinArea) setSelectedPosition(position);
+      if (!request.isLatestRequest() || !result.isWithinArea) return false;
+      setSelectedPosition(position);
+      return true;
     } catch (error) {
       if (request.isLatestRequest()) {
         Alert.alert(texts.sue.report.alerts.hint, error?.message);
       }
+      return false;
     } finally {
       request.finish();
     }
@@ -226,7 +229,7 @@ export const SueReportLocation = ({
     selectMapPosition(
       { latitude: geometry?.coordinates[1], longitude: geometry?.coordinates[0] },
       beginLocationUpdate()
-    );
+    ).then(() => undefined);
 
   const onMyLocationButtonPress = async ({
     isFullScreenMap = false
@@ -284,8 +287,7 @@ export const SueReportLocation = ({
           return false;
         }
 
-        await selectMapPosition(resolvedPosition.coords, request);
-        return request.isLatestRequest();
+        return await selectMapPosition(resolvedPosition.coords, request);
       } catch (error) {
         if (request.isLatestRequest()) {
           Alert.alert(texts.sue.report.alerts.hint, error?.message);

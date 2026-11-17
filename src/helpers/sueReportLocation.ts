@@ -16,8 +16,8 @@ export const SUE_CITY_KEYS = [
   'village',
   'municipality',
   'city_district',
-  'county',
-  'suburb'
+  'suburb',
+  'county'
 ] as const;
 
 const normalizeAddressPart = (value?: string) =>
@@ -35,12 +35,19 @@ export const isSuePostalCodeAllowed = (postalCode: string, allowedPostalCodes: s
 export const getSueAddressKey = ({ street, houseNumber, postalCode, city }: SueAddress) =>
   JSON.stringify([street, houseNumber, postalCode, city].map(normalizeAddressPart));
 
-const ROAD_KEYS = ['road', 'pedestrian', 'residential', 'footway', 'cycleway', 'path'] as const;
+export const SUE_ROAD_KEYS = [
+  'road',
+  'pedestrian',
+  'residential',
+  'footway',
+  'cycleway',
+  'path'
+] as const;
 
 type SearchResult = {
   address?: Partial<
     Record<
-      (typeof SUE_CITY_KEYS)[number] | (typeof ROAD_KEYS)[number] | 'house_number' | 'postcode',
+      (typeof SUE_CITY_KEYS)[number] | (typeof SUE_ROAD_KEYS)[number] | 'house_number' | 'postcode',
       string
     >
   >;
@@ -48,13 +55,20 @@ type SearchResult = {
   lon?: string;
 };
 
+export const getSueLocalityNames = (address: NonNullable<SearchResult['address']>) => {
+  const localities = SUE_CITY_KEYS.filter((key) => key !== 'county')
+    .map((key) => address[key])
+    .filter((value): value is string => typeof value === 'string' && !!value.trim());
+  return localities.length ? localities : [address.county || ''];
+};
+
 const matchesAddress = (address: SearchResult['address'], input: SueAddress) =>
   !!address &&
   normalizePostalCode(address.postcode) === normalizePostalCode(input.postalCode) &&
-  SUE_CITY_KEYS.some(
-    (key) => normalizeAddressPart(address[key]) === normalizeAddressPart(input.city)
+  getSueLocalityNames(address).some(
+    (name) => normalizeAddressPart(name) === normalizeAddressPart(input.city)
   ) &&
-  ROAD_KEYS.some(
+  SUE_ROAD_KEYS.some(
     (key) => normalizeAddressPart(address[key]) === normalizeAddressPart(input.street)
   ) &&
   (!input.houseNumber.trim() ||

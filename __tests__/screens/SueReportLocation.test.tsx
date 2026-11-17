@@ -57,8 +57,12 @@ jest.mock('../../src/hooks/useThemeStyles', () => ({
 jest.mock('../../src/queries', () => ({ QUERY_TYPES: { SUE: {} }, getQuery: jest.fn() }));
 jest.mock('../../src/queries/SUE', () => ({ postRequests: jest.fn(async () => undefined) }));
 let mockAreaLoading = false;
+let mockServicePostcodes: string[] | undefined;
 jest.mock('react-query', () => ({
-  useQuery: () => ({ isLoading: mockAreaLoading }),
+  useQuery: () => ({
+    isLoading: mockAreaLoading,
+    data: mockServicePostcodes && { postalCodes: mockServicePostcodes }
+  }),
   useMutation: (post) => ({ mutateAsync: post })
 }));
 
@@ -156,6 +160,7 @@ function location() {
 beforeEach(() => {
   jest.clearAllMocks();
   mockAreaLoading = false;
+  mockServicePostcodes = undefined;
   fetchSpy = jest.spyOn(global, 'fetch').mockRejectedValue(new Error('Unexpected fetch'));
   jest.spyOn(Alert, 'alert').mockImplementation(() => {});
 });
@@ -518,3 +523,22 @@ it.each(['postalCodes', 'zipCodes'] as const)(
     );
   }
 );
+
+it.each([true, false])(
+  'keeps explicit tenant postcodes authoritative before and after the area result (pending: %s)',
+  async (pending) => {
+    mockAreaLoading = pending;
+    mockServicePostcodes = pending ? undefined : ['86199'];
+    await openWizard({ step: 3, areaId: 'configured', limitOfArea: { postalCodes: ['24159'] } });
+    expect(location().areaServiceData).toEqual({ postalCodes: ['24159'] });
+    await act(async () => press(texts.sue.report.sendReport));
+    expect(postRequests).toHaveBeenCalled();
+  }
+);
+
+it('uses the area service restrictions when no explicit tenant list exists', async () => {
+  mockServicePostcodes = ['86199'];
+  await openWizard({ step: 3, areaId: 'configured', limitOfArea: {} });
+  await act(async () => press(texts.sue.report.sendReport));
+  expect(postRequests).not.toHaveBeenCalled();
+});

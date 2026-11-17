@@ -259,3 +259,75 @@ it('releases a stalled uncached GPS acquisition without applying its late result
     jest.useRealTimers();
   }
 });
+
+it.each(['outside', 'timeout'])(
+  'does not track a rejected cached GPS position (%s)',
+  async (reason) => {
+    mockUseRealReverse = true;
+    const fetchSpy = jest.spyOn(global, 'fetch').mockResolvedValue({
+      ok: true,
+      json: async () => ({ address: { city: 'Augsburg', postcode: '86199' } })
+    } as Response);
+    if (reason === 'timeout') fetchSpy.mockRejectedValue(new Error('Timeout'));
+    const alertSpy = jest.spyOn(Alert, 'alert').mockImplementation(() => {});
+    let tree: renderer.ReactTestRenderer | undefined;
+    try {
+      await act(async () => {
+        tree = renderer.create(<ReportMap confirmed />);
+      });
+      const root = tree?.root;
+      if (!root) throw new Error('Map did not render');
+      const [myLocation, maximize] = root.findAllByType(TouchableOpacity);
+      act(() => maximize.props.onPress());
+      await act(async () => myLocation.props.onPress());
+      expect(root.findByType(Camera).props.trackUserLocation).toBeUndefined();
+      expect(root.findByType(SueReportLocation).props.selectedPosition).toEqual(pin);
+    } finally {
+      if (tree) act(() => tree?.unmount());
+      fetchSpy.mockRestore();
+      alertSpy.mockRestore();
+      mockUseRealReverse = false;
+    }
+  }
+);
+
+it.each(['pedestrian', 'residential', 'footway', 'cycleway', 'path'])(
+  'confirms the precise map pin with a street under %s',
+  async (road) => {
+    mockUseRealReverse = true;
+    jest.useFakeTimers();
+    const fetchSpy = jest.spyOn(global, 'fetch').mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        address: { [road]: 'Koloniestraße', house_number: '2', city: 'Kiel', postcode: '24159' }
+      })
+    } as Response);
+    let tree: renderer.ReactTestRenderer | undefined;
+    try {
+      await act(async () => {
+        tree = renderer.create(<ReportMap />);
+      });
+      const root = tree?.root;
+      if (!root) throw new Error('Map did not render');
+      await act(async () => {
+        root
+          .findByType(Map)
+          .props.onPress({ nativeEvent: { lngLat: [pin.longitude, pin.latitude] } });
+        await jest.advanceTimersByTimeAsync(50);
+      });
+      expect(
+        mockSelection.getConfirmedLocation({
+          street: 'Koloniestraße',
+          houseNumber: '2',
+          city: 'Kiel',
+          postalCode: '24159'
+        })?.position
+      ).toEqual(pin);
+    } finally {
+      if (tree) act(() => tree?.unmount());
+      fetchSpy.mockRestore();
+      mockUseRealReverse = false;
+      jest.useRealTimers();
+    }
+  }
+);

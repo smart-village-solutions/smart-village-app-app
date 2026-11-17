@@ -387,9 +387,9 @@ export const SueReportScreen = ({
   );
 
   const areaServiceData = useMemo(() => {
-    if (areaServiceResult?.postalCodes?.length) return areaServiceResult;
     if (limitOfPostalCodes.length) return { postalCodes: limitOfPostalCodes };
     if (legacyZipCodes.length) return { postalCodes: legacyZipCodes };
+    if (areaServiceResult?.postalCodes?.length) return areaServiceResult;
     return areaServiceAreaId || limitOfAreaCity ? { postalCodes: [] } : undefined;
   }, [areaServiceAreaId, areaServiceResult, limitOfPostalCodes, legacyZipCodes, limitOfAreaCity]);
 

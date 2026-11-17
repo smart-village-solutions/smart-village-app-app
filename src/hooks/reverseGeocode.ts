@@ -4,7 +4,8 @@ import { UseFormSetValue } from 'react-hook-form';
 import {
   fetchSueGeocode,
   isSuePostalCodeAllowed,
-  SUE_CITY_KEYS
+  getSueLocalityNames,
+  SUE_ROAD_KEYS
 } from '../helpers/sueReportLocation';
 import type { TValues } from '../screens';
 
@@ -39,15 +40,12 @@ export const useReverseGeocode = () => {
         if (!shouldApplyResult()) return staleResult;
 
         // Nominatim jsonv2 maps address parts from OSM tags, so settlement fields may vary.
-        const city =
-          SUE_CITY_KEYS.map((key) => address[key]).find(
-            (value) => typeof value === 'string' && value.length > 0
+        const city = getSueLocalityNames(address)[0] || '';
+        const street =
+          SUE_ROAD_KEYS.map((key) => address[key]).find(
+            (value) => typeof value === 'string' && value.trim()
           ) || '';
-        const {
-          house_number: houseNumber = '',
-          road: street = '',
-          postcode: postalCode = ''
-        } = address;
+        const { house_number: houseNumber = '', postcode: postalCode = '' } = address;
         const isWithinArea = areaServiceData
           ? isSuePostalCodeAllowed(postalCode, areaServiceData.postalCodes || [])
           : [city, street, postalCode].some(Boolean);

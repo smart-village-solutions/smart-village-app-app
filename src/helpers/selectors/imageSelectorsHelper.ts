@@ -143,6 +143,7 @@ const updateSueImageLocation = async ({
 
   const position = { latitude: location.latitude, longitude: location.longitude };
   const { areaServiceData, errorMessage = '', setValue = () => {} } = coordinateCheck;
+  coordinateCheck.setShowCoordinatesFromImageAlert(true);
   try {
     const result = await reverseGeocode({
       areaServiceData,
@@ -152,13 +153,15 @@ const updateSueImageLocation = async ({
       setValue
     });
 
-    if (isLatestRequest() && result?.isWithinArea) {
-      coordinateCheck.setSelectedPosition(position);
-      coordinateCheck.setUpdateRegionFromImage(true);
-      coordinateCheck.setShowCoordinatesFromImageAlert(false);
+    if (!isLatestRequest() || result?.isStale) return;
+    if (!result?.isWithinArea) throw new Error(errorMessage);
+    coordinateCheck.setSelectedPosition(position);
+    coordinateCheck.setUpdateRegionFromImage(true);
+    coordinateCheck.setShowCoordinatesFromImageAlert(false);
+  } catch {
+    if (isLatestRequest()) {
+      Alert.alert(texts.sue.report.alerts.hint, texts.sue.report.alerts.imageLocationNotApplied);
     }
-  } catch (error) {
-    if (isLatestRequest()) console.error(error);
   }
 };
 
