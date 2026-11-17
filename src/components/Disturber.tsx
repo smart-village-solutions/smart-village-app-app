@@ -20,7 +20,7 @@ import { HeadlineText, RegularText } from './Text';
 import { Wrapper, WrapperHorizontal } from './Wrapper';
 
 type Props = {
-  navigation: DrawerNavigationProp<any>;
+  navigation: DrawerNavigationProp<Record<string, object | undefined>>;
   publicJsonFile: string;
 };
 
@@ -122,7 +122,7 @@ export const Disturber = ({ navigation, publicJsonFile }: Props) => {
   const showContent = !!headline || !!title || !!description || showButton;
 
   return (
-    <Wrapper style={styles.wrapperPadding}>
+    <Wrapper>
       <View style={[styles.containerRadius, { backgroundColor }]}>
         {!!closestItem && (
           <>
@@ -136,7 +136,7 @@ export const Disturber = ({ navigation, publicJsonFile }: Props) => {
               </TouchableOpacity>
             )}
 
-            {pictures?.length ? (
+            {!!pictures?.length && (
               <View
                 style={[
                   styles.carouselContainer,
@@ -152,56 +152,50 @@ export const Disturber = ({ navigation, publicJsonFile }: Props) => {
                   refreshTimeKey={`publicJsonFile-${publicJsonFile}`}
                 />
               </View>
-            ) : (
-              <View style={styles.withoutImageMarginTop} />
             )}
 
-            {showContent && (
-              <>
-                <Wrapper style={styles.smallPaddingBottom}>
-                  <WrapperHorizontal>
-                    {!!headline && (
-                      <HeadlineText center uppercase style={styles.headlineText}>
-                        {headline}
-                      </HeadlineText>
-                    )}
-                  </WrapperHorizontal>
-                </Wrapper>
+            {!!headline && (
+              <Wrapper>
+                <WrapperHorizontal>
+                  <HeadlineText center uppercase style={styles.headlineText}>
+                    {headline}
+                  </HeadlineText>
+                </WrapperHorizontal>
+              </Wrapper>
+            )}
 
-                <Wrapper noPaddingTop>
-                  <WrapperHorizontal>
-                    {!!title && (
-                      <HeadlineText center big>
-                        {title}
-                      </HeadlineText>
-                    )}
-                  </WrapperHorizontal>
-                </Wrapper>
+            {!!title && (
+              <Wrapper noPaddingTop={!!headline}>
+                <WrapperHorizontal>
+                  <HeadlineText center big>
+                    {title}
+                  </HeadlineText>
+                </WrapperHorizontal>
+              </Wrapper>
+            )}
 
-                <Wrapper noPaddingTop>
-                  <WrapperHorizontal>
-                    {!!description && (
-                      <RegularText center big>
-                        {description}
-                      </RegularText>
-                    )}
-                  </WrapperHorizontal>
-                </Wrapper>
+            {!!description && (
+              <Wrapper noPaddingTop={!!headline || !!title}>
+                <WrapperHorizontal>
+                  <RegularText center big>
+                    {description}
+                  </RegularText>
+                </WrapperHorizontal>
+              </Wrapper>
+            )}
 
-                <Wrapper>
-                  <WrapperHorizontal>
-                    {showButton && (
-                      <Button
-                        big
-                        title={button.title}
-                        onPress={() => {
-                          navigation.navigate(button.navigationTo, button.params);
-                        }}
-                      />
-                    )}
-                  </WrapperHorizontal>
-                </Wrapper>
-              </>
+            {showButton && (
+              <Wrapper noPaddingTop={!!headline || !!title || !!description}>
+                <WrapperHorizontal>
+                  <Button
+                    big
+                    title={button.title}
+                    onPress={() => {
+                      navigation.navigate(button.navigationTo, button.params);
+                    }}
+                  />
+                </WrapperHorizontal>
+              </Wrapper>
             )}
           </>
         )}
@@ -241,17 +235,5 @@ const createStyles = (colors) => ({
     fontSize: normalize(14),
     fontWeight: '700',
     lineHeight: normalize(16)
-  },
-
-  withoutImageMarginTop: {
-    marginTop: normalize(21)
-  },
-
-  smallPaddingBottom: {
-    paddingBottom: normalize(8)
-  },
-
-  wrapperPadding: {
-    padding: normalize(24)
   }
 });
