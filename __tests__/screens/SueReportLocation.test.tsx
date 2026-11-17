@@ -59,10 +59,12 @@ jest.mock('../../src/queries', () => ({ QUERY_TYPES: { SUE: {} }, getQuery: jest
 jest.mock('../../src/queries/SUE', () => ({ postRequests: jest.fn(async () => undefined) }));
 let mockAreaLoading = false;
 let mockAreaQuery: () => Promise<unknown>;
+let mockAreaOptions: { retry?: boolean };
 let mockServicePostcodes: string[] | undefined;
 jest.mock('react-query', () => ({
-  useQuery: (_key, query) => {
+  useQuery: (_key, query, options) => {
     mockAreaQuery = query;
+    mockAreaOptions = options;
     return {
       isLoading: mockAreaLoading,
       data: mockServicePostcodes && { postalCodes: mockServicePostcodes }
@@ -587,6 +589,31 @@ it('bounds the area-service lookup even without configured postcode fallbacks', 
     await jest.advanceTimersByTimeAsync(10_000);
     await rejection;
   } finally {
+    jest.useRealTimers();
+  }
+});
+
+it('overrides client retries so a stalled area lookup ends after one deadline', async () => {
+  jest.useFakeTimers();
+  const { QueryClient } = jest.requireActual('react-query');
+  const client = new QueryClient({
+    defaultOptions: { queries: { retry: 2 } },
+    logger: { log: jest.fn(), warn: jest.fn(), error: jest.fn() }
+  });
+  const stalledRequest = jest.fn(() => new Promise(() => {}));
+  (getQuery as jest.Mock).mockReturnValue(stalledRequest);
+  try {
+    mockAreaLoading = true;
+    await openWizard({ areaId: 'remote-area', limitOfArea: {} });
+    const query = client.fetchQuery(['area-deadline'], mockAreaQuery, mockAreaOptions);
+    const rejection = expect(query).rejects.toThrow(alert.locationTimeout);
+    await jest.advanceTimersByTimeAsync(10_000);
+    await rejection;
+    expect(stalledRequest).toHaveBeenCalledTimes(1);
+    expect(stalledRequest).toHaveBeenCalledWith({ signal: expect.any(AbortSignal) });
+    expect(stalledRequest.mock.calls[0][0].signal.aborted).toBe(true);
+  } finally {
+    client.clear();
     jest.useRealTimers();
   }
 });

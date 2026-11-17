@@ -384,8 +384,8 @@ export const SueReportScreen = ({
 
   const { data: areaServiceResult, isLoading: areaServiceLoading } = useQuery(
     [QUERY_TYPES.SUE.AREA_SERVICE, areaServiceAreaId, limitOfAreaCity],
-    () => withSueLocationTimeout(() => getQuery(QUERY_TYPES.SUE.AREA_SERVICE)()),
-    { enabled: !!(areaServiceAreaId || limitOfAreaCity) }
+    () => withSueLocationTimeout((signal) => getQuery(QUERY_TYPES.SUE.AREA_SERVICE)({ signal })),
+    { enabled: !!(areaServiceAreaId || limitOfAreaCity), retry: false }
   );
 
   const areaServiceData = useMemo(() => {
