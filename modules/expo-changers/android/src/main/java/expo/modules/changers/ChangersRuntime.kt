@@ -11,8 +11,11 @@ import org.json.JSONObject
 internal object ChangersRuntime {
   lateinit var application: Application
   var initialized = false
-  @Volatile var enabled = false
-    private set
+  private val settingsGate = ChangersSettingsGate(
+    read = { prefs.getBoolean("enabled", false) },
+    write = { prefs.edit().putBoolean("enabled", it).commit() }
+  )
+  val enabled get() = settingsGate.enabled
   var environment = "stage"
   var configured = false
   var errorCode: String? = null
@@ -40,7 +43,9 @@ internal object ChangersRuntime {
         override fun onActivityStopped(a: Activity) { /* No SDK action is needed for this lifecycle callback. */ }
         override fun onActivitySaveInstanceState(a: Activity, b: Bundle) { /* No SDK action is needed for this lifecycle callback. */ }
       })
-      // Wait for globalSettings before initializing, even after a previous activation.
+      // Restore only a previously applied customer gate and explicit activation.
+      // MotionTag restores its own consent/permission state; never call startTracking here.
+      settingsGate.restore(configured && activated) { initialize() }
     } catch (_: Exception) { errorCode = "E_CONFIGURATION" }
   }
   fun initialize() {
@@ -57,7 +62,7 @@ internal object ChangersRuntime {
     val pending = PendingIntent.getActivity(application, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
     val notification = NotificationCompat.Builder(application, channel)
       .setSmallIcon(android.R.drawable.ic_menu_mylocation).setContentTitle("Klima-Taler")
-      .setContentText("Die von Ihnen erlaubte Wegeaufzeichnung ist aktiv").setContentIntent(pending)
+      .setContentText("Klima-Taler berücksichtigt Ihre Tracking-Einstellungen").setContentIntent(pending)
       .setOngoing(true).setCategory(NotificationCompat.CATEGORY_SERVICE).build()
     Changers.with(application, Changers.Settings(appName = configuration.getString("clientName"),
       clientId = configuration.getString("clientId"), clientSecret = configuration.getString("clientSecret"),
@@ -67,18 +72,17 @@ internal object ChangersRuntime {
     // Nur initialisieren; diese Schnittstelle ruft startTracking niemals selbst auf.
     // Das Onboarding des Anbieters steuert Berechtigungsanfragen und die Tracking-Einwilligung.
   }
-  fun accept() { check(enabled) { "E_DISABLED" }; check(configured) { "E_CONFIGURATION" }; prefs.edit().putBoolean("accepted", true).commit(); initialize() }
+  fun accept() { check(enabled) { "E_DISABLED" }; check(configured) { "E_CONFIGURATION" }; check(prefs.edit().putBoolean("accepted", true).commit()) { "E_STORAGE" }; initialize() }
   fun setEnabledFromSettings(value: Boolean) {
-    enabled = value
-    if (value) {
-      if (configured && activated) initialize()
-    } else {
-      providerActivity?.finish()
-      // Remote disable preserves identity and activation history; it is not logout.
-      if (initialized) Changers.stopTracking()
-    }
+    settingsGate.update(value,
+      onEnabled = { if (configured && activated) initialize() },
+      onDisabled = {
+        providerActivity?.finish()
+        // Remote disable preserves identity and activation history; it is not logout.
+        if (initialized) Changers.stopTracking()
+      })
   }
-  fun stop() { if (initialized) Changers.stopTracking(); prefs.edit().putBoolean("accepted", false).commit() }
+  fun stop() { if (initialized) Changers.stopTracking(); check(prefs.edit().putBoolean("accepted", false).commit()) { "E_STORAGE" } }
   fun requireReady() { check(enabled) { "E_DISABLED" }; check(configured) { "E_CONFIGURATION" }; check(activated) { "E_NOT_ACTIVE" }; check(initialized) { "E_NOT_READY" } }
   fun status(): Map<String, Any?> = mapOf(
     "platform" to "android", "environment" to environment, "sdkVersion" to "1.20.6", "motionTagVersion" to "7.2.5",

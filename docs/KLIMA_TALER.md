@@ -122,7 +122,21 @@ The plugin preserves existing permission descriptions, activities, providers and
 
 The iOS vendor framework contains arm64 device and x86_64 simulator slices, but no arm64 simulator slice. Apple Silicon simulator builds use an unavailable adapter (`E_SIMULATOR_UNSUPPORTED`). A prebuild-persistent CocoaPods hook excludes only that unsupported framework from linking and embedding. Provider testing requires a supported native target.
 
-Android uses the OkHttp 5.1.0 BOM to align MotionTag's HTTP client with React Native/MapLibre's cookie adapter. Mixing the 4.x cookie adapter with the 5.x client causes a missing-class crash. `ChangersBootReceiver` replaces the vendor boot/update receiver and delegates only after settings, activation and SDK initialization permit it. Cold boot/update broadcasts do not initialize the SDK; automatic tracking resumption while the app remains closed is not implemented.
+Android uses the OkHttp 5.1.0 BOM to align MotionTag's HTTP client with React Native/MapLibre's cookie adapter. Mixing the 4.x cookie adapter with the 5.x client causes a missing-class crash. `ChangersBootReceiver` replaces the vendor boot/update receiver. The Expo Application listener restores the last successfully applied native customer gate and previous explicit activation before initializing Changers in a cold process. The receiver forwards only supported boot/update actions after that initialization. Neither path calls `startTracking`, signs up, or requests permissions. The pinned MotionTag implementation restores its persisted session state during initialization; its boot receiver itself only records the event. Actual resumption still requires provider consent, OS permissions and device verification.
+
+The last known gate is intentionally used while JS/network configuration is unavailable. A remote change cannot take effect until received. A successfully persisted disable survives process recreation; a storage failure is reported and stop is still requested. Never-activated, disabled, unreadable-gate or unconfigured installations do not initialize from the background. Re-enabling initializes the SDK if necessary but does not override a provider pause/withdrawn consent state; reopen the provider to manage tracking.
+
+| Lifecycle event | Host behavior / remaining limit |
+| --- | --- |
+| Process death / OS eviction | On the next OS-created process, restore the saved gate and activation. No guarantee that the OS immediately recreates it. |
+| Task dismissed | Does not call logout or stop; vendor service declares `stopWithTask=false`. OEM restrictions still apply. |
+| User force-stop | No host workaround; user interaction is needed to leave Android's stopped state. |
+| Reboot / package update | Initialize under the saved gate, then delegate the broadcast. This is implemented; actual route recording is not yet device-verified. |
+| Permission revoked / provider consent withdrawn | Do not call start or grant consent; the provider and OS enforce eligibility. Tracking status remains unknown. |
+| Remote disable | Persist gate, close UI and request stop, retaining identity. Offline installations cannot observe new settings immediately. |
+| Re-enable | Initialize if required; do not automatically undo a provider stop or consent withdrawal. |
+
+See Android's [background service restrictions](https://developer.android.com/develop/background-work/services/fgs/restrictions-bg-start) and [stopped-state behavior](https://developer.android.com/about/versions/15/behavior-changes-all#stopped-state).
 
 ## Provider entry and widget lifecycle
 
@@ -177,3 +191,9 @@ Run the credential-free native journal harness:
 xcrun swiftc modules/expo-changers/ios/ChangersRegistration.swift __tests__/klimaTaler/ios/RegistrationHarness.swift -o /tmp/changers-registration-tests
 /tmp/changers-registration-tests
 ```
+
+### iOS timeout recovery dependency (SVAK-227)
+
+The pinned Changers 4.2.0 public Swift interface stores authentication/setup/statistics delegates on the singleton. It exposes no cancellation handle from register/login/statistics, no documented non-destructive reset, and no request identifier in callbacks. The public `URLSessionDataTaskProtocol.cancel()` is not a request handle returned by those methods. `logoutUser`, `clearCache`, and `stopTrackingAndClearData` are not documented cancellation barriers.
+
+Accordingly the unresolved operation is still quarantined after `E_TIMEOUT`; freeing it would allow an old callback to settle a newer request or mutate its session. Late completion releases the slot and cannot settle the timed-out promise twice. If no callback arrives, a process restart is still required; **the permanent busy defect is not fixed**. Provider delivery needed: cancellable operations with completion acknowledgment, request-scoped delegates, or a documented reset that preserves identity and prevents late callbacks/session mutation. Registration outcomes also remain uncertain across restart, so restarting is not permission to repeat signup.

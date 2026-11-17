@@ -3,6 +3,7 @@ import type { Capabilities, ChangersNative } from './types';
 const ERROR_CODES = new Set([
   'E_SIMULATOR_UNSUPPORTED',
   'E_DISABLED',
+  'E_STORAGE',
   'E_CONFIGURATION',
   'E_NOT_ACTIVE',
   'E_NOT_READY',

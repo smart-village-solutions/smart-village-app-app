@@ -18,7 +18,7 @@ class ExpoChangersModule : Module() {
 
   private fun resolve(p: Promise, action: () -> Any?) {
     try { p.resolve(action()) } catch (e: Exception) {
-      val code = e.message?.takeIf { it in setOf("E_DISABLED", "E_CONFIGURATION", "E_NOT_ACTIVE", "E_NOT_READY", "E_BUSY", "E_NO_ACTIVITY", "E_INVALID_ARGUMENT", "E_ALREADY_AUTHENTICATED", "E_AUTHENTICATION") } ?: "E_PROVIDER"
+      val code = e.message?.takeIf { it in setOf("E_STORAGE", "E_DISABLED", "E_CONFIGURATION", "E_NOT_ACTIVE", "E_NOT_READY", "E_BUSY", "E_NO_ACTIVITY", "E_INVALID_ARGUMENT", "E_ALREADY_AUTHENTICATED", "E_AUTHENTICATION") } ?: "E_PROVIDER"
       p.reject(code, "Der Changers-Vorgang ist fehlgeschlagen. Bitte Konfiguration, Verbindung und Anmeldung prüfen.", null)
     }
   }
@@ -43,7 +43,7 @@ class ExpoChangersModule : Module() {
       if (!ChangersRuntime.enabled || !ChangersRuntime.activated) Changers.stopTracking()
       if (settled.compareAndSet(false, true)) p.resolve(Changers.uuid)
     } catch (e: Exception) {
-      if (settled.compareAndSet(false, true)) p.reject(e.message?.takeIf { it in setOf("E_DISABLED", "E_CONFIGURATION", "E_NOT_ACTIVE", "E_NOT_READY", "E_BUSY", "E_NO_ACTIVITY", "E_INVALID_ARGUMENT", "E_ALREADY_AUTHENTICATED", "E_AUTHENTICATION") } ?: "E_PROVIDER", "Anmeldung fehlgeschlagen. Bitte Verbindung und Sitzung prüfen.", null)
+      if (settled.compareAndSet(false, true)) p.reject(e.message?.takeIf { it in setOf("E_STORAGE", "E_DISABLED", "E_CONFIGURATION", "E_NOT_ACTIVE", "E_NOT_READY", "E_BUSY", "E_NO_ACTIVITY", "E_INVALID_ARGUMENT", "E_ALREADY_AUTHENTICATED", "E_AUTHENTICATION") } ?: "E_PROVIDER", "Anmeldung fehlgeschlagen. Bitte Verbindung und Sitzung prüfen.", null)
     } finally { handler.removeCallbacks(timeout); ChangersRuntime.networkBusy.set(false) }
   }
   private fun completeStatistics(p: Promise, session: ChangersStatisticsSession, result: Result<Map<String, Double>>) {
