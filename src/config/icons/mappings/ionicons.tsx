@@ -35,6 +35,7 @@ export const ioniconsIconMapping: Record<string, string> = {
   copy: 'copy',
 
   // Status & Feedback
+  medal: 'medal-outline',
   check: 'checkmark-circle',
   'circle-check-filled': 'checkmark-circle',
   'alert-hexagon-filled': 'warning',
