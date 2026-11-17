@@ -84,3 +84,33 @@ it('honors publication filters while recovering a version-filtered result', asyn
   expect(test.fetchPage.mock.calls.map(([offset]) => offset)).toEqual([0, 2, 4]);
   expect(result.eventRecords).toHaveLength(5);
 });
+
+it.each(['listDate', 'date.id'])(
+  'continues recurring events sharing an ID when only %s distinguishes occurrences',
+  async (identity) => {
+    const occurrence = (index: number) => ({
+      ...hidden('recurring-event'),
+      listDate: identity === 'listDate' ? `2030-01-0${index}` : '2030-01-01',
+      date: { id: identity === 'date.id' ? `date-${index}` : 'same-date' }
+    });
+    const first = [occurrence(1), occurrence(2)];
+    const second = [occurrence(3), occurrence(4)];
+    const test = setup([first, second, [normal('eligible')]]);
+    const result = await test.load();
+    expect(test.fetchPage.mock.calls.map(([offset]) => offset)).toEqual([0, 2, 4]);
+    expect(result.eventRecords).toEqual([...first, ...second, normal('eligible')]);
+    expect(getNextContentPageOffset(result, [result], query, 2)).toBeUndefined();
+  }
+);
+
+it('still stops genuinely repeated recurring occurrences', async () => {
+  const page = [1, 2].map((index) => ({
+    ...hidden('recurring-event'),
+    listDate: `2030-01-0${index}`,
+    date: { id: `date-${index}` }
+  }));
+  const test = setup([page, page, [normal('unreachable')]]);
+  const result = await test.load();
+  expect(test.fetchPage).toHaveBeenCalledTimes(2);
+  expect(getNextContentPageOffset(result, [result], query, 2)).toBeUndefined();
+});

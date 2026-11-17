@@ -1,5 +1,7 @@
 import { visibleContent } from './contentVisibility';
 
+const occurrenceKey = (row) => JSON.stringify([row?.id, row?.listDate, row?.date?.id]);
+
 const rowsFor = (data, query) => (Array.isArray(data?.[query]) ? data[query] : []);
 
 // A React Query page can span several server pages when version restrictions hide all rows.
@@ -17,7 +19,7 @@ export const fetchVisibleContentPage = async ({
   let page = rows;
   let eligible = visibleContent(page);
   const versionFiltered = eligible !== page;
-  const seen = new Set(page.map((row) => row?.id));
+  const seen = new Set(page.map(occurrenceKey));
 
   while (
     Number.isFinite(pageSize) &&
@@ -29,12 +31,12 @@ export const fetchVisibleContentPage = async ({
   ) {
     const incoming = await fetchPage(offset + rows.length);
     page = rowsFor(incoming, query);
-    const newRows = page.filter((row) => !seen.has(row?.id));
+    const newRows = page.filter((row) => !seen.has(occurrenceKey(row)));
     rows = [...rows, ...page];
     result = { ...result, [query]: rows, __contentPageSize: page.length };
     if (!newRows.length) return { ...result, __contentPageSize: 0 };
     eligible = visibleContent(newRows);
-    page.forEach((row) => seen.add(row?.id));
+    page.forEach((row) => seen.add(occurrenceKey(row)));
   }
 
   return result;

@@ -258,7 +258,7 @@ describe('Generic Item event consumers', () => {
   });
 
   it.each(['list', 'calendar'])(
-    'drains restricted native event pages in the %s query',
+    'drains restricted recurring event pages in the %s query',
     async (screen) => {
       const variables = {
         limit: 2,
@@ -294,14 +294,34 @@ describe('Generic Item event consumers', () => {
       mockRequest
         .mockResolvedValueOnce({
           eventRecords: [
-            { id: '1', payload: { minVersion: '6.0.0' } },
-            { id: '2', payload: { minBuild: 2000 } }
+            {
+              id: 'recurring',
+              listDate: '2030-01-01',
+              date: { id: 'date-1' },
+              payload: { minVersion: '6.0.0' }
+            },
+            {
+              id: 'recurring',
+              listDate: '2030-01-02',
+              date: { id: 'date-2' },
+              payload: { minVersion: '6.0.0' }
+            }
           ]
         })
         .mockResolvedValueOnce({
           eventRecords: [
-            { id: '3', payload: { minVersion: '6.0.0' } },
-            { id: '4', payload: { minBuild: 2000 } }
+            {
+              id: 'recurring',
+              listDate: '2030-01-03',
+              date: { id: 'date-3' },
+              payload: { minVersion: '6.0.0' }
+            },
+            {
+              id: 'recurring',
+              listDate: '2030-01-04',
+              date: { id: 'date-4' },
+              payload: { minVersion: '6.0.0' }
+            }
           ]
         })
         .mockResolvedValueOnce({ eventRecords: [{ id: '5' }] });
