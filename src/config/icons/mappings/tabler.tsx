@@ -5,6 +5,7 @@
 
 export const tablerIconMapping: Record<string, string> = {
   // Navigation & Actions
+  refresh: 'refresh',
   about: 'dots-vertical',
   'arrow-down': 'arrow-down',
   'arrow-down-circle': 'circle-arrow-down-filled',

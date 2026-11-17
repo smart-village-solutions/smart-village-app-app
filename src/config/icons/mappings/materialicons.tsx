@@ -5,6 +5,7 @@
 
 export const materialiconsIconMapping: Record<string, string> = {
   // Navigation & Actions
+  refresh: 'refresh',
   about: 'more-vert',
   'arrow-down': 'arrow-downward',
   'arrow-down-circle': 'arrow-circle-down',

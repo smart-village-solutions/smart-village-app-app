@@ -6,6 +6,7 @@
 
 export const materialcommunityiconsIconMapping: Record<string, string> = {
   // Navigation & Actions
+  refresh: 'refresh',
   about: 'dots-vertical',
   'arrow-down': 'arrow-down',
   'arrow-down-circle': 'arrow-down-circle',

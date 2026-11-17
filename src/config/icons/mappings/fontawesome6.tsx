@@ -7,6 +7,7 @@
 
 export const fontawesome6IconMapping: Record<string, string> = {
   // Navigation & Actions
+  refresh: 'arrows-rotate',
   about: 'ellipsis-vertical',
   'arrow-down': 'arrow-down',
   'arrow-down-circle': 'circle-arrow-down',

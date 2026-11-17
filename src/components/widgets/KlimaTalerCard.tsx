@@ -107,8 +107,6 @@ const CardSummary = ({
 }: Pick<Props, 'state' | 'config'> & { promo: boolean }) => {
   const { textScaleMultiplier } = useContext(AccessibilityContext);
   const { fontScale } = useWindowDimensions();
-  const [numberWidth, setNumberWidth] = useState(0);
-  const value = formatCoins(config, state.coins);
   const effectiveScale = resolveEffectiveTextScale(fontScale, textScaleMultiplier);
   const largeText = effectiveScale > 1.3;
   const balanceVisible = !promo && config.show.balance;
@@ -140,25 +138,34 @@ const CardSummary = ({
             {config.texts.description}
           </Text>
         )}
-        {!promo && (
-          <View style={styles.balanceRow}>
-            <View
-              style={styles.balanceValue}
-              onLayout={({ nativeEvent }) => setNumberWidth(nativeEvent.layout.width)}
-            >
-              {balanceVisible && (
-                <CardBalance
-                  config={config}
-                  value={value}
-                  width={numberWidth}
-                  scale={effectiveScale}
-                />
-              )}
-            </View>
-            {config.show.status && <CardStatus state={state} config={config} />}
-          </View>
+        {!promo && <CardBalanceRow state={state} config={config} scale={effectiveScale} />}
+      </View>
+    </View>
+  );
+};
+
+const CardBalanceRow = ({
+  state,
+  config,
+  scale
+}: Pick<Props, 'state' | 'config'> & { scale: number }) => {
+  const [numberWidth, setNumberWidth] = useState(0);
+  return (
+    <View style={styles.balanceRow}>
+      <View
+        style={styles.balanceValue}
+        onLayout={({ nativeEvent }) => setNumberWidth(nativeEvent.layout.width)}
+      >
+        {config.show.balance && (
+          <CardBalance
+            config={config}
+            value={formatCoins(config, state.coins)}
+            width={numberWidth}
+            scale={scale}
+          />
         )}
       </View>
+      {config.show.status && <CardStatus state={state} config={config} />}
     </View>
   );
 };

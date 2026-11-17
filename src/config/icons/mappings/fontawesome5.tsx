@@ -6,6 +6,7 @@
 
 export const fontawesome5IconMapping: Record<string, string> = {
   // Navigation & Actions
+  refresh: 'sync-alt',
   about: 'bars',
   'arrow-down': 'arrow-down',
   'arrow-down-circle': 'arrow-circle-down',

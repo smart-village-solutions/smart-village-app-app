@@ -6,6 +6,7 @@
 
 export const simplelineiconsIconMapping: Record<string, string> = {
   // Navigation & Actions
+  refresh: 'refresh',
   about: 'options-vertical',
   'arrow-down': 'arrow-down',
   'arrow-down-circle': 'arrow-down-circle',

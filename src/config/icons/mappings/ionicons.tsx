@@ -5,6 +5,7 @@
 
 export const ioniconsIconMapping: Record<string, string> = {
   // Navigation & Actions
+  refresh: 'refresh',
   about: 'ellipsis-vertical',
   'arrow-down': 'arrow-down',
   'arrow-down-circle': 'arrow-down-circle',

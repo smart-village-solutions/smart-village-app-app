@@ -5,6 +5,7 @@
 
 export const fontawesomeIconMapping: Record<string, string> = {
   // Navigation & Actions
+  refresh: 'refresh',
   about: 'ellipsis-v',
   'arrow-down': 'arrow-down',
   'arrow-down-circle': 'arrow-circle-down',
