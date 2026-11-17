@@ -44,6 +44,14 @@ const endpoints: Record<OffersEnvironment, string> = {
 };
 const CACHE_MS = 5 * 60 * 1000;
 const TIMEOUT_MS = 15 * 1000;
+const retryDeadline = (header: string | null, timestamp: number) => {
+  const seconds = header !== null && /^\d+$/.test(header.trim()) ? Number(header) : Number.NaN;
+  const date = header && /^[A-Za-z]{3},/.test(header) ? Date.parse(header) : Number.NaN;
+  const deadline = timestamp + seconds * 1000;
+  if (Number.isFinite(deadline)) return deadline;
+  if (Number.isFinite(date)) return Math.max(timestamp, date);
+  return timestamp + 60 * 1000;
+};
 const numberInRange = (value: unknown, min: number, max: number): value is number =>
   typeof value === 'number' && Number.isFinite(value) && value >= min && value <= max;
 const integer = (value: unknown, min = 0): value is number =>
@@ -143,15 +151,7 @@ export const createOffersClient = (fetcher: OffersFetch, now = Date.now) => {
       // A transport may finish after abort; it must not change a newer request's cooldown.
       if (controller.signal.aborted) throw new OffersError('E_TIMEOUT');
       if (response.status === 429) {
-        const header = response.headers.get('Retry-After');
-        const seconds = header !== null && /^\d+$/.test(header.trim()) ? Number(header) : NaN;
-        const date = header && /^[A-Za-z]{3},/.test(header) ? Date.parse(header) : NaN;
-        const deadline = now() + seconds * 1000;
-        const retryAt = Number.isFinite(deadline)
-          ? deadline
-          : Number.isFinite(date)
-          ? Math.max(now(), date)
-          : now() + 60 * 1000;
+        const retryAt = retryDeadline(response.headers.get('Retry-After'), now());
         cooldown.set(environment, retryAt);
         throw new OffersError('E_RATE_LIMIT', 429, retryAt);
       }

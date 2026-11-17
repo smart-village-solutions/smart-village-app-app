@@ -142,6 +142,89 @@ const mapToMapMarkers = (
   return markers;
 };
 
+const loadVehicleStatuses = (urls: string[]) => {
+  return Promise.allSettled(
+    urls.map(async (url) => {
+      const data = await fetchAvailableVehicles(url);
+      const feature = data?.[0] as VehicleStatusFeature | undefined;
+      const status = feature?.properties?.[vehiclePropertyKey];
+      const iconName = feature?.iconName;
+      const activeIconName = feature?.activeIconName || feature?.iconNameActive;
+
+      return [url, { activeIconName, iconName, status }] as const;
+    })
+  ).then((results) => {
+    const statuses: VehicleStatusByUrl = {};
+
+    results.forEach((result) => {
+      if (result.status === 'fulfilled') {
+        const [url, vehicleStatus] = result.value;
+
+        if (
+          vehicleStatus.status != null ||
+          !!vehicleStatus.iconName ||
+          !!vehicleStatus.activeIconName
+        ) {
+          statuses[url] = vehicleStatus;
+        }
+      }
+      // Rejected results are ignored so that one failing request
+      // does not prevent processing of the others.
+    });
+
+    return statuses;
+  });
+};
+
+const offersSourceName = (offers: ReturnType<typeof useMapOffers>) => {
+  if (offers.loading) return texts.klimaTaler.map.loading;
+  if (offers.error) return texts.klimaTaler.map.unavailable;
+  if (offers.visible && !offers.configured) return texts.klimaTaler.map.unconfigured;
+  if (offers.visible) return `Klima-Taler (${offers.locations.length})`;
+  return 'Klima-Taler';
+};
+
+const mapPreviewItem = (
+  detailsData: Record<string, unknown> | undefined,
+  klimaTalerOnly: boolean,
+  selectedPointOfInterest: string | undefined,
+  queryVariables: Props['queryVariables'],
+  iconColor: string,
+  styles: ReturnType<typeof createStyles>
+) => {
+  const item =
+    detailsData && !klimaTalerOnly && !isKlimaTalerMarker(selectedPointOfInterest)
+      ? parseListItemsFromQuery(
+          QUERY_TYPES.POINT_OF_INTEREST,
+          {
+            ...detailsData,
+            [QUERY_TYPES.POINT_OF_INTEREST]: [detailsData?.[QUERY_TYPES.POINT_OF_INTEREST]]
+          },
+          undefined,
+          {
+            queryVariables
+          }
+        )?.[0]
+      : undefined;
+
+  if (item && !item.picture?.url) {
+    const SelectedIcon = item?.iconName
+      ? Icon[_upperFirst(item.iconName) as keyof typeof Icon]
+      : undefined;
+
+    return {
+      ...item,
+      leftIcon: (
+        <View style={[styles.iconContainer, styles.imageStyle]}>
+          {!!SelectedIcon && <SelectedIcon color={iconColor} />}
+        </View>
+      )
+    };
+  }
+
+  return item;
+};
+
 /* eslint-disable complexity */
 export const LocationOverview = ({
   currentPosition,
@@ -241,38 +324,7 @@ export const LocationOverview = ({
 
     if (!uniqueUrls.length) return;
 
-    // Fetch all vehicle statuses in parallel
-    Promise.allSettled(
-      uniqueUrls.map(async (url) => {
-        const data = await fetchAvailableVehicles(url);
-        const feature = data?.[0] as VehicleStatusFeature | undefined;
-        const status = feature?.properties?.[vehiclePropertyKey];
-        const iconName = feature?.iconName;
-        const activeIconName = feature?.activeIconName || feature?.iconNameActive;
-
-        return [url, { activeIconName, iconName, status }] as const;
-      })
-    ).then((results) => {
-      const statuses: VehicleStatusByUrl = {};
-
-      results.forEach((result) => {
-        if (result.status === 'fulfilled') {
-          const [url, vehicleStatus] = result.value;
-
-          if (
-            vehicleStatus.status != null ||
-            !!vehicleStatus.iconName ||
-            !!vehicleStatus.activeIconName
-          ) {
-            statuses[url] = vehicleStatus;
-          }
-        }
-        // Rejected results are ignored so that one failing request
-        // does not prevent processing of the others.
-      });
-
-      setVehicleStatuses(statuses);
-    });
+    void loadVehicleStatuses(uniqueUrls).then(setVehicleStatuses);
   }, [isConnected, pointsOfInterest]);
 
   if (filterByOpeningTimes && pointsOfInterest) {
@@ -313,40 +365,16 @@ export const LocationOverview = ({
     ...(mapToMapMarkers(pointsOfInterest, vehicleStatuses) ?? []),
     ...offersToMapMarkers(offers.locations, MAP.DEFAULT_PIN)
   ];
-  const sourceName = offers.loading
-    ? texts.klimaTaler.map.loading
-    : offers.error
-    ? texts.klimaTaler.map.unavailable
-    : offers.visible && !offers.configured
-    ? texts.klimaTaler.map.unconfigured
-    : `Klima-Taler${offers.visible ? ` (${offers.locations.length})` : ''}`;
+  const sourceName = offersSourceName(offers);
 
-  const item =
-    detailsData && !klimaTalerOnly && !isKlimaTalerMarker(selectedPointOfInterest)
-      ? parseListItemsFromQuery(
-          QUERY_TYPES.POINT_OF_INTEREST,
-          {
-            ...detailsData,
-            [QUERY_TYPES.POINT_OF_INTEREST]: [detailsData?.[QUERY_TYPES.POINT_OF_INTEREST]]
-          },
-          undefined,
-          {
-            queryVariables
-          }
-        )?.[0]
-      : undefined;
-
-  if (item && !item.picture?.url) {
-    const SelectedIcon = item?.iconName
-      ? Icon[_upperFirst(item.iconName) as keyof typeof Icon]
-      : undefined;
-
-    item.leftIcon = (
-      <View style={[styles.iconContainer, styles.imageStyle]}>
-        {!!SelectedIcon && <SelectedIcon color={colors.darkerPrimary} />}
-      </View>
-    );
-  }
+  const item = mapPreviewItem(
+    detailsData,
+    klimaTalerOnly,
+    selectedPointOfInterest,
+    queryVariables,
+    colors.darkerPrimary,
+    styles
+  );
 
   return (
     <View style={styles.mapContainer}>

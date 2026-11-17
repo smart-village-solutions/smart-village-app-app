@@ -3,6 +3,7 @@
  * Maps unified icon names to Tabler icon names
  */
 
+import { leafIconNames } from './leaf';
 import { refreshIconNames } from './refresh';
 
 export const tablerIconMapping: Record<string, string> = {
@@ -22,6 +23,8 @@ export const tablerIconMapping: Record<string, string> = {
   'condense-map': 'minimize',
   plus: 'plus',
   minus: 'minus',
+
+  leaf: leafIconNames.tabler,
 
   // Content & Media
   albums: 'album',

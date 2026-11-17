@@ -4,6 +4,7 @@
  * Reference: http://simplelineicons.com/
  */
 
+import { leafIconNames } from './leaf';
 import { refreshIconNames } from './refresh';
 
 export const simplelineiconsIconMapping: Record<string, string> = {
@@ -23,6 +24,8 @@ export const simplelineiconsIconMapping: Record<string, string> = {
   'condense-map': 'size-actual',
   plus: 'plus',
   minus: 'minus',
+
+  leaf: leafIconNames.simplelineicons,
 
   // Content & Media
   albums: 'picture',

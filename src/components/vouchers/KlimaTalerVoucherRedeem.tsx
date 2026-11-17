@@ -16,6 +16,7 @@ export const KlimaTalerVoucherRedeem = ({ payload }: { payload: unknown }) => {
   const voucher = readImportedKlimaTalerVoucher(payload);
   const available = !!voucher && voucher.remaining > 0 && isKlimaTalerConfigured(globalSettings);
   const copy = texts.klimaTaler.voucher;
+  const actionTitle = available ? copy.use : copy.unavailable;
 
   const redeem = async () => {
     if (!available || pending.current) return;
@@ -35,7 +36,7 @@ export const KlimaTalerVoucherRedeem = ({ payload }: { payload: unknown }) => {
     <>
       {!available && <RegularText>{copy.unavailableMessage}</RegularText>}
       <Button
-        title={opening ? texts.klimaTaler.opening : available ? copy.use : copy.unavailable}
+        title={opening ? texts.klimaTaler.opening : actionTitle}
         disabled={!available || opening}
         onPress={redeem}
       />

@@ -33,6 +33,10 @@ export const KlimaTalerPreview = ({
   const copy = texts.klimaTaler.map;
   const subtitle = location.offers.map((offer) => offer.title).join(' · ');
   const singleOffer = location.offers.length === 1 ? location.offers[0] : undefined;
+  const targetLabel = singleOffer ? copy.openOffer : copy.chooseOffer;
+  const accessibilityLabel = opening
+    ? texts.klimaTaler.opening
+    : `${location.name}, ${targetLabel}`;
   const image = getPreviewImage(location);
   const offerSubtitle = (offer: KlimaTalerOfferLocation['offers'][number]) =>
     `${offer.cost.toLocaleString('de-DE')} Klima-Taler · ${
@@ -53,9 +57,7 @@ export const KlimaTalerPreview = ({
         bottomDivider: false,
         params: {},
         routeName: '',
-        accessibilityLabel: opening
-          ? texts.klimaTaler.opening
-          : `${location.name}, ${singleOffer ? copy.openOffer : copy.chooseOffer}`,
+        accessibilityLabel,
         picture: image ? { url: image } : undefined,
         leftIcon: image ? undefined : (
           <View style={styles.icon}>

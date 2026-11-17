@@ -52,6 +52,20 @@ const keyExtractor = (item: FilterItem, index: number) => `index${index}-id${ite
 const initialCategoryIds = (variables: Props['queryVariables']) =>
   variables.categoryIds?.map(String) ?? [];
 
+const filterCategories = (
+  categories: CategoryFilterItem[],
+  showAll: boolean,
+  initialIds?: string[] | number[]
+) => {
+  if (showAll)
+    return categories.filter(
+      (category) =>
+        (category.pointsOfInterestTreeCount ?? 0) > 0 ||
+        initialIds?.some((id) => String(id) === String(category.id))
+    );
+  return initialIds?.length ? categories : [];
+};
+
 export const ChipFilter = ({
   queryVariables,
   refetch,
@@ -75,15 +89,11 @@ export const ChipFilter = ({
     }
   );
 
-  const categories = showAllPoiCategories
-    ? (data?.categories || []).filter(
-        (category) =>
-          (category.pointsOfInterestTreeCount ?? 0) > 0 ||
-          queryVariables.categoryIds?.some((id) => String(id) === String(category.id))
-      )
-    : queryVariables.categoryIds?.length
-    ? data?.categories || []
-    : [];
+  const categories = filterCategories(
+    data?.categories || [],
+    showAllPoiCategories,
+    queryVariables.categoryIds
+  );
   const filter: FilterItem[] = [
     ...additionalFilters,
     ..._sortBy(categories, [

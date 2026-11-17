@@ -3,6 +3,7 @@
  * Maps unified icon names to Ionicons icon names
  */
 
+import { leafIconNames } from './leaf';
 import { refreshIconNames } from './refresh';
 
 export const ioniconsIconMapping: Record<string, string> = {
@@ -22,6 +23,8 @@ export const ioniconsIconMapping: Record<string, string> = {
   'condense-map': 'contract',
   plus: 'add',
   minus: 'remove',
+
+  leaf: leafIconNames.ionicons,
 
   // Content & Media
   albums: 'albums',

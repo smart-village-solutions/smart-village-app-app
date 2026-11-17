@@ -4,6 +4,7 @@
  * Note: This is the largest icon library with 7000+ icons
  */
 
+import { leafIconNames } from './leaf';
 import { refreshIconNames } from './refresh';
 
 export const materialcommunityiconsIconMapping: Record<string, string> = {
@@ -23,6 +24,8 @@ export const materialcommunityiconsIconMapping: Record<string, string> = {
   'condense-map': 'fullscreen-exit',
   plus: 'plus',
   minus: 'minus',
+
+  leaf: leafIconNames.materialcommunityicons,
 
   // Content & Media
   albums: 'album',
