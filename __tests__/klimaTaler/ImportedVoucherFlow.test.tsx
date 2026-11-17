@@ -147,6 +147,14 @@ test('ordinary coupons retain local login and redemption', async () => {
   expect(redeemImportedKlimaTalerVoucher).not.toHaveBeenCalled();
 });
 
+test('ordinary discount coupons retain local redemption without a quota', () => {
+  mockVoucher = { ...mockVoucher, payload: {}, discountType: { discountPercentage: 10 } };
+  const screen = render(<VoucherDetailScreen {...props} />);
+  expect(screen.getByText('Local redemption')).toBeTruthy();
+  expect(mockUseVoucher).toHaveBeenCalledWith(true);
+  expect(redeemImportedKlimaTalerVoucher).not.toHaveBeenCalled();
+});
+
 test('ordinary coupons cannot redeem using a public quota while personalized quota is unavailable', () => {
   mockMemberId = 'local-member';
   mockVoucher = { ...mockVoucher, payload: {}, quota: { availableQuantity: 2 } };
