@@ -38,6 +38,25 @@ This document explains the integration and configuration of the HomeScreen in th
 
 All `type`-based entries support an optional `publicJsonFile` field to override the default JSON file name.
 
+### Widget padding
+
+Every home widget, including weather, uses `WidgetContainer` for its padding and touch target.
+The default vertical padding is `normalize(16)` on each side. The existing horizontal content
+insets are `normalize(12)` in a single-column list and `normalize(4)` in a multi-column grid;
+the widget section's outer horizontal inset remains `normalize(16)`.
+
+Municipality styles in `appDesignSystem.widgets.widgetStyle` override these defaults on this
+same container. They are not added to another padding inside `WidgetContent`. For example,
+`{"paddingVertical": 8}` produces `normalize(8)` at the top and bottom of every widget in both
+layouts. `padding`, axis-specific, edge-specific, and directional overrides remain supported,
+including zero. An explicit `padding` also replaces the default horizontal content inset.
+Font, icon, background, border, margin, and theme overrides retain their existing configuration
+paths. Responsive dimensions remain controlled by the widget layout and the minimum touch
+target remains 48 points.
+
+Existing instances that configured padding to compensate for the former nested padding should
+review that value: it now describes the final container inset. No new instance flag is required.
+
 ### Theme-aware widget SVG icons
 
 All widgets that use `DefaultWidget` support an optional `additionalProps.svg` value. The weather

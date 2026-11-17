@@ -1,7 +1,7 @@
 import { useNavigation } from 'expo-router/react-navigation';
 import React, { useCallback, useContext } from 'react';
 import { useQuery } from 'react-apollo';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { consts, normalize, texts } from '../../config';
 import { graphqlFetchPolicy, normalizeStyleValues } from '../../helpers';
@@ -14,7 +14,7 @@ import { BoldText } from '../Text';
 import { WrapperRow } from '../Wrapper';
 
 import { WidgetContent } from './WidgetContent';
-import { omitResponsiveDimensions } from './WidgetLayoutContext';
+import { WidgetContainer } from './WidgetContainer';
 
 const { POLL_INTERVALS } = consts;
 
@@ -38,22 +38,20 @@ export const WeatherWidget = ({ text, widgetStyle }: WidgetProps) => {
     [navigation, text]
   );
 
-  const { fontStyle, iconStyle, widgetStyle: customWidgetStyle } = widgetStyle || {};
+  const { fontStyle = {}, iconStyle = {}, widgetStyle: customWidgetStyle } = widgetStyle || {};
 
   const normalizedFontStyle = normalizeStyleValues(fontStyle);
   const normalizedIconStyle = normalizeStyleValues(iconStyle);
-  const normalizedWidgetStyle = omitResponsiveDimensions(normalizeStyleValues(customWidgetStyle));
 
   useHomeRefresh(refetch);
 
   return (
-    <TouchableOpacity
+    <WidgetContainer
       accessibilityLabel={`${
         text ?? texts.widgets.weather
       } (Aktuell ${roundedTemperature} °C) (Gehe zur Wetterübersicht) ${consts.a11yLabel.button}`}
-      accessibilityRole="button"
       onPress={onPress}
-      style={[normalizedWidgetStyle, styles.widget]}
+      widgetStyle={customWidgetStyle}
     >
       <WidgetContent
         label={text ?? texts.widgets.weather}
@@ -76,7 +74,7 @@ export const WeatherWidget = ({ text, widgetStyle }: WidgetProps) => {
           </WrapperRow>
         }
       />
-    </TouchableOpacity>
+    </WidgetContainer>
   );
 };
 
@@ -88,11 +86,5 @@ const styles = StyleSheet.create({
   iconContainer: {
     alignItems: 'center',
     justifyContent: 'center'
-  },
-  widget: {
-    alignItems: 'stretch',
-    justifyContent: 'center',
-    minHeight: 48,
-    width: '100%'
   }
 });

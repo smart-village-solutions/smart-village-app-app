@@ -18,14 +18,7 @@ export const WidgetContent = ({ label, labelStyle, visual }: Props) => {
   const isList = mode === 'list';
 
   return (
-    <View
-      style={[
-        styles.container,
-        { paddingHorizontal: normalize(4), paddingVertical: normalize(16) },
-        isList && styles.listContainer,
-        isList && { minHeight: normalize(64), paddingHorizontal: normalize(12) }
-      ]}
-    >
+    <View style={[styles.container, isList && styles.listContainer]}>
       <WrapperRow
         center
         style={[
