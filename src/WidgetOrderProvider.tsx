@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useEffect, useState } from 'react';
+import React, { createContext, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { addToStore, readFromStore } from './helpers/storageHelper';
 
@@ -31,13 +31,11 @@ export const WidgetOrderProvider = ({ children }: { children: React.ReactNode })
     setOrder(nextOrder);
   }, []);
 
+  const context = useMemo(() => ({ order: order ?? [], loaded: true, save }), [order, save]);
+
   // Keep navigation (and the native splash dismissal) behind local preference hydration.
   // Home must never render a temporary default order, including after a screen remount.
   if (!order) return null;
 
-  return (
-    <WidgetOrderContext.Provider value={{ order, loaded: true, save }}>
-      {children}
-    </WidgetOrderContext.Provider>
-  );
+  return <WidgetOrderContext.Provider value={context}>{children}</WidgetOrderContext.Provider>;
 };
