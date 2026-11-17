@@ -1,7 +1,7 @@
 import { useNavigation } from 'expo-router/react-navigation';
 import React, { useCallback, useContext } from 'react';
 import { useQuery } from 'react-apollo';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { consts, normalize, texts } from '../../config';
 import { graphqlFetchPolicy, normalizeStyleValues } from '../../helpers';
@@ -14,7 +14,7 @@ import { BoldText } from '../Text';
 import { WrapperRow } from '../Wrapper';
 
 import { WidgetContent } from './WidgetContent';
-import { omitResponsiveDimensions } from './WidgetLayoutContext';
+import { WidgetContainer } from './WidgetContainer';
 
 const { POLL_INTERVALS } = consts;
 
@@ -38,28 +38,26 @@ export const WeatherWidget = ({ text, widgetStyle }: WidgetProps) => {
     [navigation, text]
   );
 
-  const { fontStyle, iconStyle, widgetStyle: customWidgetStyle } = widgetStyle || {};
+  const { fontStyle = {}, iconStyle = {}, widgetStyle: customWidgetStyle } = widgetStyle || {};
 
   const normalizedFontStyle = normalizeStyleValues(fontStyle);
   const normalizedIconStyle = normalizeStyleValues(iconStyle);
-  const normalizedWidgetStyle = omitResponsiveDimensions(normalizeStyleValues(customWidgetStyle));
 
   useHomeRefresh(refetch);
 
   return (
-    <TouchableOpacity
+    <WidgetContainer
       accessibilityLabel={`${
         text ?? texts.widgets.weather
       } (Aktuell ${roundedTemperature} °C) (Gehe zur Wetterübersicht) ${consts.a11yLabel.button}`}
-      accessibilityRole="button"
       onPress={onPress}
-      style={[normalizedWidgetStyle, styles.widget]}
+      widgetStyle={customWidgetStyle}
     >
       <WidgetContent
         label={text ?? texts.widgets.weather}
         labelStyle={normalizedFontStyle}
         visual={
-          <WrapperRow center itemsCenter>
+          <WrapperRow center itemsCenter style={styles.visual}>
             <View style={[styles.iconContainer, normalizedIconStyle]}>
               <Image
                 source={{
@@ -70,17 +68,25 @@ export const WeatherWidget = ({ text, widgetStyle }: WidgetProps) => {
                 resizeMode="contain"
               />
             </View>
-            <BoldText primary big>
+            <BoldText primary big style={styles.temperature}>
               {roundedTemperature}°C
             </BoldText>
           </WrapperRow>
         }
       />
-    </TouchableOpacity>
+    </WidgetContainer>
   );
 };
 
 const styles = StyleSheet.create({
+  temperature: {
+    flexShrink: 1,
+    maxWidth: '100%'
+  },
+  visual: {
+    flexWrap: 'wrap',
+    maxWidth: '100%'
+  },
   icon: {
     aspectRatio: 1,
     width: normalize(40)
@@ -88,11 +94,5 @@ const styles = StyleSheet.create({
   iconContainer: {
     alignItems: 'center',
     justifyContent: 'center'
-  },
-  widget: {
-    alignItems: 'stretch',
-    justifyContent: 'center',
-    minHeight: 48,
-    width: '100%'
   }
 });
