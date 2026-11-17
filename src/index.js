@@ -38,6 +38,7 @@ import { initialContext, SettingsContext, SettingsProvider } from './SettingsPro
 import { AppThemeProvider } from './ThemeProvider';
 import { UnreadMessagesProvider } from './UnreadMessagesProvider';
 import { WasteReminderRuntime } from './WasteReminderRuntime';
+import { WidgetOrderProvider } from './WidgetOrderProvider';
 import { OtaUpdateManager, VolunteerReportProvider } from './components';
 
 const { LIST_TYPES } = consts;
@@ -249,7 +250,9 @@ const MainAppWithApolloProvider = () => {
           initialConversationSettings
         }}
       >
-        <MainAppWithSettings />
+        <WidgetOrderProvider>
+          <MainAppWithSettings />
+        </WidgetOrderProvider>
       </SettingsProvider>
     </ApolloProvider>
   );

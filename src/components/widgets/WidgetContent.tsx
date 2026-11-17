@@ -14,14 +14,14 @@ type Props = {
 };
 
 export const WidgetContent = ({ label, labelStyle, visual }: Props) => {
-  const { mode } = useContext(WidgetLayoutContext);
+  const { mode, contentPaddingVertical = normalize(16) } = useContext(WidgetLayoutContext);
   const isList = mode === 'list';
 
   return (
     <View
       style={[
         styles.container,
-        { paddingHorizontal: normalize(4), paddingVertical: normalize(16) },
+        { paddingHorizontal: normalize(4), paddingVertical: contentPaddingVertical },
         isList && styles.listContainer,
         isList && { minHeight: normalize(64), paddingHorizontal: normalize(12) }
       ]}

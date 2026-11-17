@@ -48,7 +48,7 @@ final class ChangersRuntime {
   func accept(_ promise: Promise) {
     guard enabled else { promise.reject("E_DISABLED", "Klima-Taler ist deaktiviert."); return }
     guard configured else { promise.reject("E_CONFIGURATION", "Die Changers-Zugangsdaten fehlen."); return }
-    registration.prepareActivation(wasActivated: activated, hasIdentity: ChangersInstance.shared().userUUID != nil)
+    registration.prepareActivation(wasActivated: activated, hasIdentity: initialized && ChangersInstance.shared().userUUID != nil)
     UserDefaults.standard.set(true, forKey: activationKey)
     initialize(); promise.resolve(status())
   }
@@ -84,7 +84,8 @@ final class ChangersRuntime {
     ["platform": "ios", "environment": config["environment"] ?? "stage", "sdkVersion": "4.2.0", "motionTagVersion": "6.3.4",
      "state": state,
      "activated": activated, "initialized": initialized, "authenticated": initialized && ChangersInstance.shared().isLoggedIn,
-     "registrationState": registration.state(activated: activated, hasIdentity: ChangersInstance.shared().userUUID != nil).rawValue,
+     // ChangersInstance observes app activation and requires MotionTag to exist first.
+     "registrationState": registration.state(activated: activated, hasIdentity: initialized && ChangersInstance.shared().userUUID != nil).rawValue,
      "tracking": "unknown", "providerOpen": controller?.presentingViewController != nil || opening]
   }
   func authenticate(_ uuid: String?, promise: Promise) {
