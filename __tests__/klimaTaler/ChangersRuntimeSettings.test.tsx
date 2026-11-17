@@ -104,7 +104,8 @@ test('removing settings while status is pending prevents activation and provider
       }) as never
   );
   const opening = klimaTalerEntry.open();
-  await Promise.resolve();
+  await new Promise((resolve) => setImmediate(resolve));
+  expect(native.getStatus).toHaveBeenCalledTimes(1);
   update({ settings: { 'klima-taler': false } });
   await ready();
   finish({ state: 'inactive', activated: false, initialized: false, authenticated: false });

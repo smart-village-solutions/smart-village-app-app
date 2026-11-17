@@ -25,6 +25,8 @@ export const createSummary = (
   let cache: { uuid: string; coins: number } | undefined;
   let generation = 0;
   let pending: Promise<void> | undefined;
+  let statisticsPending: Promise<Statistics> | undefined;
+  let paused = false;
   let validatedAt: number | undefined;
   const listeners = new Set<() => void>();
   const set = (next: SummaryState) => {
@@ -84,6 +86,25 @@ export const createSummary = (
     pending = undefined;
     if (!['loading', 'error', 'disabled'].includes(state.phase)) validatedAt = Date.now();
   };
+  // Invalidation hides stale results, but the native read still owns the SDK operation slot.
+  const waitForIdle = async () => {
+    while (statisticsPending) await statisticsPending.catch(() => undefined);
+  };
+  const readStatistics = async () => {
+    const request = client.fetchStatistics();
+    statisticsPending = request;
+    try {
+      return await request;
+    } finally {
+      if (statisticsPending === request) statisticsPending = undefined;
+    }
+  };
+  const invalidate = () => {
+    generation++;
+    pending = undefined;
+    validatedAt = undefined;
+    set({ phase: isEnabled() ? 'loading' : 'disabled' });
+  };
   return {
     getSnapshot: () => state,
     subscribe: (listener: () => void) => {
@@ -94,13 +115,18 @@ export const createSummary = (
     },
     // Hide data before provider/account changes and backgrounding. A later refresh must
     // revalidate identity before either cached or fresh values can become visible again.
-    invalidate: () => {
-      generation++;
-      pending = undefined;
-      validatedAt = undefined;
-      set({ phase: isEnabled() ? 'loading' : 'disabled' });
+    invalidate,
+    pause: () => {
+      if (paused) return;
+      paused = true;
+      invalidate();
     },
+    resume: () => {
+      paused = false;
+    },
+    waitForIdle,
     refresh: ({ reuse = false }: { reuse?: boolean } = {}): Promise<void> => {
+      if (paused) return Promise.resolve();
       if (pending) return pending;
       if (reuse && validatedAt !== undefined && Date.now() - validatedAt < 5 * 60 * 1000)
         return Promise.resolve();
@@ -130,7 +156,9 @@ export const createSummary = (
             set({ phase: 'unsupported' });
             return;
           }
-          const statistics = await client.fetchStatistics();
+          await waitForIdle();
+          if (!current()) return;
+          const statistics = await readStatistics();
           if (!current()) return;
           const confirmedUUID = await identity(current);
           if (!current()) return;

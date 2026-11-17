@@ -73,3 +73,13 @@ test('drops work across compact and full-width widgets without resizing either',
 test('widget-name aliases preserve saved ordering identity', () => {
   expect(identifyWidgets(['klima-taler'])[0].id).toBe(identifyWidgets(['klimaTaler'])[0].id);
 });
+
+test('drop targeting handles empty, unmeasured and single-widget layouts', () => {
+  expect(widgetDropTarget([], 0, 0)).toBeUndefined();
+  expect(
+    widgetDropTarget([{ id: 'unmeasured', x: 0, y: 0, width: 0, height: 0 }], 0, 0)
+  ).toBeUndefined();
+  expect(widgetDropTarget([{ id: 'only', x: 0, y: 0, width: 100, height: 100 }], 50, 50)).toBe(
+    'only'
+  );
+});

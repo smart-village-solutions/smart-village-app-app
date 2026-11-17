@@ -96,3 +96,62 @@ test('disabling removes the native listener and prevents new reads or entry', as
   expect(native.fetchStatistics).not.toHaveBeenCalled();
   expect(native.openProvider).not.toHaveBeenCalled();
 });
+
+test.each(['success', 'failure'])(
+  'entry waits for an in-flight native statistics %s instead of opening while busy',
+  async (outcome) => {
+    let busy = true;
+    let complete!: () => void;
+    native.fetchStatistics.mockImplementationOnce(
+      () =>
+        new Promise((resolve, reject) => {
+          complete = () => {
+            busy = false;
+            if (outcome === 'success') resolve({ coins: 10 } as never);
+            else reject(new Error('Temporary read failure'));
+          };
+        })
+    );
+    native.openProvider.mockImplementationOnce(async () => {
+      if (busy) throw new Error('E_BUSY');
+    });
+    const reading = klimaTalerSummary.refresh();
+    await flush();
+    expect(native.fetchStatistics).toHaveBeenCalledTimes(1);
+    const opening = openKlimaTaler();
+    await flush();
+    const openedWhileBusy = native.openProvider.mock.calls.length;
+    await klimaTalerSummary.refresh();
+    const readCountWhileOpening = native.fetchStatistics.mock.calls.length;
+    complete();
+    await Promise.all([reading, opening]);
+    expect(openedWhileBusy).toBe(0);
+    expect(readCountWhileOpening).toBe(1);
+    expect(native.openProvider).toHaveBeenCalledTimes(1);
+    expect(klimaTalerEntry.getSnapshot().phase).toBe('open');
+    expect(Alert.alert).not.toHaveBeenCalled();
+  }
+);
+
+test('cancelling entry while statistics finish never opens the provider later', async () => {
+  let finish!: (value: { coins: number }) => void;
+  native.fetchStatistics.mockImplementationOnce(
+    () =>
+      new Promise((resolve) => {
+        finish = resolve as typeof finish;
+      })
+  );
+  const reading = klimaTalerSummary.refresh();
+  await flush();
+  const opening = openKlimaTaler();
+  await flush();
+  klimaTalerEntry.cancel();
+  finish({ coins: 10 });
+  await Promise.all([reading, opening]);
+  await flush();
+  expect(native.openProvider).not.toHaveBeenCalled();
+  expect(klimaTalerEntry.getSnapshot().phase).toBe('idle');
+  expect(Alert.alert).not.toHaveBeenCalled();
+  await openKlimaTaler();
+  expect(native.openProvider).toHaveBeenCalledTimes(1);
+});

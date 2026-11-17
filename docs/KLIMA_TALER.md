@@ -70,16 +70,16 @@ Configure the card through `additionalProps` on its entry in `globalSettings.wid
 }
 ```
 
-| Field | Options |
-| --- | --- |
-| `enabled` | `false` hides only the card; provider Service tiles and module activation remain available. |
-| `texts` | `title` (promotional title), `description`, `balance` (balance heading/accessibility label), `opening`, `unavailableBalance`, `locale`, `comingSoonTitle`, `comingSoonMessage`. |
-| `statusTexts` | `loading`, `disabled`, `unconfigured`, `noSession`, `ready`, `empty`, `error`, `unsupported`, `stale`. Empty strings suppress individual messages. |
-| `show` | Boolean switches for `logo`, `title`, `description`, `balance`, `status`; all default to `true`. |
-| `logo` | `uri` (HTTPS image), `icon` (SVA named icon fallback), `color` (icon color, defaults to card text), `size` and `promoSize` (icon sizes). |
-| `colors` | `background`, `text`, `button`, `buttonText`, `shortcut`, `shortcutIcon`. Optional `dark` object overrides the same fields in dark mode. |
-| `styles` | React Native JSON style objects for `card`, `summary`, `logo`, `title`, `description`, `balance`, `status`, `actions`, `button`, `buttonText`, `shortcut`. Dimensions use density-independent pixels. Styles override color/layout defaults; balance typography still adapts to available width. |
-| `actions` | `main`, `wallet`, `map`, `badges`, `settings`. Each accepts `false` or an object with the fields below. |
+| Field         | Options                                                                                                                                                                                                                                                                                          |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `enabled`     | `false` hides only the card; provider Service tiles and module activation remain available.                                                                                                                                                                                                      |
+| `texts`       | `title` (promotional title), `description`, `balance` (balance heading/accessibility label), `opening`, `unavailableBalance`, `locale`, `comingSoonTitle`, `comingSoonMessage`.                                                                                                                  |
+| `statusTexts` | `loading`, `disabled`, `unconfigured`, `noSession`, `ready`, `empty`, `error`, `unsupported`, `stale`. Empty strings suppress individual messages.                                                                                                                                               |
+| `show`        | Boolean switches for `logo`, `title`, `description`, `balance`, `status`; all default to `true`.                                                                                                                                                                                                 |
+| `logo`        | `uri` (HTTPS image), `icon` (SVA named icon fallback), `color` (icon color, defaults to card text), `size` and `promoSize` (icon sizes).                                                                                                                                                         |
+| `colors`      | `background`, `text`, `button`, `buttonText`, `shortcut`, `shortcutIcon`. Optional `dark` object overrides the same fields in dark mode.                                                                                                                                                         |
+| `styles`      | React Native JSON style objects for `card`, `summary`, `logo`, `title`, `description`, `balance`, `status`, `actions`, `button`, `buttonText`, `shortcut`. Dimensions use density-independent pixels. Styles override color/layout defaults; balance typography still adapts to available width. |
+| `actions`     | `main`, `wallet`, `map`, `badges`, `settings`. Each accepts `false` or an object with the fields below.                                                                                                                                                                                          |
 
 Action fields are `enabled`, `label`, `promoLabel`, `icon`, `showInPromo`, `target`, `alertTitle`, and `alertMessage`. Main is visible in both card states and opens the provider by default. Other actions are visible after onboarding, and display the configurable coming-soon alert. Their individual `alertTitle`/`alertMessage` override the shared alert copy when nonempty. `target: "provider"` opens the general provider screen; `"comingSoon"` (and unknown targets) shows the alert. Wallet, map, badge and settings deep links are not implemented. In particular, the wallet shortcut does not open an unrelated SVA wallet. Each shortcut can be hidden independently without affecting the others.
 
@@ -113,7 +113,7 @@ Credentials are consumed by native build mods and are not serialized in Expo `ex
 
 ## Compatibility
 
-- OTA runtime: `<app version>-changers-2`. This includes the native `setEnabled` gate and must not share updates with app-version-only or `changers-1` binaries.
+- OTA runtime: `<app version>-changers-3`. This includes the native registration attempt journal and must not share updates with app-version-only, `changers-1` or `changers-2` binaries. Install a new native build before publishing matching updates.
 - iOS: Changers 4.2.0 / MotionTag 6.3.4, pinned to vendor commit `33c65f9b8db1618dfff3530c73a061935a66a9ff`.
 - Android: `com.github.Changers.Android-SDK:sdkstaging:1.20.6` / MotionTag 7.2.5.
 - The provider connection uses iOS `.stage` and Android `sdkstaging`. These names are vendor transport identifiers, not SVA customer environment selectors.
@@ -132,6 +132,8 @@ The widget reads iOS `user.coins` or Android `user.recoins`. It distinguishes an
 
 The memory-only cache is scoped to provider identity. Home revisits reuse verified values for up to five minutes; pull-to-refresh and provider return request fresh statistics. Backgrounding or provider entry hides old values until identity is revalidated. Temporary failures can display a verified cached value as stale. Late results cannot overwrite a newer session. Rendering and refreshing never activate the module, create accounts or request permissions.
 
+Provider entry pauses summary refreshes and waits for an in-flight native statistics request to finish before presenting the provider. Invalidation only hides stale values; it does not cancel the native SDK operation. On dismissal or cancellation, refreshes resume, and subsequent reads wait for the previous native read to release its operation slot.
+
 ## Android statistics safety
 
 The vendor `readStatistics()` method logs an authenticated cURL command and may invoke `signup()` after a Forbidden response. The widget does not call it. `ChangersStatisticsClient` instead performs a read-only request to the pinned SDK's HTTPS statistics endpoint using the existing native session.
@@ -140,7 +142,7 @@ The dedicated HTTP client has no logging interceptors, shared cookies or cache. 
 
 `ChangersStatisticsSession.java` isolates version-specific JVM accessors to the SDK's session. Revalidate those accessors, headers, endpoint and response fields when upgrading the vendor SDK. This adapter protects the widget request path; it does not change every logging path inside the vendor SDK.
 
-Android statistics require the native `safeStatistics: true` capability. Older binaries retain the unavailable state even with newer JavaScript. Rebuilding Android enables the balance; the additive capability remains compatible with the `changers-2` runtime.
+Android statistics require the native `safeStatistics: true` capability. Older binaries retain the unavailable state even with newer JavaScript. Rebuilding Android enables the balance; the capability was introduced in the `changers-2` runtime; current builds use `changers-3`.
 
 ## Testing and limitations
 
@@ -162,3 +164,16 @@ cd android
 iOS compatibility checks are in `__tests__/klimaTaler/simulator_compatibility_test.rb`. Run the UIKit presentation harness on a booted Apple Silicon simulator with `sh __tests__/klimaTaler/ios/run-presentation-tests.sh <UDID>`.
 
 Device acceptance should cover initial consent, denied and granted permissions, opening/closing, session restoration, widget refresh, disabling the module, and tracking lifecycle. Account deletion, actual background journey collection, buffered data handling and reboot recovery require separate provider/device validation. Map/POI navigation, badge data and SVA profile linkage are not implemented.
+
+### Registration recovery (SVAK-228 / SVAK-230)
+
+On iOS, activation and registration are separate. Native status reports `notStarted`, `uncertain`, or `existing`. A known offline path rejects before calling the SDK and leaves registration retryable, including after restarting the app. Activation interrupted before dispatch is also retryable. The attempt marker is persisted before dispatch; repeated taps share the entry request. An existing UUID always uses login, never signup. Logout, tracking stop, and remote disable do not reset the registration history.
+
+A vendor connection error after dispatch is **not** proof that signup failed on the server. Without a UUID, timeout/connection-loss outcomes remain uncertain across restarts and the entry explains that provider recovery is required. The pinned iOS framework exposes no signup idempotency key or lookup for a lost signup response. Automatically retrying these outcomes would risk duplicate accounts. Previously activated installations without a journal/UUID are likewise treated as uncertain. Full recovery of those installations remains a provider dependency.
+
+Run the credential-free native journal harness:
+
+```sh
+xcrun swiftc modules/expo-changers/ios/ChangersRegistration.swift __tests__/klimaTaler/ios/RegistrationHarness.swift -o /tmp/changers-registration-tests
+/tmp/changers-registration-tests
+```

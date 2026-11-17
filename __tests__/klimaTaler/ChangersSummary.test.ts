@@ -151,9 +151,15 @@ test('late results cannot overwrite the current account after invalidation', asy
   expect(summary.getSnapshot()).toEqual({ phase: 'loading' });
   native.getUserUUID.mockResolvedValue('account-b');
   native.fetchStatistics.mockResolvedValue(statistics(3));
-  await summary.refresh();
+  const observed: (number | undefined)[] = [];
+  summary.subscribe(() => observed.push(summary.getSnapshot().coins));
+  const second = summary.refresh();
+  await new Promise((done) => setImmediate(done));
+  expect(native.fetchStatistics).toHaveBeenCalledTimes(1);
+  expect(summary.getSnapshot()).toEqual({ phase: 'loading' });
   resolve(statistics(999));
-  await first;
+  await Promise.all([first, second]);
+  expect(observed).not.toContain(999);
   expect(summary.getSnapshot()).toEqual({ phase: 'ready', coins: 3 });
 });
 

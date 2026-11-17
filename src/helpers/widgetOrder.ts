@@ -58,7 +58,7 @@ export const widgetDropTarget = (bounds: WidgetBounds[], x: number, y: number) =
   const distance = (item: WidgetBounds) =>
     Math.max(item.x - x, 0, x - item.x - item.width) ** 2 +
     Math.max(item.y - y, 0, y - item.y - item.height) ** 2;
-  const nearest = candidates.reduce((a, b) => (distance(a) <= distance(b) ? a : b));
+  const nearest = candidates.reduce((a, b) => (distance(a) <= distance(b) ? a : b), candidates[0]);
   // Ignore drops outside the widget area; allow the gaps between adjacent cards.
   return distance(nearest) <= 32 ** 2 ? nearest.id : undefined;
 };

@@ -7,13 +7,18 @@ import { klimaTalerSummary } from './summary';
 export const observeKlimaTaler = () => {
   let disposed = false;
   let previousPhase = klimaTalerEntry.getSnapshot().phase;
+  if (['opening', 'open'].includes(previousPhase)) klimaTalerSummary.pause();
+  else klimaTalerSummary.resume();
   const unsubscribe = klimaTalerEntry.subscribe(() => {
     const phase = klimaTalerEntry.getSnapshot().phase;
     const returning =
       ['idle', 'error'].includes(phase) && ['opening', 'open'].includes(previousPhase);
     previousPhase = phase;
-    if (phase === 'opening') klimaTalerSummary.invalidate();
-    if (returning) void klimaTalerSummary.refresh();
+    if (phase === 'opening') klimaTalerSummary.pause();
+    if (returning) {
+      klimaTalerSummary.resume();
+      void klimaTalerSummary.refresh();
+    }
   });
   const appState = AppState.addEventListener('change', async (next) => {
     if (next === 'background') klimaTalerSummary.invalidate();

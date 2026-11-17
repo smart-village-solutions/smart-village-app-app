@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import {
   Alert,
   LayoutChangeEvent,
@@ -234,7 +234,8 @@ export const Widgets = ({ widgetConfigs, widgetStyle }: Props) => {
   });
   const itemStyle = { paddingHorizontal: columnPadding };
   const rows = widgetRows(widgetComponents, layout.columns);
-  const layoutContext = { mode: layout.columns === 1 ? ('list' as const) : ('grid' as const) };
+  const layoutMode = layout.columns === 1 ? ('list' as const) : ('grid' as const);
+  const layoutContext = useMemo(() => ({ mode: layoutMode }), [layoutMode]);
   const onLayout = useCallback(
     ({ nativeEvent }: LayoutChangeEvent) => {
       const nextWidth = nativeEvent.layout.width;
