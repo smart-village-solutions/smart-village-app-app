@@ -65,9 +65,15 @@ final class ChangersRuntime {
       if initialized { ChangersInstance.shared().stopTracking() }
     }
   }
+  private var state: String {
+    if !configured { return "unconfigured" }
+    if !activated { return "inactive" }
+    if initialized { return "ready" }
+    return "idle"
+  }
   func status() -> [String: Any] {
     ["platform": "ios", "environment": config["environment"] ?? "stage", "sdkVersion": "4.2.0", "motionTagVersion": "6.3.4",
-     "state": !configured ? "unconfigured" : !activated ? "inactive" : initialized ? "ready" : "idle",
+     "state": state,
      "activated": activated, "initialized": initialized, "authenticated": initialized && ChangersInstance.shared().isLoggedIn,
      "tracking": "unknown", "providerOpen": controller?.presentingViewController != nil || opening]
   }
@@ -109,7 +115,7 @@ final class ChangersOperation: NSObject, ChangersAuthenticationDelegate, Changer
     guard let p = promise else { return }; promise = nil; timeout?.cancel()
     p.reject(code, "Die Changers-Anfrage konnte nicht abgeschlossen werden. Bitte Verbindung und Client-Berechtigungen prüfen.")
   }
-  func didSetupUser(with uiid: String) { /* setupDidFinish bestätigt den Abschluss der gesamten Einrichtung. */ }
+  func didSetupUser(with _: String) { /* setupDidFinish bestätigt den Abschluss der gesamten Einrichtung. */ }
   func setupDidFinish() { DispatchQueue.main.async {
     if !ChangersRuntime.shared.enabled || !ChangersRuntime.shared.activated { ChangersInstance.shared().stopTracking() }
     self.finish(ChangersInstance.shared().userUUID)
@@ -122,12 +128,12 @@ final class ChangersOperation: NSObject, ChangersAuthenticationDelegate, Changer
 }
 
 public class ChangersAppDelegateSubscriber: ExpoAppDelegateSubscriber {
-  public func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
+  public func application(_: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
     ChangersRuntime.shared.launchOptions = launchOptions
     // Wait for globalSettings before initializing, even after a previous activation.
     return true
   }
-  public func application(_ application: UIApplication, handleEventsForBackgroundURLSession identifier: String, completionHandler: @escaping () -> Void) {
+  public func application(_: UIApplication, handleEventsForBackgroundURLSession identifier: String, completionHandler: @escaping () -> Void) {
     guard ChangersRuntime.shared.enabled, ChangersRuntime.shared.initialized else { completionHandler(); return }
     ChangersTracking.sharedInstance.handleEvents(forBackgroundURLSession: identifier, completionHandler: completionHandler)
   }

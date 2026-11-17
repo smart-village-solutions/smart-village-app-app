@@ -1,7 +1,7 @@
 import UIKit
 
 @main class AppDelegate: UIResponder, UIApplicationDelegate {
-  func application(_ application: UIApplication, configurationForConnecting session: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
+  func application(_: UIApplication, configurationForConnecting session: UISceneSession, options _: UIScene.ConnectionOptions) -> UISceneConfiguration {
     let config = UISceneConfiguration(name: "Test", sessionRole: session.role)
     config.delegateClass = SceneDelegate.self
     return config
@@ -10,7 +10,7 @@ import UIKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
   var window: UIWindow?
-  func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options: UIScene.ConnectionOptions) {
+  func scene(_ scene: UIScene, willConnectTo _: UISceneSession, options _: UIScene.ConnectionOptions) {
     let window = UIWindow(windowScene: scene as! UIWindowScene)
     let driver = Driver()
     window.rootViewController = driver
@@ -36,7 +36,7 @@ class Driver: UIViewController {
   }
   func require(_ condition: Bool, _ message: String) {
     if !condition {
-      try! ("FAILED: " + message).write(to: directory.appendingPathComponent("result.txt"), atomically: true, encoding: .utf8)
+      writeFile(Data(("FAILED: " + message).utf8), named: "result.txt")
       fatalError(message)
     }
     checks.append(message)
@@ -77,13 +77,22 @@ class Driver: UIViewController {
       if scenario == 0 {
         let renderer = UIGraphicsImageRenderer(bounds: self.view.window!.bounds)
         let screenshot = renderer.pngData { _ in self.view.window!.drawHierarchy(in: self.view.window!.bounds, afterScreenUpdates: true) }
-        try! screenshot.write(to: self.directory.appendingPathComponent("close-button.png"))
+        self.writeFile(screenshot, named: "close-button.png")
         button.sendActions(for: .touchUpInside)
         self.afterDismiss(scenario)
       } else if scenario == 1 {
         provider.dismiss(animated: true)
         self.afterDismiss(scenario)
       } else {
+        self.presentChild(provider, button: button, scenario: scenario)
+      }
+    }
+  }
+  func writeFile(_ data: Data, named filename: String) {
+    do { try data.write(to: directory.appendingPathComponent(filename)) }
+    catch { fatalError("Unable to write test artifact: \(filename): \(error)") }
+  }
+  func presentChild(_ provider: UIViewController, button: UIButton, scenario: Int) {
         let child = UIViewController()
         child.view.backgroundColor = .systemBlue
         child.modalPresentationStyle = .fullScreen
@@ -94,8 +103,6 @@ class Driver: UIViewController {
             self.afterDismiss(scenario)
           }
         }
-      }
-    }
   }
   func afterDismiss(_ scenario: Int) {
     DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
@@ -103,7 +110,7 @@ class Driver: UIViewController {
       self.require(self.dismissals == 1, "exactly one dismissal in scenario \(scenario)")
       if scenario < 2 { self.run(scenario + 1) }
       else {
-        try! ("PASSED: \(self.checks.count) checks\n" + self.checks.joined(separator: "\n")).write(to: self.directory.appendingPathComponent("result.txt"), atomically: true, encoding: .utf8)
+        self.writeFile(Data(("PASSED: \(self.checks.count) checks\n" + self.checks.joined(separator: "\n")).utf8), named: "result.txt")
       }
     }
   }

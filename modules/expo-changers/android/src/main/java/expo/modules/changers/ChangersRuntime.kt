@@ -34,11 +34,11 @@ internal object ChangersRuntime {
       app.registerActivityLifecycleCallbacks(object : Application.ActivityLifecycleCallbacks {
         override fun onActivityCreated(a: Activity, b: Bundle?) { if (a is WebActivity) { providerActivity = a; opening = false; if (!enabled) a.finish() } }
         override fun onActivityDestroyed(a: Activity) { if (providerActivity === a) { providerActivity = null; opening = false; if (!a.isChangingConfigurations) onProviderClosed?.invoke() } }
-        override fun onActivityStarted(a: Activity) {}
-        override fun onActivityResumed(a: Activity) {}
-        override fun onActivityPaused(a: Activity) {}
-        override fun onActivityStopped(a: Activity) {}
-        override fun onActivitySaveInstanceState(a: Activity, b: Bundle) {}
+        override fun onActivityStarted(a: Activity) { /* No SDK action is needed for this lifecycle callback. */ }
+        override fun onActivityResumed(a: Activity) { /* No SDK action is needed for this lifecycle callback. */ }
+        override fun onActivityPaused(a: Activity) { /* No SDK action is needed for this lifecycle callback. */ }
+        override fun onActivityStopped(a: Activity) { /* No SDK action is needed for this lifecycle callback. */ }
+        override fun onActivitySaveInstanceState(a: Activity, b: Bundle) { /* No SDK action is needed for this lifecycle callback. */ }
       })
       // Wait for globalSettings before initializing, even after a previous activation.
     } catch (_: Exception) { errorCode = "E_CONFIGURATION" }
@@ -82,7 +82,13 @@ internal object ChangersRuntime {
   fun requireReady() { check(enabled) { "E_DISABLED" }; check(configured) { "E_CONFIGURATION" }; check(activated) { "E_NOT_ACTIVE" }; check(initialized) { "E_NOT_READY" } }
   fun status(): Map<String, Any?> = mapOf(
     "platform" to "android", "environment" to environment, "sdkVersion" to "1.20.6", "motionTagVersion" to "7.2.5",
-    "state" to (if (!configured) "unconfigured" else if (!activated) "inactive" else if (errorCode != null) "error" else if (initialized) "ready" else "idle"),
+    "state" to when {
+      !configured -> "unconfigured"
+      !activated -> "inactive"
+      errorCode != null -> "error"
+      initialized -> "ready"
+      else -> "idle"
+    },
     "errorCode" to errorCode, "activated" to activated, "initialized" to initialized,
     "authenticated" to (initialized && Changers.isUserAuthenticated(application)),
     "tracking" to "unknown", "providerOpen" to (providerActivity != null || opening)

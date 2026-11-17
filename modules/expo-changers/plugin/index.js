@@ -34,9 +34,33 @@ function mergePlist(plist) {
   plist.UIBackgroundModes = [...new Set([...(plist.UIBackgroundModes || []), 'location'])];
   return plist;
 }
+function mergeReceivers(app) {
+  app.receiver ??= [];
+  const vendor = 'de.motiontag.tracker.internal.receivers.BootAppUpdateReceiver';
+  const existing = app.receiver.find((receiver) => receiver.$['android:name'] === vendor);
+  if (existing) existing.$['tools:node'] = 'remove';
+  else app.receiver.push({ $: { 'android:name': vendor, 'tools:node': 'remove' } });
+  const guarded = 'expo.modules.changers.ChangersBootReceiver';
+  if (!app.receiver.some((receiver) => receiver.$['android:name'] === guarded)) {
+    app.receiver.push({
+      $: { 'android:name': guarded, 'android:exported': 'false' },
+      'intent-filter': [
+        {
+          action: [
+            'android.intent.action.BOOT_COMPLETED',
+            'android.intent.action.QUICKBOOT_POWERON',
+            'com.htc.intent.action.QUICKBOOT_POWERON',
+            'android.intent.action.MY_PACKAGE_REPLACED'
+          ].map((name) => ({ $: { 'android:name': name } }))
+        }
+      ]
+    });
+  }
+}
 function mergeManifest(manifest) {
   manifest.manifest.$['xmlns:tools'] ??= 'http://schemas.android.com/tools';
   const app = AndroidConfig.Manifest.getMainApplicationOrThrow(manifest);
+  mergeReceivers(app);
   // Expo Dev Launcher benötigt barcode_ui; Changers/Quickie benötigt barcode.
   // ML Kit unterstützt eine kommagetrennte Abhängigkeitsliste; Einträge der einbindenden App ebenfalls erhalten.
   app['meta-data'] ??= [];
@@ -125,11 +149,11 @@ function mergeManifest(manifest) {
   return manifest;
 }
 async function mergeBackup(file, modern) {
-  let doc = fs.existsSync(file)
-    ? await XML.readXMLAsync({ path: file })
-    : modern
-    ? { 'data-extraction-rules': { 'cloud-backup': [{}], 'device-transfer': [{}] } }
-    : { 'full-backup-content': {} };
+  let doc;
+  if (fs.existsSync(file)) doc = await XML.readXMLAsync({ path: file });
+  else if (modern)
+    doc = { 'data-extraction-rules': { 'cloud-backup': [{}], 'device-transfer': [{}] } };
+  else doc = { 'full-backup-content': {} };
   const rootKey = modern ? 'data-extraction-rules' : 'full-backup-content';
   if (doc[rootKey] === '') doc[rootKey] = {};
   const root = doc[rootKey];
@@ -191,16 +215,18 @@ function withChangers(config, options = {}) {
     const res = path.join(c.modRequest.platformProjectRoot, 'app/src/main/res/xml');
     fs.mkdirSync(res, { recursive: true });
     const app = AndroidConfig.Manifest.getMainApplicationOrThrow(c.modResults);
-    for (const [key, modern] of [
-      ['android:fullBackupContent', false],
-      ['android:dataExtractionRules', true]
-    ]) {
-      const ref = app.$[key];
-      if (ref === 'false') continue;
-      if (!/^@xml\/[a-z0-9_]+$/.test(ref))
-        throw new Error('Keine sichere Zusammenführung möglich für ' + key);
-      await mergeBackup(path.join(res, ref.slice(5) + '.xml'), modern);
-    }
+    await Promise.all(
+      [
+        ['android:fullBackupContent', false],
+        ['android:dataExtractionRules', true]
+      ].map(async ([key, modern]) => {
+        const ref = app.$[key];
+        if (ref === 'false') return;
+        if (!/^@xml\/[a-z0-9_]+$/.test(ref))
+          throw new Error('Keine sichere Zusammenführung möglich für ' + key);
+        await mergeBackup(path.join(res, ref.slice(5) + '.xml'), modern);
+      })
+    );
     return c;
   });
   config = withProjectBuildGradle(config, (c) => {
@@ -268,7 +294,7 @@ function withSimulatorCompatibility(contents) {
         .trimEnd() + `\n\n${requirement}`
     );
   }
-  if (/^\s*post_integrate\b/m.test(contents))
+  if (/^[\t ]*post_integrate\b/m.test(contents))
     throw new Error('Changers requires a post_integrate hook with a named installer argument.');
   return `${contents.trimEnd()}\n\n${requirement}
 post_integrate do |installer|

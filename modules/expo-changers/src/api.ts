@@ -23,11 +23,9 @@ export class ChangersError extends Error {
   }
 }
 export function maskUUID(uuid: string | null): string {
-  return uuid
-    ? uuid.length > 12
-      ? `${uuid.slice(0, 4)}••••${uuid.slice(-4)}`
-      : '••••'
-    : 'Keine Sitzung';
+  if (!uuid) return 'Keine Sitzung';
+  if (uuid.length <= 12) return '••••';
+  return `${uuid.slice(0, 4)}••••${uuid.slice(-4)}`;
 }
 export function capabilities(platform: string, safeStatistics = false): Capabilities {
   const yes = { supported: true };

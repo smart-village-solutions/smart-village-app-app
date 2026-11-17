@@ -71,7 +71,7 @@ test('an older binary cannot silently enable without the globalSettings gate', a
 });
 
 test('disabled customers without the native module remain inert', async () => {
-  await createChangers(null, 'ios').setEnabled(false);
+  await expect(createChangers(null, 'ios').setEnabled(false)).resolves.toBeUndefined();
 });
 
 test('unsupported simulator errors remain distinguishable from missing credentials', async () => {

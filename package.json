@@ -2,6 +2,7 @@
   "name": "smart-village-app",
   "version": "5.0.0",
   "scripts": {
+    "changers:prepare:ios": "sh scripts/fetch-changers-ios-frameworks.sh",
     "eas-build-pre-install": "if [ \"$EAS_BUILD_PLATFORM\" = \"ios\" ]; then sh scripts/fetch-changers-ios-frameworks.sh; fi",
     "android": "npx expo run:android",
     "ios": "npx expo run:ios",

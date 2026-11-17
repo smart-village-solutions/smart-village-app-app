@@ -43,8 +43,11 @@ test('Manifest-Zusammenführung ist idempotent und erhält Backup-Regeln und App
           $: {
             'android:name': '.MainApplication',
             'android:allowBackup': 'true',
+            'android:usesCleartextTraffic': 'true',
+            'android:networkSecurityConfig': '@xml/customer_network',
             'android:fullBackupContent': '@xml/custom'
           },
+          receiver: [{ $: { 'android:name': '.CustomerReceiver', 'android:exported': 'false' } }],
           activity: [{ $: { 'android:name': '.MainActivity' } }],
           provider: [{ $: { 'android:name': 'OtherProvider', 'android:authorities': 'other' } }]
         }
@@ -56,6 +59,23 @@ test('Manifest-Zusammenführung ist idempotent und erhält Backup-Regeln und App
   const app = manifest.manifest.application[0];
   assert.equal(app.$['android:allowBackup'], 'true');
   assert.equal(app.$['android:fullBackupContent'], '@xml/custom');
+  expect(app.$['android:usesCleartextTraffic']).toBe('true');
+  expect(app.$['android:networkSecurityConfig']).toBe('@xml/customer_network');
+  expect(app.receiver).toHaveLength(3);
+  expect(app.receiver[0].$['android:name']).toBe('.CustomerReceiver');
+  expect(app.receiver[1].$['tools:node']).toBe('remove');
+  expect(app.receiver[2].$).toEqual({
+    'android:name': 'expo.modules.changers.ChangersBootReceiver',
+    'android:exported': 'false'
+  });
+  expect(
+    app.receiver[2]['intent-filter'][0].action.map((action) => action.$['android:name'])
+  ).toEqual([
+    'android.intent.action.BOOT_COMPLETED',
+    'android.intent.action.QUICKBOOT_POWERON',
+    'com.htc.intent.action.QUICKBOOT_POWERON',
+    'android.intent.action.MY_PACKAGE_REPLACED'
+  ]);
   assert.equal(app.activity.length, 2);
   assert.equal(app.provider.length, 2);
 });

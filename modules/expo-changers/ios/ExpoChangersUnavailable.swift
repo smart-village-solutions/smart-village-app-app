@@ -1,5 +1,6 @@
 #if targetEnvironment(simulator) && arch(arm64)
 import ExpoModulesCore
+import UIKit
 
 // The vendor ships no arm64 simulator binary. Never fabricate a provider session.
 public class ExpoChangersModule: Module {
@@ -16,7 +17,7 @@ public class ExpoChangersModule: Module {
     AsyncFunction("activate") { (p: Promise) in self.unavailable(p) }
     AsyncFunction("getUserUUID") { (p: Promise) in self.unavailable(p) }
     AsyncFunction("openProvider") { (p: Promise) in self.unavailable(p) }
-    AsyncFunction("closeProvider") { }
+    AsyncFunction("closeProvider") { /* No provider can be presented on the unsupported simulator. */ }
     AsyncFunction("registerUser") { (p: Promise) in self.unavailable(p) }
     AsyncFunction("loginUser") { (_: String, p: Promise) in self.unavailable(p) }
     AsyncFunction("fetchStatistics") { (p: Promise) in self.unavailable(p) }
@@ -26,5 +27,8 @@ public class ExpoChangersModule: Module {
   }
 }
 
-public class ChangersAppDelegateSubscriber: ExpoAppDelegateSubscriber { }
+public class ChangersAppDelegateSubscriber: ExpoAppDelegateSubscriber {
+  // Keep the subscriber available for autolinking without starting the unsupported SDK.
+  public func application(_: UIApplication, didFinishLaunchingWithOptions _: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool { true }
+}
 #endif

@@ -1,18 +1,2 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
-  <application>
-    <receiver
-        android:name="de.motiontag.tracker.internal.receivers.BootAppUpdateReceiver"
-        tools:node="remove" />
-    <receiver
-        android:name="expo.modules.changers.ChangersBootReceiver"
-        android:exported="false">
-      <intent-filter>
-        <action android:name="android.intent.action.BOOT_COMPLETED" />
-        <action android:name="android.intent.action.QUICKBOOT_POWERON" />
-        <action android:name="com.htc.intent.action.QUICKBOOT_POWERON" />
-        <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
-      </intent-filter>
-    </receiver>
-  </application>
-</manifest>
+<!-- Host application policies and guarded receivers are merged by the Expo config plugin. -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" />
