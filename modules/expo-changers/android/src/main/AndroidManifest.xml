@@ -1,0 +1,2 @@
+<!-- Host application policies and guarded receivers are merged by the Expo config plugin. -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" />

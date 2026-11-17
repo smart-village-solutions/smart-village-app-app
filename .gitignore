@@ -271,3 +271,6 @@ web-build/
 dist/
 
 # @end expo-cli
+
+# Downloaded Changers frameworks
+/modules/expo-changers/ios/Frameworks/

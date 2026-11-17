@@ -1,0 +1,30 @@
+plugins {
+  id 'com.android.library'
+  id 'expo-module-gradle-plugin'
+}
+group = 'expo.modules.changers'
+version = '0.1.0'
+android {
+  namespace 'expo.modules.changers'
+  defaultConfig { versionCode 1; versionName '0.1.0' }
+}
+// Jedes Repository auf seine tatsächlichen Artefakte beschränken; MotionTag nicht über JitPack auflösen.
+repositories {
+  maven { url 'https://pkgs.dev.azure.com/motiontag/releases/_packaging/releases/maven/v1'; content { includeGroup 'de.motiontag' } }
+  maven { url 'https://jitpack.io'; content { includeGroupByRegex 'com.github.Changers.*' } }
+}
+dependencies {
+  implementation "com.github.Changers.Android-SDK:sdkstaging:1.20.6"
+  // Same tracker version already supplied by Changers; used by the guarded receiver.
+  implementation 'de.motiontag:tracker:7.2.5'
+  // MotionTag 7.2.5 requires OkHttp 5.1.0. Align the host's cookie adapter too:
+  // okhttp-urlconnection 4.x references internal classes removed in OkHttp 5.
+  implementation platform('com.squareup.okhttp3:okhttp-bom:5.1.0')
+  implementation 'com.squareup.okhttp3:okhttp'
+  implementation 'com.google.code.gson:gson:2.10.1'
+  implementation 'androidx.appcompat:appcompat:1.7.1'
+  testImplementation 'junit:junit:4.13.2'
+  testImplementation 'com.squareup.okhttp3:mockwebserver:5.1.0'
+  // Reproduce the host app's older cookie-adapter dependency in the regression test.
+  testImplementation 'com.squareup.okhttp3:okhttp-urlconnection:4.12.0'
+}
