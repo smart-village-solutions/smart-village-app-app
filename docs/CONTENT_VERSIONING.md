@@ -18,7 +18,8 @@ changing network caches, pagination offsets, credentials or saved bookmarks.
 Shared list parsing, maps, details, voucher categories/counts and event calendars
 use the same projection. Restricted details show the existing unavailable-content
 message before voucher redemption controls or read-aloud content are exposed.
-POIs fetch remaining candidates when restricted records would hide a page.
+Paginated lists continue past hidden-only pages using raw offsets and the existing
+page size. They stop at visible records, an empty page or a duplicate-only response.
 
 Importers must merge requirements into both POI and voucher payloads while
 preserving all other metadata and existing IDs. Requirements are generic: no
@@ -32,7 +33,16 @@ access control. Older app binaries need a compatible OTA patch to understand it.
 Run `yarn lint` and `yarn test`. Focused coverage is in contentVisibility.test.ts,
 contentVisibilityParser.test.ts and VoucherContentVisibility.test.ts. Verify mixed
 restricted/unrestricted records in lists, maps, counts, bookmarks, direct details
-and offline cache reads, including version/build boundaries.
+and offline cache reads, including version/build boundaries. Pagination regression
+coverage is in the helper and hook `contentPagination` tests; Generic Item calendar visibility is
+covered by `genericItemEventsVisibility.test.tsx` with the real occurrence parser.
+
+Generic Item calendar sources are filtered before conversion into occurrences, so
+all calendar/list/widget consumers share the same eligible records. Raw cached
+responses and query keys are preserved. Hidden-only initial pages load automatically;
+concurrent end-reached callbacks share the in-flight request. Refresh, unmount and
+filter changes invalidate pending pagination updates.
+Transient failures retain cached records and allow an explicit refresh/retry.
 
 
 ## Using the filter in another customer app

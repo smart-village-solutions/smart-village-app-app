@@ -1,7 +1,6 @@
 import { useFocusEffect } from 'expo-router/react-navigation';
 import * as Location from 'expo-location';
 import _camelCase from 'lodash/camelCase';
-import _uniqBy from 'lodash/uniqBy';
 import PropTypes from 'prop-types';
 import React, {
   useCallback,
@@ -42,6 +41,7 @@ import {
   sortPOIsByDistanceFromPosition
 } from '../../helpers';
 import { visibleContent } from '../../helpers/contentVisibility';
+import { useContentPagination } from '../../hooks/contentPagination';
 import { compareParticipationProjects } from '../../helpers/participationProjectSortHelper';
 import { updateResourceFiltersStateHelper } from '../../helpers/updateResourceFiltersStateHelper';
 import {
@@ -343,30 +343,38 @@ export const Overviews = ({ navigation, route }) => {
     return participationQueryVariables;
   }, [isParticipationProjectOverview, queryVariables]);
 
-  const [loadAllPois, setLoadAllPois] = useState(false);
+  const requestVariables = useMemo(
+    () => ({
+      ...networkQueryVariables,
+      // Distance and opening-time filters still need the complete POI dataset.
+      limit:
+        isParticipationProjectOverview || sortByDistance || queryVariables.onlyCurrentlyOpen
+          ? undefined
+          : route.params?.queryVariables?.limit
+    }),
+    [
+      isParticipationProjectOverview,
+      networkQueryVariables,
+      queryVariables.onlyCurrentlyOpen,
+      route.params?.queryVariables?.limit,
+      sortByDistance
+    ]
+  );
   const { data, loading, fetchMore, refetch } = useQuery(getQuery(query, { showNewsFilter }), {
     ...(authMode ? getApolloAuthContext(authMode) : {}),
     fetchPolicy,
-    onCompleted: (response) => {
-      if (query !== QUERY_TYPES.POINTS_OF_INTEREST || !Array.isArray(response?.[query])) return;
-      if (visibleContent(response[query]).length < response[query].length) setLoadAllPois(true);
-    },
-    variables: {
-      ...networkQueryVariables,
-      // if we want to sort by distance, we need to fetch all the entries at once. this is not a
-      // big issue if we want to sort by distance, because getting the location usually takes longer
-      // than fetching all entries.
-      // if we filter by opening times, we need to also remove the limit as otherwise we might not
-      // have any open POIs in the next batch that would result in the list not getting any new
-      // items and not reliably triggering another `fetchMore`
-      limit:
-        isParticipationProjectOverview ||
-        sortByDistance ||
-        queryVariables.onlyCurrentlyOpen ||
-        (loadAllPois && query === QUERY_TYPES.POINTS_OF_INTEREST)
-          ? undefined
-          : route.params?.queryVariables?.limit
-    }
+    variables: requestVariables
+  });
+  const { fetchMoreData, refetchVisible } = useContentPagination({
+    data,
+    fetchMore,
+    isConnected,
+    loading,
+    pageSize: requestVariables.limit,
+    query,
+    queryDocument: getFetchMoreQuery(query),
+    refetch,
+    variables: networkQueryVariables
   });
 
   const participationProjectStatusCounts = useMemo(
@@ -481,10 +489,10 @@ export const Overviews = ({ navigation, route }) => {
   const refresh = useCallback(() => {
     setRefreshing(true);
     if (isConnected) {
-      refetch();
+      refetchVisible().catch(() => {});
     }
     setRefreshing(false);
-  }, [isConnected, setRefreshing, refetch]);
+  }, [isConnected, setRefreshing, refetchVisible]);
 
   useFocusEffect(
     useCallback(() => {
@@ -492,10 +500,10 @@ export const Overviews = ({ navigation, route }) => {
         return undefined;
       }
 
-      refetch?.();
+      refetchVisible().catch(() => {});
 
       return undefined;
-    }, [isConnected, query, refetch])
+    }, [isConnected, query, refetchVisible])
   );
 
   const filterTypes = useMemo(() => {
@@ -605,26 +613,6 @@ export const Overviews = ({ navigation, route }) => {
       });
     }
   }, [query, showMap]);
-
-  const fetchMoreData = useCallback(() => {
-    return fetchMore({
-      query: getFetchMoreQuery(query),
-      variables: {
-        ...networkQueryVariables,
-        offset: data?.[query]?.length
-      },
-      updateQuery: (prevResult, { fetchMoreResult }) => {
-        if (!fetchMoreResult?.[query]?.length) return prevResult;
-
-        const uniqueData = _uniqBy([...prevResult[query], ...fetchMoreResult[query]], 'id');
-
-        return {
-          ...prevResult,
-          [query]: uniqueData
-        };
-      }
-    });
-  }, [data, query, networkQueryVariables, fetchMore]);
 
   const hasNestedPoiCategories = useMemo(
     () => hasNestedPointsOfInterestCategories(categories),

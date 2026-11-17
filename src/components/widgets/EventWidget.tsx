@@ -92,7 +92,7 @@ export const EventWidget = ({ text, additionalProps, widgetStyle }: WidgetProps)
   const count =
     (visibleContent(data)?.eventRecords?.length || 0) +
     (dataVolunteerEvents?.length || 0) +
-    visibleContent(genericItemEvents).length;
+    genericItemEvents.length;
 
   return (
     <DefaultWidget
