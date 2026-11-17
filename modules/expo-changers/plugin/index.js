@@ -186,7 +186,7 @@ function withChangers(config, options = {}) {
   // an app environment selector. Never infer a different host from the SVA slug.
   const environment = 'stage';
   if (!config.version) throw new Error('Changers requires an app version for OTA isolation.');
-  config.runtimeVersion = `${config.version}-changers-2`;
+  config.runtimeVersion = `${config.version}-changers-3`;
 
   config = withBuildProperties(config, { ios: { enableSceneSupport: true } });
   config = withPodfile(config, (c) => {

@@ -38,3 +38,16 @@ Android module tests are available through the generated Android project:
 cd android
 ./gradlew :expo-changers:testDebugUnitTest
 ```
+
+## Registration recovery
+
+SDK activation and successful account creation are separate states. The iOS adapter persists a registration journal before dispatching signup. A known offline failure before dispatch remains retryable, including after restarting the app. An ambiguous response after dispatch, an existing identity, or an older activated installation must not cause automatic creation of a second account; the entry explains when provider support is required.
+
+This recovery behavior requires a new native build and the `changers-3` runtime. JavaScript detects whether a compatible binary exposes registration history and preserves the conservative fallback on older binaries.
+
+The journal persistence checks run without provider credentials or an iOS SDK binary:
+
+```sh
+swiftc modules/expo-changers/ios/ChangersRegistration.swift __tests__/klimaTaler/ios/RegistrationHarness.swift -o /tmp/kt-registration-harness
+/tmp/kt-registration-harness
+```
