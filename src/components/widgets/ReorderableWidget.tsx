@@ -61,6 +61,7 @@ export const ReorderableWidget = ({
   const systemReduceMotion = useReducedMotion();
   const reduceMotion = !!isReduceMotionEnabled || systemReduceMotion;
   const flatStyle = StyleSheet.flatten(style);
+  const restingWidth = flatStyle?.width;
   const padding = Number(flatStyle?.paddingHorizontal || 0);
   const initialWidth = Math.max(0, Number(flatStyle?.width || 0) - 2 * padding);
   const [height, setHeight] = useState(0);
@@ -138,10 +139,10 @@ export const ReorderableWidget = ({
     ]
   );
   const positionStyle = useAnimatedStyle(() => ({
-    width: width.get(),
-    transform: [{ translateX: x.get() }, { translateY: y.get() }],
-    zIndex: lift.get() > 0 ? 10 : 1,
-    opacity: positioned.get() ? 1 : 0
+    width: editing ? width.get() : restingWidth,
+    transform: editing ? [{ translateX: x.get() }, { translateY: y.get() }] : [],
+    zIndex: editing && lift.get() > 0 ? 10 : 1,
+    opacity: !editing || positioned.get() ? 1 : 0
   }));
   const liftStyle = useAnimatedStyle(() => ({
     transform: [{ scale: reduceMotion ? 1 : 1 + lift.get() * 0.045 }],
@@ -151,28 +152,31 @@ export const ReorderableWidget = ({
   }));
   return (
     <>
-      <Animated.View
-        pointerEvents="none"
-        accessible={false}
-        collapsable={false}
-        testID={testID}
-        onLayout={({ nativeEvent: { layout } }) => {
-          target.set({
-            x: layout.x + padding,
-            y: layout.y,
-            width: Math.max(0, layout.width - 2 * padding),
-            measured: true
-          });
-          onLayout({ id, ...layout });
-        }}
-        style={[style, { height }]}
-      />
+      {editing && (
+        <Animated.View
+          pointerEvents="none"
+          accessible={false}
+          collapsable={false}
+          testID={testID}
+          onLayout={({ nativeEvent: { layout } }) => {
+            target.set({
+              x: layout.x + padding,
+              y: layout.y,
+              width: Math.max(0, layout.width - 2 * padding),
+              measured: true
+            });
+            onLayout({ id, ...layout });
+          }}
+          style={[style, { height }]}
+        />
+      )}
       <GestureDetector gesture={gesture}>
         <Animated.View
-          testID={`${testID}:visual`}
-          onLayout={({ nativeEvent: { layout } }) =>
-            setHeight((previous) => (previous === layout.height ? previous : layout.height))
-          }
+          testID={editing ? `${testID}:visual` : testID}
+          onLayout={({ nativeEvent: { layout } }) => {
+            setHeight((previous) => (previous === layout.height ? previous : layout.height));
+            if (!editing) onLayout({ id, ...layout });
+          }}
           accessible={editing}
           accessibilityRole={editing ? 'adjustable' : undefined}
           accessibilityLabel={editing ? label : undefined}
@@ -188,7 +192,9 @@ export const ReorderableWidget = ({
           onAccessibilityAction={({ nativeEvent }) => {
             if (editing && !disabled) onMove(id, nativeEvent.actionName === 'increment' ? 1 : -1);
           }}
-          style={[styles.visual, positionStyle]}
+          // Resting widgets stay in normal layout so Android can retain their
+          // content across data refreshes. Only the drag editor needs an overlay.
+          style={[editing ? styles.visual : style, positionStyle]}
         >
           <Animated.View style={[styles.lift, { shadowColor: colors.shadow }, liftStyle]}>
             <Animated.View
