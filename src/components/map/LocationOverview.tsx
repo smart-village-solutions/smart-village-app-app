@@ -225,6 +225,42 @@ const mapPreviewItem = (
   return item;
 };
 
+const SelectedMapPreview = ({
+  selectedId,
+  externalLocation,
+  item,
+  loading,
+  navigation,
+  withoutNavigation,
+  stale,
+  style
+}: {
+  selectedId?: string;
+  externalLocation: ReturnType<typeof selectedOfferLocation>;
+  item: ReturnType<typeof mapPreviewItem>;
+  loading: boolean;
+  navigation: Props['navigation'];
+  withoutNavigation: boolean;
+  stale: boolean;
+  style: React.ComponentProps<typeof View>['style'];
+}) => {
+  if (!selectedId || (!externalLocation && (loading || !item))) return null;
+  return (
+    <View style={style}>
+      {externalLocation ? (
+        <KlimaTalerPreview
+          key={externalLocation.id}
+          location={externalLocation}
+          navigation={navigation}
+          stale={stale}
+        />
+      ) : (
+        <MapPreview item={item} navigation={withoutNavigation ? undefined : navigation} />
+      )}
+    </View>
+  );
+};
+
 /* eslint-disable complexity */
 export const LocationOverview = ({
   currentPosition,
@@ -418,33 +454,24 @@ export const LocationOverview = ({
         />
       )}
 
-      {!!selectedPointOfInterest && (externalLocation || (!detailsLoading && !!item)) && (
-        <View
-          style={[
-            styles.listItemContainer,
-            stylesWithProps({
-              navigationType,
-              orientation,
-              safeAreaInsets,
-              deviceHeight: device.height
-            }).position
-          ]}
-        >
-          {externalLocation ? (
-            <KlimaTalerPreview
-              key={externalLocation.id}
-              location={externalLocation}
-              navigation={navigation}
-              stale={!!offers.error}
-            />
-          ) : (
-            <MapPreview
-              item={item}
-              navigation={isPreviewWithoutNavigation ? undefined : navigation}
-            />
-          )}
-        </View>
-      )}
+      <SelectedMapPreview
+        selectedId={selectedPointOfInterest}
+        externalLocation={externalLocation}
+        item={item}
+        loading={detailsLoading}
+        navigation={navigation}
+        withoutNavigation={isPreviewWithoutNavigation}
+        stale={!!offers.error}
+        style={[
+          styles.listItemContainer,
+          stylesWithProps({
+            navigationType,
+            orientation,
+            safeAreaInsets,
+            deviceHeight: device.height
+          }).position
+        ]}
+      />
     </View>
   );
 };
