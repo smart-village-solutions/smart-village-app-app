@@ -1742,6 +1742,8 @@ export const texts = {
         invalidPhone: 'Die eingegebene Telefonnummer ist nicht gültig.',
         limitOfArea: (city) => `Bitte geben Sie nur Standorte für ${city} ein.`,
         location: 'Bitte wählen Sie einen Ort auf der Karte aus.',
+        areaLookupFailed:
+          'Das Meldegebiet konnte nicht geprüft werden. Bitte versuchen Sie es erneut.',
         imageLocationNotApplied:
           'Der Standort des Fotos konnte nicht übernommen werden. Bitte prüfen Sie den Standort auf der Karte.',
         locationOutsideArea: 'Der Standort liegt außerhalb des Meldegebiets.',
@@ -1772,6 +1774,7 @@ export const texts = {
       errorText: 'muss ausgefüllt werden',
       firstName: 'Vorname',
       houseNumber: 'Hausnummer',
+      retryAreaLookup: 'Meldegebiet erneut prüfen',
       showAddressOnMap: 'Adresse auf Karte anzeigen',
       imageHint: (maxFileCount) => `ⓘ Es können bis zu ${maxFileCount} Fotos hochgeladen werden`,
       lastName: 'Nachname',

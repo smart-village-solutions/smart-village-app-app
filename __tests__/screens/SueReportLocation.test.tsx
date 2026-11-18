@@ -3,7 +3,7 @@ import React from 'react';
 import { Alert } from 'react-native';
 import renderer, { act } from 'react-test-renderer';
 
-import { Button, SueReportDescription, SueReportLocation } from '../../src/components';
+import { BoldText, Button, SueReportDescription, SueReportLocation } from '../../src/components';
 import { consts, texts } from '../../src/config';
 import { ConfigurationsContext } from '../../src/ConfigurationsProvider';
 import { addToStore, readFromStore } from '../../src/helpers';
@@ -58,6 +58,9 @@ jest.mock('../../src/hooks/useThemeStyles', () => ({
 jest.mock('../../src/queries', () => ({ QUERY_TYPES: { SUE: {} }, getQuery: jest.fn() }));
 jest.mock('../../src/queries/SUE', () => ({ postRequests: jest.fn(async () => undefined) }));
 let mockAreaLoading = false;
+let mockAreaError = false;
+let mockAreaFetching = false;
+const mockAreaRefetch = jest.fn();
 let mockAreaQuery: () => Promise<unknown>;
 let mockAreaOptions: { retry?: boolean };
 let mockServicePostcodes: string[] | undefined;
@@ -67,6 +70,9 @@ jest.mock('react-query', () => ({
     mockAreaOptions = options;
     return {
       isLoading: mockAreaLoading,
+      isError: mockAreaError,
+      isFetching: mockAreaFetching,
+      refetch: mockAreaRefetch,
       data: mockServicePostcodes && { postalCodes: mockServicePostcodes }
     };
   },
@@ -144,13 +150,15 @@ async function openWizard({
           : []
     }))
   };
+  const render = () => (
+    <ConfigurationsContext.Provider value={{ refetch: jest.fn(), sueConfig } as never}>
+      <SueReportScreen navigation={navigation as never} route={{ key: 'fixture' } as never} />
+    </ConfigurationsContext.Provider>
+  );
   await act(async () => {
-    tree = renderer.create(
-      <ConfigurationsContext.Provider value={{ refetch: jest.fn(), sueConfig } as never}>
-        <SueReportScreen navigation={navigation as never} route={{ key: 'fixture' } as never} />
-      </ConfigurationsContext.Provider>
-    );
+    tree = renderer.create(render());
   });
+  return render;
 }
 
 function press(title: string) {
@@ -167,6 +175,8 @@ function location() {
 beforeEach(() => {
   jest.clearAllMocks();
   mockAreaLoading = false;
+  mockAreaError = false;
+  mockAreaFetching = false;
   mockServicePostcodes = undefined;
   fetchSpy = jest.spyOn(global, 'fetch').mockRejectedValue(new Error('Unexpected fetch'));
   jest.spyOn(Alert, 'alert').mockImplementation(() => {});
@@ -617,3 +627,63 @@ it('overrides client retries so a stalled area lookup ends after one deadline', 
     jest.useRealTimers();
   }
 });
+
+it('offers an explicit area retry and restores the report after a successful lookup', async () => {
+  mockAreaError = true;
+  const render = await openWizard({
+    step: 3,
+    areaId: 'remote-area',
+    limitOfArea: {},
+    position: kielPosition,
+    confirmedLocationAddress: getSueAddressKey(kiel)
+  });
+
+  expect(tree.root.findAllByType(SueReportLocation)).toHaveLength(0);
+  expect(tree.root.findByType(BoldText).props.children).toBe(alert.areaLookupFailed);
+  expect(tree.root.findAllByType(Button)).toHaveLength(1);
+  await act(async () => press(texts.sue.report.retryAreaLookup));
+  expect(mockAreaRefetch).toHaveBeenCalledTimes(1);
+  expect(postRequests).not.toHaveBeenCalled();
+
+  mockAreaFetching = true;
+  await act(async () => tree.update(render()));
+  expect(tree.root.findByType(Button).props.disabled).toBe(true);
+
+  mockAreaFetching = false;
+  mockAreaError = false;
+  mockServicePostcodes = ['24159'];
+  await act(async () => tree.update(render()));
+  expect(location().selectedPosition).toEqual(kielPosition);
+  expect(readFromStore).toHaveBeenCalledTimes(1);
+  await act(async () => press(texts.sue.report.sendReport));
+  expect(postRequests).toHaveBeenCalledWith(
+    expect.objectContaining({
+      addressString: 'Koloniestraße; 2; 24159; Kiel',
+      lat: kielPosition.latitude,
+      long: kielPosition.longitude
+    }),
+    expect.any(Object)
+  );
+});
+
+it('treats a successful empty area list as a restriction rather than a retryable failure', async () => {
+  mockServicePostcodes = [];
+  await openWizard({ step: 3, areaId: 'remote-area', limitOfArea: {} });
+  expect(location().areaServiceData).toEqual({ postalCodes: [] });
+  expect(tree.root.findAllByProps({ title: texts.sue.report.retryAreaLookup })).toHaveLength(0);
+  await act(async () => press(texts.sue.report.sendReport));
+  expect(postRequests).not.toHaveBeenCalled();
+  expect(Alert.alert).toHaveBeenCalledWith(alert.hint, alert.locationOutsideArea);
+});
+
+it.each([{ postalCodes: ['24159'] }, { zipCodes: ['24159'] }])(
+  'retains configured restrictions when the remote area lookup fails (%j)',
+  async (limitOfArea) => {
+    mockAreaError = true;
+    await openWizard({ step: 3, areaId: 'remote-area', limitOfArea });
+    expect(location().areaServiceData).toEqual({ postalCodes: ['24159'] });
+    await act(async () => press(texts.sue.report.sendReport));
+    expect(postRequests).toHaveBeenCalled();
+    expect(mockAreaRefetch).not.toHaveBeenCalled();
+  }
+);

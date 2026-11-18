@@ -382,7 +382,13 @@ export const SueReportScreen = ({
     }
   });
 
-  const { data: areaServiceResult, isLoading: areaServiceLoading } = useQuery(
+  const {
+    data: areaServiceResult,
+    isError: areaServiceError,
+    isFetching: areaServiceFetching,
+    isLoading: areaServiceLoading,
+    refetch: refetchAreaService
+  } = useQuery(
     [QUERY_TYPES.SUE.AREA_SERVICE, areaServiceAreaId, limitOfAreaCity],
     () => withSueLocationTimeout((signal) => getQuery(QUERY_TYPES.SUE.AREA_SERVICE)({ signal })),
     { enabled: !!(areaServiceAreaId || limitOfAreaCity), retry: false }
@@ -391,9 +397,18 @@ export const SueReportScreen = ({
   const areaServiceData = useMemo(() => {
     if (limitOfPostalCodes.length) return { postalCodes: limitOfPostalCodes };
     if (legacyZipCodes.length) return { postalCodes: legacyZipCodes };
-    if (areaServiceResult?.postalCodes?.length) return areaServiceResult;
+    if (areaServiceResult) return areaServiceResult;
+    if (areaServiceError) return undefined;
     return areaServiceAreaId || limitOfAreaCity ? { postalCodes: [] } : undefined;
-  }, [areaServiceAreaId, areaServiceResult, limitOfPostalCodes, legacyZipCodes, limitOfAreaCity]);
+  }, [
+    areaServiceAreaId,
+    areaServiceError,
+    areaServiceResult,
+    limitOfPostalCodes,
+    legacyZipCodes,
+    limitOfAreaCity
+  ]);
+  const isAreaServiceUnavailable = areaServiceError && !areaServiceData;
 
   const {
     beginLocationUpdate,
@@ -497,6 +512,7 @@ export const SueReportScreen = ({
   const getLocationError = useCallback(
     (address: SueAddress) => {
       if (locationStep < 0) return '';
+      if (isAreaServiceUnavailable) return texts.sue.report.alerts.areaLookupFailed;
       if (isLocationPending()) return texts.sue.report.alerts.locationPending;
       if (address.houseNumber && !address.street) return texts.sue.report.alerts.street;
       if (address.city && !address.postalCode) return texts.sue.report.alerts.postalCode;
@@ -525,6 +541,7 @@ export const SueReportScreen = ({
       errorMessage,
       geoMap.locationIsRequired,
       geoMap.locationStreetIsRequired,
+      isAreaServiceUnavailable,
       isLocationPending,
       locationStep
     ]
@@ -864,6 +881,19 @@ export const SueReportScreen = ({
 
   if (!sueProgressWithConfig.length) {
     return null;
+  }
+
+  if (isAreaServiceUnavailable) {
+    return (
+      <Wrapper>
+        <BoldText>{texts.sue.report.alerts.areaLookupFailed}</BoldText>
+        <Button
+          disabled={areaServiceFetching}
+          onPress={() => refetchAreaService()}
+          title={texts.sue.report.retryAreaLookup}
+        />
+      </Wrapper>
+    );
   }
 
   if (areaServiceLoading && !areaServiceData?.postalCodes?.length) {

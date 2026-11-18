@@ -17,8 +17,9 @@ it('passes the same abort signal to both area-service fetches and deduplicates p
   const controller = new AbortController();
   const fetchSpy = jest
     .spyOn(global, 'fetch')
-    .mockResolvedValueOnce({ json: async () => ({ rs: 'fixture' }) } as Response)
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ rs: 'fixture' }) } as Response)
     .mockResolvedValueOnce({
+      ok: true,
       json: async () => ({
         values: [{ postalCodes: ['24159'] }, { postalCodes: ['24159', '24103'] }]
       })
@@ -50,7 +51,7 @@ it.each(['headers', 'body'])(
     });
     const fetchSpy = jest.spyOn(global, 'fetch');
     if (stall === 'headers') fetchSpy.mockReturnValue(delayed as Promise<Response>);
-    else fetchSpy.mockResolvedValue({ json: () => delayed } as Response);
+    else fetchSpy.mockResolvedValue({ ok: true, json: () => delayed } as Response);
     try {
       const result = withSueLocationTimeout((signal) => areaService({ signal }));
       const rejection = expect(result).rejects.toThrow();
@@ -58,7 +59,9 @@ it.each(['headers', 'body'])(
       await rejection;
       expect(fetchSpy.mock.calls[0][1]?.signal?.aborted).toBe(true);
 
-      finish(stall === 'headers' ? { json: async () => ({ rs: 'late' }) } : { rs: 'late' });
+      finish(
+        stall === 'headers' ? { ok: true, json: async () => ({ rs: 'late' }) } : { rs: 'late' }
+      );
       await jest.advanceTimersByTimeAsync(0);
       expect(fetchSpy).toHaveBeenCalledTimes(1);
     } finally {
@@ -92,11 +95,53 @@ it('starts no fetch if cancellation happens while configuration is loading', asy
 it('keeps existing callers without an abort signal working', async () => {
   const fetchSpy = jest
     .spyOn(global, 'fetch')
-    .mockResolvedValueOnce({ json: async () => ({ rs: 'fixture' }) } as Response)
-    .mockResolvedValueOnce({ json: async () => ({ values: [] }) } as Response);
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ rs: 'fixture' }) } as Response)
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) } as Response);
   try {
     expect(await areaService()).toEqual({ postalCodes: [] });
   } finally {
     fetchSpy.mockRestore();
   }
 });
+
+it.each([1, 2])(
+  'rejects an HTTP failure in request %s instead of returning an empty list',
+  async (stage) => {
+    const fetchSpy = jest.spyOn(global, 'fetch');
+    if (stage === 2)
+      fetchSpy.mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ rs: 'fixture' })
+      } as Response);
+    fetchSpy.mockResolvedValueOnce({
+      ok: false,
+      status: 503,
+      json: async () => ({ error: 'Unavailable' })
+    } as Response);
+    try {
+      await expect(areaService()).rejects.toThrow('503');
+      expect(fetchSpy).toHaveBeenCalledTimes(stage);
+    } finally {
+      fetchSpy.mockRestore();
+    }
+  }
+);
+
+it.each([1, 2])(
+  'rejects missing response data in request %s instead of returning an empty list',
+  async (stage) => {
+    const fetchSpy = jest.spyOn(global, 'fetch');
+    if (stage === 2)
+      fetchSpy.mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ rs: 'fixture' })
+      } as Response);
+    fetchSpy.mockResolvedValueOnce({ ok: true, json: async () => ({}) } as Response);
+    try {
+      await expect(areaService()).rejects.toThrow('missing');
+      expect(fetchSpy).toHaveBeenCalledTimes(stage);
+    } finally {
+      fetchSpy.mockRestore();
+    }
+  }
+);
