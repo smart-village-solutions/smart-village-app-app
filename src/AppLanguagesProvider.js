@@ -4,12 +4,11 @@ import React, { createContext, useContext, useEffect } from 'react';
 import { AppState } from 'react-native';
 import { useQuery } from 'react-query';
 
-import { refreshAppTextCatalog } from './helpers/appTextCatalog';
 import { getMainServerConfig, getMainServerUrl } from './helpers/mainServerHelper';
 import {
-  getTextsLocale,
+  getAvailableTextsLocales,
   isTextsLocale,
-  saveTextsLocaleAndReload
+  synchronizeTextsLocale
 } from './helpers/textsLocaleHelper';
 import { NetworkContext } from './NetworkProvider';
 
@@ -42,11 +41,6 @@ const selectAppLanguages = (locales) => {
 export const AppLanguagesProvider = ({ client, children }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const online = !!(isConnected && isMainserverUp);
-  const { refetch: refetchCatalog } = useQuery(
-    ['appTextCatalog', getMainServerUrl(), getMainServerConfig().oAuthClientId, getTextsLocale()],
-    () => refreshAppTextCatalog(client, getTextsLocale()).then(() => null),
-    { enabled: online, retry: false, refetchOnMount: 'always', refetchOnWindowFocus: false }
-  );
   const { data, isLoading, refetch } = useQuery(
     ['appTranslationLocales', getMainServerUrl(), getMainServerConfig().oAuthClientId],
     async () => {
@@ -75,11 +69,9 @@ export const AppLanguagesProvider = ({ client, children }) => {
       retry: false,
       refetchOnMount: true,
       onSuccess: ({ locales }) => {
-        if (!locales.includes(getTextsLocale())) {
-          void saveTextsLocaleAndReload('de').catch(() => {
-            console.warn('Unable to apply the German fallback locale');
-          });
-        }
+        void synchronizeTextsLocale(client, locales).catch(() => {
+          console.warn('Unable to synchronize the text locale');
+        });
       }
     }
   );
@@ -89,14 +81,13 @@ export const AppLanguagesProvider = ({ client, children }) => {
     const subscription = AppState.addEventListener('change', (state) => {
       if (state === 'active') {
         void refetch();
-        void refetchCatalog();
       }
     });
     return () => subscription.remove();
-  }, [online, refetch, refetchCatalog]);
+  }, [online, refetch]);
 
   return (
-    <AppLanguagesContext.Provider value={data?.locales ?? GERMAN_ONLY}>
+    <AppLanguagesContext.Provider value={data?.locales ?? getAvailableTextsLocales()}>
       <AppLanguageNamesContext.Provider value={data?.names ?? NO_NAMES}>
         <AppLanguagesLoadingContext.Provider value={isLoading}>
           {children}

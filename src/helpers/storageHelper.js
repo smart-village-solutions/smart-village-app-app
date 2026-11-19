@@ -24,7 +24,9 @@ export const storageHelper = {
   configurations: () => readFromStore('configurations'),
   setConfigurations: (configurations) => addToStore('configurations', configurations),
   textsLocale: () => readFromStore('textsLocale'),
-  setTextsLocale: (locale) => addToStore('textsLocale', locale)
+  setTextsLocale: (locale) => addToStore('textsLocale', locale),
+  textsLocales: (scope) => readFromStore(`textsLocales:${scope}`),
+  setTextsLocales: (scope, locales) => addToStore(`textsLocales:${scope}`, locales)
 };
 
 export const logCurrentStorage = (withoutApollo = false) => {

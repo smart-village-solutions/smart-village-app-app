@@ -3,7 +3,11 @@ import { Alert, ScrollView } from 'react-native';
 
 import { AppLanguageNamesContext, AppLanguagesContext } from '../../AppLanguagesProvider';
 import { texts } from '../../config/texts';
-import { getTextsLocale, saveTextsLocaleAndReload } from '../../helpers/textsLocaleHelper';
+import {
+  getTextsLocalePreference,
+  hasPendingTextsLocaleChange,
+  saveTextsLocaleAndReload
+} from '../../helpers/textsLocaleHelper';
 import { WrapperHorizontal } from '../Wrapper';
 
 import { SettingsRadioGroup } from './SettingsRadioGroup';
@@ -20,11 +24,13 @@ export const LanguageSettings = () => {
   useLayoutEffect(() => {
     latestLocales.current = locales;
   }, [locales]);
-  const locale = getTextsLocale();
+  const preference = getTextsLocalePreference();
+  const selectedLocale =
+    preference === 'system' || locales.includes(preference) ? preference : 'de';
   const [changingLocale, setChangingLocale] = useState(false);
 
   const changeLanguage = async (language) => {
-    if (!latestLocales.current.includes(language)) return;
+    if (language !== 'system' && !latestLocales.current.includes(language)) return;
     setChangingLocale(true);
     try {
       await saveTextsLocaleAndReload(language);
@@ -37,7 +43,7 @@ export const LanguageSettings = () => {
   };
 
   const confirmLanguageChange = (language) => {
-    if (language === locale) return;
+    if (language === preference && !hasPendingTextsLocaleChange()) return;
     Alert.alert(texts.settingsTitles.language, texts.settingsContents.language.restartPrompt, [
       { text: texts.settingsContents.termsAndConditions.abort, style: 'cancel' },
       { text: texts.settingsContents.language.restart, onPress: () => changeLanguage(language) }
@@ -50,11 +56,14 @@ export const LanguageSettings = () => {
         <SettingsRadioGroup
           title={texts.settingsTitles.language}
           hideTitle
-          options={locales.map((language) => ({
-            value: language,
-            label: names[language] ?? languageLabel(language)
-          }))}
-          value={locale}
+          options={[
+            { value: 'system', label: texts.settingsContents.accessibility.theme.system },
+            ...locales.map((language) => ({
+              value: language,
+              label: names[language] ?? languageLabel(language)
+            }))
+          ]}
+          value={selectedLocale}
           disabled={changingLocale}
           onChange={confirmLanguageChange}
         />

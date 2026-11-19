@@ -112,14 +112,18 @@ export const applyAppTextCatalog = ({ locale, values }) => {
   return catalog;
 };
 
-export const refreshAppTextCatalog = async (client, locale) => {
+export const refreshAppTextCatalog = async (
+  client,
+  locale,
+  { reload = true, isCurrent = () => true } = {}
+) => {
   const current = await readAppTextCatalog(locale);
   const { data } = await client.query({
     query,
     fetchPolicy: 'no-cache',
     variables: { schema: SCHEMA, locale, knownRevision: current?.revision }
   });
-  if (!data || !Object.hasOwn(data, 'appTextCatalog')) return;
+  if (!isCurrent() || !data || !Object.hasOwn(data, 'appTextCatalog')) return;
   const next = data.appTextCatalog;
   if (next === null) {
     if (!current) return;
@@ -134,6 +138,7 @@ export const refreshAppTextCatalog = async (client, locale) => {
     await addToStore(storageKey(locale), next);
   }
   // Reload once after storing a changed snapshot so module-level labels are rebuilt as well.
+  if (!reload) return;
   if (__DEV__) DevSettings.reload();
   else await Updates.reloadAsync();
 };
