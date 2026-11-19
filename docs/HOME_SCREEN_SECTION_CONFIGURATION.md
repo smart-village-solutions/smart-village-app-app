@@ -172,8 +172,9 @@ For data-driven sections (`query`-based entries), the following fields are **opt
 | `eventRecords`             | `buttonTitle`                   | `sections.buttonEvents`                                  |
 | `eventRecords`             | `limitEvents`                   | `sections.limitEvents` (default: `15`)                   |
 
-Set `sections.eventDetailTitle` in `globalSettings` to override the header title on event detail
-screens. The usual detail title applies when this setting is omitted.
+Set `sections.eventDetailTitle` in `globalSettings` to override the header title for Main Server
+event records (`eventRecord`). The title supplied by navigation applies when the setting is omitted.
+Volunteer calendar and Generic Item event details use their own navigation titles.
 
 All query-based sections support `skipLastDivider: true`. It removes the divider below the last
 visible item after all sources have been merged and the configured limit has been applied.

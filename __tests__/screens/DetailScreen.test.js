@@ -4,7 +4,6 @@ import { useQuery } from 'react-query';
 
 import { ReactQueryClient } from '../../src/ReactQueryClient';
 import { DetailScreen } from '../../src/screens/DetailScreen';
-import { initialContext, SettingsContext } from '../../src/SettingsProvider';
 
 jest.mock('react-query', () => ({
   ...jest.requireActual('react-query'),
@@ -26,7 +25,7 @@ jest.mock('../../src/ReadAloudAvailabilityProvider', () => ({
 }));
 
 describe('DetailScreen', () => {
-  const navigation = { navigate: jest.fn(), setOptions: jest.fn() };
+  const navigation = { navigate: jest.fn() };
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -46,31 +45,6 @@ describe('DetailScreen', () => {
     const tree = component.toJSON();
     expect(tree).toMatchSnapshot();
   });
-
-  it.each([
-    ['eventRecord', 'Event', true],
-    ['eventRecord', undefined, false],
-    ['newsItem', 'Event', false]
-  ])(
-    'applies the configured detail title for %s (%s)',
-    async (query, eventDetailTitle, applies) => {
-      const value = { ...initialContext, globalSettings: { sections: { eventDetailTitle } } };
-
-      await act(async () => {
-        renderer.create(
-          <SettingsContext.Provider value={value}>
-            <DetailScreen navigation={navigation} route={{ params: { query } }} />
-          </SettingsContext.Provider>
-        );
-      });
-
-      if (applies) {
-        expect(navigation.setOptions).toHaveBeenCalledWith({ title: 'Event' });
-      } else {
-        expect(navigation.setOptions).not.toHaveBeenCalled();
-      }
-    }
-  );
 
   it('uses the routed auth mode for the detail request', async () => {
     const request = jest.fn().mockResolvedValue({ genericItem: null });

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useContext, useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, DeviceEventEmitter, RefreshControl, ScrollView } from 'react-native';
 import { useQuery } from 'react-query';
 
@@ -105,7 +105,6 @@ export const DetailScreen = ({ navigation, route }) => {
   const { conversations = false } = settings;
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const query = route.params?.query ?? '';
-  const eventDetailTitle = globalSettings.sections?.eventDetailTitle;
   const id = route.params?.id;
   const queryVariables = route.params?.queryVariables || (id ? { id } : {});
   const authMode = route.params?.authMode ?? AUTH_MODE_PUBLIC;
@@ -118,16 +117,6 @@ export const DetailScreen = ({ navigation, route }) => {
   const scrollContentContainerStyle = useReadAloudScrollContentContainerStyle();
 
   useRootRouteByCategory(details, navigation);
-
-  useLayoutEffect(() => {
-    if (
-      query === QUERY_TYPES.EVENT_RECORD &&
-      typeof eventDetailTitle === 'string' &&
-      eventDetailTitle
-    ) {
-      navigation.setOptions({ title: eventDetailTitle });
-    }
-  }, [eventDetailTitle, navigation, query]);
 
   // Render SUE detail screen without the need of processing the rest of the code here
   if (

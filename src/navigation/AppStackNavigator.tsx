@@ -5,12 +5,19 @@ import {
 import React, { useContext } from 'react';
 
 import { AccessibilityContext } from '../AccessibilityProvider';
-import { StackConfig } from '../types';
+import { QUERY_TYPES } from '../queries/types';
+import { SettingsContext } from '../SettingsProvider';
+import { ScreenName, StackConfig } from '../types/Navigation';
 
-const Stack = createStackNavigator<Record<string, { title: string } | undefined>>();
+type StackParams = Record<string, { title: string; query?: string } | undefined>;
+
+const Stack = createStackNavigator<StackParams>();
 
 const AppStackNavigator = ({ stackConfig }: { stackConfig: StackConfig }) => {
   const { isReduceMotionEnabled } = useContext(AccessibilityContext);
+  const { globalSettings } = useContext(SettingsContext);
+  const sections: { eventDetailTitle?: unknown } = globalSettings?.sections ?? {};
+  const { eventDetailTitle } = sections;
 
   return (
     <Stack.Navigator
@@ -36,14 +43,21 @@ const AppStackNavigator = ({ stackConfig }: { stackConfig: StackConfig }) => {
           key={screenConfig.routeName}
           name={screenConfig.routeName}
           component={screenConfig.screenComponent}
-          options={(props) => {
+          options={(optionsArgs) => {
             const resolvedOptions =
               typeof screenConfig.screenOptions === 'function'
-                ? screenConfig.screenOptions(props)
+                ? screenConfig.screenOptions(optionsArgs)
                 : screenConfig.screenOptions || {};
+            const eventTitle =
+              screenConfig.routeName === ScreenName.Detail &&
+              optionsArgs.route.params?.query === QUERY_TYPES.EVENT_RECORD &&
+              typeof eventDetailTitle === 'string'
+                ? eventDetailTitle
+                : undefined;
 
             return {
               ...resolvedOptions,
+              ...(eventTitle ? { title: eventTitle } : {}),
               animationEnabled: isReduceMotionEnabled ? false : resolvedOptions.animationEnabled,
               cardStyleInterpolator: isReduceMotionEnabled
                 ? CardStyleInterpolators.forNoAnimation
