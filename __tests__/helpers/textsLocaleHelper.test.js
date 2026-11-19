@@ -133,6 +133,9 @@ it('uses the installed Updates reload in production and reports reload failures'
     expect(storageHelper.setTextsLocale).toHaveBeenCalledWith('pt-PT');
     expect(Updates.reloadAsync).toHaveBeenCalledTimes(1);
     expect(texts).toBe(textsByLocale.de);
+    expect(getTextsLocalePreference()).toBe('system');
+    await saveTextsLocaleAndReload('pt-PT');
+    expect(Updates.reloadAsync).toHaveBeenCalledTimes(2);
   } finally {
     global.__DEV__ = previous;
   }
@@ -318,4 +321,60 @@ it('reloads a refreshed active catalog once without changing the preference', as
   expect(getTextsLocalePreference()).toBe('fr');
   expect(storageHelper.setTextsLocale).not.toHaveBeenCalled();
   reload.mockRestore();
+});
+
+it('does not repeatedly reload when approved locales cannot be persisted', async () => {
+  getLocales.mockReturnValue([{ languageTag: 'fr-FR', languageCode: 'fr' }]);
+  storageHelper.setTextsLocales.mockRejectedValue(new Error('storage unavailable'));
+  for (let boot = 0; boot < 3; boot++) {
+    expect(await initializeTextsLocale()).toBe('de');
+    await synchronizeTextsLocale({}, ['fr']);
+  }
+  expect(DevSettings.reload).not.toHaveBeenCalled();
+});
+
+it('cancels an older catalog response when a newer release refresh starts', async () => {
+  storageHelper.textsLocale.mockResolvedValue('fr');
+  let catalog = { revision: '1', values: { close: 'Ancien' } };
+  readAppTextCatalog.mockImplementation(async () => catalog);
+  await initializeTextsLocale();
+  let finish;
+  let olderIsCurrent;
+  refreshAppTextCatalog
+    .mockImplementationOnce((client, locale, { isCurrent }) => {
+      olderIsCurrent = isCurrent;
+      return new Promise((resolve) => {
+        finish = resolve;
+      });
+    })
+    .mockImplementationOnce(async () => {
+      catalog = { revision: '2', values: { close: 'Nouveau' } };
+    });
+  const older = synchronizeTextsLocale({}, ['fr']);
+  while (!finish) await Promise.resolve();
+  await synchronizeTextsLocale({}, ['fr']);
+  expect(olderIsCurrent()).toBe(false);
+  finish();
+  await older;
+  expect(DevSettings.reload).toHaveBeenCalledTimes(1);
+});
+
+it('reloads a stored catalog update even when a canceled sync saved it first', async () => {
+  storageHelper.textsLocale.mockResolvedValue('fr');
+  let catalog = { revision: '1', values: { close: 'Ancien' } };
+  readAppTextCatalog.mockImplementation(async () => catalog);
+  await initializeTextsLocale();
+  let finish;
+  refreshAppTextCatalog.mockImplementationOnce(() => {
+    catalog = { revision: '2', values: { close: 'Nouveau' } };
+    return new Promise((resolve) => {
+      finish = resolve;
+    });
+  });
+  const older = synchronizeTextsLocale({}, ['fr']);
+  while (!finish) await Promise.resolve();
+  await synchronizeTextsLocale({}, ['fr']);
+  finish();
+  await older;
+  expect(DevSettings.reload).toHaveBeenCalledTimes(1);
 });

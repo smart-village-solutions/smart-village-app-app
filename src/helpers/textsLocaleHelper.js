@@ -13,6 +13,7 @@ export const isTextsLocale = (locale) =>
   typeof locale === 'string' && locale.length <= 32 && localePattern.test(locale);
 
 let contentLocale;
+let activeCatalogRevision;
 let releasedLocales = ['de'];
 let preference = 'system';
 let deviceLocales = [];
@@ -48,15 +49,14 @@ const preferredLocales = (available) => {
 const hasCatalog = (locale, stored) =>
   locale === 'de' || !!stored || Object.hasOwn(textsByLocale, locale);
 
-const refreshedCatalog = async (client, locale) => {
-  const before = await readAppTextCatalog(locale);
+const refreshedCatalog = async (client, locale, isCurrent) => {
   try {
-    await refreshAppTextCatalog(client, locale, { reload: false });
+    await refreshAppTextCatalog(client, locale, { reload: false, isCurrent });
   } catch {
     // A bundled or previously downloaded catalog is still usable offline.
   }
   const stored = await readAppTextCatalog(locale);
-  return { stored, changed: before?.revision !== stored?.revision };
+  return { stored, changed: activeCatalogRevision !== stored?.revision };
 };
 
 const availableCatalog = async (locales) => {
@@ -104,6 +104,7 @@ export const initializeTextsLocale = async () => {
   const { locale, stored } = await availableCatalog(candidates);
   setTextsLocale(locale, stored && applyAppTextCatalog(stored));
   contentLocale = locale;
+  activeCatalogRevision = stored?.revision;
   return locale;
 };
 
@@ -117,11 +118,12 @@ export const synchronizeTextsLocale = async (client, locales) => {
   try {
     await storageHelper.setTextsLocales(releaseScope(), available);
   } catch {
-    // Live releases remain usable if the offline snapshot cannot be saved.
+    // A locale switch must be restorable on the next boot to avoid a reload loop.
+    return;
   }
   for (const locale of [...new Set(preferredLocales(available))]) {
     if (!current()) return;
-    const { stored, changed } = await refreshedCatalog(client, locale);
+    const { stored, changed } = await refreshedCatalog(client, locale, current);
     if (!current()) return;
     if (!hasCatalog(locale, stored)) continue;
     if (locale !== getTextsLocale() || changed) await reloadTexts();
@@ -133,11 +135,15 @@ export const saveTextsLocaleAndReload = async (locale) => {
   if (locale !== 'system' && !isTextsLocale(locale)) throw new Error('Invalid text locale');
   revision++;
   savingPreference = true;
+  const previousPreference = preference;
   try {
     await storageHelper.setTextsLocale(locale);
     preference = locale;
     // A reload also refreshes labels captured when App modules were first loaded.
     await reloadTexts();
+  } catch (error) {
+    preference = previousPreference;
+    throw error;
   } finally {
     savingPreference = false;
   }

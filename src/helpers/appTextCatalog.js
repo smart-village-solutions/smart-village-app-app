@@ -112,14 +112,18 @@ export const applyAppTextCatalog = ({ locale, values }) => {
   return catalog;
 };
 
-export const refreshAppTextCatalog = async (client, locale, { reload = true } = {}) => {
+export const refreshAppTextCatalog = async (
+  client,
+  locale,
+  { reload = true, isCurrent = () => true } = {}
+) => {
   const current = await readAppTextCatalog(locale);
   const { data } = await client.query({
     query,
     fetchPolicy: 'no-cache',
     variables: { schema: SCHEMA, locale, knownRevision: current?.revision }
   });
-  if (!data || !Object.hasOwn(data, 'appTextCatalog')) return;
+  if (!isCurrent() || !data || !Object.hasOwn(data, 'appTextCatalog')) return;
   const next = data.appTextCatalog;
   if (next === null) {
     if (!current) return;

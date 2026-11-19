@@ -76,3 +76,26 @@ it('can store a new catalog before the caller performs the single language reloa
   expect(addToStore).toHaveBeenCalledWith(expect.any(String), snapshot);
   expect(DevSettings.reload).not.toHaveBeenCalled();
 });
+
+it.each([null, { ...snapshot, revision: '13' }])(
+  'does not let a canceled response replace or remove the current catalog: %s',
+  async (next) => {
+    readFromStore.mockResolvedValue(snapshot);
+    let finish;
+    let current = true;
+    const query = jest.fn(
+      () =>
+        new Promise((resolve) => {
+          finish = resolve;
+        })
+    );
+    const refresh = refreshAppTextCatalog({ query }, 'hu', { isCurrent: () => current });
+    while (!finish) await Promise.resolve();
+    current = false;
+    finish({ data: { appTextCatalog: next } });
+    await refresh;
+    expect(addToStore).not.toHaveBeenCalled();
+    expect(removeFromStore).not.toHaveBeenCalled();
+    expect(DevSettings.reload).not.toHaveBeenCalled();
+  }
+);

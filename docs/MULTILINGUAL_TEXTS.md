@@ -51,6 +51,26 @@ presence in the target installed binary before shipping an OTA. Shared changes
 live on `feature/SVAK-212-system-locale`, based on
 `feature/SVAK-212-mehrsprachigkeit`; integration into `master` is still pending.
 
+### Simulator verification — 19 November 2026
+
+Verified on iPhone 16e / iOS 26 using the existing development client and a local
+API fixture releasing `de`, `en`, `fr` and `pt-PT`. Device locales came from the
+real native `expo-localization` module; no locale API was mocked in the app.
+
+- System mode with OS language `fr-FR` displayed French and selected system settings
+- Manual English remained selected after a full app restart with OS language `fr-FR`
+- System mode with only `ja-JP` displayed German and kept system settings selected
+
+The original simulator languages (`de-DE`, `en-DE`), region (`de_DE`) and manual
+English preference were restored. Screenshots were inspected locally. Android
+execution and deployed OTA binaries were not checked. Two expert reviews covered
+native locale detection and selection UX; their reload-recovery, failed-cache-write
+and overlapping-catalog-response findings were fixed with regression tests.
+The five focused suites passed 51 tests. Full tests retained the same 10 failing
+suites / 17 failures as before these corrections. Full lint was stopped after 45
+seconds of repeated React Native dependency parser errors; scoped lint passed
+with `import/no-cycle` disabled for that dependency parser issue.
+
 ## Bundled text catalog
 
 Download a complete, sealed municipal `texts.js` from SVA Studio and replace
