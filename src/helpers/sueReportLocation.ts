@@ -55,6 +55,20 @@ export const hasRequiredSueAddress = (
   return !requirements.locationStreetIsRequired || !!address.street.trim();
 };
 
+export const getSueAddressError = (
+  address: SueAddress,
+  requirements: SueAddressRequirements = {}
+) => {
+  if (address.houseNumber && !address.street) return texts.sue.report.alerts.street;
+  if (address.city && !address.postalCode) return texts.sue.report.alerts.postalCode;
+  if (address.postalCode && !isSuePostalCodeValid(address.postalCode)) {
+    return texts.sue.report.alerts.postalCodeLength;
+  }
+  if (address.postalCode && !address.city) return texts.sue.report.alerts.city;
+  if (!hasRequiredSueAddress(address, requirements)) return texts.sue.report.alerts.missingAnyInput;
+  return '';
+};
+
 export const isSuePostalCodeAllowed = (postalCode: string, allowedPostalCodes: string[]) =>
   !!normalizePostalCode(postalCode) &&
   allowedPostalCodes.some(

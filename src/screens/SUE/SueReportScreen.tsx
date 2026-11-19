@@ -45,10 +45,9 @@ import {
 import {
   geocodeSueAddress,
   getSueAddressKey,
-  hasRequiredSueAddress,
+  getSueAddressError,
   isSueAreaValidationRequired,
   isSuePostalCodeAllowed,
-  isSuePostalCodeValid,
   withSueLocationTimeout,
   SueAddress
 } from '../../helpers/sueReportLocation';
@@ -526,15 +525,8 @@ export const SueReportScreen = ({
         return texts.sue.report.alerts.locationPending;
       }
       if (isLocationPending()) return texts.sue.report.alerts.locationPending;
-      if (address.houseNumber && !address.street) return texts.sue.report.alerts.street;
-      if (address.city && !address.postalCode) return texts.sue.report.alerts.postalCode;
-      if (address.postalCode && !isSuePostalCodeValid(address.postalCode)) {
-        return texts.sue.report.alerts.postalCodeLength;
-      }
-      if (address.postalCode && !address.city) return texts.sue.report.alerts.city;
-      if (!hasRequiredSueAddress(address, geoMap)) {
-        return texts.sue.report.alerts.missingAnyInput;
-      }
+      const addressError = getSueAddressError(address, geoMap);
+      if (addressError) return addressError;
       if (
         address.postalCode &&
         areaServiceData?.postalCodes &&
