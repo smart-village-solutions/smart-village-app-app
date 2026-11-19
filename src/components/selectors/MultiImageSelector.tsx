@@ -8,6 +8,7 @@ import { useMutation } from 'react-query';
 import { consts, Icon, normalize, texts } from '../../config';
 import { jsonParser, volunteerApiV1Url } from '../../helpers';
 import { onDeleteImage, onImageSelect } from '../../helpers/selectors';
+import type { SueLocationRequest } from '../../hooks/useSueReportLocation';
 import {
   useCaptureImage,
   useLastKnownPosition,
@@ -136,8 +137,11 @@ export const MultiImageSelector = ({
     imageFunction: () => Promise<ImagePickerAsset | undefined>,
     from?: string
   ) => {
+    let locationRequest: SueLocationRequest | undefined;
     try {
-      await onBeforeNativeImagePicker?.();
+      const savedDraft = onBeforeNativeImagePicker?.();
+      locationRequest = coordinateCheck?.beginLocationUpdate?.();
+      await savedDraft;
 
       setLoading(true);
       await onImageSelect({
@@ -149,6 +153,7 @@ export const MultiImageSelector = ({
         imagesAttributes,
         infoAndErrorText,
         lastKnownPosition,
+        locationRequest,
         maxFileSize,
         position,
         reverseGeocode,
@@ -159,6 +164,7 @@ export const MultiImageSelector = ({
     } catch (error) {
       Alert.alert(texts.sue.report.alerts.hint, texts.defectReport.alerts.error);
     } finally {
+      locationRequest?.finish();
       setIsModalVisible(false);
       setLoading(false);
     }

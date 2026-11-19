@@ -2,8 +2,8 @@ import { useBottomTabBarHeight } from 'expo-router/js-tabs';
 import { useNavigation } from 'expo-router/react-navigation';
 import { StackNavigationProp } from 'expo-router/js-stack';
 import * as Location from 'expo-location';
-import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { UseFormGetValues, UseFormSetValue } from 'react-hook-form';
+import React, { useContext, useMemo, useRef, useState } from 'react';
+import { UseFormSetValue } from 'react-hook-form';
 import { Alert, Linking, Platform, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
@@ -13,6 +13,8 @@ import { ConfigurationsContext } from '../../../ConfigurationsProvider';
 import { SettingsContext } from '../../../SettingsProvider';
 import { SUE_STATUS, consts, device, normalize, texts } from '../../../config';
 import { parseListItemsFromQuery } from '../../../helpers';
+import { SueAddress, withSueLocationTimeout } from '../../../helpers/sueReportLocation';
+import { SueCoordinates, SueLocationRequest } from '../../../hooks/useSueReportLocation';
 import {
   useLastKnownPosition,
   useLocationSettings,
@@ -25,6 +27,7 @@ import { SETTINGS_SCREENS } from '../../../screens/SettingsScreen';
 import { mapToMapMarkers } from '../../../screens/SUE/SueMapScreen';
 import { TValues } from '../../../screens/SUE/SueReportScreen';
 import { MapMarker, ScreenName } from '../../../types';
+import { Button } from '../../Button';
 import { LoadingSpinner } from '../../LoadingSpinner';
 import { RegularText } from '../../Text';
 import { Wrapper } from '../../Wrapper';
@@ -83,11 +86,14 @@ const SUE_MAP_STATUSES = [
 /* eslint-disable complexity */
 export const SueReportLocation = ({
   areaServiceData,
+  beginLocationUpdate,
   configuration,
   control,
   errorMessage,
+  invalidateLocation,
   isFullscreenMap,
   requiredInputs,
+  resolveManualLocation,
   selectedPosition,
   setIsFullscreenMap,
   setSelectedPosition,
@@ -96,20 +102,24 @@ export const SueReportLocation = ({
   setValue
 }: {
   areaServiceData?: { postalCodes?: string[] };
+  beginLocationUpdate: () => SueLocationRequest;
   configuration: {
     geoMap: {
+      locationIsRequired?: boolean;
+      locationStreetIsRequired?: boolean;
       clusterDistance: number;
       clusterThreshold: number;
     };
   };
   control: any;
   errorMessage: string;
-  getValues: UseFormGetValues<TValues>;
+  invalidateLocation: (change?: Partial<SueAddress>) => void;
   isFullscreenMap: boolean;
-  requiredInputs: keyof TValues[];
-  selectedPosition?: Location.LocationObjectCoords;
+  requiredInputs?: (keyof TValues)[];
+  resolveManualLocation: () => Promise<boolean | undefined>;
+  selectedPosition?: SueCoordinates;
   setIsFullscreenMap: (value: boolean) => void;
-  setSelectedPosition: (position?: Location.LocationObjectCoords) => void;
+  setSelectedPosition: (position?: SueCoordinates) => void;
   setShowCoordinatesFromImageAlert: (value: boolean) => void;
   setUpdateRegionFromImage: (value: boolean) => void;
   setValue: UseFormSetValue<TValues>;
@@ -133,9 +143,6 @@ export const SueReportLocation = ({
     backgroundColors = {},
     iconColors = {}
   } = mapPinColors;
-  const [address, setAddress] = useState(
-    {} as { street: string; houseNumber: string; postalCode: string; city: string }
-  );
   const [selectedPointOfInterest, setSelectedPointOfInterest] = useState<string>();
 
   const { position } = usePosition(
@@ -150,7 +157,6 @@ export const SueReportLocation = ({
   const houseNumberInputRef = useRef();
   const postalCodeInputRef = useRef();
   const cityInputRef = useRef();
-  const latestReverseGeocodeRequestRef = useRef(0);
 
   const { bottom: safeAreaBottom, top: safeAreaTop } = useSafeAreaInsets();
   const bottomTabBarHeight = useBottomTabBarHeight();
@@ -178,33 +184,11 @@ export const SueReportLocation = ({
     [data]
   );
 
-  const geocode = useCallback(async () => {
-    const { street, houseNumber, postalCode, city } = address;
-
-    if (!street || !postalCode || !city) {
-      return;
+  const geocode = async () => {
+    if ((await resolveManualLocation()) === false) {
+      Alert.alert(texts.sue.report.alerts.hint, texts.sue.report.alerts.locationUnconfirmed);
     }
-
-    try {
-      const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=jsonv2&street=${street}+${houseNumber}&city=${city}&postalcode=${postalCode}&country=germany&countrycodes=de`
-      );
-
-      const data = await response.json();
-      const latitude = data?.[0]?.lat;
-      const longitude = data?.[0]?.lon;
-
-      if (latitude && longitude) {
-        setSelectedPosition({ latitude: Number(latitude), longitude: Number(longitude) });
-      }
-    } catch (error) {
-      console.error('Geocoding Error:', error);
-    }
-  }, [address, setSelectedPosition]);
-
-  useEffect(() => {
-    geocode();
-  }, [address]);
+  };
 
   if (!systemPermission) {
     return <LoadingSpinner loading />;
@@ -216,51 +200,39 @@ export const SueReportLocation = ({
     return <LoadingSpinner loading />;
   }
 
-  const clearAddressFields = () => {
-    setValue('city', '');
-    setValue('houseNumber', '');
-    setValue('street', '');
-    setValue('postalCode', '');
-  };
-
-  const onMapPress = async ({ geometry }: { geometry: { coordinates: number[] } }) => {
-    const position = { latitude: geometry?.coordinates[1], longitude: geometry?.coordinates[0] };
-    const requestId = latestReverseGeocodeRequestRef.current + 1;
-
-    latestReverseGeocodeRequestRef.current = requestId;
+  const selectMapPosition = async (position: SueCoordinates, request: SueLocationRequest) => {
+    if (!request.isLatestRequest()) return false;
     setShowCoordinatesFromImageAlert(true);
     setUpdateRegionFromImage(false);
-    clearAddressFields();
 
     try {
-      const reverseGeocodeResult = await reverseGeocode({
+      const result = await reverseGeocode({
         areaServiceData,
         errorMessage,
-        isLatestRequest: () => latestReverseGeocodeRequestRef.current === requestId,
+        isLatestRequest: request.isLatestRequest,
         position,
+        requirements: configuration.geoMap,
         setValue
       });
 
-      if (reverseGeocodeResult?.isStale) {
-        return;
-      }
-
-      if (reverseGeocodeResult?.isWithinArea) {
-        setSelectedPosition(position);
-        return;
-      }
-
-      setSelectedPosition(undefined);
+      if (!request.isLatestRequest() || !result.isWithinArea) return false;
+      setSelectedPosition(position);
+      return true;
     } catch (error) {
-      if (latestReverseGeocodeRequestRef.current !== requestId) {
-        return;
+      if (request.isLatestRequest()) {
+        Alert.alert(texts.sue.report.alerts.hint, error?.message);
       }
-
-      setSelectedPosition(undefined);
-      clearAddressFields();
-      Alert.alert(texts.sue.report.alerts.hint, error?.message);
+      return false;
+    } finally {
+      request.finish();
     }
   };
+
+  const onMapPress = ({ geometry }: { geometry: { coordinates: number[] } }) =>
+    selectMapPosition(
+      { latitude: geometry?.coordinates[1], longitude: geometry?.coordinates[0] },
+      beginLocationUpdate()
+    ).then(() => undefined);
 
   const onMyLocationButtonPress = async ({
     isFullScreenMap = false
@@ -295,52 +267,56 @@ export const SueReportLocation = ({
           locationServiceEnabled: false,
           navigation
         });
-        return;
+        return false;
       }
 
-      const permissionResponse = await Location.getForegroundPermissionsAsync();
-      const hasPermission = permissionResponse.status === Location.PermissionStatus.GRANTED;
+      const request = beginLocationUpdate();
+      try {
+        const resolvedPosition = await withSueLocationTimeout(async () => {
+          const permissionResponse = await Location.getForegroundPermissionsAsync();
+          if (!request.isLatestRequest()) return;
 
-      if (!hasPermission) {
-        locationServiceEnabledAlert({
-          currentPosition: undefined,
-          locationServiceEnabled: true,
-          navigation
+          const hasPermission = permissionResponse.status === Location.PermissionStatus.GRANTED;
+          return hasPermission ? resolvePosition() : undefined;
         });
-        return;
-      }
+        if (!request.isLatestRequest()) return false;
 
-      const resolvedPosition = await resolvePosition();
-
-      if (!resolvedPosition?.coords) {
-        locationServiceEnabledAlert({
-          currentPosition: undefined,
-          locationServiceEnabled: true,
-          navigation
-        });
-        return;
-      }
-
-      onMapPress({
-        geometry: {
-          coordinates: [resolvedPosition.coords.longitude, resolvedPosition.coords.latitude]
+        if (!resolvedPosition?.coords) {
+          locationServiceEnabledAlert({
+            currentPosition: undefined,
+            locationServiceEnabled: true,
+            navigation
+          });
+          return false;
         }
-      });
+
+        return await selectMapPosition(resolvedPosition.coords, request);
+      } catch (error) {
+        if (request.isLatestRequest()) {
+          Alert.alert(texts.sue.report.alerts.hint, error?.message);
+        }
+        return false;
+      } finally {
+        request.finish();
+      }
     };
 
-    if (!isFullScreenMap) {
-      Alert.alert(texts.sue.report.alerts.hint, texts.sue.report.alerts.myLocation, [
-        {
-          text: texts.sue.report.alerts.no
-        },
-        {
-          text: texts.sue.report.alerts.yes,
-          onPress: applyCurrentPosition
-        }
-      ]);
-    } else {
-      await applyCurrentPosition();
-    }
+    if (isFullScreenMap) return applyCurrentPosition();
+
+    return new Promise<boolean>((resolve) => {
+      Alert.alert(
+        texts.sue.report.alerts.hint,
+        texts.sue.report.alerts.myLocation,
+        [
+          { text: texts.sue.report.alerts.no, onPress: () => resolve(false) },
+          {
+            text: texts.sue.report.alerts.yes,
+            onPress: async () => resolve(await applyCurrentPosition())
+          }
+        ],
+        { cancelable: true, onDismiss: () => resolve(false) }
+      );
+    });
   };
 
   return (
@@ -394,7 +370,7 @@ export const SueReportLocation = ({
           textContentType="streetAddressLine1"
           control={control}
           onChange={({ nativeEvent }: { nativeEvent: { text: string } }) =>
-            setAddress((prev) => ({ ...prev, [INPUT_KEYS.SUE.STREET]: nativeEvent.text }))
+            invalidateLocation({ street: nativeEvent.text })
           }
           ref={streetInputRef}
           onSubmitEditing={() => houseNumberInputRef.current?.focus()}
@@ -414,7 +390,7 @@ export const SueReportLocation = ({
           textContentType="off"
           control={control}
           onChange={({ nativeEvent }: { nativeEvent: { text: string } }) =>
-            setAddress((prev) => ({ ...prev, [INPUT_KEYS.SUE.HOUSE_NUMBER]: nativeEvent.text }))
+            invalidateLocation({ houseNumber: nativeEvent.text })
           }
           ref={houseNumberInputRef}
           onSubmitEditing={() => postalCodeInputRef.current?.focus()}
@@ -436,7 +412,7 @@ export const SueReportLocation = ({
           textContentType="postalCode"
           control={control}
           onChange={({ nativeEvent }: { nativeEvent: { text: string } }) =>
-            setAddress((prev) => ({ ...prev, [INPUT_KEYS.SUE.POSTAL_CODE]: nativeEvent.text }))
+            invalidateLocation({ postalCode: nativeEvent.text })
           }
           ref={postalCodeInputRef}
           onSubmitEditing={() => cityInputRef.current?.focus()}
@@ -456,10 +432,13 @@ export const SueReportLocation = ({
           control={control}
           textContentType="addressCity"
           onChange={({ nativeEvent }: { nativeEvent: { text: string } }) =>
-            setAddress((prev) => ({ ...prev, [INPUT_KEYS.SUE.CITY]: nativeEvent.text }))
+            invalidateLocation({ city: nativeEvent.text })
           }
           ref={cityInputRef}
         />
+      </Wrapper>
+      <Wrapper noPaddingTop style={[isFullscreenMap && styles.wrapperHidden]}>
+        <Button invert onPress={geocode} title={texts.sue.report.showAddressOnMap} />
       </Wrapper>
     </>
   );

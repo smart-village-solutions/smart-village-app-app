@@ -25,7 +25,7 @@ export const SueReportUser = ({
   configuration: any;
   control: any;
   errors: any;
-  requiredInputs: keyof TValues[];
+  requiredInputs?: (keyof TValues)[];
 }) => {
   const { colors: colors } = useTheme();
 

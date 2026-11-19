@@ -218,7 +218,7 @@ export const consts = {
   },
 
   INPUT_KEYS: {
-    SUE: {
+    SUE: /** @type {const} */ ({
       CITY: 'city',
       DESCRIPTION: 'description',
       EMAIL: 'email',
@@ -233,7 +233,7 @@ export const consts = {
       STREET: 'street',
       TERMS_OF_SERVICE: 'termsOfService',
       TITLE: 'title'
-    }
+    })
   },
 
   MATOMO_TRACKING: {
