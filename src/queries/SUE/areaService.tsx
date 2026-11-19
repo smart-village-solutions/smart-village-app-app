@@ -42,7 +42,7 @@ export const areaService = async ({ signal }: { signal?: AbortSignal } = {}) => 
     areaServiceFetchObj
   );
   if (!Array.isArray(postalCodes?.values)) {
-    throw new Error('Area Service response is missing its postcode list');
+    throw new TypeError('Area Service response is missing its postcode list');
   }
 
   if (signal?.aborted) throw new Error(REQUEST_ABORTED);

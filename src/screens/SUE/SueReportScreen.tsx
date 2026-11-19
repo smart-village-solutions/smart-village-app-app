@@ -12,7 +12,7 @@ import React, {
   useRef,
   useState
 } from 'react';
-import { UseFormSetValue, useForm } from 'react-hook-form';
+import { UseFormSetValue, useForm, useWatch } from 'react-hook-form';
 import { ActivityIndicator, Alert, Keyboard, ScrollView, View } from 'react-native';
 import { Divider } from 'react-native-elements';
 import { useMutation, useQuery } from 'react-query';
@@ -45,6 +45,8 @@ import {
 import {
   geocodeSueAddress,
   getSueAddressKey,
+  hasRequiredSueAddress,
+  isSueAreaValidationRequired,
   isSuePostalCodeAllowed,
   isSuePostalCodeValid,
   withSueLocationTimeout,
@@ -332,6 +334,7 @@ export const SueReportScreen = ({
   const scrollViewRef = useRef<ScrollView>(null);
   const scrollViewContentRef = useRef<(ScrollView | null)[]>([]);
   const hasAppliedInitialProgressRef = useRef(false);
+  const reportContentWidthRef = useRef(0);
 
   const keyboardHeight = useKeyboardHeight();
 
@@ -382,6 +385,15 @@ export const SueReportScreen = ({
     }
   });
 
+  const [street, houseNumber, postalCode, city] = useWatch({
+    control,
+    name: ['street', 'houseNumber', 'postalCode', 'city']
+  });
+  const needsAreaValidation = isSueAreaValidationRequired(
+    { street, houseNumber, postalCode, city },
+    geoMap
+  );
+
   const {
     data: areaServiceResult,
     isError: areaServiceError,
@@ -398,17 +410,11 @@ export const SueReportScreen = ({
     if (limitOfPostalCodes.length) return { postalCodes: limitOfPostalCodes };
     if (legacyZipCodes.length) return { postalCodes: legacyZipCodes };
     if (areaServiceResult) return areaServiceResult;
-    if (areaServiceError) return undefined;
     return areaServiceAreaId || limitOfAreaCity ? { postalCodes: [] } : undefined;
-  }, [
-    areaServiceAreaId,
-    areaServiceError,
-    areaServiceResult,
-    limitOfPostalCodes,
-    legacyZipCodes,
-    limitOfAreaCity
-  ]);
-  const isAreaServiceUnavailable = areaServiceError && !areaServiceData;
+  }, [areaServiceAreaId, areaServiceResult, limitOfPostalCodes, legacyZipCodes, limitOfAreaCity]);
+  const isAreaServiceUnavailable =
+    areaServiceError && !limitOfPostalCodes.length && !legacyZipCodes.length && !areaServiceResult;
+  const isAreaServicePending = areaServiceLoading && !areaServiceData?.postalCodes?.length;
 
   const {
     beginLocationUpdate,
@@ -512,7 +518,13 @@ export const SueReportScreen = ({
   const getLocationError = useCallback(
     (address: SueAddress) => {
       if (locationStep < 0) return '';
-      if (isAreaServiceUnavailable) return texts.sue.report.alerts.areaLookupFailed;
+      const requiresAreaValidation = isSueAreaValidationRequired(address, geoMap);
+      if (requiresAreaValidation && isAreaServiceUnavailable) {
+        return texts.sue.report.alerts.areaLookupFailed;
+      }
+      if (requiresAreaValidation && isAreaServicePending) {
+        return texts.sue.report.alerts.locationPending;
+      }
       if (isLocationPending()) return texts.sue.report.alerts.locationPending;
       if (address.houseNumber && !address.street) return texts.sue.report.alerts.street;
       if (address.city && !address.postalCode) return texts.sue.report.alerts.postalCode;
@@ -520,10 +532,7 @@ export const SueReportScreen = ({
         return texts.sue.report.alerts.postalCodeLength;
       }
       if (address.postalCode && !address.city) return texts.sue.report.alerts.city;
-      if (
-        (geoMap.locationStreetIsRequired && !address.street.trim()) ||
-        (geoMap.locationIsRequired && (!address.city.trim() || !address.postalCode))
-      ) {
+      if (!hasRequiredSueAddress(address, geoMap)) {
         return texts.sue.report.alerts.missingAnyInput;
       }
       if (
@@ -539,8 +548,8 @@ export const SueReportScreen = ({
     [
       areaServiceData,
       errorMessage,
-      geoMap.locationIsRequired,
-      geoMap.locationStreetIsRequired,
+      geoMap,
+      isAreaServicePending,
       isAreaServiceUnavailable,
       isLocationPending,
       locationStep
@@ -656,21 +665,31 @@ export const SueReportScreen = ({
     setIsLoadingStoredData(false);
   }, [invalidateLocation, reset]);
 
-  useEffect(() => {
-    if (isLoadingStoredData || hasAppliedInitialProgressRef.current) {
-      return;
-    }
+  const restoreScrollPosition = useCallback(
+    (contentWidth = reportContentWidthRef.current) => {
+      reportContentWidthRef.current = contentWidth;
+      if (
+        isLoadingStoredData ||
+        hasAppliedInitialProgressRef.current ||
+        !scrollViewRef.current ||
+        contentWidth < device.width * (currentProgress + 1)
+      ) {
+        return;
+      }
 
-    if (currentProgress > 0) {
-      scrollViewRef?.current?.scrollTo({
+      scrollViewRef.current.scrollTo({
         x: device.width * currentProgress,
         y: 0,
         animated: false
       });
-    }
+      hasAppliedInitialProgressRef.current = true;
+    },
+    [currentProgress, isLoadingStoredData]
+  );
 
-    hasAppliedInitialProgressRef.current = true;
-  }, [isLoadingStoredData, currentProgress]);
+  useEffect(() => {
+    restoreScrollPosition();
+  }, [restoreScrollPosition]);
 
   const handleNextPage = async () => {
     Keyboard.dismiss();
@@ -883,27 +902,6 @@ export const SueReportScreen = ({
     return null;
   }
 
-  if (isAreaServiceUnavailable) {
-    return (
-      <Wrapper>
-        <BoldText>{texts.sue.report.alerts.areaLookupFailed}</BoldText>
-        <Button
-          disabled={areaServiceFetching}
-          onPress={() => refetchAreaService()}
-          title={texts.sue.report.retryAreaLookup}
-        />
-      </Wrapper>
-    );
-  }
-
-  if (areaServiceLoading && !areaServiceData?.postalCodes?.length) {
-    return (
-      <LoadingContainer>
-        <ActivityIndicator color={colors.refreshControl} />
-      </LoadingContainer>
-    );
-  }
-
   if (isDone || isLoading) {
     return <SueReportSend navigation={navigation} isDone={isDone} isLoading={isLoading} />;
   }
@@ -916,7 +914,23 @@ export const SueReportScreen = ({
           currentProgress={currentProgress + 1}
           isFullscreenMap={isFullscreenMap}
         />
+        {currentProgress === locationStep && needsAreaValidation && isAreaServiceUnavailable && (
+          <Wrapper>
+            <BoldText>{texts.sue.report.alerts.areaLookupFailed}</BoldText>
+            <Button
+              disabled={areaServiceFetching}
+              onPress={() => refetchAreaService()}
+              title={texts.sue.report.retryAreaLookup}
+            />
+          </Wrapper>
+        )}
+        {currentProgress === locationStep && needsAreaValidation && isAreaServicePending && (
+          <Wrapper>
+            <ActivityIndicator color={colors.refreshControl} />
+          </Wrapper>
+        )}
         <ScrollView
+          onContentSizeChange={restoreScrollPosition}
           keyboardShouldPersistTaps="handled"
           horizontal
           pagingEnabled
@@ -946,7 +960,11 @@ export const SueReportScreen = ({
                   configuration={memoizedConfiguration}
                   content={item.content}
                   control={control}
-                  errorMessage={errorMessage}
+                  errorMessage={
+                    isAreaServiceUnavailable
+                      ? texts.sue.report.alerts.areaLookupFailed
+                      : errorMessage
+                  }
                   errors={errors}
                   isFullscreenMap={isFullscreenMap}
                   invalidateLocation={invalidateLocation}

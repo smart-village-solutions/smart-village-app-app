@@ -33,6 +33,14 @@ const normalizePostalCode = (value?: string) =>
 
 export const isSuePostalCodeValid = (value: string) => /^\d{5}$/.test(normalizePostalCode(value));
 
+export const isSueAreaValidationRequired = (
+  address: SueAddress,
+  requirements: SueAddressRequirements = {}
+) =>
+  !!requirements.locationIsRequired ||
+  !!requirements.locationStreetIsRequired ||
+  [address.street, address.houseNumber, address.postalCode, address.city].some(Boolean);
+
 export const hasRequiredSueAddress = (
   address: SueAddress,
   requirements: SueAddressRequirements = {}

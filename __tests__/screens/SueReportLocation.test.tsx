@@ -3,7 +3,13 @@ import React from 'react';
 import { Alert } from 'react-native';
 import renderer, { act } from 'react-test-renderer';
 
-import { BoldText, Button, SueReportDescription, SueReportLocation } from '../../src/components';
+import {
+  BoldText,
+  Button,
+  SueReportDescription,
+  SueReportLocation,
+  SueReportProgress
+} from '../../src/components';
 import { consts, texts } from '../../src/config';
 import { ConfigurationsContext } from '../../src/ConfigurationsProvider';
 import { addToStore, readFromStore } from '../../src/helpers';
@@ -12,6 +18,21 @@ import { getQuery } from '../../src/queries';
 import { postRequests } from '../../src/queries/SUE';
 import { SueReportScreen } from '../../src/screens/SUE/SueReportScreen';
 
+const mockScrollTo = jest.fn();
+jest.mock('react-native', () => {
+  const native = jest.requireActual('react-native');
+  const react = require('react');
+  return {
+    ActivityIndicator: native.ActivityIndicator,
+    Alert: native.Alert,
+    Keyboard: native.Keyboard,
+    View: native.View,
+    ScrollView: react.forwardRef(({ children, ...props }, ref) => {
+      react.useImperativeHandle(ref, () => ({ scrollTo: mockScrollTo }));
+      return react.createElement('mock-scroll-view', props, children);
+    })
+  };
+});
 jest.mock('expo-screen-orientation', () => ({ OrientationLock: {}, lockAsync: jest.fn() }));
 jest.mock('react-native-elements', () => ({ Divider: () => null }));
 jest.mock('../../src/ConfigurationsProvider', () => ({
@@ -638,16 +659,21 @@ it('offers an explicit area retry and restores the report after a successful loo
     confirmedLocationAddress: getSueAddressKey(kiel)
   });
 
-  expect(tree.root.findAllByType(SueReportLocation)).toHaveLength(0);
+  expect(tree.root.findAllByType(SueReportLocation)).toHaveLength(1);
+  await act(async () => press(texts.sue.report.sendReport));
+  expect(postRequests).not.toHaveBeenCalled();
   expect(tree.root.findByType(BoldText).props.children).toBe(alert.areaLookupFailed);
-  expect(tree.root.findAllByType(Button)).toHaveLength(1);
   await act(async () => press(texts.sue.report.retryAreaLookup));
   expect(mockAreaRefetch).toHaveBeenCalledTimes(1);
   expect(postRequests).not.toHaveBeenCalled();
 
   mockAreaFetching = true;
   await act(async () => tree.update(render()));
-  expect(tree.root.findByType(Button).props.disabled).toBe(true);
+  expect(
+    tree.root
+      .findAllByType(Button)
+      .find((button) => button.props.title === texts.sue.report.retryAreaLookup)?.props.disabled
+  ).toBe(true);
 
   mockAreaFetching = false;
   mockAreaError = false;
@@ -655,6 +681,7 @@ it('offers an explicit area retry and restores the report after a successful loo
   await act(async () => tree.update(render()));
   expect(location().selectedPosition).toEqual(kielPosition);
   expect(readFromStore).toHaveBeenCalledTimes(1);
+  await act(async () => press(texts.sue.report.next));
   await act(async () => press(texts.sue.report.sendReport));
   expect(postRequests).toHaveBeenCalledWith(
     expect.objectContaining({
@@ -687,3 +714,96 @@ it.each([{ postalCodes: ['24159'] }, { zipCodes: ['24159'] }])(
     expect(mockAreaRefetch).not.toHaveBeenCalled();
   }
 );
+
+it.each(['loading', 'error'])(
+  'allows a location-free report while the area service is %s',
+  async (state) => {
+    mockAreaLoading = state === 'loading';
+    mockAreaError = state === 'error';
+    await openWizard({
+      step: 3,
+      required: false,
+      areaId: 'remote-area',
+      limitOfArea: {},
+      address: { street: '', houseNumber: '', postalCode: '', city: '' }
+    });
+
+    expect(tree.root.findAllByType(SueReportLocation)).toHaveLength(1);
+    expect(tree.root.findAllByProps({ title: texts.sue.report.retryAreaLookup })).toHaveLength(0);
+    await act(async () => press(texts.sue.report.sendReport));
+    expect(postRequests).toHaveBeenCalledWith(
+      expect.objectContaining({ addressString: undefined, lat: undefined, long: undefined }),
+      expect.any(Object)
+    );
+  }
+);
+
+it('lets an optional report remove its address instead of waiting for an unavailable area service', async () => {
+  mockAreaError = true;
+  await openWizard({ step: 2, required: false, areaId: 'remote-area', limitOfArea: {} });
+  expect(
+    tree.root.findAllByProps({ title: texts.sue.report.retryAreaLookup }).length
+  ).toBeGreaterThan(0);
+  await act(async () => press(texts.sue.report.next));
+  expect(Alert.alert).toHaveBeenCalledWith(alert.hint, alert.areaLookupFailed);
+
+  act(() => {
+    for (const key of ['street', 'houseNumber', 'postalCode', 'city']) {
+      location().setValue(key, '');
+    }
+  });
+  expect(tree.root.findAllByProps({ title: texts.sue.report.retryAreaLookup })).toHaveLength(0);
+  await act(async () => press(texts.sue.report.next));
+  await act(async () => press(texts.sue.report.sendReport));
+  expect(postRequests).toHaveBeenCalled();
+});
+
+it('applies a restored page only after the wizard is laid out and keeps it through an area retry', async () => {
+  mockAreaLoading = true;
+  const render = await openWizard({ step: 2, areaId: 'remote-area', limitOfArea: {} });
+  expect(tree.root.findByType(SueReportProgress).props.currentProgress).toBe(3);
+  expect(mockScrollTo).not.toHaveBeenCalled();
+
+  const horizontal = () => tree.root.findByProps({ horizontal: true });
+  act(() => horizontal().props.onContentSizeChange(0));
+  expect(mockScrollTo).not.toHaveBeenCalled();
+
+  mockAreaLoading = false;
+  mockAreaError = true;
+  await act(async () => tree.update(render()));
+  act(() => horizontal().props.onContentSizeChange(1560));
+  expect(mockScrollTo).toHaveBeenCalledTimes(1);
+  expect(mockScrollTo).toHaveBeenLastCalledWith({ x: 780, y: 0, animated: false });
+
+  await act(async () => press(texts.sue.report.retryAreaLookup));
+  mockAreaError = false;
+  mockServicePostcodes = ['24159'];
+  await act(async () => tree.update(render()));
+  act(() => horizontal().props.onContentSizeChange(1560));
+  expect(mockScrollTo).toHaveBeenCalledTimes(1);
+  expect(tree.root.findByType(SueReportProgress).props.currentProgress).toBe(3);
+});
+
+it('restores the saved page when content layout finishes before the draft read', async () => {
+  let complete: (value: unknown) => void = () => {};
+  (readFromStore as jest.Mock).mockImplementationOnce(
+    () =>
+      new Promise((resolve) => {
+        complete = resolve;
+      })
+  );
+  await openWizard({ areaId: 'remote-area', limitOfArea: {} });
+  act(() => tree.root.findByProps({ horizontal: true }).props.onContentSizeChange(1560));
+  expect(mockScrollTo).not.toHaveBeenCalled();
+
+  await act(async () =>
+    complete({
+      ...kiel,
+      currentProgress: 2,
+      images: '[]',
+      service: { serviceCode: 'fixture' }
+    })
+  );
+  expect(mockScrollTo).toHaveBeenCalledTimes(1);
+  expect(mockScrollTo).toHaveBeenCalledWith({ x: 780, y: 0, animated: false });
+});
