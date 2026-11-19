@@ -7,7 +7,10 @@ import { AppLanguageNamesContext, AppLanguagesContext } from '../../src/AppLangu
 import { LanguageSettings } from '../../src/components/settings/LanguageSettings';
 import { Radiobutton } from '../../src/components/Radiobutton';
 import { texts, setTextsLocale } from '../../src/config/texts';
-import { saveTextsLocaleAndReload } from '../../src/helpers/textsLocaleHelper';
+import {
+  getTextsLocalePreference,
+  saveTextsLocaleAndReload
+} from '../../src/helpers/textsLocaleHelper';
 
 jest.mock('../../src/components/Radiobutton', () => ({ Radiobutton: () => null }));
 jest.mock('../../src/components/Text', () => ({
@@ -24,10 +27,10 @@ jest.mock('../../src/components/Wrapper', () => ({
   }
 }));
 jest.mock('../../src/helpers/textsLocaleHelper', () => ({
-  getTextsLocale: () => {
+  getTextsLocalePreference: jest.fn(() => {
     const { texts, textsByLocale } = require('../../src/config/texts');
     return Object.keys(textsByLocale).find((locale) => textsByLocale[locale] === texts);
-  },
+  }),
   saveTextsLocaleAndReload: jest.fn()
 }));
 
@@ -39,9 +42,15 @@ const menu = (locales = ['de', 'en', 'fr', 'pt-PT'], names = {}) => (
   </AppLanguagesContext.Provider>
 );
 
+const languageRadios = () => tree.root.findAllByType(Radiobutton).slice(1);
+
 let tree;
 beforeEach(async () => {
   jest.clearAllMocks();
+  getTextsLocalePreference.mockImplementation(() => {
+    const { texts, textsByLocale } = require('../../src/config/texts');
+    return Object.keys(textsByLocale).find((locale) => textsByLocale[locale] === texts);
+  });
   jest.spyOn(Alert, 'alert').mockImplementation(() => {});
   await act(async () => {
     tree = renderer.create(menu());
@@ -58,7 +67,7 @@ afterEach(async () => {
 
 it('puts the language choices inside a scroll view', () => {
   const scrollView = tree.root.findByType(ScrollView);
-  expect(scrollView.findAllByType(Radiobutton)).toHaveLength(4);
+  expect(scrollView.findAllByType(Radiobutton)).toHaveLength(5);
 });
 
 it('shows the languages by name even without Intl.DisplayNames', async () => {
@@ -77,7 +86,7 @@ it('shows the languages by name even without Intl.DisplayNames', async () => {
         })
       )
     );
-    expect(tree.root.findAllByType(Radiobutton).map(({ props }) => props.title)).toEqual([
+    expect(languageRadios().map(({ props }) => props.title)).toEqual([
       'Deutsch',
       'English',
       'Français',
@@ -91,7 +100,7 @@ it('shows the languages by name even without Intl.DisplayNames', async () => {
 });
 
 it('informs about restarting before saving another language', async () => {
-  const radios = tree.root.findAllByType(Radiobutton);
+  const radios = languageRadios();
   expect(radios[0].props.selected).toBe(true);
   expect(radios[0].props.disabled).toBe(false);
   await act(async () => radios[0].props.onPress());
@@ -121,13 +130,13 @@ it('disables choices while applying a language and allows recovery after failure
       })
   );
   await act(async () => {
-    tree.root.findAllByType(Radiobutton)[1].props.onPress();
+    languageRadios()[1].props.onPress();
   });
   let changing;
   await act(async () => {
     changing = Alert.alert.mock.calls[0][2][1].onPress();
   });
-  expect(tree.root.findAllByType(Radiobutton).every((radio) => radio.props.disabled)).toBe(true);
+  expect(languageRadios().every((radio) => radio.props.disabled)).toBe(true);
   await act(async () => {
     failReload(new Error('reload failed'));
     await changing;
@@ -136,8 +145,8 @@ it('disables choices while applying a language and allows recovery after failure
     texts.settingsTitles.language,
     texts.settingsContents.language.error
   );
-  expect(tree.root.findAllByType(Radiobutton)[1].props.disabled).toBe(false);
-  expect(tree.root.findAllByType(Radiobutton)[0].props.selected).toBe(true);
+  expect(languageRadios()[1].props.disabled).toBe(false);
+  expect(languageRadios()[0].props.selected).toBe(true);
   expect(warning).toHaveBeenCalled();
 });
 
@@ -146,7 +155,7 @@ it('reads the active catalog from the active texts export', async () => {
   await act(async () => {
     tree.update(menu());
   });
-  const radios = tree.root.findAllByType(Radiobutton);
+  const radios = languageRadios();
   expect(radios[0].props.selected).toBe(false);
   expect(radios[1].props.selected).toBe(true);
   expect(radios[1].props.disabled).toBe(false);
@@ -154,11 +163,39 @@ it('reads the active catalog from the active texts export', async () => {
 
 it('offers only the current Mainserver languages and ignores a revoked choice', async () => {
   await act(async () => tree.update(menu(['de', 'fr'])));
-  const radios = tree.root.findAllByType(Radiobutton);
+  const radios = languageRadios();
   expect(radios).toHaveLength(2);
   await act(async () => radios[1].props.onPress());
   await act(async () => tree.update(menu(['de'])));
   await act(async () => Alert.alert.mock.calls[0][2][1].onPress());
   expect(saveTextsLocaleAndReload).not.toHaveBeenCalled();
-  expect(tree.root.findAllByType(Radiobutton)).toHaveLength(1);
+  expect(languageRadios()).toHaveLength(1);
+});
+
+it('offers the system preference separately from its resolved language', async () => {
+  getTextsLocalePreference.mockReturnValue('system');
+  await act(async () => tree.update(menu()));
+  const radios = tree.root.findAllByType(Radiobutton);
+  expect(radios[0].props.title).toBe(texts.settingsContents.accessibility.theme.system);
+  expect(radios[0].props.selected).toBe(true);
+  expect(languageRadios().every((radio) => !radio.props.selected)).toBe(true);
+  await act(async () => languageRadios()[1].props.onPress());
+  await act(async () => Alert.alert.mock.calls[0][2][1].onPress());
+  expect(saveTextsLocaleAndReload).toHaveBeenCalledWith('en');
+});
+
+it('allows returning to the system language with the usual restart confirmation', async () => {
+  await act(async () => tree.root.findAllByType(Radiobutton)[0].props.onPress());
+  expect(saveTextsLocaleAndReload).not.toHaveBeenCalled();
+  await act(async () => Alert.alert.mock.calls[0][2][1].onPress());
+  expect(saveTextsLocaleAndReload).toHaveBeenCalledWith('system');
+});
+
+it('shows German after manual-language revocation and allows selecting it explicitly', async () => {
+  getTextsLocalePreference.mockReturnValue('fr');
+  await act(async () => tree.update(menu(['de'])));
+  expect(languageRadios()[0].props.selected).toBe(true);
+  await act(async () => languageRadios()[0].props.onPress());
+  await act(async () => Alert.alert.mock.calls[0][2][1].onPress());
+  expect(saveTextsLocaleAndReload).toHaveBeenCalledWith('de');
 });

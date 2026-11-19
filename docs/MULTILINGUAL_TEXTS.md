@@ -18,6 +18,39 @@ instance and app version. The screen waits up to 10 seconds for translations and
 keeps the original text for fields without a usable translation. Destinations,
 URLs and technical settings stay in the original configuration.
 
+## System language and manual selection
+
+New installations default to the existing “System settings” entry in the language
+menu. The app reads the device's ordered locale list through the installed
+`expo-localization.getLocales()` at each full app start. A saved concrete
+`textsLocale` remains a manual preference and takes priority, including an
+explicit German selection. Selecting “System settings” saves `system` instead
+of the currently resolved language.
+
+The app first matches a released full locale tag, then a released general
+language code. For example, `fr-CA` can use `fr`. Regional variants such as
+`pt-BR` and `pt-PT` are not substituted for each other. It selects the first
+matching language with a bundled or validated downloaded catalog and otherwise
+uses German. Existing `texts.…` accesses still resolve before App modules load.
+
+The last successful Mainserver release list is cached per server URL and OAuth
+app client for offline startup. Without a cached release list, automatic mode
+starts in German. After a successful live release response, the app downloads
+any needed catalog and performs one reload if the effective language or catalog
+changed. The preference itself is preserved during this reconciliation. A
+revoked manual language temporarily uses German and becomes eligible again when
+released. Failed release requests preserve the cached list and preference.
+
+Device locales remain fixed for the current app session. Foreground and
+reconnection checks refresh server releases and catalogs, while a device-language
+change is picked up at the next full app start. Concurrent checks and delayed
+catalog downloads cannot override a newer manual selection.
+
+The implementation uses the existing native localization dependency. Verify its
+presence in the target installed binary before shipping an OTA. Shared changes
+live on `feature/SVAK-212-system-locale`, based on
+`feature/SVAK-212-mehrsprachigkeit`; integration into `master` is still pending.
+
 ## Bundled text catalog
 
 Download a complete, sealed municipal `texts.js` from SVA Studio and replace
@@ -40,12 +73,13 @@ their locale-local references and plural branches; the app name comes from
 
 `index.js` restores the local `textsLocale` setting and calls
 `setTextsLocale(selectedLocale)` **before requiring App.js**. This order also
-initializes module-level labels in the selected language. An absent or unknown
-locale selects the entire German catalog. A storage read failure does not erase
-the saved preference.
+initializes module-level labels in the selected language. An absent preference
+uses system-language resolution as described above. An unsupported language
+selects the German catalog. A storage read failure does not erase the saved
+preference.
 
 Settings links to a dedicated language screen. German is always offered. Other
-languages require both a bundled catalog and a current Mainserver release. `LanguageSettings` owns the selection, confirmation, and
+languages require a current Mainserver release and a bundled or downloaded catalog. `LanguageSettings` owns the selection, confirmation, and
 loading/error state; the settings footer keeps its development actions.
 Selecting another language shows a restart warning, including possible loss of
 unsaved input. Confirmation persists the choice and reloads the app using

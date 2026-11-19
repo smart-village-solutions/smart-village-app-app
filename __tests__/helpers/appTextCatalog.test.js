@@ -68,3 +68,11 @@ it('keeps the offline catalog after failure and reloads only for a change', asyn
   });
   expect(DevSettings.reload).toHaveBeenCalledTimes(1);
 });
+
+it('can store a new catalog before the caller performs the single language reload', async () => {
+  readFromStore.mockResolvedValue(null);
+  const query = jest.fn().mockResolvedValue({ data: { appTextCatalog: snapshot } });
+  await refreshAppTextCatalog({ query }, 'hu', { reload: false });
+  expect(addToStore).toHaveBeenCalledWith(expect.any(String), snapshot);
+  expect(DevSettings.reload).not.toHaveBeenCalled();
+});
