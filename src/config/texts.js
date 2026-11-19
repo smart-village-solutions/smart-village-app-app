@@ -1503,7 +1503,7 @@ export const texts = {
   search: {
     abort: 'Abbrechen',
     noResults: 'Keine Ergebnisse gefunden.',
-    placeholder: 'Suche nach Nachrichten, Veranstaltungen, Orten, Touren und Beteiligungen',
+    placeholder: 'App durchsuchen',
     pleaseSearch: 'Bitte geben Sie einen Suchbegriff ein.',
     recordTypes: {
       eventRecord: 'Veranstaltungen',
