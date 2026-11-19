@@ -752,10 +752,38 @@ it('lets an optional report remove its address instead of waiting for an unavail
       location().setValue(key, '');
     }
   });
-  expect(tree.root.findAllByProps({ title: texts.sue.report.retryAreaLookup })).toHaveLength(0);
+  expect(
+    tree.root.findAllByProps({ title: texts.sue.report.retryAreaLookup }).length
+  ).toBeGreaterThan(0);
   await act(async () => press(texts.sue.report.next));
   await act(async () => press(texts.sue.report.sendReport));
   expect(postRequests).toHaveBeenCalled();
+});
+
+it('retries an unavailable area service from an empty optional location', async () => {
+  mockAreaError = true;
+  const render = await openWizard({
+    step: 2,
+    required: false,
+    areaId: 'remote-area',
+    limitOfArea: {},
+    address: { street: '', houseNumber: '', postalCode: '', city: '' }
+  });
+
+  await act(async () => press(texts.sue.report.retryAreaLookup));
+  expect(mockAreaRefetch).toHaveBeenCalledTimes(1);
+  mockAreaError = false;
+  mockServicePostcodes = ['24159'];
+  await act(async () => tree.update(render()));
+  expect(tree.root.findAllByProps({ title: texts.sue.report.retryAreaLookup })).toHaveLength(0);
+  expect(location().areaServiceData).toEqual({ postalCodes: ['24159'] });
+
+  await act(async () => press(texts.sue.report.next));
+  await act(async () => press(texts.sue.report.sendReport));
+  expect(postRequests).toHaveBeenCalledWith(
+    expect.objectContaining({ addressString: undefined, lat: undefined, long: undefined }),
+    expect.any(Object)
+  );
 });
 
 it('applies a restored page only after the wizard is laid out and keeps it through an area retry', async () => {

@@ -906,7 +906,7 @@ export const SueReportScreen = ({
           currentProgress={currentProgress + 1}
           isFullscreenMap={isFullscreenMap}
         />
-        {currentProgress === locationStep && needsAreaValidation && isAreaServiceUnavailable && (
+        {currentProgress === locationStep && isAreaServiceUnavailable && (
           <Wrapper>
             <BoldText>{texts.sue.report.alerts.areaLookupFailed}</BoldText>
             <Button
