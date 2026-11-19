@@ -5,6 +5,7 @@ import { AppLanguageNamesContext, AppLanguagesContext } from '../../AppLanguages
 import { texts } from '../../config/texts';
 import {
   getTextsLocalePreference,
+  hasPendingTextsLocaleChange,
   saveTextsLocaleAndReload
 } from '../../helpers/textsLocaleHelper';
 import { WrapperHorizontal } from '../Wrapper';
@@ -42,7 +43,7 @@ export const LanguageSettings = () => {
   };
 
   const confirmLanguageChange = (language) => {
-    if (language === preference) return;
+    if (language === preference && !hasPendingTextsLocaleChange()) return;
     Alert.alert(texts.settingsTitles.language, texts.settingsContents.language.restartPrompt, [
       { text: texts.settingsContents.termsAndConditions.abort, style: 'cancel' },
       { text: texts.settingsContents.language.restart, onPress: () => changeLanguage(language) }

@@ -10,6 +10,7 @@ import {
   getTextsLocale,
   initializeTextsLocale,
   getTextsLocalePreference,
+  hasPendingTextsLocaleChange,
   getAvailableTextsLocales,
   synchronizeTextsLocale,
   saveTextsLocaleAndReload
@@ -378,3 +379,32 @@ it('reloads a stored catalog update even when a canceled sync saved it first', a
   await older;
   expect(DevSettings.reload).toHaveBeenCalledTimes(1);
 });
+
+it.each(['en', 'fr'])(
+  'can recover a failed French reload by explicitly saving %s',
+  async (choice) => {
+    let saved = 'en';
+    storageHelper.textsLocale.mockImplementation(async () => saved);
+    storageHelper.setTextsLocale.mockImplementation(async (locale) => {
+      saved = locale;
+    });
+    await initializeTextsLocale();
+    const previous = global.__DEV__;
+    global.__DEV__ = false;
+    Updates.reloadAsync.mockRejectedValueOnce(new Error('reload unavailable'));
+    try {
+      await expect(saveTextsLocaleAndReload('fr')).rejects.toThrow('reload unavailable');
+      expect(saved).toBe('fr');
+      expect(getTextsLocalePreference()).toBe('en');
+      expect(hasPendingTextsLocaleChange()).toBe(true);
+      await synchronizeTextsLocale({}, ['en', 'fr']);
+      expect(Updates.reloadAsync).toHaveBeenCalledTimes(1);
+      await saveTextsLocaleAndReload(choice);
+      expect(saved).toBe(choice);
+      expect(hasPendingTextsLocaleChange()).toBe(false);
+      expect(await initializeTextsLocale()).toBe(choice);
+    } finally {
+      global.__DEV__ = previous;
+    }
+  }
+);

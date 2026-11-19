@@ -41,6 +41,12 @@ changed. The preference itself is preserved during this reconciliation. A
 revoked manual language temporarily uses German and becomes eligible again when
 released. Failed release requests preserve the cached list and preference.
 
+If a manual language is saved but its reload fails, the screen keeps the session
+preference selected and records that a change is pending. The user can retry the
+new language or explicitly save the original selection to undo the stored choice.
+Automatic synchronization pauses until that decision succeeds or the app starts
+again; a failed write never clears an already pending choice.
+
 Device locales remain fixed for the current app session. Foreground and
 reconnection checks refresh server releases and catalogs, while a device-language
 change is picked up at the next full app start. Concurrent checks and delayed

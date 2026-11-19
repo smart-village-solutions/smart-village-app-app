@@ -9,6 +9,7 @@ import { Radiobutton } from '../../src/components/Radiobutton';
 import { texts, setTextsLocale } from '../../src/config/texts';
 import {
   getTextsLocalePreference,
+  hasPendingTextsLocaleChange,
   saveTextsLocaleAndReload
 } from '../../src/helpers/textsLocaleHelper';
 
@@ -31,6 +32,7 @@ jest.mock('../../src/helpers/textsLocaleHelper', () => ({
     const { texts, textsByLocale } = require('../../src/config/texts');
     return Object.keys(textsByLocale).find((locale) => textsByLocale[locale] === texts);
   }),
+  hasPendingTextsLocaleChange: jest.fn(() => false),
   saveTextsLocaleAndReload: jest.fn()
 }));
 
@@ -47,6 +49,7 @@ const languageRadios = () => tree.root.findAllByType(Radiobutton).slice(1);
 let tree;
 beforeEach(async () => {
   jest.clearAllMocks();
+  hasPendingTextsLocaleChange.mockReturnValue(false);
   getTextsLocalePreference.mockImplementation(() => {
     const { texts, textsByLocale } = require('../../src/config/texts');
     return Object.keys(textsByLocale).find((locale) => textsByLocale[locale] === texts);
@@ -198,4 +201,19 @@ it('shows German after manual-language revocation and allows selecting it explic
   await act(async () => languageRadios()[0].props.onPress());
   await act(async () => Alert.alert.mock.calls[0][2][1].onPress());
   expect(saveTextsLocaleAndReload).toHaveBeenCalledWith('de');
+});
+
+it('allows saving the original language after a different choice failed to reload', async () => {
+  getTextsLocalePreference.mockReturnValue('en');
+  hasPendingTextsLocaleChange.mockReturnValue(true);
+  await act(async () => tree.update(menu()));
+  expect(languageRadios()[1].props.selected).toBe(true);
+  await act(async () => languageRadios()[1].props.onPress());
+  expect(Alert.alert).toHaveBeenCalledWith(
+    texts.settingsTitles.language,
+    texts.settingsContents.language.restartPrompt,
+    expect.any(Array)
+  );
+  await act(async () => Alert.alert.mock.calls[0][2][1].onPress());
+  expect(saveTextsLocaleAndReload).toHaveBeenCalledWith('en');
 });

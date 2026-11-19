@@ -16,6 +16,8 @@ let contentLocale;
 let activeCatalogRevision;
 let releasedLocales = ['de'];
 let preference = 'system';
+let preferenceLoaded = false;
+let pendingPreferenceChange = false;
 let deviceLocales = [];
 let revision = 0;
 let savingPreference = false;
@@ -32,7 +34,9 @@ export const getTextsLocale = () =>
 
 export const getAvailableTextsLocales = () => releasedLocales;
 
-export const getTextsLocalePreference = () => preference ?? 'system';
+export const getTextsLocalePreference = () => preference;
+
+export const hasPendingTextsLocaleChange = () => savingPreference || pendingPreferenceChange;
 
 const preferredLocales = (available) => {
   if (preference !== 'system') return available.includes(preference) ? [preference, 'de'] : ['de'];
@@ -60,7 +64,7 @@ const refreshedCatalog = async (client, locale, isCurrent) => {
 };
 
 const availableCatalog = async (locales) => {
-  for (const locale of [...new Set(locales)]) {
+  for (const locale of new Set(locales)) {
     const stored = await readAppTextCatalog(locale);
     if (hasCatalog(locale, stored)) return { locale, stored };
   }
@@ -82,13 +86,16 @@ const reloadTexts = async () => {
 export const initializeTextsLocale = async () => {
   revision++;
   reloading = false;
-  preference = null;
+  preference = 'system';
+  preferenceLoaded = false;
+  pendingPreferenceChange = false;
   deviceLocales = [];
   releasedLocales = ['de'];
   let available;
   try {
     const saved = await storageHelper.textsLocale();
     preference = isTextsLocale(saved) ? saved : 'system';
+    preferenceLoaded = true;
     deviceLocales = getLocales();
     const cached = await storageHelper.textsLocales(releaseScope());
     available = validLocales(cached) ? [...new Set(['de', ...cached])] : undefined;
@@ -97,10 +104,8 @@ export const initializeTextsLocale = async () => {
     // Keep the saved preference intact if storage or the native locale reader is unavailable.
     console.warn('Unable to restore text locale', error);
   }
-  const candidates =
-    preference === null
-      ? ['de']
-      : preferredLocales(available ?? (preference === 'system' ? ['de'] : [preference, 'de']));
+  if (!available) available = preference === 'system' ? ['de'] : [preference, 'de'];
+  const candidates = preferenceLoaded ? preferredLocales(available) : ['de'];
   const { locale, stored } = await availableCatalog(candidates);
   setTextsLocale(locale, stored && applyAppTextCatalog(stored));
   contentLocale = locale;
@@ -110,7 +115,7 @@ export const initializeTextsLocale = async () => {
 
 // Called only after a successful, validated server release response.
 export const synchronizeTextsLocale = async (client, locales) => {
-  if (!validLocales(locales) || preference === null || savingPreference) return;
+  if (!validLocales(locales) || !preferenceLoaded || hasPendingTextsLocaleChange()) return;
   const currentRevision = ++revision;
   const current = () => currentRevision === revision && !savingPreference;
   const available = [...new Set(['de', ...locales])];
@@ -121,7 +126,7 @@ export const synchronizeTextsLocale = async (client, locales) => {
     // A locale switch must be restorable on the next boot to avoid a reload loop.
     return;
   }
-  for (const locale of [...new Set(preferredLocales(available))]) {
+  for (const locale of new Set(preferredLocales(available))) {
     if (!current()) return;
     const { stored, changed } = await refreshedCatalog(client, locale, current);
     if (!current()) return;
@@ -139,8 +144,10 @@ export const saveTextsLocaleAndReload = async (locale) => {
   try {
     await storageHelper.setTextsLocale(locale);
     preference = locale;
+    pendingPreferenceChange = true;
     // A reload also refreshes labels captured when App modules were first loaded.
     await reloadTexts();
+    pendingPreferenceChange = false;
   } catch (error) {
     preference = previousPreference;
     throw error;
