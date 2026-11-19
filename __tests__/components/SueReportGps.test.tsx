@@ -381,13 +381,16 @@ it.each(['cancel', 'dismiss', 'accept', 'reject'])(
 );
 
 it.each([
+  { requirements: {}, candidate: { road: 'Another street', city: 'Kiel' } },
+  { requirements: {}, candidate: { road: 'Another street', postcode: '24159' } },
+  { requirements: {}, candidate: { house_number: '3', city: 'Kiel', postcode: '24159' } },
   { requirements: { locationIsRequired: true }, candidate: { road: 'Another street' } },
   {
     requirements: { locationStreetIsRequired: true },
     candidate: { city: 'Kiel', postcode: '24159' }
   }
 ])(
-  'preserves the previous location when reverse data misses tenant-required fields (%j)',
+  'preserves the previous location when reverse data fails address validation (%j)',
   async ({ requirements, candidate }) => {
     mockUseRealReverse = true;
     jest.useFakeTimers();

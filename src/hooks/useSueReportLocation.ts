@@ -19,9 +19,9 @@ export const useSueReportLocation = (getAddress: () => SueAddress) => {
   );
 
   const setSelectedPosition = useCallback(
-    (position?: SueCoordinates) => {
-      confirmed.current = position && { addressKey: getSueAddressKey(getAddress()), position };
-      setPosition(position);
+    (position?: SueCoordinates, addressKey = getSueAddressKey(getAddress())) => {
+      confirmed.current = position && { addressKey, position };
+      setPosition(addressKey === getSueAddressKey(getAddress()) ? position : undefined);
     },
     [getAddress]
   );
@@ -67,12 +67,15 @@ export const useSueReportLocation = (getAddress: () => SueAddress) => {
     if (location?.addressKey === getSueAddressKey(address)) return location;
   }, []);
 
+  const getLastConfirmedLocation = useCallback(() => confirmed.current, []);
+
   const isLocationPending = useCallback(() => pending.current, []);
 
   return {
     beginLocationUpdate,
     cancelLocationUpdate,
     getConfirmedLocation,
+    getLastConfirmedLocation,
     invalidateLocation,
     isLocationPending,
     selectedPosition: position,

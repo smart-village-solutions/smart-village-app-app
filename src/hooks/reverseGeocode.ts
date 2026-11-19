@@ -3,7 +3,7 @@ import { UseFormSetValue } from 'react-hook-form';
 
 import {
   fetchSueGeocode,
-  hasRequiredSueAddress,
+  getSueAddressError,
   SueAddressRequirements,
   isSuePostalCodeAllowed,
   getSueLocalityNames,
@@ -54,11 +54,11 @@ export const useReverseGeocode = () => {
           ? isSuePostalCodeAllowed(postalCode, areaServiceData.postalCodes || [])
           : [city, street, postalCode].some(Boolean);
 
-        const hasRequiredFields = hasRequiredSueAddress(
+        const addressError = getSueAddressError(
           { city, houseNumber, street, postalCode },
           requirements
         );
-        if (isWithinArea && hasRequiredFields) {
+        if (isWithinArea && !addressError) {
           setValue('city', city);
           setValue('houseNumber', houseNumber);
           setValue('street', street);

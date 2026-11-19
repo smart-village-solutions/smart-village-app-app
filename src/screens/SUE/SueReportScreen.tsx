@@ -419,6 +419,7 @@ export const SueReportScreen = ({
     beginLocationUpdate,
     cancelLocationUpdate,
     getConfirmedLocation,
+    getLastConfirmedLocation,
     invalidateLocation,
     isLocationPending,
     selectedPosition,
@@ -589,7 +590,7 @@ export const SueReportScreen = ({
   const storeReportValues = useCallback(
     async (progress = currentProgress) => {
       const values = getValues();
-      const location = getConfirmedLocation(values);
+      const location = getLastConfirmedLocation();
       await addToStore(SUE_REPORT_VALUES, {
         currentProgress: progress,
         confirmedLocationAddress: location?.addressKey,
@@ -598,7 +599,7 @@ export const SueReportScreen = ({
         ...values
       });
     },
-    [currentProgress, service, getValues, getConfirmedLocation]
+    [currentProgress, service, getValues, getLastConfirmedLocation]
   );
 
   const storeMyReportsValues = async (newReport: any) => {
@@ -632,8 +633,8 @@ export const SueReportScreen = ({
       for (const key of fields) {
         if (savedValues[key] !== undefined) setValue(key, savedValues[key]);
       }
-      if (savedValues.confirmedLocationAddress === getSueAddressKey(getValues())) {
-        setSelectedPosition(savedValues.selectedPosition);
+      if (savedValues.confirmedLocationAddress) {
+        setSelectedPosition(savedValues.selectedPosition, savedValues.confirmedLocationAddress);
       }
     }
 
@@ -906,7 +907,7 @@ export const SueReportScreen = ({
           currentProgress={currentProgress + 1}
           isFullscreenMap={isFullscreenMap}
         />
-        {currentProgress === locationStep && isAreaServiceUnavailable && (
+        {currentProgress === locationStep && !isFullscreenMap && isAreaServiceUnavailable && (
           <Wrapper>
             <BoldText>{texts.sue.report.alerts.areaLookupFailed}</BoldText>
             <Button
@@ -916,11 +917,14 @@ export const SueReportScreen = ({
             />
           </Wrapper>
         )}
-        {currentProgress === locationStep && needsAreaValidation && isAreaServicePending && (
-          <Wrapper>
-            <ActivityIndicator color={colors.refreshControl} />
-          </Wrapper>
-        )}
+        {currentProgress === locationStep &&
+          !isFullscreenMap &&
+          needsAreaValidation &&
+          isAreaServicePending && (
+            <Wrapper>
+              <ActivityIndicator color={colors.refreshControl} />
+            </Wrapper>
+          )}
         <ScrollView
           onContentSizeChange={restoreScrollPosition}
           keyboardShouldPersistTaps="handled"

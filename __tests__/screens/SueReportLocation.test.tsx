@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires, react/prop-types */
 import React from 'react';
-import { Alert } from 'react-native';
+import { ActivityIndicator, Alert } from 'react-native';
 import renderer, { act } from 'react-test-renderer';
 
 import {
@@ -834,4 +834,83 @@ it('restores the saved page when content layout finishes before the draft read',
   );
   expect(mockScrollTo).toHaveBeenCalledTimes(1);
   expect(mockScrollTo).toHaveBeenCalledWith({ x: 780, y: 0, animated: false });
+});
+
+it.each(['loading', 'error'])(
+  'keeps area service status rows outside the fullscreen map (%s)',
+  async (state) => {
+    mockAreaLoading = state === 'loading';
+    mockAreaError = state === 'error';
+    await openWizard({ areaId: 'remote-area', limitOfArea: {} });
+    const statusRows = () => ({
+      errors: tree.root.findAllByType(BoldText).length,
+      loading: tree.root.findAllByType(ActivityIndicator).length,
+      retry: tree.root.findAllByProps({ title: texts.sue.report.retryAreaLookup }).length
+    });
+    const normalStatus = statusRows();
+    expect(normalStatus.errors + normalStatus.loading).toBeGreaterThan(0);
+
+    act(() => location().setIsFullscreenMap(true));
+    expect(location().isFullscreenMap).toBe(true);
+    expect(statusRows()).toEqual({ errors: 0, loading: 0, retry: 0 });
+
+    act(() => location().setIsFullscreenMap(false));
+    expect(statusRows()).toEqual(normalStatus);
+  }
+);
+
+it('retains a saved confirmation across restart without applying it to an edited address', async () => {
+  await openWizard({ position: kielPosition, confirmedLocationAddress: getSueAddressKey(kiel) });
+  act(() => {
+    location().invalidateLocation({ houseNumber: '3' });
+    location().setValue('houseNumber', '3');
+  });
+  await act(async () => press(texts.sue.report.back));
+  const saved = (addToStore as jest.Mock).mock.calls.at(-1)[1];
+  expect(saved).toEqual(
+    expect.objectContaining({
+      houseNumber: '3',
+      selectedPosition: kielPosition,
+      confirmedLocationAddress: getSueAddressKey(kiel)
+    })
+  );
+  act(() => tree.unmount());
+  await openWizard({
+    address: { ...kiel, houseNumber: '3' },
+    position: saved.selectedPosition,
+    confirmedLocationAddress: saved.confirmedLocationAddress
+  });
+  expect(location().selectedPosition).toBeUndefined();
+  act(() => {
+    location().invalidateLocation({ houseNumber: '2' });
+    location().setValue('houseNumber', '2');
+  });
+  expect(location().selectedPosition).toEqual(kielPosition);
+  await act(async () => press(texts.sue.report.next));
+  await act(async () => press(texts.sue.report.sendReport));
+  expect(fetchSpy).not.toHaveBeenCalled();
+  expect(postRequests).toHaveBeenCalledWith(
+    expect.objectContaining({ lat: kielPosition.latitude, long: kielPosition.longitude }),
+    expect.any(Object)
+  );
+});
+
+it('never submits a saved pin for a different restored address', async () => {
+  await openWizard({
+    step: 3,
+    address: { ...kiel, houseNumber: '3' },
+    position: kielPosition,
+    confirmedLocationAddress: getSueAddressKey(kiel)
+  });
+  fetchSpy.mockResolvedValue(reply([]));
+  expect(location().selectedPosition).toBeUndefined();
+  await act(async () => press(texts.sue.report.sendReport));
+  expect(postRequests).toHaveBeenCalledWith(
+    expect.objectContaining({
+      addressString: 'Koloniestraße; 3; 24159; Kiel',
+      lat: undefined,
+      long: undefined
+    }),
+    expect.any(Object)
+  );
 });
