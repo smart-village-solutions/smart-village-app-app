@@ -5,7 +5,6 @@ import { ApolloClient } from 'apollo-client';
 import { ApolloLink } from 'apollo-link';
 import { setContext } from 'apollo-link-context';
 import { createHttpLink } from 'apollo-link-http';
-import _isEmpty from 'lodash/isEmpty';
 import React, { useContext, useEffect, useState } from 'react';
 import { ApolloProvider } from 'react-apollo';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -24,6 +23,7 @@ import {
   parsedImageAspectRatio,
   storageHelper
 } from './helpers';
+import { mergeGlobalSettings } from './helpers/globalSettingsHelper';
 import { AUTH_MODE_PUBLIC, getGraphqlAuthHeaders } from './graphqlAuth';
 import { IconProvider } from './IconProvider';
 import { Navigator } from './navigation/Navigator';
@@ -186,13 +186,14 @@ const MainAppWithApolloProvider = () => {
       }
     }
 
-    const globalSettingsPublicJsonFileContent = globalSettingsData?.publicJsonFile?.content;
+    const nextGlobalSettings = mergeGlobalSettings(
+      globalSettings,
+      globalSettingsData?.publicJsonFile?.content,
+      fetchPolicy
+    );
 
-    if (!_isEmpty(globalSettingsPublicJsonFileContent)) {
-      globalSettings = {
-        ...globalSettings,
-        ...globalSettingsPublicJsonFileContent
-      };
+    if (nextGlobalSettings !== globalSettings) {
+      globalSettings = nextGlobalSettings;
       storageHelper.setGlobalSettings(globalSettings);
     }
 
