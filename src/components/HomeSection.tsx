@@ -4,6 +4,7 @@ import { useQuery } from 'react-query';
 
 import { CACHE_SCOPES, millisecondsUntilCacheExpires } from '../helpers/cacheHelper';
 import { eventDate } from '../helpers/dateTimeHelper';
+import { visibleContent } from '../helpers/contentVisibility';
 import { subtitle } from '../helpers/textHelper';
 import {
   useGenericItemEvents,
@@ -118,7 +119,8 @@ export const HomeSection = ({
       : undefined
   );
 
-  let showButton = !!data?.[query]?.length;
+  const visibleData = visibleContent(data);
+  let showButton = !!visibleData?.[query]?.length;
 
   if (isEventCalendar) {
     showButton = showButton || !!dataVolunteerEvents?.length || !!genericItemEvents.length;
@@ -126,7 +128,12 @@ export const HomeSection = ({
 
   if (isPointsOfInterestAndTours) {
     showButton =
-      !!data?.[QUERY_TYPES.POINTS_OF_INTEREST]?.length || !!data?.[QUERY_TYPES.TOURS]?.length;
+      !!visibleData?.[QUERY_TYPES.POINTS_OF_INTEREST]?.some(
+        (item: { visible?: boolean | null }) => item.visible !== false
+      ) ||
+      !!visibleData?.[QUERY_TYPES.TOURS]?.some(
+        (item: { visible?: boolean | null }) => item.visible !== false
+      );
   }
 
   const loading = isLoading || isLoadingVolunteerEvents || isLoadingGenericItemEvents;
@@ -155,7 +162,7 @@ export const HomeSection = ({
       placeholder={placeholder}
       query={query}
       queryUpdatedAt={dataUpdatedAt}
-      sectionData={data}
+      sectionData={visibleData}
       sectionTitle={title}
       sectionTitleDetail={titleDetail}
       showButton={showButton}

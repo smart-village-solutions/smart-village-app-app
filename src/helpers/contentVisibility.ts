@@ -1,5 +1,7 @@
 import { installedApp } from '../config/contentVisibility';
 
+import { projectCategoryAvailability } from './categoryAvailability';
+
 export type AppRelease = { version: string | null; build: string | number | null };
 type JsonObject = Record<string, unknown>;
 const isObject = (value: unknown): value is JsonObject =>
@@ -101,7 +103,7 @@ export const filterContentByVersion = <T>(data: T, app: AppRelease): T => {
     return result;
   };
   const result = project(data);
-  return (result === hidden ? null : result) as T;
+  return projectCategoryAvailability((result === hidden ? null : result) as T);
 };
 
 export const visibleContent = <T>(data: T): T => filterContentByVersion(data, installedApp);

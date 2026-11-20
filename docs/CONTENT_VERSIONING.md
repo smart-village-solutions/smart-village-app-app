@@ -52,6 +52,31 @@ filter changes invalidate pending pagination updates.
 Transient failures retain cached records and allow an explicit refresh/retry.
 
 
+## Home carousel and category counts
+
+The independent home POI/tour query also requests `payload` and `visible`.
+Presentation filtering runs before shuffling or limiting the carousel. Its section
+button is enabled only when eligible content remains, while the existing refresh
+and random-selection cache behavior is preserved.
+
+Category itself does not expose `payload` in the Mainserver GraphQL schema.
+`GET_CATEGORIES` therefore includes minimal public POI/tour availability lists
+and a flat category hierarchy. These requests share the index location filter and
+have no pagination limit: category counts must describe the complete public
+catalogue rather than a random home sample. The client applies version/build
+requirements and rejects explicitly invisible resources, then counts distinct
+records for each category and its ancestors. Empty categories are omitted even
+when the server aggregate count is stale. Root category IDs, exclusions, tags and
+existing navigation metadata remain intact. Legacy category response shapes that
+lack the new projections are left unchanged; raw response caches are never edited.
+An empty filtered index uses the supplied empty-state component instead of an
+indefinite loading spinner. This requires no native or server update.
+
+Regression coverage is in `categoryAvailability.test.ts`,
+`contentVisibilityQueries.test.ts`, `HomeSectionContentVisibility.test.tsx` and
+`CategoryListEmpty.test.tsx`. Verify restricted-only, mixed and unpublished
+categories on old and eligible binaries, including nested and multi-category POIs.
+
 ## Using the filter in another customer app
 
 Integrate this shared change into that app's source branch and release a compatible

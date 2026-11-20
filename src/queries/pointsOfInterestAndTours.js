@@ -13,6 +13,7 @@ export const GET_POINTS_OF_INTEREST_AND_TOURS = gql`
       id
       name
       payload
+      visible
       category {
         id
         name
@@ -59,6 +60,7 @@ export const GET_POINTS_OF_INTEREST_AND_TOURS = gql`
       id
       name
       payload
+      visible
       category {
         id
         name

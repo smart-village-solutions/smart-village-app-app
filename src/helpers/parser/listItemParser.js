@@ -363,8 +363,10 @@ const parseCategories = (data, skipLastDivider, routeName, queryVariables, query
 };
 
 const parsePointsOfInterestAndTours = (data) => {
-  const pointsOfInterest = parsePointOfInterest(data?.[QUERY_TYPES.POINTS_OF_INTEREST]);
-  const tours = parseTours(data?.[QUERY_TYPES.TOURS]);
+  const pointsOfInterest = parsePointOfInterest(
+    data?.[QUERY_TYPES.POINTS_OF_INTEREST]?.filter((item) => item.visible !== false)
+  );
+  const tours = parseTours(data?.[QUERY_TYPES.TOURS]?.filter((item) => item.visible !== false));
 
   return _shuffle([...(pointsOfInterest || []), ...(tours || [])]);
 };

@@ -21,6 +21,7 @@ jest.mock('../../src/queries', () => ({
     POINTS_OF_INTEREST: 'pointsOfInterest',
     POINTS_OF_INTEREST_AND_TOURS: 'pointsOfInterestAndTours',
     TOURS: 'tours',
+    CATEGORIES: 'categories',
     TOUR: 'tour',
     VOUCHER: 'voucher',
     VOUCHERS: 'vouchers',
@@ -34,7 +35,13 @@ jest.mock('../../src/queries', () => ({
   }
 }));
 jest.mock('../../src/types', () => ({
-  ScreenName: { Detail: 'Detail', VoucherDetail: 'VoucherDetail', VoucherIndex: 'VoucherIndex' },
+  ScreenName: {
+    Detail: 'Detail',
+    Category: 'Category',
+    Index: 'Index',
+    VoucherDetail: 'VoucherDetail',
+    VoucherIndex: 'VoucherIndex'
+  },
   GenericType: {}
 }));
 jest.mock('../../src/helpers/imageHelper', () => ({ mainImageOfMediaContents: () => 'image.jpg' }));
@@ -101,7 +108,7 @@ it('requests and filters payloads for both collections in the actual combined ho
     type Contact { id: ID, firstName: String, lastName: String, phone: String, email: String, fax: String, webUrls: [WebUrl] }
     type Provider { id: ID, name: String, logo: WebUrl }
     type Place {
-      id: ID!, name: String, payload: JSON, category: Category, description: String,
+      id: ID!, name: String, payload: JSON, visible: Boolean, category: Category, description: String,
       mediaContents: [Media], addresses: [Address], contact: Contact, webUrls: [WebUrl], dataProvider: Provider
     }
     type Query {
@@ -133,4 +140,50 @@ it('requests and filters payloads for both collections in the actual combined ho
   });
   expect(response.data?.pointsOfInterest).toHaveLength(2);
   expect(response.data?.tours).toHaveLength(2);
+});
+
+it('filters restricted and invisible POIs/tours in the home carousel before shuffling or limiting', () => {
+  const raw = {
+    pointsOfInterest: [kt, { ...normal, id: 'invisible-poi', visible: false }, normal],
+    tours: [
+      { ...kt, id: 'future-tour' },
+      { ...normal, id: 'invisible-tour', visible: false },
+      { ...normal, id: 'normal-tour' }
+    ]
+  };
+  const result = parseListItemsFromQuery('pointsOfInterestAndTours', raw);
+  expect(result.map(({ id }) => id).sort()).toEqual(['10', 'normal-tour']);
+  expect(raw.pointsOfInterest).toHaveLength(3);
+});
+
+it('omits restricted categories from the home index and passes corrected counts into navigation', () => {
+  const normalCategory = {
+    id: '42',
+    name: 'Shopping',
+    pointsOfInterestTreeCount: 2,
+    toursTreeCount: 0
+  };
+  const futureCategory = {
+    id: '7559',
+    name: 'Klima-Taler',
+    pointsOfInterestTreeCount: 2,
+    toursTreeCount: 0
+  };
+  const raw = {
+    categories: [normalCategory, futureCategory],
+    categoryHierarchy: [normalCategory, futureCategory],
+    categoryPointsOfInterest: [{ ...normal, category: normalCategory }, kt],
+    categoryTours: []
+  };
+  const result = parseListItemsFromQuery('categories', raw);
+  const rows = result.filter(({ pointsOfInterestTreeCount }) => pointsOfInterestTreeCount);
+  expect(rows).toHaveLength(1);
+  expect(rows[0]).toMatchObject({
+    id: '42',
+    pointsOfInterestTreeCount: 1,
+    params: {
+      query: 'pointsOfInterest',
+      queryVariables: { category: 'Shopping', limit: 15, order: 'name_ASC' }
+    }
+  });
 });
