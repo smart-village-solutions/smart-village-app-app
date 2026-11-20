@@ -54,6 +54,18 @@ const mockToggle = jest.fn();
 const mockRefetch = jest.fn();
 const mockQueries = jest.fn();
 const mockMap = jest.fn();
+const mockMapMount = jest.fn();
+const mockMapUnmount = jest.fn();
+let mockPoiLoading = false;
+let mockPoiDataAvailable = true;
+const mockDefaultPois = [
+  {
+    id: '1',
+    title: 'Our POI',
+    addresses: [{ geoLocation: { latitude: 51.94, longitude: 8.88 } }]
+  }
+];
+let mockPois = mockDefaultPois;
 const mockPreviewRows = jest.fn();
 const mockSourceIcon = jest.fn();
 const mockIconUrl = jest.fn();
@@ -99,16 +111,8 @@ jest.mock('react-apollo', () => ({
     mockQueries(query, options);
     if (query === 'pois')
       return {
-        data: {
-          pois: [
-            {
-              id: '1',
-              title: 'Our POI',
-              addresses: [{ geoLocation: { latitude: 51.94, longitude: 8.88 } }]
-            }
-          ]
-        },
-        loading: false,
+        data: mockPoiDataAvailable ? { pois: mockPois } : undefined,
+        loading: mockPoiLoading,
         refetch: mockRefetch
       };
     if (query === 'allPoiCategories')
@@ -162,6 +166,10 @@ jest.mock('../../src/components/screens/AvailableVehicles', () => ({
 }));
 jest.mock('../../src/components/map/MapLibre', () => ({
   MapLibre: (props: unknown) => {
+    jest.requireActual('react').useEffect(() => {
+      mockMapMount();
+      return () => mockMapUnmount();
+    }, []);
     mockMap(props);
     return null;
   }
@@ -196,6 +204,9 @@ beforeEach(() => {
   jest.clearAllMocks();
   mockEnabled = true;
   mockLocations = [location];
+  mockPoiLoading = false;
+  mockPoiDataAvailable = true;
+  mockPois = mockDefaultPois;
 });
 
 test('widget map shows only external POIs and skips backend reads', () => {
@@ -468,4 +479,64 @@ test('widget map exposes other POI categories with only KT initially selected', 
   ).toEqual([]);
   expect(mockRefetch).not.toHaveBeenCalled();
   expect(openKlimaTaler).not.toHaveBeenCalled();
+});
+
+test('widget map waits for the first POI result before mounting the map', () => {
+  mockPoiLoading = true;
+  mockPoiDataAvailable = false;
+  const screen = render(
+    <LocationOverview
+      {...props}
+      route={{ ...props.route, params: { showAllPoiCategories: true } }}
+      queryVariables={{ categoryIds: ['6013'] }}
+    />
+  );
+  expect(mockMapMount).not.toHaveBeenCalled();
+  expect(screen.getByRole('progressbar')).toBeTruthy();
+});
+
+test.each([
+  { name: 'empty', pois: [] },
+  { name: 'populated', pois: mockDefaultPois }
+])(
+  'widget category changes preserve the mounted map through loading and $name results',
+  ({ pois: nextPois }) => {
+    const mapProps = {
+      ...props,
+      route: { ...props.route, params: { showAllPoiCategories: true } },
+      queryVariables: { categoryIds: ['6013'] }
+    };
+    const screen = render(<LocationOverview {...mapProps} />);
+    expect(mockMapMount).toHaveBeenCalledTimes(1);
+
+    mockPoiLoading = true;
+    fireEvent.press(screen.getByRole('button', { name: 'Kultur Button' }));
+    expect(screen.queryByRole('progressbar')).toBeNull();
+    expect(
+      screen.getByRole('button', { name: 'Kultur Button' }).props.accessibilityState.selected
+    ).toBe(true);
+    expect(mockMapUnmount).not.toHaveBeenCalled();
+    expect(mockMapMount).toHaveBeenCalledTimes(1);
+
+    mockPoiLoading = false;
+    mockPois = nextPois;
+    screen.rerender(<LocationOverview {...mapProps} />);
+    expect(mockMap.mock.calls.at(-1)[0].locations).toHaveLength(nextPois.length);
+    expect(mockMapUnmount).not.toHaveBeenCalled();
+    expect(mockMapMount).toHaveBeenCalledTimes(1);
+
+    mockPoiLoading = true;
+    fireEvent.press(screen.getByRole('button', { name: 'Klima-Taler Button' }));
+    expect(screen.queryByRole('progressbar')).toBeNull();
+    expect(mockMapUnmount).not.toHaveBeenCalled();
+    expect(mockMapMount).toHaveBeenCalledTimes(1);
+    expect(mockRefetch).not.toHaveBeenCalled();
+  }
+);
+
+test('ordinary map loading behavior is unchanged without the widget map option', () => {
+  mockPoiLoading = true;
+  const screen = render(<LocationOverview {...props} route={{ ...props.route, params: {} }} />);
+  expect(mockMapMount).not.toHaveBeenCalled();
+  expect(screen.getByRole('progressbar')).toBeTruthy();
 });

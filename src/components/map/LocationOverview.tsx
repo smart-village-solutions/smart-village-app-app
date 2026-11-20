@@ -389,7 +389,9 @@ export const LocationOverview = ({
     }
   );
 
-  if (!klimaTalerOnly && loading) {
+  // Keep the widget map mounted while a new category selection is loading.
+  // Apollo retains the previous result, including a successfully loaded empty list.
+  if (!klimaTalerOnly && loading && (!showAllPoiCategories || !overviewData)) {
     return <LoadingSpinner loading />;
   }
 

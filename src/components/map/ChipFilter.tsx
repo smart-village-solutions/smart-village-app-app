@@ -10,12 +10,13 @@ import { QUERY_TYPES, getQuery } from '../../queries';
 import { GET_MAP_POI_CATEGORIES } from '../../queries/categories';
 import { BoldText } from '../Text';
 import { useThemeStyles } from '../../hooks/useThemeStyles';
+import { useTheme } from '../../hooks/useTheme';
 
 type FilterItem = {
   id: string | number;
   name: string;
   iconName?: string;
-  icon?: React.ReactElement;
+  icon?: React.ReactElement<{ color?: string }>;
   selected?: boolean;
   onPress?: () => void;
 };
@@ -30,7 +31,7 @@ type Props = {
     name: string;
     selected: boolean;
     onPress: () => void;
-    icon?: React.ReactElement;
+    icon?: React.ReactElement<{ color?: string }>;
   }[];
   pointsOfInterest?: { category: { id: string | number; iconName?: string; name: string } }[];
   queryVariables: {
@@ -74,6 +75,7 @@ export const ChipFilter = ({
   selectedCategoryIds,
   onCategorySelectionChange
 }: Props) => {
+  const { colors } = useTheme();
   const styles = useThemeStyles(createStyles);
   const [categoryIds, setCategoryIds] = useState<string[]>(() =>
     initialCategoryIds(queryVariables)
@@ -143,6 +145,7 @@ export const ChipFilter = ({
           const isActive = external
             ? !!item.selected
             : activeCategoryIds.includes(item.id.toString());
+          const foregroundColor = isActive ? colors.onPrimary : colors.text;
 
           return (
             <TouchableOpacity
@@ -160,11 +163,12 @@ export const ChipFilter = ({
                   index === filter?.length - 1 && styles.lastChip
                 ]}
               >
-                {item.icon ??
-                  (item.iconName?.trim() ? (
-                    <IconUrl fallback={null} iconName={item.iconName} />
-                  ) : null)}
-                <BoldText small style={styles.category}>
+                {item.icon ? (
+                  React.cloneElement(item.icon, { color: foregroundColor })
+                ) : item.iconName?.trim() ? (
+                  <IconUrl color={foregroundColor} fallback={null} iconName={item.iconName} />
+                ) : null}
+                <BoldText small style={[styles.category, isActive && styles.categoryActive]}>
                   {item.name}
                 </BoldText>
               </View>
@@ -180,7 +184,12 @@ export const ChipFilter = ({
 
 const createStyles = (colors) => ({
   category: {
+    color: colors.text,
     marginLeft: normalize(4)
+  },
+
+  categoryActive: {
+    color: colors.onPrimary
   },
 
   chip: {
@@ -204,7 +213,7 @@ const createStyles = (colors) => ({
   },
 
   chipActive: {
-    backgroundColor: colors.secondary
+    backgroundColor: colors.primary
   },
 
   filterContainer: {
