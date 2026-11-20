@@ -115,6 +115,11 @@ jest.mock('../../src/ReactQueryProvider', () => ({
   clearPersistentCaches: jest.fn()
 }));
 
+jest.mock('../../src/AppLanguagesProvider', () => ({
+  AppLanguagesContext: jest.requireActual('react').createContext(['de'])
+}));
+
+import { AppLanguagesContext } from '../../src/AppLanguagesProvider';
 import { clearPersistentCaches } from '../../src/ReactQueryProvider';
 import {
   SettingsScreen,
@@ -133,21 +138,27 @@ describe('SettingsScreen', () => {
     jest.clearAllMocks();
   });
 
-  it('always offers a dedicated language settings screen', async () => {
+  it('offers language settings only when another language becomes available', async () => {
     let tree;
-    const renderScreen = (route = {}) => (
-      <SettingsContext.Provider value={initialContext}>
-        <SettingsScreen navigation={navigation} route={route} />
-      </SettingsContext.Provider>
+    const renderScreen = (languages, route = {}) => (
+      <AppLanguagesContext.Provider value={languages}>
+        <SettingsContext.Provider value={initialContext}>
+          <SettingsScreen navigation={navigation} route={route} />
+        </SettingsContext.Provider>
+      </AppLanguagesContext.Provider>
     );
     await act(async () => {
-      tree = renderer.create(renderScreen());
+      tree = renderer.create(renderScreen(['de']));
     });
     const settingsEntries = () =>
       tree.root.findByType(SectionList).props.sections.flatMap((section) => section.data);
+    expect(settingsEntries()).not.toContain(SETTINGS_SCREENS.LANGUAGE);
+    await act(async () => {
+      tree.update(renderScreen(['de', 'en']));
+    });
     expect(settingsEntries()).toContain(SETTINGS_SCREENS.LANGUAGE);
     await act(async () => {
-      tree.update(renderScreen({ params: { setting: SETTINGS_SCREENS.LANGUAGE } }));
+      tree.update(renderScreen(['de', 'en'], { params: { setting: SETTINGS_SCREENS.LANGUAGE } }));
     });
     expect(tree.root.findAllByType(LanguageSettings)).toHaveLength(1);
     expect(tree.root.findAllByType(SectionList)).toHaveLength(0);

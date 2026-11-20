@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { Alert } from 'react-native';
 
 import appJson from '../../app.json';
+import { AppLanguagesContext } from '../AppLanguagesProvider';
 import { AccessibilityContext } from '../AccessibilityProvider';
 import { consts, device, texts } from '../config';
 import { hasSueApiConfiguration } from '../helpers';
@@ -16,6 +17,8 @@ const { a11yLabel } = consts;
 
 export const VersionNumber = () => {
   const styles = useThemeStyles(createStyles);
+  const appLanguages = useContext(AppLanguagesContext);
+  const { i18nVersion } = appJson.expo.extra;
   const { isReduceTransparencyEnabled } = useContext(AccessibilityContext);
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
@@ -37,7 +40,8 @@ export const VersionNumber = () => {
               `Build: ${buildNumber}`,
               `OTA: ${appJson.expo.extra.otaVersion}`,
               search ? `Suche: ${appJson.expo.extra.searchVersion}` : undefined,
-              isSueEnabled ? `SUE: ${appJson.expo.extra.sueVersion}` : undefined
+              isSueEnabled ? `SUE: ${appJson.expo.extra.sueVersion}` : undefined,
+              appLanguages.length > 1 && i18nVersion ? `I18n: ${i18nVersion}` : undefined
             ]
               .filter(Boolean)
               .join('\n')

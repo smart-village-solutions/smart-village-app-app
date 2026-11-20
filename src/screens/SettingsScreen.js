@@ -43,6 +43,7 @@ import {
   showSystemPermissionMissingDialog
 } from '../pushNotifications';
 import { clearPersistentCaches } from '../ReactQueryProvider';
+import { AppLanguagesContext } from '../AppLanguagesProvider';
 import { SettingsContext } from '../SettingsProvider';
 import { ScreenName } from '../types';
 import { useThemeStyles } from '../hooks/useThemeStyles';
@@ -276,6 +277,7 @@ export const SettingsScreen = ({ navigation, route }) => {
   const { colors: colors } = useTheme();
 
   const styles = useThemeStyles(createStyles);
+  const appLanguages = useContext(AppLanguagesContext);
   const { globalSettings } = useContext(SettingsContext);
   const { mowas, settings = {} } = globalSettings;
   const {
@@ -536,7 +538,9 @@ export const SettingsScreen = ({ navigation, route }) => {
         <SectionList
           initialNumToRender={100}
           keyExtractor={keyExtractor}
-          sections={data}
+          sections={data.filter(
+            (section) => section.data[0] !== SETTINGS_SCREENS.LANGUAGE || appLanguages.length > 1
+          )}
           renderItem={({ item }) =>
             renderItem({ item, navigation, listsWithoutArrows, settingsScreenListItemTitles })
           }
