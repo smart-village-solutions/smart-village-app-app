@@ -13,12 +13,12 @@ import java.util.concurrent.TimeUnit
 internal class StatisticsFailure(val code: String) : Exception(code)
 
 /**
- * Read-only replacement for sdkstaging 1.20.6 readStatistics(), using its exact
+ * Read-only replacement for Changers 1.20.7 readStatistics(), using its exact
  * endpoint/headers. That vendor method logs an authenticated cURL command and
  * may sign up a new identity on Forbidden. Neither path may run for a widget.
  */
 internal class ChangersStatisticsClient(
-  private val endpoint: HttpUrl = "https://activity.maroshi.de/api/statistics/sdk".toHttpUrl(),
+  internal val endpoint: HttpUrl = statisticsEndpoint(BuildConfig.CHANGERS_ENVIRONMENT),
   timeoutMillis: Long = 20_000
 ) {
   // Dedicated client: no SDK/Fuel or app logging interceptors, cookies or cache.
@@ -84,4 +84,10 @@ internal class ChangersStatisticsClient(
     if (!value.isJsonPrimitive || !value.asJsonPrimitive.isNumber) return null
     return value.asDouble.takeIf { it.isFinite() }
   }
+}
+
+internal fun statisticsEndpoint(environment: String): HttpUrl = when (environment) {
+  "production" -> "https://activity.changers.com/api/statistics/sdk".toHttpUrl()
+  "stage" -> "https://activity.maroshi.de/api/statistics/sdk".toHttpUrl()
+  else -> throw IllegalArgumentException("E_CONFIGURATION")
 }

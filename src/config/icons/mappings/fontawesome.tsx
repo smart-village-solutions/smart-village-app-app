@@ -3,6 +3,7 @@
  * Maps unified icon names to FontAwesome icon names
  */
 
+import { leafIconNames } from './leaf';
 import { refreshIconNames } from './refresh';
 
 export const fontawesomeIconMapping: Record<string, string> = {
@@ -22,6 +23,8 @@ export const fontawesomeIconMapping: Record<string, string> = {
   'condense-map': 'compress',
   plus: 'plus',
   minus: 'minus',
+
+  leaf: leafIconNames.fontawesome,
 
   // Content & Media
   albums: 'picture-o',

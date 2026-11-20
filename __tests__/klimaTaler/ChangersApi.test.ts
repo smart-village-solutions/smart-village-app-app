@@ -84,3 +84,51 @@ test('unsupported simulator errors remain distinguishable from missing credentia
     code: 'E_SIMULATOR_UNSUPPORTED'
   });
 });
+
+test.each([
+  0,
+  -1,
+  1.5,
+  NaN,
+  Infinity,
+  Number.MAX_SAFE_INTEGER + 1,
+  '10',
+  'https://example.org/offers/10'
+])('invalid offer target %s does not reach native code', async (id) => {
+  const openOffer = jest.fn();
+  const client = createChangers({ openOffer } as unknown as ChangersNative, 'ios');
+  await expect(client.openOffer(id as number)).rejects.toMatchObject({
+    code: 'E_INVALID_ARGUMENT'
+  });
+  expect(openOffer).not.toHaveBeenCalled();
+});
+
+test.each(['ios', 'android'])('only an offer ID crosses the %s bridge', async (platform) => {
+  const openOffer = jest.fn().mockResolvedValue(undefined);
+  const client = createChangers({ openOffer } as unknown as ChangersNative, platform);
+  expect(client.capabilities.offerDetails.supported).toBe(true);
+  await client.openOffer(10);
+  expect(openOffer).toHaveBeenCalledWith('10');
+});
+
+test.each(['ios', 'android'])(
+  'badge routing is gated by the new %s native capability',
+  async (platform) => {
+    const openTarget = jest.fn().mockResolvedValue(undefined);
+    const old = createChangers({ openTarget } as unknown as ChangersNative, platform);
+    expect(old.capabilities.badgeList.supported).toBe(false);
+    await expect(old.openTarget('badges')).rejects.toMatchObject({ code: 'E_UNSUPPORTED' });
+    expect(openTarget).not.toHaveBeenCalled();
+    const current = createChangers(
+      { badgeLinks: true, openTarget } as unknown as ChangersNative,
+      platform
+    );
+    expect(current.capabilities.badgeList.supported).toBe(true);
+    await current.openTarget('badges');
+    expect(openTarget).toHaveBeenCalledWith('badges');
+    await expect(current.openTarget('https://example.org/badges' as never)).rejects.toMatchObject({
+      code: 'E_INVALID_ARGUMENT'
+    });
+    expect(openTarget).toHaveBeenCalledTimes(1);
+  }
+);

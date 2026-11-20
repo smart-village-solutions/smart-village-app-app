@@ -62,7 +62,7 @@ feat(map): upgrade marker clustering behavior
 
 ## 5) Branch and PR Expectations
 
-- Use descriptive branch names, such as `feature/map-clustering` or `fix/map-loading`.
+- Branch names must use a descriptive prefix matching the work, such as `feature/`, `fix/`, `docs/`, `refactor/`, `chore/`, or `test/`. Do not use the `codex/` prefix.
 - When creating a branch for a task with a known ticket number, include it in the branch name, such as `feature/SVAK-183-map-clustering`.
 - Follow the [pull request template](.github/pull_request_template.md):
   - include testing notes

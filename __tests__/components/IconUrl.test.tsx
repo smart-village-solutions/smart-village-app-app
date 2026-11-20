@@ -85,6 +85,21 @@ describe('IconUrl', () => {
     await waitFor(() => expect(getByText('fallback icon')).toBeTruthy());
   });
 
+  it('omits placeholder content when a failed icon has a null fallback', async () => {
+    jest.spyOn(console, 'error').mockImplementation(() => undefined);
+    jest.spyOn(global, 'fetch').mockResolvedValue({ ok: false, status: 404 } as Response);
+
+    const { toJSON } = renderIconUrl(
+      <IconUrl fallback={null} iconName="missing" />,
+      'https://example.com/icons'
+    );
+
+    await waitFor(() => {
+      expect(toJSON()).not.toBeNull();
+      expect(toJSON()).toMatchObject({ children: null });
+    });
+  });
+
   it('fetches and renders a valid remote SVG only once', async () => {
     const fetchMock = jest.spyOn(global, 'fetch').mockResolvedValue({
       ok: true,

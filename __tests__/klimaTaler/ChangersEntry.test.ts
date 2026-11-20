@@ -18,12 +18,15 @@ const status = (overrides: Partial<Status> = {}): Status => ({
 const setup = (platform = 'ios', enabled = true) => {
   let onClosed = () => undefined;
   const native = {
+    badgeLinks: true,
+    openTarget: jest.fn().mockResolvedValue(undefined),
     getStatus: jest.fn().mockResolvedValue(status()),
     activate: jest.fn().mockResolvedValue(status({ authenticated: false })),
     getUserUUID: jest.fn().mockResolvedValue(null),
     registerUser: jest.fn().mockResolvedValue('fixture-account'),
     loginUser: jest.fn().mockResolvedValue('fixture-account'),
     openProvider: jest.fn().mockResolvedValue(undefined),
+    openOffer: jest.fn().mockResolvedValue(undefined),
     closeProvider: jest.fn().mockResolvedValue(undefined),
     addListener: jest.fn((_event, listener) => {
       onClosed = listener;
@@ -244,4 +247,141 @@ test('a missing identity after provider deletion does not create another account
   await entry.open();
   expect(entry.getSnapshot().errorCode).toBe('E_AUTHENTICATION');
   expect(native.registerUser).not.toHaveBeenCalled();
+});
+
+test.each(['ios', 'android'])(
+  'offer entry on %s preserves the chosen target through session setup',
+  async (platform) => {
+    const { native, entry } = setup(platform);
+    native.getStatus.mockResolvedValue(
+      status({
+        state: 'inactive',
+        activated: false,
+        initialized: false,
+        authenticated: false,
+        registrationState: 'notStarted'
+      })
+    );
+    await Promise.all([entry.open(10), entry.open(10)]);
+    expect(native.activate).toHaveBeenCalledTimes(1);
+    expect(native.registerUser).toHaveBeenCalledTimes(platform === 'ios' ? 1 : 0);
+    expect(native.openOffer).toHaveBeenCalledTimes(1);
+    expect(native.openOffer).toHaveBeenCalledWith('10');
+    expect(native.openProvider).not.toHaveBeenCalled();
+  }
+);
+
+test('offer failure allows retry on the same target and never replaces an existing account', async () => {
+  const { native, entry } = setup();
+  native.openOffer.mockRejectedValueOnce({ code: 'E_NETWORK' });
+  await entry.open(10);
+  expect(entry.getSnapshot().errorCode).toBe('E_NETWORK');
+  await entry.open(10);
+  expect(native.openOffer.mock.calls).toEqual([['10'], ['10']]);
+  expect(native.registerUser).not.toHaveBeenCalled();
+});
+
+test('cancelling session setup does not deliver a stale offer on reopening', async () => {
+  const { native, entry } = setup();
+  let finish!: (value: Status) => void;
+  native.getStatus.mockImplementationOnce(
+    () =>
+      new Promise<Status>((resolve) => {
+        finish = resolve;
+      })
+  );
+  const first = entry.open(10);
+  entry.cancel();
+  const second = entry.open(11);
+  finish(status());
+  await Promise.all([first, second]);
+  expect(native.openOffer.mock.calls).toEqual([['11']]);
+});
+
+test('normal entry after closing an offer does not reuse the previous target', async () => {
+  const { native, entry, close } = setup();
+  const unsubscribe = entry.subscribe(jest.fn());
+  await entry.open(10);
+  close();
+  await entry.open();
+  expect(native.openOffer.mock.calls).toEqual([['10']]);
+  expect(native.openProvider).toHaveBeenCalledTimes(1);
+  unsubscribe();
+});
+
+test('an offer can be delivered to the current provider without reopening the default entry', async () => {
+  const { native, entry } = setup();
+  await entry.open();
+  await entry.open(10);
+  expect(native.openProvider).toHaveBeenCalledTimes(1);
+  expect(native.openOffer).toHaveBeenCalledWith('10');
+});
+
+test('invalid targets and older binaries never initialize or register an account', async () => {
+  const { native, entry } = setup();
+  await entry.open(-1);
+  expect(entry.getSnapshot().errorCode).toBe('E_INVALID_ARGUMENT');
+  expect(native.getStatus).not.toHaveBeenCalled();
+  const legacy = { ...native, openOffer: undefined } as unknown as ChangersNative;
+  const legacyEntry = createEntry(createChangers(legacy, 'ios'), () => true);
+  await legacyEntry.open(10);
+  expect(legacyEntry.getSnapshot().errorCode).toBe('E_NATIVE_UNAVAILABLE');
+  expect(native.registerUser).not.toHaveBeenCalled();
+  expect(native.openProvider).not.toHaveBeenCalled();
+  await entry.open(10);
+  expect(native.openOffer).toHaveBeenCalledWith('10');
+});
+
+test.each(['ios', 'android'])(
+  'badge entry retains its target across closure and repeated %s taps',
+  async (platform) => {
+    const { native, entry, close } = setup(platform);
+    const unsubscribe = entry.subscribe(() => undefined);
+    await Promise.all([entry.open('badges'), entry.open('badges')]);
+    expect(native.openTarget).toHaveBeenCalledTimes(1);
+    expect(native.openTarget).toHaveBeenCalledWith('badges');
+    expect(native.openProvider).not.toHaveBeenCalled();
+    expect(native.registerUser).not.toHaveBeenCalled();
+    close();
+    await entry.open('badges');
+    expect(native.openTarget).toHaveBeenCalledTimes(2);
+    expect(entry.getSnapshot().phase).toBe('open');
+    unsubscribe();
+  }
+);
+
+test('badge entry restores the existing account without creating another one', async () => {
+  const { native, entry } = setup();
+  native.getStatus.mockResolvedValue(
+    status({ authenticated: false, registrationState: 'existing' })
+  );
+  native.getUserUUID.mockResolvedValue('existing-fixture' as never);
+  await entry.open('badges');
+  expect(native.loginUser).toHaveBeenCalledWith('existing-fixture');
+  expect(native.registerUser).not.toHaveBeenCalled();
+  expect(native.openTarget).toHaveBeenCalledWith('badges');
+});
+
+test('a failed badge handoff retries the badge page rather than the dashboard', async () => {
+  const { native, entry } = setup();
+  native.openTarget.mockRejectedValueOnce(new Error('fixture'));
+  await entry.open('badges');
+  expect(entry.getSnapshot().phase).toBe('error');
+  await entry.open('badges');
+  expect(native.openTarget.mock.calls).toEqual([['badges'], ['badges']]);
+  expect(native.openProvider).not.toHaveBeenCalled();
+});
+
+test('old binaries reject badge entry before changing activation or session state', async () => {
+  const native = {
+    openTarget: jest.fn(),
+    getStatus: jest.fn(),
+    activate: jest.fn()
+  } as unknown as ChangersNative;
+  const entry = createEntry(createChangers(native, 'ios'), () => true);
+  await entry.open('badges');
+  expect(entry.getSnapshot()).toEqual({ phase: 'error', errorCode: 'E_NATIVE_UNAVAILABLE' });
+  expect(native.getStatus).not.toHaveBeenCalled();
+  expect(native.activate).not.toHaveBeenCalled();
+  expect(native.openTarget).not.toHaveBeenCalled();
 });

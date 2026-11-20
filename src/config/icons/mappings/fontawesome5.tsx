@@ -4,6 +4,7 @@
  * Reference: https://fontawesome.com/v5/search
  */
 
+import { leafIconNames } from './leaf';
 import { refreshIconNames } from './refresh';
 
 export const fontawesome5IconMapping: Record<string, string> = {
@@ -23,6 +24,8 @@ export const fontawesome5IconMapping: Record<string, string> = {
   'condense-map': 'compress',
   plus: 'plus',
   minus: 'minus',
+
+  leaf: leafIconNames.fontawesome5,
 
   // Content & Media
   albums: 'images',

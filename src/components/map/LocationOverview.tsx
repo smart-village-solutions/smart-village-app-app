@@ -21,7 +21,6 @@ import { useLocationSettings } from '../../hooks';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { MapMarker } from '../../types';
 import { LoadingSpinner } from '../LoadingSpinner';
-import { TextListItem } from '../TextListItem';
 import {
   KNOWN_ICON_STATUS_NAMES,
   VehicleStatusFeature,
@@ -30,9 +29,18 @@ import {
 } from '../screens/AvailableVehicles';
 import { useThemeStyles } from '../../hooks/useThemeStyles';
 import { useTheme } from '../../hooks/useTheme';
+import {
+  isKlimaTalerMarker,
+  offersToMapMarkers,
+  selectedOfferLocation
+} from '../../klimaTaler/mapOffers';
+import { useMapOffers } from '../../klimaTaler/useMapOffers';
+import { texts } from '../../config/texts';
 
 import { ChipFilter } from './ChipFilter';
+import { KlimaTalerPreview } from './KlimaTalerPreview';
 import { MapLibre } from './MapLibre';
+import { MapPreview } from './MapPreview';
 
 const { MAP } = consts;
 
@@ -134,6 +142,125 @@ const mapToMapMarkers = (
   return markers;
 };
 
+const loadVehicleStatuses = (urls: string[]) => {
+  return Promise.allSettled(
+    urls.map(async (url) => {
+      const data = await fetchAvailableVehicles(url);
+      const feature = data?.[0] as VehicleStatusFeature | undefined;
+      const status = feature?.properties?.[vehiclePropertyKey];
+      const iconName = feature?.iconName;
+      const activeIconName = feature?.activeIconName || feature?.iconNameActive;
+
+      return [url, { activeIconName, iconName, status }] as const;
+    })
+  ).then((results) => {
+    const statuses: VehicleStatusByUrl = {};
+
+    results.forEach((result) => {
+      if (result.status === 'fulfilled') {
+        const [url, vehicleStatus] = result.value;
+
+        if (
+          vehicleStatus.status != null ||
+          !!vehicleStatus.iconName ||
+          !!vehicleStatus.activeIconName
+        ) {
+          statuses[url] = vehicleStatus;
+        }
+      }
+      // Rejected results are ignored so that one failing request
+      // does not prevent processing of the others.
+    });
+
+    return statuses;
+  });
+};
+
+const offersSourceName = (offers: ReturnType<typeof useMapOffers>) => {
+  if (offers.loading) return texts.klimaTaler.map.loading;
+  if (offers.error) return texts.klimaTaler.map.unavailable;
+  if (offers.visible && !offers.configured) return texts.klimaTaler.map.unconfigured;
+  if (offers.visible) return `Klima-Taler (${offers.locations.length})`;
+  return 'Klima-Taler';
+};
+
+const mapPreviewItem = (
+  detailsData: Record<string, unknown> | undefined,
+  klimaTalerOnly: boolean,
+  selectedPointOfInterest: string | undefined,
+  queryVariables: Props['queryVariables'],
+  iconColor: string,
+  styles: ReturnType<typeof createStyles>
+) => {
+  const item =
+    detailsData && !klimaTalerOnly && !isKlimaTalerMarker(selectedPointOfInterest)
+      ? parseListItemsFromQuery(
+          QUERY_TYPES.POINT_OF_INTEREST,
+          {
+            ...detailsData,
+            [QUERY_TYPES.POINT_OF_INTEREST]: [detailsData?.[QUERY_TYPES.POINT_OF_INTEREST]]
+          },
+          undefined,
+          {
+            queryVariables
+          }
+        )?.[0]
+      : undefined;
+
+  if (item && !item.picture?.url) {
+    const SelectedIcon = item?.iconName
+      ? Icon[_upperFirst(item.iconName) as keyof typeof Icon]
+      : undefined;
+
+    return {
+      ...item,
+      leftIcon: (
+        <View style={[styles.iconContainer, styles.imageStyle]}>
+          {!!SelectedIcon && <SelectedIcon color={iconColor} />}
+        </View>
+      )
+    };
+  }
+
+  return item;
+};
+
+const SelectedMapPreview = ({
+  selectedId,
+  externalLocation,
+  item,
+  loading,
+  navigation,
+  withoutNavigation,
+  stale,
+  style
+}: {
+  selectedId?: string;
+  externalLocation: ReturnType<typeof selectedOfferLocation>;
+  item: ReturnType<typeof mapPreviewItem>;
+  loading: boolean;
+  navigation: Props['navigation'];
+  withoutNavigation: boolean;
+  stale: boolean;
+  style: React.ComponentProps<typeof View>['style'];
+}) => {
+  if (!selectedId || (!externalLocation && (loading || !item))) return null;
+  return (
+    <View style={style}>
+      {externalLocation ? (
+        <KlimaTalerPreview
+          key={externalLocation.id}
+          location={externalLocation}
+          navigation={navigation}
+          stale={stale}
+        />
+      ) : (
+        <MapPreview item={item} navigation={withoutNavigation ? undefined : navigation} />
+      )}
+    </View>
+  );
+};
+
 /* eslint-disable complexity */
 export const LocationOverview = ({
   currentPosition,
@@ -158,6 +285,19 @@ export const LocationOverview = ({
   const [selectedPosition, setSelectedPosition] = useState();
   const [vehicleStatuses, setVehicleStatuses] = useState<VehicleStatusByUrl>({});
   const isPreviewWithoutNavigation = route.params?.isPreviewWithoutNavigation ?? false;
+  const klimaTalerOnly = route.params?.includeKlimaTaler === true;
+  const showAllPoiCategories = route.params?.showAllPoiCategories === true;
+  const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>(
+    () => queryVariables.categoryIds?.map(String) ?? []
+  );
+  const selectMapCategories = useCallback((ids: string[]) => {
+    setSelectedCategoryIds(ids);
+    setSelectedPointOfInterest(undefined);
+  }, []);
+  const offers = useMapOffers(
+    klimaTalerOnly && !filterByOpeningTimes && !queryVariables?.radiusSearch?.distance
+  );
+  const externalLocation = selectedOfferLocation(offers.locations, selectedPointOfInterest);
 
   const updateSelectedPosition = useCallback(() => {
     if (alternativePosition?.coords?.latitude && alternativePosition?.coords?.longitude) {
@@ -193,14 +333,18 @@ export const LocationOverview = ({
     refetch
   } = useQuery(getQuery(QUERY_TYPES.POINTS_OF_INTEREST), {
     fetchPolicy,
+    skip: klimaTalerOnly,
     variables: {
       ...queryVariables,
+      ...(showAllPoiCategories && { categoryIds: selectedCategoryIds }),
       // if we show the map, we need to fetch all the entries at once and not a limited amount
       limit: undefined
     }
   });
 
-  let pointsOfInterest: any[] | undefined = overviewData?.[QUERY_TYPES.POINTS_OF_INTEREST];
+  let pointsOfInterest: any[] | undefined = klimaTalerOnly
+    ? undefined
+    : overviewData?.[QUERY_TYPES.POINTS_OF_INTEREST];
 
   useEffect(() => {
     if (!isConnected || !pointsOfInterest?.length) return;
@@ -216,38 +360,7 @@ export const LocationOverview = ({
 
     if (!uniqueUrls.length) return;
 
-    // Fetch all vehicle statuses in parallel
-    Promise.allSettled(
-      uniqueUrls.map(async (url) => {
-        const data = await fetchAvailableVehicles(url);
-        const feature = data?.[0] as VehicleStatusFeature | undefined;
-        const status = feature?.properties?.[vehiclePropertyKey];
-        const iconName = feature?.iconName;
-        const activeIconName = feature?.activeIconName || feature?.iconNameActive;
-
-        return [url, { activeIconName, iconName, status }] as const;
-      })
-    ).then((results) => {
-      const statuses: VehicleStatusByUrl = {};
-
-      results.forEach((result) => {
-        if (result.status === 'fulfilled') {
-          const [url, vehicleStatus] = result.value;
-
-          if (
-            vehicleStatus.status != null ||
-            !!vehicleStatus.iconName ||
-            !!vehicleStatus.activeIconName
-          ) {
-            statuses[url] = vehicleStatus;
-          }
-        }
-        // Rejected results are ignored so that one failing request
-        // does not prevent processing of the others.
-      });
-
-      setVehicleStatuses(statuses);
-    });
+    void loadVehicleStatuses(uniqueUrls).then(setVehicleStatuses);
   }, [isConnected, pointsOfInterest]);
 
   if (filterByOpeningTimes && pointsOfInterest) {
@@ -271,48 +384,65 @@ export const LocationOverview = ({
     {
       fetchPolicy,
       variables: { id: selectedPointOfInterest },
-      skip: !selectedPointOfInterest
+      skip:
+        klimaTalerOnly || !selectedPointOfInterest || isKlimaTalerMarker(selectedPointOfInterest)
     }
   );
 
-  if (loading) {
+  // Keep the widget map mounted while a new category selection is loading.
+  // Apollo retains the previous result, including a successfully loaded empty list.
+  if (!klimaTalerOnly && loading && (!showAllPoiCategories || !overviewData)) {
     return <LoadingSpinner loading />;
   }
 
-  const showMapFilter = (queryVariables?.categoryIds?.length || 0) > 1;
-  const mapMarkers = mapToMapMarkers(pointsOfInterest, vehicleStatuses);
+  const showMapFilter =
+    showAllPoiCategories ||
+    (!klimaTalerOnly && (queryVariables?.categoryIds?.length || 0) > 1) ||
+    offers.enabled;
+  const mapMarkers = [
+    ...(mapToMapMarkers(pointsOfInterest, vehicleStatuses) ?? []),
+    ...offersToMapMarkers(offers.locations, MAP.DEFAULT_PIN)
+  ];
+  const sourceName = offersSourceName(offers);
 
-  const item = detailsData
-    ? parseListItemsFromQuery(
-        QUERY_TYPES.POINT_OF_INTEREST,
-        {
-          ...detailsData,
-          [QUERY_TYPES.POINT_OF_INTEREST]: [detailsData?.[QUERY_TYPES.POINT_OF_INTEREST]]
-        },
-        undefined,
-        {
-          queryVariables
-        }
-      )?.[0]
-    : undefined;
-
-  if (item && !item.picture?.url) {
-    const SelectedIcon = item?.iconName
-      ? Icon[_upperFirst(item.iconName) as keyof typeof Icon]
-      : undefined;
-
-    item.leftIcon = (
-      <View style={[styles.iconContainer, styles.imageStyle]}>
-        {!!SelectedIcon && <SelectedIcon color={colors.darkerPrimary} />}
-      </View>
-    );
-  }
+  const item = mapPreviewItem(
+    detailsData,
+    klimaTalerOnly,
+    selectedPointOfInterest,
+    queryVariables,
+    colors.darkerPrimary,
+    styles
+  );
 
   return (
-    <>
-      {showMapFilter && <ChipFilter queryVariables={queryVariables} refetch={refetch} />}
+    <View style={styles.mapContainer}>
+      {showMapFilter && (
+        <ChipFilter
+          key={JSON.stringify(queryVariables.categoryIds ?? [])}
+          queryVariables={klimaTalerOnly ? {} : queryVariables}
+          refetch={refetch}
+          showAllPoiCategories={showAllPoiCategories}
+          selectedCategoryIds={showAllPoiCategories ? selectedCategoryIds : undefined}
+          onCategorySelectionChange={showAllPoiCategories ? selectMapCategories : undefined}
+          additionalFilters={
+            offers.enabled
+              ? [
+                  {
+                    id: 'klima-taler',
+                    name: sourceName,
+                    icon: (
+                      <Icon.NamedIcon name="leaf" color={colors.primary} size={normalize(16)} />
+                    ),
+                    selected: offers.visible,
+                    onPress: offers.toggle
+                  }
+                ]
+              : []
+          }
+        />
+      )}
 
-      {(!!mapMarkers?.length || showMapFilter) && (
+      {(klimaTalerOnly || !!mapMarkers?.length || showMapFilter) && (
         <MapLibre
           currentPosition={currentPosition}
           isMultipleMarkersMap
@@ -326,58 +456,37 @@ export const LocationOverview = ({
         />
       )}
 
-      {!!selectedPointOfInterest && !detailsLoading && !!item && (
-        <View
-          style={[
-            styles.listItemContainer,
-            stylesWithProps({
-              navigationType,
-              orientation,
-              safeAreaInsets,
-              deviceHeight: device.height
-            }).position
-          ]}
-        >
-          <TextListItem
-            containerStyle={styles.textListItemContainer}
-            imageContainerStyle={styles.imageRadius}
-            imageStyle={styles.imageStyle}
-            item={{
-              ...item,
-              bottomDivider: false,
-              picture: item?.picture?.url ? item.picture : undefined
-            }}
-            leftImage={!!item?.picture?.url}
-            listItemStyle={styles.listItem}
-            listsWithoutArrows
-            navigation={isPreviewWithoutNavigation ? undefined : navigation}
-          />
-        </View>
-      )}
-    </>
+      <SelectedMapPreview
+        selectedId={selectedPointOfInterest}
+        externalLocation={externalLocation}
+        item={item}
+        loading={detailsLoading}
+        navigation={navigation}
+        withoutNavigation={isPreviewWithoutNavigation}
+        stale={!!offers.error}
+        style={[
+          styles.listItemContainer,
+          stylesWithProps({
+            navigationType,
+            orientation,
+            safeAreaInsets,
+            deviceHeight: device.height
+          }).position
+        ]}
+      />
+    </View>
   );
 };
 /* eslint-enable complexity */
 
 const createStyles = (colors) => ({
+  mapContainer: { flex: 1 },
   iconContainer: {
     alignItems: 'center',
     backgroundColor: colors.lighterPrimary,
     borderBottomLeftRadius: normalize(8),
     borderTopLeftRadius: normalize(8),
     justifyContent: 'center'
-  },
-
-  imageStyle: {
-    borderBottomRightRadius: 0,
-    borderTopRightRadius: 0,
-    height: normalize(96),
-    width: normalize(96)
-  },
-
-  imageRadius: {
-    borderBottomLeftRadius: normalize(12),
-    borderTopLeftRadius: normalize(12)
   },
 
   listItemContainer: {
@@ -398,19 +507,9 @@ const createStyles = (colors) => ({
     shadowRadius: 3
   },
 
-  listItem: {
-    marginVertical: normalize(16)
-  },
-
   map: {
     height: '100%',
     width: '100%'
-  },
-
-  textListItemContainer: {
-    alignItems: 'flex-start',
-    paddingVertical: 0,
-    padding: 0
   }
 });
 

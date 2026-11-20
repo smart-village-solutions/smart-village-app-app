@@ -1,7 +1,10 @@
-import { ChangersError, createChangers } from '../../modules/expo-changers/src/api';
+import { ChangersError, createChangers, isOfferId } from '../../modules/expo-changers/src/api';
 import type { Status } from '../../modules/expo-changers/src/types';
 
 type Client = ReturnType<typeof createChangers>;
+export type KlimaTalerTarget = number | 'badges';
+const isEntryTarget = (value: unknown): value is KlimaTalerTarget =>
+  value === 'badges' || isOfferId(value);
 type EntryState = { phase: 'idle' | 'opening' | 'open' | 'error'; errorCode?: string };
 
 const canRegister = (status: Status, firstActivation: boolean) =>
@@ -55,11 +58,25 @@ export const createEntry = (
       );
     }
   };
-  const open = (): Promise<void> => {
-    if (pending) return state.phase === 'idle' ? pending.then(open) : pending;
-    if (state.phase === 'open') return Promise.resolve();
+  const open = (target?: KlimaTalerTarget): Promise<void> => {
+    if (pending) return state.phase === 'idle' ? pending.then(() => open(target)) : pending;
+    if (state.phase === 'open' && target === undefined) return Promise.resolve();
     if (!isEnabled()) {
       set({ phase: 'error', errorCode: 'E_DISABLED' });
+      return Promise.resolve();
+    }
+    if (target !== undefined && !isEntryTarget(target)) {
+      set({
+        phase: 'error',
+        errorCode: 'E_INVALID_ARGUMENT'
+      });
+      return Promise.resolve();
+    }
+    if (
+      target !== undefined &&
+      !client.capabilities[target === 'badges' ? 'badgeList' : 'offerDetails'].supported
+    ) {
+      set({ phase: 'error', errorCode: 'E_NATIVE_UNAVAILABLE' });
       return Promise.resolve();
     }
     const requestGeneration = ++generation;
@@ -68,7 +85,9 @@ export const createEntry = (
       try {
         await ensureSession(requestGeneration);
         if (requestGeneration !== generation || !isEnabled()) return;
-        await client.openProvider();
+        if (target === 'badges') await client.openTarget('badges');
+        else if (target === undefined) await client.openProvider();
+        else await client.openOffer(target);
         if (requestGeneration === generation && isEnabled()) set({ phase: 'open' });
         else await client.closeProvider();
       } catch (error) {

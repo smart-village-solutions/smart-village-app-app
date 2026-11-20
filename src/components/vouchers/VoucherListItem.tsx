@@ -3,7 +3,11 @@ import React, { memo } from 'react';
 import { Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Card, Divider } from 'react-native-elements';
 
-import { Icon, normalize } from '../../config';
+import { Icon, normalize, texts } from '../../config';
+import {
+  isImportedKlimaTalerVoucher,
+  readImportedKlimaTalerVoucher
+} from '../../klimaTaler/importedVoucher';
 import { imageHeight, imageWidth } from '../../helpers';
 import { QUERY_TYPES } from '../../queries';
 import { TVoucherItem } from '../../types';
@@ -39,6 +43,7 @@ export const VoucherListItem = memo(
       subtitle,
       title
     } = item;
+    const importedVoucher = readImportedKlimaTalerVoucher(payload);
 
     return (
       <TouchableOpacity
@@ -56,7 +61,7 @@ export const VoucherListItem = memo(
             />
           )}
 
-          {!!discountType && (
+          {!!discountType && !isImportedKlimaTalerVoucher(payload) && (
             <WrapperVertical noPaddingTop>
               <Discount
                 discount={discountType}
@@ -78,6 +83,14 @@ export const VoucherListItem = memo(
               {!!subtitle && (
                 <RegularText small numberOfLines={1}>
                   {subtitle}
+                </RegularText>
+              )}
+
+              {!!importedVoucher && (
+                <RegularText small>
+                  {`${importedVoucher.cost.toLocaleString('de-DE')} Klima-Taler · ${
+                    importedVoucher.remaining > 10 ? '10+' : importedVoucher.remaining
+                  } ${texts.klimaTaler.map.available}`}
                 </RegularText>
               )}
 

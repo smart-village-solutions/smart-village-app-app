@@ -2,6 +2,21 @@ import appJson from '../../app.json';
 
 export const texts = {
   klimaTaler: {
+    voucher: {
+      use: 'In Klima-Taler nutzen',
+      unavailable: 'Nicht verfügbar',
+      unavailableMessage: 'Dieses Angebot ist zurzeit in dieser App nicht verfügbar.'
+    },
+    map: {
+      loading: 'Klima-Taler lädt …',
+      unavailable: 'Klima-Taler nicht verfügbar',
+      unconfigured: 'Klima-Taler: Suchgebiet fehlt',
+      stale: 'Diese Angebote können veraltet sein.',
+      showOffers: 'Angebote anzeigen oder ausblenden',
+      chooseOffer: 'Angebot auswählen',
+      openOffer: 'Angebot in Klima-Taler öffnen',
+      available: 'verfügbar'
+    },
     title: 'Klima-Taler',
     card: {
       title: 'Dein Klima-Bonus',
