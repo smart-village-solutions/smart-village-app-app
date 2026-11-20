@@ -5,6 +5,7 @@ import Collapsible from 'react-native-collapsible';
 
 import { device, normalize, texts } from '../../config';
 import { geoLocationToLocationObject } from '../../helpers';
+import { resolveReferencePosition } from '../../helpers/locationReference';
 import { useLocationSettings, useSystemPermission } from '../../hooks';
 import { SettingsContext } from '../../SettingsProvider';
 import { Button } from '../Button';
@@ -33,17 +34,9 @@ export const LocationSettings = () => {
   const [selectedPosition, setSelectedPosition] = useState();
 
   const updateSelectedPosition = useCallback(() => {
-    if (alternativePosition?.coords?.latitude && alternativePosition?.coords?.longitude) {
-      setSelectedPosition({
-        latitude: alternativePosition.coords.latitude,
-        longitude: alternativePosition.coords.longitude
-      });
-    } else if (defaultAlternativePosition?.coords?.lat && defaultAlternativePosition?.coords?.lng) {
-      setSelectedPosition({
-        latitude: defaultAlternativePosition.coords.lat,
-        longitude: defaultAlternativePosition.coords.lng
-      });
-    }
+    setSelectedPosition(
+      resolveReferencePosition({ alternativePosition, defaultAlternativePosition })?.coords
+    );
   }, [alternativePosition, defaultAlternativePosition]);
 
   useEffect(() => updateSelectedPosition(), [updateSelectedPosition]);
@@ -128,7 +121,7 @@ export const LocationSettings = () => {
               }}
               selectedPosition={selectedPosition}
               setPinEnabled
-              setOwnLocation
+              selectedPositionIsOwnLocation
             />
           )}
           <Collapsible style={styles.collapsible} collapsed={!showMap}>

@@ -41,6 +41,7 @@ import {
   PARTICIPATION_PROJECT_STATUS_POSITION_PARAM,
   sortPOIsByDistanceFromPosition
 } from '../../helpers';
+import { resolveReferencePosition } from '../../helpers/locationReference';
 import { compareParticipationProjects } from '../../helpers/participationProjectSortHelper';
 import { updateResourceFiltersStateHelper } from '../../helpers/updateResourceFiltersStateHelper';
 import {
@@ -301,14 +302,16 @@ export const Overviews = ({ navigation, route }) => {
   const { excludeDataProviderIds, excludeMowasRegionalKeys } = usePermanentFilter();
   const { locationSettings } = useLocationSettings();
   const { locationService: locationServiceEnabled } = locationSettings;
+  const hasFallbackPosition =
+    locationServiceEnabled === false && !!resolveReferencePosition(locationSettings);
   const systemPermission = useSystemPermission();
   const sortByDistance =
     query === QUERY_TYPES.POINTS_OF_INTEREST &&
-    locationServiceEnabled &&
+    (locationServiceEnabled || hasFallbackPosition) &&
     (locationService.sortByDistance ?? true);
   const radiusSearchByDistance = !!queryVariables?.radiusSearch?.distance;
   const skipPosition =
-    systemPermission?.status !== Location.PermissionStatus.GRANTED ||
+    (!hasFallbackPosition && systemPermission?.status !== Location.PermissionStatus.GRANTED) ||
     (!sortByDistance && !radiusSearchByDistance);
   const { loading: loadingPosition, position } = usePosition(skipPosition);
   const { position: lastKnownPosition } = useLastKnownPosition(skipPosition);

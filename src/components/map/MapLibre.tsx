@@ -13,6 +13,7 @@ import {
   NativeUserLocation,
   type PressEvent,
   type PressEventWithFeatures,
+  useCurrentPosition,
   ViewAnnotation
 } from '@maplibre/maplibre-react-native';
 import { useBottomTabBarHeight } from 'expo-router/js-tabs';
@@ -34,6 +35,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { consts, Icon, normalize, texts } from '../../config';
 import { getBounds, truncateText } from '../../helpers';
+import { resolveReferencePosition } from '../../helpers/locationReference';
 import { useLocationSettings, useMapFeatureConfig } from '../../hooks';
 import { useTheme } from '../../hooks/useTheme';
 import { useThemeStyles } from '../../hooks/useThemeStyles';
@@ -232,6 +234,7 @@ type Props = {
   }) => void | Promise<void>;
   selectedMarker?: string;
   selectedPosition?: LocationObjectCoords;
+  selectedPositionIsOwnLocation?: boolean;
   setPinEnabled?: boolean;
   showMapFilter?: boolean;
   showMarkerLabels?: boolean;
@@ -267,6 +270,7 @@ export const MapLibre = ({
   onMyLocationButtonPress,
   selectedMarker = '',
   selectedPosition,
+  selectedPositionIsOwnLocation = false,
   currentPosition,
   showMapFilter,
   showsUserLocation: showsUserLocationProp,
@@ -314,9 +318,19 @@ export const MapLibre = ({
   }, [showMarkerLabels, labelStyles]);
 
   const { locationSettings = {} } = useLocationSettings();
-  const { alternativePosition, defaultAlternativePosition } = locationSettings || {};
+  const { defaultAlternativePosition } = locationSettings || {};
   const showsUserLocation =
-    locationSettings?.locationService ?? showsUserLocationProp ?? !!locationService;
+    showsUserLocationProp !== false &&
+    (locationSettings?.locationService ?? showsUserLocationProp ?? !!locationService);
+  const hasCustomLocationIcon = !!resolvedMarkerImages?.[MAP.OWN_LOCATION_PIN];
+  const livePosition = useCurrentPosition({ enabled: showsUserLocation && hasCustomLocationIcon });
+  const referencePosition =
+    showsUserLocationProp === false
+      ? undefined
+      : resolveReferencePosition(
+          { ...locationSettings, locationService: showsUserLocation },
+          livePosition || currentPosition
+        );
   const [followsUserLocation, setFollowsUserLocation] = useState(false);
   const [selectedFeature, setSelectedFeature] = useState<GeoJSON.Feature | null>(null);
   const [isMarkerSelected, setIsMarkerSelected] = useState(false);
@@ -455,31 +469,6 @@ export const MapLibre = ({
     isMarkerSelected
   ]);
 
-  const isOwnLocation = useMemo(() => {
-    if (showsUserLocation) return false;
-
-    const { latitude, longitude } = selectedPosition || {};
-    let alternativeCoords;
-
-    if (alternativePosition) {
-      alternativeCoords = {
-        latitude: alternativePosition.coords?.latitude,
-        longitude: alternativePosition.coords?.longitude
-      };
-    } else if (defaultAlternativePosition) {
-      alternativeCoords = {
-        latitude: defaultAlternativePosition.coords?.latitude,
-        longitude: defaultAlternativePosition.coords?.longitude
-      };
-    }
-
-    if (!latitude || !longitude || !alternativeCoords) {
-      return false;
-    }
-
-    return alternativeCoords.latitude == latitude && alternativeCoords.longitude == longitude;
-  }, [showsUserLocation, selectedPosition, alternativePosition, defaultAlternativePosition]);
-
   const selectedPositionPin = useMemo(() => {
     if (!selectedPosition) return null;
 
@@ -488,29 +477,23 @@ export const MapLibre = ({
     if (latitude == null || longitude == null) return null;
 
     return point([longitude, latitude], {
-      iconName: isOwnLocation ? MAP.OWN_LOCATION_PIN : `${MAP.DEFAULT_PIN}Active`,
+      iconName:
+        selectedPositionIsOwnLocation && hasCustomLocationIcon
+          ? MAP.OWN_LOCATION_PIN
+          : `${MAP.DEFAULT_PIN}Active`,
       id: 'selected-position-pin'
     });
-  }, [isOwnLocation, selectedPosition]);
+  }, [selectedPositionIsOwnLocation, hasCustomLocationIcon, selectedPosition]);
 
-  const newPins = useMemo(() => {
-    if (!selectedPosition) {
-      return [];
-    }
-
-    const { latitude, longitude } = selectedPosition;
-
-    if (latitude == null || longitude == null) {
-      return [];
-    }
-
-    return [
-      point([longitude, latitude], {
-        iconName: isOwnLocation ? MAP.OWN_LOCATION_PIN : `${MAP.DEFAULT_PIN}Active`,
-        id: 'selected-position-pin'
-      })
-    ];
-  }, [isOwnLocation, selectedPosition]);
+  const referencePositionPin =
+    referencePosition &&
+    (!showsUserLocation || hasCustomLocationIcon) &&
+    !selectedPositionIsOwnLocation
+      ? point([referencePosition.coords.longitude, referencePosition.coords.latitude], {
+          iconName: hasCustomLocationIcon ? MAP.OWN_LOCATION_PIN : `${MAP.DEFAULT_PIN}Active`,
+          id: 'reference-position-pin'
+        })
+      : undefined;
 
   useEffect(() => {
     if (!selectedFeature?.properties?.id) return;
@@ -725,7 +708,9 @@ export const MapLibre = ({
       )
   );
 
-  const displayedPins = selectedPositionPin ? [selectedPositionPin] : newPins;
+  const displayedPins = [referencePositionPin, selectedPositionPin].filter(
+    (pin): pin is NonNullable<typeof pin> => !!pin
+  );
 
   // --- Layer styles: migrated to v11 style-spec paint/layout props (kebab-case) ---
   // splitLayerStyle converts legacy camelCase style objects from the remote API config
@@ -835,12 +820,12 @@ export const MapLibre = ({
             longitude: initialRegion.longitude ?? 10.4515,
             zoom: resolvedInitialZoomLevel ?? 0
           })}
-          trackUserLocation={followsUserLocation ? 'default' : undefined}
+          trackUserLocation={!hasCustomLocationIcon && followsUserLocation ? 'default' : undefined}
           minZoom={minZoom}
           ref={cameraRef}
         />
 
-        {showsUserLocation && <NativeUserLocation mode="heading" />}
+        {showsUserLocation && !hasCustomLocationIcon && <NativeUserLocation mode="heading" />}
 
         {!!resolvedMarkerImages && <Images images={resolvedMarkerImages} />}
 
@@ -1015,7 +1000,16 @@ export const MapLibre = ({
               console.error('My location button press failed', error);
             }
 
-            if (!showsUserLocation) {
+            if (referencePosition && (!showsUserLocation || hasCustomLocationIcon)) {
+              cameraRef.current?.setStop({
+                duration: CAMERA_ANIMATION_DURATION,
+                easing: CAMERA_ANIMATION_MODE,
+                center: [referencePosition.coords.longitude, referencePosition.coords.latitude]
+              });
+              return;
+            }
+
+            if (!showsUserLocation || hasCustomLocationIcon) {
               return;
             }
 

@@ -1,8 +1,8 @@
 import { RouteProp } from 'expo-router/react-navigation';
 import { StackNavigationProp } from 'expo-router/js-stack';
-import { LocationObject, LocationObjectCoords } from 'expo-location';
+import { LocationObject } from 'expo-location';
 import _upperFirst from 'lodash/upperFirst';
-import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useQuery } from 'react-apollo';
 import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -17,6 +17,7 @@ import {
   isOpen,
   parseListItemsFromQuery
 } from '../../helpers';
+import { resolveReferencePosition } from '../../helpers/locationReference';
 import { useLocationSettings } from '../../hooks';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { MapMarker } from '../../types';
@@ -72,17 +73,6 @@ type Props = {
   };
   route: RouteProp<Record<string, any>, string>;
 };
-
-const getLocationMarker = (locationObject) => ({
-  [locationObject?.iconName || MAP.DEFAULT_PIN]: 1,
-  iconName: locationObject?.iconName || MAP.DEFAULT_PIN,
-  activeIconName: `${locationObject?.iconName || MAP.DEFAULT_PIN}Active`,
-  position: {
-    ...locationObject.coords,
-    latitude: locationObject?.coords?.latitude || locationObject?.coords?.lat,
-    longitude: locationObject?.coords?.longitude || locationObject?.coords?.lng
-  }
-});
 
 const mapToMapMarkers = (
   pointsOfInterest: any,
@@ -278,11 +268,9 @@ export const LocationOverview = ({
   const { globalSettings } = useContext(SettingsContext);
   const { navigation: navigationType } = globalSettings;
   const { locationSettings } = useLocationSettings();
-  const { alternativePosition, defaultAlternativePosition } = locationSettings || {};
   const [selectedPointOfInterest, setSelectedPointOfInterest] = useState<string>();
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
   const [isLocationAlertShow, setIsLocationAlertShow] = useState(false);
-  const [selectedPosition, setSelectedPosition] = useState();
   const [vehicleStatuses, setVehicleStatuses] = useState<VehicleStatusByUrl>({});
   const isPreviewWithoutNavigation = route.params?.isPreviewWithoutNavigation ?? false;
   const klimaTalerOnly = route.params?.includeKlimaTaler === true;
@@ -299,33 +287,7 @@ export const LocationOverview = ({
   );
   const externalLocation = selectedOfferLocation(offers.locations, selectedPointOfInterest);
 
-  const updateSelectedPosition = useCallback(() => {
-    if (alternativePosition?.coords?.latitude && alternativePosition?.coords?.longitude) {
-      setSelectedPosition({
-        latitude: alternativePosition.coords.latitude,
-        longitude: alternativePosition.coords.longitude
-      });
-    } else if (defaultAlternativePosition?.coords?.lat && defaultAlternativePosition?.coords?.lng) {
-      setSelectedPosition({
-        latitude: defaultAlternativePosition.coords.lat,
-        longitude: defaultAlternativePosition.coords.lng
-      });
-    }
-  }, [alternativePosition, defaultAlternativePosition]);
-
-  useEffect(() => updateSelectedPosition(), [updateSelectedPosition]);
-
-  const mapCenterPosition = useMemo(() => {
-    if (alternativePosition) {
-      return getLocationMarker(alternativePosition).position;
-    }
-
-    if (defaultAlternativePosition) {
-      return getLocationMarker(defaultAlternativePosition).position;
-    }
-
-    return {} as LocationObjectCoords;
-  }, [alternativePosition, defaultAlternativePosition]);
+  const mapCenterPosition = resolveReferencePosition(locationSettings || {})?.coords;
 
   const {
     data: overviewData,
@@ -451,7 +413,6 @@ export const LocationOverview = ({
           mapStyle={styles.map}
           onMarkerPress={setSelectedPointOfInterest}
           selectedMarker={selectedPointOfInterest}
-          selectedPosition={selectedPosition}
           showMapFilter={showMapFilter}
         />
       )}
