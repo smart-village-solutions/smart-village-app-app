@@ -388,9 +388,12 @@ staging import they are provider **601**, category **6013**; these values are no
 shared application defaults. Changing `secrets.js` alone does not enable this map
 source; configure these non-secret global settings on the matching instance.
 
-Flow: Karte → normal Mainserver map → normal preview → normal POI detail → its
-imported vouchers → normal voucher detail → **In Klima-Taler nutzen** → native
-SDK offer detail. Only that final button opens the SDK. The database coupon ID
+Flow: Karte → normal Mainserver map → normal preview → normal POI detail → tap an
+imported voucher → native SDK offer detail. The shared POI detail opts into direct
+provider opening, including when reached from Marktplatz. Ordinary SVA vouchers
+still open their existing voucher detail. Other voucher lists retain the voucher
+detail and its **In Klima-Taler nutzen** button. Both entry points share availability,
+duplicate-tap protection and failure recovery. The database coupon ID
 remains the SVA route/cache identity; the validated `payload.klimaTaler.offerId`
 is the provider destination. The native runtime environment must match the
 coupon's imported environment. No user credentials are stored in this payload.
@@ -411,9 +414,14 @@ Test on the matching staging instance:
    another category and deselect KT to show ordinary POIs. Close/reopen to verify
    the initial KT selection and compare with the unchanged Marktplatz scope.
 2. Tap a pin, then its preview. The ordinary POI detail must open without the SDK.
-3. Select a coupon. Verify its image/title/coin cost and the use button; SDK stays closed.
-4. Press use. Verify the correct SDK offer, close it, then repeat with the same and another coupon.
-5. Verify an ordinary SVA coupon still follows its existing redemption flow.
+3. Select an imported coupon on the POI detail. Verify that the SDK opens the matching
+   offer directly, without an intermediate SVA voucher detail. Close it, then repeat
+   with the same and another coupon. Repeat after reaching the POI from Marktplatz.
+4. Open an imported coupon from an ordinary voucher list. Its existing detail and
+   **In Klima-Taler nutzen** button must still open the matching SDK offer.
+5. Verify an ordinary SVA coupon on either POI detail or voucher lists still follows
+   its existing detail, login and redemption flow. Disabled KT, depleted stock,
+   mismatched environments and invalid provider metadata must not open an offer.
 6. Disable the override and verify the existing direct provider map remains available.
 
 The Mainserver `preserveVouchers` opt-in must be deployed before ongoing imports

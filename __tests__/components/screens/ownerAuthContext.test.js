@@ -3,6 +3,7 @@ import React from 'react';
 import renderer, { act } from 'react-test-renderer';
 
 import { AUTH_MODE_USER, getApolloAuthContext } from '../../../src/graphqlAuth';
+import { parseListItemsFromQuery } from '../../../src/helpers';
 import { EventRecord } from '../../../src/components/screens/EventRecord';
 import { NewsItem } from '../../../src/components/screens/NewsItem';
 import { PointOfInterest } from '../../../src/components/screens/PointOfInterest';
@@ -16,6 +17,7 @@ const mockUseMutation = jest.fn();
 const mockUseQuery = jest.fn();
 const mockUseProfileContext = jest.fn();
 const mockUseFocusEffect = jest.fn();
+const mockVoucherListItem = jest.fn();
 
 jest.mock('react-apollo', () => ({
   useMutation: (...args) => mockUseMutation(...args),
@@ -63,6 +65,7 @@ jest.mock('../../../src/hooks', () => ({
 jest.mock('../../../src/helpers', () => ({
   filterGenericItems: jest.fn(() => true),
   getGenericItemMatomoName: jest.fn(() => 'noticeboard'),
+  isValidGeoLocation: jest.fn(() => false),
   isTodayOrLater: jest.fn(() => true),
   matomoTrackingString: jest.fn(() => 'tracking'),
   momentFormatUtcToLocal: jest.fn(() => ''),
@@ -306,7 +309,10 @@ jest.mock('../../../src/components/vouchers', () => {
   const { View } = require('react-native');
 
   return {
-    VoucherListItem: () => <View />
+    VoucherListItem: (props) => {
+      mockVoucherListItem(props);
+      return <View />;
+    }
   };
 });
 
@@ -443,6 +449,29 @@ describe('owner auth context for detail screen actions', () => {
       })
     );
   });
+
+  it.each(['Home', 'Voucher'])(
+    'enables direct KT coupon opening on the shared POI detail from %s',
+    async (rootRouteName) => {
+      const coupons = [{ id: 'imported-1' }, { id: 'ordinary-1' }];
+      parseListItemsFromQuery.mockReturnValueOnce(coupons);
+
+      await renderComponent(
+        <PointOfInterest
+          data={{ id: 'poi-kt', title: 'KT partner', vouchers: coupons }}
+          navigation={navigation}
+          route={{ params: { rootRouteName } }}
+        />
+      );
+
+      expect(mockVoucherListItem).toHaveBeenCalledTimes(coupons.length);
+      coupons.forEach((item) => {
+        expect(mockVoucherListItem).toHaveBeenCalledWith(
+          expect.objectContaining({ item, navigation, openKlimaTalerOffer: true })
+        );
+      });
+    }
+  );
 
   it('passes user auth context only to noticeboard conversation hooks', async () => {
     await renderComponent(
