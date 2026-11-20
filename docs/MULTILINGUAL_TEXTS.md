@@ -44,7 +44,9 @@ initializes module-level labels in the selected language. An absent or unknown
 locale selects the entire German catalog. A storage read failure does not erase
 the saved preference.
 
-Settings links to a dedicated language screen. German is always offered. Other
+Settings links to a dedicated language screen when at least one language besides
+German is available. The same condition shows the module version (`I18n`) in
+Version info. German is always offered in the language screen. Other
 languages require both a bundled catalog and a current Mainserver release. `LanguageSettings` owns the selection, confirmation, and
 loading/error state; the settings footer keeps its development actions.
 Selecting another language shows a restart warning, including possible loss of
