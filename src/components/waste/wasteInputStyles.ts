@@ -5,11 +5,14 @@ import { ThemeColorPalette } from '../../types/Theme';
 
 export const createWasteInputStyles = (colors: ThemeColorPalette) => ({
   autoCompleteContainer: {
+    flex: 0,
+    flexShrink: 1,
     backgroundColor: colors.background,
     paddingHorizontal: 0
   },
 
   autoCompleteInputContainer: {
+    flexShrink: 0,
     backgroundColor: colors.background,
     borderColor: colors.border,
     borderRadius: normalize(8),
@@ -49,6 +52,7 @@ export const createWasteInputStyles = (colors: ThemeColorPalette) => ({
   },
 
   autoCompleteListContainer: {
+    flexShrink: 1,
     backgroundColor: colors.background,
     elevation: 2,
     shadowColor: colors.shadow,

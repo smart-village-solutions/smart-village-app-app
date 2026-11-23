@@ -1,6 +1,6 @@
 import { useNavigation, useRoute } from 'expo-router/react-navigation';
 import { StackNavigationProp } from 'expo-router/js-stack';
-import React, { useCallback, useContext, useMemo } from 'react';
+import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { TouchableOpacity, View } from 'react-native';
 
 import { AccessibilityContext } from '../../AccessibilityProvider';
@@ -60,6 +60,8 @@ export const Service = ({
   const { personalizedTiles: isPersonalizable = false, tileSizeFactor = 1 } = settings;
   const { appDesignSystem } = useContext(ConfigurationsContext);
   const { serviceTiles = {} } = appDesignSystem;
+  const [gridWidth, setGridWidth] = useState<number>();
+  const gridGap = normalize(5);
   const navigation = useNavigation<StackNavigationProp<any>>();
   const { isLoading, tiles, onDragEnd, onToggleVisibility } = usePersonalizedTiles(
     isPersonalizable,
@@ -94,7 +96,7 @@ export const Service = ({
     [isEditMode, hasDiagonalGradientBackground, navigation, staticJsonName]
   );
   const renderItem = useCallback(
-    (item: TServiceTile, index: number, shouldAddMargin?: boolean) => (
+    (item: TServiceTile, index: number) => (
       <ServiceTile
         draggableId={umlautSwitcher(item.title) || umlautSwitcher(item.accessibilityLabel)}
         draggableKey={`item${item.title || item.accessibilityLabel}-index${index}`}
@@ -116,7 +118,8 @@ export const Service = ({
         onToggleVisibility={onToggleVisibility}
         serviceTiles={serviceTiles}
         staticJsonName={staticJsonName}
-        shouldAddMargin={shouldAddMargin}
+        gridWidth={isEditMode ? undefined : gridWidth}
+        gridGap={isEditMode ? undefined : gridGap}
         layoutColumns={itemsPerRow}
         tileSizeFactor={tileSizeFactor}
       />
@@ -128,7 +131,10 @@ export const Service = ({
       serviceTiles,
       tileLayoutColumns,
       itemsPerRow,
-      tileSizeFactor
+      tileSizeFactor,
+      staticJsonName,
+      gridWidth,
+      gridGap
     ]
   );
   const toggler = isPersonalizable && (
@@ -183,20 +189,25 @@ export const Service = ({
       {rows.map((row) => {
         const isLastRow = rows[rows.length - 1] === row;
         const isIncompleteRow = row.length < itemsPerRow;
-        const rowKey = row.map((tile) => tile.title || tile.accessibilityLabel);
+        // Remount rows when the grid changes so native percentage sizes are recalculated.
+        const rowKey = JSON.stringify([
+          orientation,
+          itemsPerRow,
+          ...row.map((tile) => tile.title || tile.accessibilityLabel)
+        ]);
         const isLastAndIncompleteRow = isLastRow && isIncompleteRow;
         const shouldCenterIncompleteRow = isLastAndIncompleteRow && !alignIncompleteRowsLeft;
-        // marginLeft add only if it's the last row, centered and there is more than one item
-        const shouldAddMargin = shouldCenterIncompleteRow && row.length > 1;
-
         return (
           <WrapperWrap
             key={rowKey}
             center={shouldCenterIncompleteRow}
             spaceBetween={!isLastAndIncompleteRow}
-            style={rowHorizontalPadding ? { paddingHorizontal: rowHorizontalPadding } : undefined}
+            onLayout={({ nativeEvent: { layout } }) =>
+              setGridWidth(Math.max(0, layout.width - 2 * rowHorizontalPadding))
+            }
+            style={{ columnGap: gridGap, paddingHorizontal: rowHorizontalPadding }}
           >
-            {row.map((item, index) => renderItem(item, index, shouldAddMargin))}
+            {row.map((item, index) => renderItem(item, index))}
           </WrapperWrap>
         );
       })}

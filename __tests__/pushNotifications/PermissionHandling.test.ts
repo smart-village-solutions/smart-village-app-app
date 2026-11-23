@@ -1,9 +1,11 @@
+import * as Notifications from 'expo-notifications';
 import { DeviceEventEmitter } from 'react-native';
 
 import { addToStore, readFromStore } from '../../src/helpers/storageHelper';
 import {
   PUSH_NOTIFICATION_PERMISSION_CHANGED_EVENT,
-  setInAppPermission
+  setInAppPermission,
+  updatePushToken
 } from '../../src/pushNotifications/PermissionHandling';
 import { handleIncomingToken } from '../../src/pushNotifications/TokenHandling';
 import { clearWasteReminderLocalNotifications } from '../../src/pushNotifications/WasteReminderLocalNotifications';
@@ -201,5 +203,123 @@ describe('setInAppPermission', () => {
     await expect(setInAppPermission(true)).rejects.toThrow('storage failed');
     expect(emitSpy).not.toHaveBeenCalled();
     emitSpy.mockRestore();
+  });
+});
+
+describe('push token refresh and opt-out ordering', () => {
+  beforeEach(() => {
+    jest.resetAllMocks();
+    (Notifications.getPermissionsAsync as jest.Mock).mockResolvedValue({
+      granted: true,
+      status: 'granted'
+    });
+    (Notifications.getExpoPushTokenAsync as jest.Mock).mockResolvedValue({ data: 'push-token' });
+    (readFromStore as jest.Mock).mockResolvedValue(true);
+    (handleIncomingToken as jest.Mock).mockResolvedValue(true);
+  });
+
+  it('uses the native token delivered by the listener without asking for it again', async () => {
+    const nativeToken = { data: 'native-secret', type: 'ios' } as Notifications.DevicePushToken;
+    (Notifications.getExpoPushTokenAsync as jest.Mock).mockImplementation(async (options) => {
+      if (!options.devicePushToken)
+        throw new Error('Requesting a native token would re-trigger the listener');
+      return { data: 'push-token' };
+    });
+    await expect(updatePushToken(nativeToken)).resolves.toBe(true);
+    expect(Notifications.getExpoPushTokenAsync).toHaveBeenCalledTimes(1);
+    expect(Notifications.getExpoPushTokenAsync).toHaveBeenCalledWith({
+      projectId: 'project-id',
+      devicePushToken: nativeToken
+    });
+  });
+
+  it('does not turn native registration events into a token refresh loop', async () => {
+    const nativeToken = { data: 'native-secret', type: 'ios' } as Notifications.DevicePushToken;
+    let permission = false;
+    let rotation: Promise<boolean> | undefined;
+    (readFromStore as jest.Mock).mockImplementation(async () => permission);
+    (addToStore as jest.Mock).mockImplementation(async (_key, value) => {
+      permission = value;
+    });
+    (Notifications.getExpoPushTokenAsync as jest.Mock).mockImplementation(async (options) => {
+      // Match Expo: requesting a native token emits the native token listener again.
+      if (!options.devicePushToken) {
+        rotation = updatePushToken(nativeToken);
+      }
+      return { data: 'push-token' };
+    });
+
+    await expect(setInAppPermission(true)).resolves.toBe(true);
+    await rotation;
+    await new Promise((resolve) => setImmediate(resolve));
+    // One explicit registration, followed by one event that reuses its native token.
+    expect(Notifications.getExpoPushTokenAsync).toHaveBeenCalledTimes(2);
+    expect(Notifications.getExpoPushTokenAsync).toHaveBeenLastCalledWith({
+      projectId: 'project-id',
+      devicePushToken: nativeToken
+    });
+
+    await expect(setInAppPermission(false)).resolves.toBe(true);
+    await expect(updatePushToken(nativeToken)).resolves.toBe(false);
+    expect(Notifications.getExpoPushTokenAsync).toHaveBeenCalledTimes(2);
+  });
+
+  it.each([false, null])(
+    'skips refresh when stored in-app permission is %p',
+    async (permission) => {
+      (readFromStore as jest.Mock).mockResolvedValue(permission);
+      await expect(updatePushToken({ data: 'native', type: 'ios' })).resolves.toBe(false);
+      expect(Notifications.getExpoPushTokenAsync).not.toHaveBeenCalled();
+      expect(handleIncomingToken).not.toHaveBeenCalled();
+    }
+  );
+
+  it('does not let a native token event overtake a pending opt-out', async () => {
+    let permission = true;
+    (readFromStore as jest.Mock).mockImplementation(async () => permission);
+    (addToStore as jest.Mock).mockImplementation(async (_key, value) => {
+      permission = value;
+    });
+    let finishRemoval: (value: boolean) => void = () => undefined;
+    (handleIncomingToken as jest.Mock).mockReturnValueOnce(
+      new Promise((resolve) => {
+        finishRemoval = resolve;
+      })
+    );
+    const optOut = setInAppPermission(false);
+    const refresh = updatePushToken({ data: 'native', type: 'ios' });
+    await new Promise((resolve) => setImmediate(resolve));
+    expect(Notifications.getExpoPushTokenAsync).not.toHaveBeenCalled();
+    finishRemoval(true);
+    await expect(optOut).resolves.toBe(true);
+    await expect(refresh).resolves.toBe(false);
+    expect(handleIncomingToken).toHaveBeenCalledTimes(1);
+    expect(permission).toBe(false);
+  });
+
+  it('finishes an in-flight refresh before removing the device', async () => {
+    let finishRefresh: (value: { data: string }) => void = () => undefined;
+    (Notifications.getExpoPushTokenAsync as jest.Mock).mockReturnValueOnce(
+      new Promise((resolve) => {
+        finishRefresh = resolve;
+      })
+    );
+    const refresh = updatePushToken({ data: 'native', type: 'ios' });
+    await new Promise((resolve) => setImmediate(resolve));
+    const optOut = setInAppPermission(false);
+    expect(handleIncomingToken).not.toHaveBeenCalled();
+    finishRefresh({ data: 'new-token' });
+    await expect(refresh).resolves.toBe(true);
+    await expect(optOut).resolves.toBe(true);
+    expect(handleIncomingToken).toHaveBeenNthCalledWith(1, 'new-token');
+    expect(handleIncomingToken).toHaveBeenNthCalledWith(2, undefined);
+    expect(addToStore).toHaveBeenCalledWith('IN_APP_PERMISSION', false);
+  });
+
+  it('continues processing an opt-out after a token refresh rejects', async () => {
+    (Notifications.getExpoPushTokenAsync as jest.Mock).mockRejectedValueOnce(new Error('offline'));
+    await expect(updatePushToken({ data: 'native', type: 'ios' })).rejects.toThrow('offline');
+    await expect(setInAppPermission(false)).resolves.toBe(true);
+    expect(handleIncomingToken).toHaveBeenCalledWith(undefined);
   });
 });
