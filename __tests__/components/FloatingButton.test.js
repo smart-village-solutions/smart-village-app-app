@@ -1,8 +1,9 @@
 import React from 'react';
-import { TouchableOpacity } from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 import renderer from 'react-test-renderer';
 
 import { FloatingButton } from '../../src/components/FloatingButton';
+import { Image } from '../../src/components/Image';
 import { lightColors } from '../../src/config/colors';
 import { ThemeContext } from '../../src/ThemeContext';
 
@@ -255,6 +256,49 @@ describe('FloatingButton', () => {
     });
 
     expect(mockNavigate).toHaveBeenCalledWith('Web', { webUrl: 'https://example.com' });
+  });
+
+  it('applies a static-content style only to the button that declares it', () => {
+    const icon = 'https://example.com/chatbot.png';
+    mockUseStaticContent.mockReturnValue({
+      data: [
+        {
+          accessibilityLabel: 'Chatbot',
+          icon,
+          routeName: 'Web',
+          style: {
+            backgroundColor: '#FFFFFF',
+            borderColor: '#24634A',
+            borderWidth: 2,
+            iconSize: 36
+          }
+        },
+        { accessibilityLabel: 'Default button', icon, routeName: 'Web' }
+      ],
+      loading: false,
+      refetch: jest.fn()
+    });
+
+    const { root } = renderFloatingButton();
+    const [customButton, defaultButton] = root.findAllByType(TouchableOpacity);
+    const [customImage, defaultImage] = root.findAllByType(Image);
+
+    expect(StyleSheet.flatten(customButton.props.style)).toMatchObject({
+      backgroundColor: '#FFFFFF',
+      borderColor: '#24634A',
+      borderWidth: 2,
+      width: 56,
+      height: 56
+    });
+    expect(customImage.props).toMatchObject({
+      resizeMode: 'contain',
+      style: { width: 36, height: 36 }
+    });
+    expect(StyleSheet.flatten(defaultButton.props.style).backgroundColor).toBe(themeColors.primary);
+    expect(defaultImage.props).toMatchObject({
+      resizeMode: 'cover',
+      style: { width: 24, height: 24 }
+    });
   });
 
   it('keeps the always-active centered player visible when content is available', () => {
