@@ -23,6 +23,7 @@ jest.mock('react-apollo', () => ({
 }));
 
 jest.mock('expo-router/react-navigation', () => ({
+  createNavigationContainerRef: () => ({ isReady: () => false }),
   useFocusEffect: (...args) => mockUseFocusEffect(...args)
 }));
 
@@ -64,6 +65,7 @@ jest.mock('../../../src/helpers', () => ({
   filterGenericItems: jest.fn(() => true),
   getGenericItemMatomoName: jest.fn(() => 'noticeboard'),
   isTodayOrLater: jest.fn(() => true),
+  isValidGeoLocation: jest.fn(() => false),
   matomoTrackingString: jest.fn(() => 'tracking'),
   momentFormatUtcToLocal: jest.fn(() => ''),
   openLink: jest.fn(),
