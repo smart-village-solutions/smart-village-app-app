@@ -303,7 +303,8 @@ export const MapLibre = ({
   const markerLabelHaloColor = useMemo(() => {
     if (!showMarkerLabels) return undefined;
 
-    const { labelBackgroundColor: bg, labelBackgroundActiveColor: bgActive } = labelStyles as {
+    const { labelBackgroundColor: bg, labelBackgroundActiveColor: bgActive } = (labelStyles ??
+      {}) as {
       labelBackgroundColor?: string;
       labelBackgroundActiveColor?: string;
     };
