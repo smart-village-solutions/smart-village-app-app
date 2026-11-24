@@ -36,7 +36,7 @@ const isOnAudioSource = (source: NonNullable<AudioTrack['source']>) => {
 };
 
 const openAudioSource = (source: NonNullable<AudioTrack['source']>) => {
-  if (!navigationRef.isReady()) return;
+  if (!source.query || !navigationRef.isReady()) return;
   const rootState = navigationRef.getRootState();
   const rootRoute = rootState?.routes?.[rootState.index ?? 0]?.name;
   if (!rootRoute || (rootRoute !== 'AppStack' && !/^Stack\d+$/.test(rootRoute))) return;
@@ -166,7 +166,6 @@ export const FloatingAudioControls = ({ onCollapse }: { onCollapse: () => void }
   const nextRate = SPEED_OPTIONS[(SPEED_OPTIONS.indexOf(rate) + 1) % SPEED_OPTIONS.length];
   const title = currentTrack.title.trim().toLowerCase() === 'audio' ? label : currentTrack.title;
   const source = currentTrack.source;
-  const showSourceButton = !!source && !isOnAudioSource(source);
 
   return (
     <View style={styles.floatingContent}>
@@ -212,7 +211,7 @@ export const FloatingAudioControls = ({ onCollapse }: { onCollapse: () => void }
             </View>
           </Pressable>
         </View>
-        {showSourceButton && (
+        {!!source?.query && !isOnAudioSource(source) && (
           <PlayerControl
             iconName="arrow-up-right"
             label={sourceLabels[source.query] || 'Zum Inhalt'}

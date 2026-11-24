@@ -7,7 +7,7 @@ import { useAudioPlayerSettings } from './AudioPlayerSettings';
 export type AudioTrackSource = {
   id: string;
   imageUrl?: string;
-  query: string;
+  query?: string;
   rootRouteName?: string;
   title: string;
 };
@@ -28,7 +28,8 @@ type AudioPlayerContextValue = {
   isBuffering: boolean;
   isPlaying: boolean;
   openPlayer: () => void;
-  openRequestId: number;
+  hasPendingOpenRequest: boolean;
+  clearOpenRequest: () => void;
   pause: () => void;
   play: (track: AudioTrack) => Promise<void>;
   seekBy: (seconds: number) => Promise<void>;
@@ -69,8 +70,9 @@ export const AudioPlayerProvider = ({ children }: { children: React.ReactNode })
   const [currentTrack, setCurrentTrack] = useState<AudioTrack | null>(null);
   const [error, setError] = useState(false);
   const [rate, setRateState] = useState(1);
-  const [openRequestId, setOpenRequestId] = useState(0);
+  const [hasPendingOpenRequest, setHasPendingOpenRequest] = useState(false);
   const requestId = useRef(0);
+  const activeLockScreenMetadata = useRef<ReturnType<typeof getLockScreenMetadata> | null>(null);
   const pauseReadAloud = useRef<(() => Promise<void> | void) | null>(null);
 
   const registerReadAloudPause = useCallback((callback: () => Promise<void> | void) => {
@@ -80,7 +82,8 @@ export const AudioPlayerProvider = ({ children }: { children: React.ReactNode })
     };
   }, []);
 
-  const openPlayer = useCallback(() => setOpenRequestId((id) => id + 1), []);
+  const openPlayer = useCallback(() => setHasPendingOpenRequest(true), []);
+  const clearOpenRequest = useCallback(() => setHasPendingOpenRequest(false), []);
 
   const play = useCallback(
     async (track: AudioTrack) => {
@@ -116,22 +119,27 @@ export const AudioPlayerProvider = ({ children }: { children: React.ReactNode })
         if (nextRequestId !== requestId.current) return;
         player.play();
         const metadata = getLockScreenMetadata(track);
+        activeLockScreenMetadata.current = metadata;
         player.setActiveForLockScreen(true, metadata, {
           showSeekBackward: showSkipControls,
           showSeekForward: showSkipControls
         });
         if (!metadata.artworkUrl) {
           void getAppIconArtworkUrl().then((artworkUrl) => {
-            if (artworkUrl && nextRequestId === requestId.current) {
+            if (artworkUrl && activeLockScreenMetadata.current === metadata) {
               player.updateLockScreenMetadata({ ...metadata, artworkUrl });
             }
           });
         }
       } catch {
-        if (nextRequestId === requestId.current) setError(true);
+        if (nextRequestId === requestId.current) {
+          clearOpenRequest();
+          setError(true);
+        }
       }
     },
     [
+      clearOpenRequest,
       currentTrack,
       player,
       rate,
@@ -142,15 +150,19 @@ export const AudioPlayerProvider = ({ children }: { children: React.ReactNode })
     ]
   );
 
-  const pause = useCallback(() => player.pause(), [player]);
+  const pause = useCallback(() => {
+    ++requestId.current;
+    clearOpenRequest();
+    player.pause();
+  }, [clearOpenRequest, player]);
 
   const stop = useCallback(() => {
-    ++requestId.current;
-    player.pause();
+    pause();
+    activeLockScreenMetadata.current = null;
     player.setActiveForLockScreen(false);
     setCurrentTrack(null);
     setError(false);
-  }, [player]);
+  }, [pause, player]);
 
   const seekBy = useCallback(
     async (seconds: number) => {
@@ -197,7 +209,8 @@ export const AudioPlayerProvider = ({ children }: { children: React.ReactNode })
           isBuffering: status.isBuffering,
           isPlaying: status.playing,
           openPlayer,
-          openRequestId,
+          hasPendingOpenRequest,
+          clearOpenRequest,
           pause,
           play,
           rate,

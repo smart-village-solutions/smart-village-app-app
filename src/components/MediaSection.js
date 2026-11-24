@@ -35,6 +35,10 @@ const extractSoundCloudPlayerUrl = (html) => {
   return match ? match[1] : null;
 };
 
+const getSoundCloudPlayerUrl = (url) =>
+  extractSoundCloudPlayerUrl(url) ||
+  (/^https:\/\/w\.soundcloud\.com\/player\//i.test(url) ? url : null);
+
 // Rewrites SoundCloud player URL to use the classic waveform player (visual=false)
 // which plays audio directly without the album-art overlay that forces users to
 // tap "Play on SoundCloud" or "Listen in browser".
@@ -55,6 +59,16 @@ const MOBILE_USER_AGENT = Platform.select({
 // Only allow http(s) URLs to be opened externally; reject custom schemes
 // (tel:, intent:, etc.) that could be injected via content.
 const isSafeHttpUrl = (url) => /^https?:\/\//i.test(url);
+
+const usesNativeAudioPlayer = ({ contentType, sourceUrl }) => {
+  const url = sourceUrl?.url;
+  return (
+    contentType === 'audio' &&
+    isSafeHttpUrl(url) &&
+    !extractYoutubeId(url) &&
+    !getSoundCloudPlayerUrl(url)
+  );
+};
 
 // SoundCloud widget and CDN domains that must be allowed to navigate freely.
 // Parses the hostname and requires an exact match or a proper subdomain suffix
@@ -137,9 +151,7 @@ export const MediaItem = ({ mediaContent }) => {
     return <YoutubeIframe videoId={youtubeId} height={normalize(210)} />;
   }
 
-  const soundCloudPlayerUrl =
-    extractSoundCloudPlayerUrl(rawUrl) ||
-    (/^https:\/\/w\.soundcloud\.com\/player\//i.test(rawUrl) ? rawUrl : null);
+  const soundCloudPlayerUrl = getSoundCloudPlayerUrl(rawUrl);
 
   if (soundCloudPlayerUrl) {
     // Load the player URL directly (source={{ uri }}) so the WebView origin is
@@ -222,9 +234,7 @@ export const MediaSection = ({ mediaContents }) => {
     (mediaContent) =>
       (mediaContent.contentType === 'video' || mediaContent.contentType === 'audio') &&
       !!mediaContent?.sourceUrl?.url &&
-      (audioPlayerEnabled ||
-        mediaContent.contentType !== 'audio' ||
-        !isSafeHttpUrl(mediaContent.sourceUrl.url))
+      (audioPlayerEnabled || !usesNativeAudioPlayer(mediaContent))
   );
 
   if (!filteredContents?.length) {

@@ -142,7 +142,6 @@ describe('FloatingReadAloudPlayer controls', () => {
       error: false,
       isBuffering: false,
       isPlaying: false,
-      openRequestId: 0,
       pause: pauseAudio,
       play: jest.fn(),
       rate: 1,
@@ -178,6 +177,35 @@ describe('FloatingReadAloudPlayer controls', () => {
       tree!.root.findByProps({ accessibilityLabel: 'Audio auswählen' }).props.onPress()
     );
     expect(tree!.root.findByProps({ accessibilityLabel: 'Audio fortsetzen' })).toBeTruthy();
+  });
+
+  it('opens for a pending inline request on first mount and consumes it before a remount', () => {
+    const clearOpenRequest = jest.fn(() => {
+      mockAudioPlayback = { ...mockAudioPlayback, hasPendingOpenRequest: false };
+    });
+    mockAudioPlayback = {
+      clearOpenRequest,
+      currentTrack: { title: 'Wiekhaus', url: 'https://example.org/stop.mp3' },
+      currentTime: 0,
+      duration: 132,
+      hasPendingOpenRequest: true,
+      isPlaying: true,
+      rate: 1
+    };
+
+    let tree: renderer.ReactTestRenderer;
+    renderer.act(() => {
+      tree = renderer.create(<FloatingReadAloudPlayer items={[]} />);
+    });
+    expect(tree!.root.findByProps({ accessibilityLabel: 'Audio pausieren' })).toBeTruthy();
+    expect(clearOpenRequest).toHaveBeenCalledTimes(1);
+
+    renderer.act(() => tree!.unmount());
+    renderer.act(() => {
+      tree = renderer.create(<FloatingReadAloudPlayer items={[]} />);
+    });
+    expect(tree!.root.findByProps({ accessibilityLabel: 'Audioplayer öffnen' })).toBeTruthy();
+    expect(clearOpenRequest).toHaveBeenCalledTimes(1);
   });
 
   it('expands from the minimal speaker into six accessible controls', () => {

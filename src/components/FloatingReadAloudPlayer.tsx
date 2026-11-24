@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Animated, Easing, Platform, Pressable, TextStyle, View, ViewStyle } from 'react-native';
 
 import { AccessibilityContext } from '../AccessibilityProvider';
@@ -141,10 +141,11 @@ export const FloatingReadAloudPlayer = ({ items, onExpandedChange }: Props) => {
   const audio = useOptionalAudioPlayback();
   const { label: audioLabel } = useAudioPlayerSettings();
   const registerReadAloudPause = audio?.registerReadAloudPause;
+  const clearOpenRequest = audio?.clearOpenRequest;
+  const hasPendingOpenRequest = audio?.hasPendingOpenRequest;
   const [source, setSource] = useState<'speech' | 'audio'>(
     audio?.currentTrack ? 'audio' : 'speech'
   );
-  const seenOpenRequest = useRef(audio?.openRequestId ?? 0);
   const [isControlsVisible, setIsControlsVisible] = useState(false);
   const [isReadAlongRendered, setIsReadAlongRendered] = useState(false);
   const [showReadAlong, setShowReadAlong] = useState(false);
@@ -180,14 +181,13 @@ export const FloatingReadAloudPlayer = ({ items, onExpandedChange }: Props) => {
   const showAudioControls = hasAudio && (source === 'audio' || !hasSpeech);
 
   useEffect(() => {
-    const requestId = audio?.openRequestId ?? 0;
-    if (requestId === seenOpenRequest.current) return;
-    seenOpenRequest.current = requestId;
+    if (!hasAudio || !hasPendingOpenRequest) return;
+    clearOpenRequest?.();
     // An inline MP3 action requests the shared player on the current screen.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setSource('audio');
     setIsControlsVisible(true);
-  }, [audio?.openRequestId]);
+  }, [clearOpenRequest, hasAudio, hasPendingOpenRequest]);
 
   useEffect(() => {
     if (!registerReadAloudPause) return;

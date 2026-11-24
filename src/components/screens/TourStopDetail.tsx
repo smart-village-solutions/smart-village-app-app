@@ -3,8 +3,10 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import { ScrollView, View } from 'react-native';
 import { Divider } from 'react-native-elements';
 
+import { AudioTrackSourceContext } from '../../AudioPlayerProvider';
 import { Icon, normalize, texts } from '../../config';
 import { trimNewLines } from '../../helpers';
+import { getAudioSourceMetadata } from '../../helpers/audioSourceMetadata';
 import {
   useLastKnownPosition,
   useLocationSettings,
@@ -12,6 +14,7 @@ import {
   usePosition,
   useSystemPermission
 } from '../../hooks';
+import { useReadAloudScrollContentContainerStyle } from '../../ReadAloudAvailabilityProvider';
 import { SettingsContext } from '../../SettingsProvider';
 import { ScreenName } from '../../types';
 import { Button } from '../Button';
@@ -35,12 +38,17 @@ export const TourStopDetail = ({ route, navigation }: { route: any; navigation: 
   const { colors } = useTheme();
 
   const styles = useThemeStyles(createStyles);
+  const scrollContentContainerStyle = useReadAloudScrollContentContainerStyle();
   const { geometryTourData, id, rootRouteName, tourStops, tourStopData, subtitle } = route.params;
   const { description, title } = tourStopData || {};
   const mediaContents: React.ComponentProps<typeof MediaCarousel>['mediaContents'] =
     tourStopData?.mediaContents;
   const carouselMedia = mediaContents?.filter(({ contentType }) => contentType !== 'audio');
   const audioMedia = mediaContents?.filter(({ contentType }) => contentType === 'audio');
+  const audioSource = {
+    id: String(id),
+    ...getAudioSourceMetadata(tourStopData, route.params?.title)
+  };
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { showDistanceDirection = {} } = settings;
@@ -128,7 +136,7 @@ export const TourStopDetail = ({ route, navigation }: { route: any; navigation: 
     ?.geoLocation;
 
   return (
-    <ScrollView ref={scrollViewRef}>
+    <ScrollView contentContainerStyle={scrollContentContainerStyle} ref={scrollViewRef}>
       {!!subtitle && (
         <WrapperVertical noPaddingBottom>
           <WrapperRow center>
@@ -144,7 +152,9 @@ export const TourStopDetail = ({ route, navigation }: { route: any; navigation: 
       </WrapperRow>
 
       <MediaCarousel mediaContents={carouselMedia} />
-      <MediaSection mediaContents={audioMedia} />
+      <AudioTrackSourceContext.Provider value={audioSource}>
+        <MediaSection mediaContents={audioMedia} />
+      </AudioTrackSourceContext.Provider>
 
       <SectionHeader title={texts.tour.overview} />
 

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires, react/prop-types */
 import React, { useEffect } from 'react';
-import { fireEvent, render, waitFor } from '@testing-library/react-native';
+import { act, fireEvent, render, renderHook, waitFor } from '@testing-library/react-native';
+import { setAudioModeAsync } from 'expo-audio';
 
 const mockPlayer = {
   pause: jest.fn(),
@@ -312,6 +313,57 @@ describe('AudioPlayerControls', () => {
         artworkUrl: 'file:///app/icon.png'
       })
     );
+  });
+
+  it('uses tour-stop metadata without a generic detail shortcut', async () => {
+    const tree = render(
+      <AudioPlayerProvider>
+        <AudioPlayerControls
+          track={{
+            source: { id: '7', imageUrl: 'https://example.org/stop.jpg', title: 'Wiekhaus' },
+            title: 'Audio',
+            url: 'https://example.org/stop.mp3'
+          }}
+        />
+        <FloatingAudioControls onCollapse={jest.fn()} />
+      </AudioPlayerProvider>
+    );
+
+    fireEvent.press(tree.getByLabelText('Audio abspielen'));
+    await waitFor(() =>
+      expect(mockPlayer.setActiveForLockScreen).toHaveBeenCalledWith(
+        true,
+        { title: 'Wiekhaus', artworkUrl: 'https://example.org/stop.jpg' },
+        { showSeekBackward: true, showSeekForward: true }
+      )
+    );
+    expect(tree.queryByLabelText('Zum Inhalt')).toBeNull();
+  });
+
+  it('cancels a playback request when paused while audio mode is still being set', async () => {
+    let resolveAudioMode;
+    setAudioModeAsync.mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          resolveAudioMode = resolve;
+        })
+    );
+    const { result } = renderHook(useAudioPlayback, { wrapper: AudioPlayerProvider });
+
+    const pendingPlayback = result.current.play({
+      title: 'Wiekhaus',
+      url: 'https://example.org/stop.mp3'
+    });
+    await waitFor(() => expect(setAudioModeAsync).toHaveBeenCalled());
+    await act(async () => {
+      result.current.pause();
+      resolveAudioMode();
+      await pendingPlayback;
+    });
+
+    expect(mockPlayer.pause).toHaveBeenCalled();
+    expect(mockPlayer.play).not.toHaveBeenCalled();
+    expect(result.current.currentTrack).toBeNull();
   });
 
   it('pauses read aloud before starting MP3', async () => {

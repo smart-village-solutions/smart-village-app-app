@@ -5,7 +5,8 @@ import { render } from '@testing-library/react-native';
 jest.mock('../../src/components/AudioPlayerControls', () => ({
   AudioPlayerControls: 'native-audio-control'
 }));
-jest.mock('react-native-webview', () => ({ __esModule: true, default: () => null }));
+jest.mock('react-native-webview', () => ({ __esModule: true, default: 'embedded-webview' }));
+jest.mock('react-native-youtube-iframe', () => ({ __esModule: true, default: 'embedded-youtube' }));
 
 jest.mock('../../src/config', () => ({
   consts: { a11yLabel: { webViewHint: '' } },
@@ -99,6 +100,29 @@ describe('MediaSection audio', () => {
       </SettingsContext.Provider>
     );
 
+    expect(tree.UNSAFE_queryByType('native-audio-control')).toBeNull();
+  });
+
+  it.each([
+    ['https://w.soundcloud.com/player/?url=example', 'embedded-webview'],
+    ['https://www.youtube-nocookie.com/embed/video123', 'embedded-youtube'],
+    ['<iframe src="https://w.soundcloud.com/player/?url=example"></iframe>', 'embedded-webview']
+  ])('keeps the legacy embed %s when native audio is disabled', (url, player) => {
+    const tree = render(
+      <SettingsContext.Provider
+        value={{
+          ...initialContext,
+          globalSettings: {
+            ...initialContext.globalSettings,
+            settings: { audioPlayer: { enabled: false } }
+          }
+        }}
+      >
+        <MediaSection mediaContents={[{ id: '1', contentType: 'audio', sourceUrl: { url } }]} />
+      </SettingsContext.Provider>
+    );
+
+    expect(tree.UNSAFE_getByType(player)).toBeTruthy();
     expect(tree.UNSAFE_queryByType('native-audio-control')).toBeNull();
   });
 });
