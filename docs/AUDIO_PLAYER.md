@@ -1,6 +1,6 @@
 # MP3 player
 
-The app shows a compact listen action for direct HTTP(S) audio media on POI, news, event, tour and tour-stop details. On tour stops the audio action appears below the photo and uses the stop title and artwork for system playback. MP3 and read aloud share one floating player: when both are available, its expanded view offers `Vorlesen` and MP3 source tabs. The same player remains available during navigation. Starting MP3 playback pauses read aloud; starting read aloud pauses MP3 playback.
+The app shows a compact listen action for direct HTTP(S) audio media on POI, news, event, tour and tour-stop details. On tour stops the audio action appears below the photo and uses the stop title and artwork for system playback. MP3 and read aloud share one floating player: when both are available, its expanded view offers `Vorlesen` and MP3 source tabs. The same player remains available during navigation. Starting MP3 playback cancels pending read aloud and pauses active narration. Starting read aloud pauses MP3 playback and releases its system controls until MP3 playback resumes.
 
 When playback starts from a detail page, the expanded player keeps a shortcut back to that POI, tour, news or event. The shortcut is hidden while that same detail page is already open. The compact player stays centered when another floating shortcut is present; the other shortcut is temporarily hidden while the audio panel is expanded.
 

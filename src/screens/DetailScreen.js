@@ -161,6 +161,13 @@ export const DetailScreen = ({ navigation, route }) => {
     }
   );
   const detailData = (data && data[query]) || details;
+  const { title, imageUrl } = getAudioSourceMetadata(detailData, route.params?.title);
+  const { id: detailId } = queryVariables;
+  const rootRouteName = route.params?.rootRouteName;
+  const audioSource = useMemo(
+    () => ({ id: String(detailId), query, rootRouteName, title, imageUrl }),
+    [detailId, imageUrl, query, rootRouteName, title]
+  );
   const detailSpeechItems = useMemo(
     () => getDetailSpeechItems({ detail: detailData, query }),
     [detailData, query]
@@ -229,14 +236,6 @@ export const DetailScreen = ({ navigation, route }) => {
   if (!Component) return null;
 
   const detailActions = <DetailActions data={detailData} route={route} suffix={genericType} />;
-  const { title, imageUrl } = getAudioSourceMetadata(detailData, route.params?.title);
-  const audioSource = {
-    id: String(queryVariables.id),
-    query,
-    rootRouteName: route.params?.rootRouteName,
-    title,
-    imageUrl
-  };
 
   return (
     <AudioTrackSourceContext.Provider value={audioSource}>

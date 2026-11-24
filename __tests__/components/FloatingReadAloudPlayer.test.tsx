@@ -142,7 +142,7 @@ describe('FloatingReadAloudPlayer controls', () => {
       error: false,
       isBuffering: false,
       isPlaying: false,
-      pause: pauseAudio,
+      pauseForReadAloud: pauseAudio,
       play: jest.fn(),
       rate: 1,
       registerReadAloudPause: jest.fn(() => jest.fn()),

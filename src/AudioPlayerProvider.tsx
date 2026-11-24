@@ -1,6 +1,14 @@
 import { Asset } from 'expo-asset';
 import { setAudioModeAsync, useAudioPlayer, useAudioPlayerStatus } from 'expo-audio';
-import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from 'react';
 
 import { useAudioPlayerSettings } from './AudioPlayerSettings';
 
@@ -31,6 +39,7 @@ type AudioPlayerContextValue = {
   hasPendingOpenRequest: boolean;
   clearOpenRequest: () => void;
   pause: () => void;
+  pauseForReadAloud: () => void;
   play: (track: AudioTrack) => Promise<void>;
   seekBy: (seconds: number) => Promise<void>;
   seekTo: (seconds: number) => Promise<void>;
@@ -69,7 +78,7 @@ export const AudioPlayerProvider = ({ children }: { children: React.ReactNode })
   const { enabled, showSkipControls } = useAudioPlayerSettings();
   const [currentTrack, setCurrentTrack] = useState<AudioTrack | null>(null);
   const [error, setError] = useState(false);
-  const [rate, setRateState] = useState(1);
+  const [rate, setRate] = useState(1);
   const [hasPendingOpenRequest, setHasPendingOpenRequest] = useState(false);
   const requestId = useRef(0);
   const activeLockScreenMetadata = useRef<ReturnType<typeof getLockScreenMetadata> | null>(null);
@@ -156,13 +165,17 @@ export const AudioPlayerProvider = ({ children }: { children: React.ReactNode })
     player.pause();
   }, [clearOpenRequest, player]);
 
-  const stop = useCallback(() => {
-    pause();
+  const pauseForReadAloud = useCallback(() => {
     activeLockScreenMetadata.current = null;
     player.setActiveForLockScreen(false);
+    pause();
+  }, [pause, player]);
+
+  const stop = useCallback(() => {
+    pauseForReadAloud();
     setCurrentTrack(null);
     setError(false);
-  }, [pause, player]);
+  }, [pauseForReadAloud]);
 
   const seekBy = useCallback(
     async (seconds: number) => {
@@ -190,39 +203,62 @@ export const AudioPlayerProvider = ({ children }: { children: React.ReactNode })
     if (!enabled && currentTrack) stop();
   }, [currentTrack, enabled, stop]);
 
-  const setRate = useCallback(
+  const changePlaybackRate = useCallback(
     (nextRate: number) => {
       if (currentTrack) player.setPlaybackRate(nextRate);
-      setRateState(nextRate);
+      setRate(nextRate);
     },
     [currentTrack, player]
   );
 
+  const { currentTime, duration, error: statusError, isBuffering, playing: isPlaying } = status;
+  const playback = useMemo(
+    () => ({
+      currentTrack,
+      currentTime,
+      duration,
+      error: error || !!statusError,
+      isBuffering,
+      isPlaying,
+      openPlayer,
+      hasPendingOpenRequest,
+      clearOpenRequest,
+      pause,
+      pauseForReadAloud,
+      play,
+      rate,
+      registerReadAloudPause,
+      seekBy,
+      seekTo,
+      setRate: changePlaybackRate,
+      stop
+    }),
+    [
+      changePlaybackRate,
+      clearOpenRequest,
+      currentTime,
+      currentTrack,
+      duration,
+      error,
+      hasPendingOpenRequest,
+      isBuffering,
+      isPlaying,
+      openPlayer,
+      pause,
+      pauseForReadAloud,
+      play,
+      rate,
+      registerReadAloudPause,
+      seekBy,
+      seekTo,
+      statusError,
+      stop
+    ]
+  );
+
   return (
     <AudioPlayerPresenceContext.Provider value={!!currentTrack}>
-      <AudioPlayerContext.Provider
-        value={{
-          currentTrack,
-          currentTime: status.currentTime,
-          duration: status.duration,
-          error: error || !!status.error,
-          isBuffering: status.isBuffering,
-          isPlaying: status.playing,
-          openPlayer,
-          hasPendingOpenRequest,
-          clearOpenRequest,
-          pause,
-          play,
-          rate,
-          registerReadAloudPause,
-          seekBy,
-          seekTo,
-          setRate,
-          stop
-        }}
-      >
-        {children}
-      </AudioPlayerContext.Provider>
+      <AudioPlayerContext.Provider value={playback}>{children}</AudioPlayerContext.Provider>
     </AudioPlayerPresenceContext.Provider>
   );
 };

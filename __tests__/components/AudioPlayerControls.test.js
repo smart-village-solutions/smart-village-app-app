@@ -340,6 +340,27 @@ describe('AudioPlayerControls', () => {
     expect(tree.queryByLabelText('Zum Inhalt')).toBeNull();
   });
 
+  it('releases the lock-screen controls for read aloud and restores them on MP3 resume', async () => {
+    const track = { title: 'Wiekhaus', url: 'https://example.org/stop.mp3' };
+    const { result } = renderHook(useAudioPlayback, { wrapper: AudioPlayerProvider });
+
+    await act(async () => result.current.play(track));
+    act(() => result.current.pause());
+    expect(mockPlayer.setActiveForLockScreen).toHaveBeenCalledTimes(1);
+
+    act(() => result.current.pauseForReadAloud());
+    expect(mockPlayer.setActiveForLockScreen).toHaveBeenLastCalledWith(false);
+    expect(result.current.currentTrack).toEqual(track);
+
+    await act(async () => result.current.play(track));
+    expect(mockPlayer.setActiveForLockScreen).toHaveBeenLastCalledWith(
+      true,
+      { title: 'Wiekhaus' },
+      { showSeekBackward: true, showSeekForward: true }
+    );
+    expect(mockPlayer.replace).toHaveBeenCalledTimes(1);
+  });
+
   it('cancels a playback request when paused while audio mode is still being set', async () => {
     let resolveAudioMode;
     setAudioModeAsync.mockImplementationOnce(

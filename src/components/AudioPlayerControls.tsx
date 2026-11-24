@@ -166,17 +166,14 @@ export const FloatingAudioControls = ({ onCollapse }: { onCollapse: () => void }
   const nextRate = SPEED_OPTIONS[(SPEED_OPTIONS.indexOf(rate) + 1) % SPEED_OPTIONS.length];
   const title = currentTrack.title.trim().toLowerCase() === 'audio' ? label : currentTrack.title;
   const source = currentTrack.source;
+  const playbackTitle = isBuffering ? 'Audio wird geladen …' : title;
 
   return (
     <View style={styles.floatingContent}>
       <View style={styles.infoRow}>
         <View style={styles.infoDetails}>
           <RegularText numberOfLines={1} small style={styles.audioTitle}>
-            {error
-              ? 'Audio konnte nicht geladen werden'
-              : isBuffering
-              ? 'Audio wird geladen …'
-              : title}
+            {error ? 'Audio konnte nicht geladen werden' : playbackTitle}
           </RegularText>
           <RegularText ignoreTextScale small style={styles.timeText}>
             {formatAudioTime(currentTime)} / {formatAudioTime(duration)}
