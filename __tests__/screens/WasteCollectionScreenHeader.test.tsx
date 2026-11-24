@@ -1,5 +1,8 @@
 import React from 'react';
+import { ScrollView } from 'react-native-gesture-handler';
 import renderer from 'react-test-renderer';
+
+let mockKeyboardHeight = 0;
 
 const mockRenderSuggestions = {
   setInputValue: jest.fn(),
@@ -14,6 +17,10 @@ const mockUsedTypes = {
 const mockStreetData = {
   wasteAddresses: [{ city: 'X', street: 'Y', zip: 'Z' }]
 };
+
+jest.mock('react-native-gesture-handler', () => ({
+  ScrollView: jest.requireActual('react-native').ScrollView
+}));
 
 jest.mock('expo-router/react-navigation', () => ({
   useFocusEffect: jest.fn()
@@ -37,7 +44,8 @@ jest.mock('../../src/components', () => {
     BoldText: () => null,
     Button: () => null,
     CalendarListToggle: () => null,
-    DefaultKeyboardAvoidingView: ({ children }) => children,
+    DefaultKeyboardAvoidingView: ({ children, enabled }) =>
+      ReactLocal.createElement('mock-keyboard-avoiding-view', { enabled }, children),
     DrawerHeader: () => ReactLocal.createElement('mock-drawer-header'),
     HeaderLeft: ({ backImage }) =>
       ReactLocal.createElement(
@@ -64,11 +72,11 @@ jest.mock('../../src/components/DayComponent', () => ({
 }));
 
 jest.mock('../../src/components/FeedbackFooter', () => ({
-  FeedbackFooter: () => null
+  FeedbackFooter: 'mock-feedback-footer'
 }));
 
 jest.mock('../../src/hooks', () => ({
-  useKeyboardHeight: jest.fn(() => 0),
+  useKeyboardHeight: jest.fn(() => mockKeyboardHeight),
   useWasteStreetRehydration: jest.fn(),
   useWasteStreetEditRequest: jest.fn(),
   useRenderSuggestions: jest.fn(() => mockRenderSuggestions),
@@ -134,6 +142,7 @@ jest.mock('../../src/config', () => {
   };
 });
 
+import { device } from '../../src/config';
 import { SettingsContext } from '../../src/SettingsProvider';
 import { createStyles, WasteCollectionScreen } from '../../src/screens/WasteCollectionScreen';
 
@@ -200,5 +209,53 @@ describe('WasteCollectionScreen header', () => {
       paddingRight: 8
     });
     expect(headerTree!.root.findByType('mock-edit-icon').props.size).toBe(20);
+  });
+});
+
+describe('WasteCollectionScreen address form', () => {
+  afterEach(() => {
+    device.platform = 'ios';
+    mockKeyboardHeight = 0;
+  });
+
+  const renderAddressForm = () => {
+    let tree: renderer.ReactTestRenderer;
+    renderer.act(() => {
+      tree = renderer.create(
+        <SettingsContext.Provider
+          value={{ globalSettings: { navigation: 'tab', settings: {}, waste: {} } } as never}
+        >
+          <WasteCollectionScreen
+            navigation={{ setOptions: jest.fn() } as never}
+            route={{} as never}
+          />
+        </SettingsContext.Provider>
+      );
+    });
+    return tree!;
+  };
+
+  it.each(['ios', 'android'])('uses one keyboard avoidance mechanism on %s', (platform) => {
+    device.platform = platform;
+    const tree = renderAddressForm();
+    const avoidingView = tree.root.find((node) => node.type === 'mock-keyboard-avoiding-view');
+
+    expect(avoidingView.props.enabled).toBe(platform === 'android');
+    expect(avoidingView.findByType(ScrollView).props.automaticallyAdjustKeyboardInsets).toBe(
+      platform === 'ios'
+    );
+  });
+
+  it('reserves the address form viewport for suggestions while the keyboard is open', () => {
+    const keyboardClosed = renderAddressForm();
+    expect(
+      keyboardClosed.root.findAll((node) => node.type === 'mock-feedback-footer')
+    ).toHaveLength(1);
+
+    mockKeyboardHeight = 202;
+    const keyboardOpen = renderAddressForm();
+    expect(keyboardOpen.root.findAll((node) => node.type === 'mock-feedback-footer')).toHaveLength(
+      0
+    );
   });
 });

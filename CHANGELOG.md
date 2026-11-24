@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### Fixed
 
 - keep filter fields and actions clear of display cutouts and system navigation in landscape
+- keep waste address suggestions reachable when rotating with the iOS keyboard open
 
 ## [5.0.0] :sparkles:
 

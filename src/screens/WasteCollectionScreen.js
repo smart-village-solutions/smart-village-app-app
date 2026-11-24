@@ -159,6 +159,7 @@ export const WasteCollectionScreen = ({ navigation, route }) => {
     selectedTypes: selectedTypes || typesData
   });
   const keyboardHeight = useKeyboardHeight();
+  const isIOS = device.platform === 'ios';
   const query = QUERY_TYPES.WASTE_STREET;
 
   const listItems = useMemo(() => {
@@ -323,14 +324,14 @@ export const WasteCollectionScreen = ({ navigation, route }) => {
     return <LoadingSpinner loading />;
   }
 
-  // Android edge-to-edge windows can stay full-height above the keyboard.
-  // Keep keyboard avoidance enabled so the address form can scroll into view.
   return (
     <SafeAreaViewFlex>
       {!hasHeaderSearchBarOption ? (
         !selectedStreetId ? (
-          <DefaultKeyboardAvoidingView>
+          // Use native keyboard insets on iOS so the scroll range follows the keyboard on rotation.
+          <DefaultKeyboardAvoidingView enabled={!isIOS}>
             <ScrollView
+              automaticallyAdjustKeyboardInsets={isIOS}
               keyboardDismissMode="none"
               keyboardShouldPersistTaps="always"
               nestedScrollEnabled
@@ -439,10 +440,9 @@ export const WasteCollectionScreen = ({ navigation, route }) => {
       ) : (
         <LoadingSpinner loading />
       )}
-      {!selectedStreetId &&
-        (device.platform === 'ios' || (device.platform === 'android' && !keyboardHeight)) && (
-          <FeedbackFooter containerStyle={styles.feedbackContainer} />
-        )}
+      {!selectedStreetId && !keyboardHeight && (
+        <FeedbackFooter containerStyle={styles.feedbackContainer} />
+      )}
 
       {!!hasExport && !showCalendar && !!selectedStreetId && (
         <View
@@ -474,6 +474,7 @@ export const createStyles = (colors) => ({
   },
 
   feedbackContainer: {
+    flex: 0,
     justifyContent: 'flex-end',
     marginTop: normalize(10)
   },
