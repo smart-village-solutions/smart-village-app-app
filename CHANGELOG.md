@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 - keep filter fields and actions clear of display cutouts and system navigation in landscape
 - keep waste address suggestions reachable when rotating with the iOS keyboard open
+- restore the waste calendar feedback link after the keyboard closes
 
 ## [5.0.0] :sparkles:
 

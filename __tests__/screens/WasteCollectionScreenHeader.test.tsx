@@ -1,8 +1,7 @@
 import React from 'react';
+import { DeviceEventEmitter } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import renderer from 'react-test-renderer';
-
-let mockKeyboardHeight = 0;
 
 const mockRenderSuggestions = {
   setInputValue: jest.fn(),
@@ -76,7 +75,7 @@ jest.mock('../../src/components/FeedbackFooter', () => ({
 }));
 
 jest.mock('../../src/hooks', () => ({
-  useKeyboardHeight: jest.fn(() => mockKeyboardHeight),
+  useKeyboardHeight: jest.requireActual('../../src/hooks/keyboardHeight').useKeyboardHeight,
   useWasteStreetRehydration: jest.fn(),
   useWasteStreetEditRequest: jest.fn(),
   useRenderSuggestions: jest.fn(() => mockRenderSuggestions),
@@ -160,8 +159,9 @@ describe('WasteCollectionScreen header', () => {
       setOptions: jest.fn()
     };
 
+    let screenTree: renderer.ReactTestRenderer;
     renderer.act(() => {
-      renderer.create(
+      screenTree = renderer.create(
         <SettingsContext.Provider
           value={
             {
@@ -209,17 +209,24 @@ describe('WasteCollectionScreen header', () => {
       paddingRight: 8
     });
     expect(headerTree!.root.findByType('mock-edit-icon').props.size).toBe(20);
+
+    renderer.act(() => {
+      headerTree!.unmount();
+      screenTree!.unmount();
+    });
   });
 });
 
 describe('WasteCollectionScreen address form', () => {
+  let tree: renderer.ReactTestRenderer | undefined;
+
   afterEach(() => {
+    renderer.act(() => tree?.unmount());
+    tree = undefined;
     device.platform = 'ios';
-    mockKeyboardHeight = 0;
   });
 
   const renderAddressForm = () => {
-    let tree: renderer.ReactTestRenderer;
     renderer.act(() => {
       tree = renderer.create(
         <SettingsContext.Provider
@@ -246,16 +253,21 @@ describe('WasteCollectionScreen address form', () => {
     );
   });
 
-  it('reserves the address form viewport for suggestions while the keyboard is open', () => {
-    const keyboardClosed = renderAddressForm();
-    expect(
-      keyboardClosed.root.findAll((node) => node.type === 'mock-feedback-footer')
-    ).toHaveLength(1);
+  it('restores the feedback footer when the hidden keyboard frame still has a height', () => {
+    const addressForm = renderAddressForm();
+    const getFooter = () =>
+      addressForm.root.findAll((node) => node.type === 'mock-feedback-footer');
 
-    mockKeyboardHeight = 202;
-    const keyboardOpen = renderAddressForm();
-    expect(keyboardOpen.root.findAll((node) => node.type === 'mock-feedback-footer')).toHaveLength(
-      0
-    );
+    expect(getFooter()).toHaveLength(1);
+
+    renderer.act(() => {
+      DeviceEventEmitter.emit('keyboardDidShow', { endCoordinates: { height: 202, screenY: 200 } });
+    });
+    expect(getFooter()).toHaveLength(0);
+
+    renderer.act(() => {
+      DeviceEventEmitter.emit('keyboardDidHide', { endCoordinates: { height: 202, screenY: 402 } });
+    });
+    expect(getFooter()).toHaveLength(1);
   });
 });
