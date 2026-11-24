@@ -2,6 +2,7 @@ import React from 'react';
 import renderer, { act } from 'react-test-renderer';
 
 import { CardListItem } from '../../src/components/CardListItem';
+import { WrapperHorizontal } from '../../src/components/Wrapper';
 
 jest.mock('../../src/helpers', () => ({
   imageHeight: () => 100,
@@ -53,6 +54,34 @@ describe('CardListItem key warnings', () => {
     );
 
     expect(keyWarnings).toHaveLength(0);
+
+    act(() => {
+      tree.unmount();
+    });
+  });
+
+  it('uses the same horizontal wrapper for the SUE title and delivery status', () => {
+    let tree;
+
+    act(() => {
+      tree = renderer.create(
+        <CardListItem
+          index={0}
+          isSue
+          item={{
+            appDesignSystem: { sueListItem: { contentSequence: ['title', 'subtitle'] } },
+            params: {},
+            routeName: 'Detail',
+            subtitle: 'Übermittelt',
+            title: 'Card title'
+          }}
+        />
+      );
+    });
+
+    expect(
+      tree.root.findAllByType(WrapperHorizontal).map(({ props }) => props.children.props.children)
+    ).toEqual(['Card title', 'Übermittelt']);
 
     act(() => {
       tree.unmount();
