@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { Modal, ScrollView, TouchableOpacity, View } from 'react-native';
 import Collapsible from 'react-native-collapsible';
 import { Divider, Header } from 'react-native-elements';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 import { Icon, consts, normalize, texts } from '../../config';
 import { momentFormat } from '../../helpers';
@@ -223,7 +223,7 @@ export const Filter = ({
             presentationStyle="pageSheet"
             visible={!isCollapsed}
           >
-            <View style={styles.overlayContent}>
+            <SafeAreaProvider style={styles.overlayContent}>
               <Header
                 backgroundColor={colors.background}
                 centerComponent={{
@@ -248,19 +248,21 @@ export const Filter = ({
                 rightContainerStyle={styles.headerRightContainer}
               />
               <Divider style={styles.overlayDivider} />
-              <ScrollView style={styles.overlayScrollView}>
-                <Wrapper noPaddingTop noPaddingBottom>
-                  <FilterComponent
-                    key={filterResetKey}
-                    filters={filters}
-                    filterTypes={filterTypes}
-                    isOverlayFilter
-                    setFilters={setFilters}
-                  />
-                </Wrapper>
-              </ScrollView>
+              <SafeAreaView edges={['left', 'right']} style={styles.overlayBody}>
+                <ScrollView style={styles.overlayScrollView}>
+                  <Wrapper noPaddingTop noPaddingBottom>
+                    <FilterComponent
+                      key={filterResetKey}
+                      filters={filters}
+                      filterTypes={filterTypes}
+                      isOverlayFilter
+                      setFilters={setFilters}
+                    />
+                  </Wrapper>
+                </ScrollView>
+              </SafeAreaView>
 
-              <SafeAreaView edges={['bottom']}>
+              <SafeAreaView edges={['left', 'right', 'bottom']}>
                 <Wrapper style={styles.alignLeft} noPaddingTop>
                   <WrapperRow style={{ gap: normalize(16) }}>
                     <Button
@@ -303,7 +305,7 @@ export const Filter = ({
                   </WrapperRow>
                 </Wrapper>
               </SafeAreaView>
-            </View>
+            </SafeAreaProvider>
           </Modal>
         ) : (
           <Collapsible collapsed={isCollapsed}>
@@ -373,6 +375,10 @@ const createStyles = (colors) => ({
 
   icon: {
     paddingLeft: normalize(8)
+  },
+
+  overlayBody: {
+    flex: 1
   },
 
   overlayContent: {
