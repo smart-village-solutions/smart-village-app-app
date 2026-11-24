@@ -3,7 +3,7 @@ import { RouteProp } from 'expo-router/react-navigation';
 import { StackNavigationProp } from 'expo-router/js-stack';
 import _filter from 'lodash/filter';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, RefreshControl, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, RefreshControl, View } from 'react-native';
 import { Divider } from 'react-native-elements';
 import { useInfiniteQuery, useQuery } from 'react-query';
 
@@ -24,11 +24,11 @@ import {
 } from '../../components';
 import { consts, normalize, texts } from '../../config';
 import { parseListItemsFromQuery, shouldShowInternalSuePendingStatus } from '../../helpers';
+import { useTheme } from '../../hooks/useTheme';
+import { useThemeStyles } from '../../hooks/useThemeStyles';
 import { CACHE_SCOPES, millisecondsUntilCacheExpires } from '../../helpers/cacheHelper';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { StatusProps, SueViewType } from '../../types';
-import { useThemeStyles } from '../../hooks/useThemeStyles';
-import { useTheme } from '../../hooks/useTheme';
 
 import { SueMapScreen } from './SueMapScreen';
 
@@ -102,9 +102,15 @@ export const SueListScreen = ({ navigation, route }: Props) => {
     start_date: INITIAL_START_DATE
   };
   const [queryVariables, setQueryVariables] = useState(initialQueryVariables);
-  const [dataCountQueryVariables, setDataCountQueryVariables] = useState({
-    start_date: INITIAL_START_DATE
-  });
+  const dataCountQueryVariables = useMemo(
+    () =>
+      Object.fromEntries(
+        Object.entries(queryVariables).filter(
+          ([key]) => !['limit', 'offset', 'search'].includes(key)
+        )
+      ),
+    [queryVariables]
+  );
   const [refreshing, setRefreshing] = useState(false);
   const [isOpening, setIsOpening] = useState(true);
   const [viewType, setViewType] = useState(route.params?.viewType || SueViewType.List);
@@ -173,12 +179,6 @@ export const SueListScreen = ({ navigation, route }: Props) => {
       setIsOpening(false);
     }, 50);
   }, []);
-
-  useEffect(() => {
-    const { limit, offset, search, ...rest } = queryVariables;
-
-    setDataCountQueryVariables(rest);
-  }, [queryVariables]);
 
   // When a search term is active, automatically load all remaining pages so that
   // client-side filtering covers the full data set, not just the already-loaded pages.

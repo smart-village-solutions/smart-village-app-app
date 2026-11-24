@@ -41,6 +41,18 @@ describe('getSueApiConfig', () => {
     });
   });
 
+  it('falls back to the base api config when whichApi selects a non-object value', () => {
+    const apiConfig = {
+      whichApi: 'secondary',
+      apiKey: 'base-api-key',
+      serverUrl: 'https://base.example.com',
+      secondary: 'invalid'
+    };
+
+    expect(getSueApiConfig(apiConfig)).toBe(apiConfig);
+    expect(hasSueApiConfiguration({ apiConfig })).toBe(true);
+  });
+
   it('returns the base api config when whichApi is not set', () => {
     expect(
       getSueApiConfig({

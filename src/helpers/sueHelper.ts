@@ -46,8 +46,14 @@ export const getInitialSueStatus = (showInternalPendingStatus?: unknown) =>
       }
     : {};
 
-export const getSueApiConfig = (apiConfig: Record<string, any> = {}) =>
-  (apiConfig?.whichApi ? apiConfig?.[apiConfig.whichApi] : undefined) || apiConfig;
+export const getSueApiConfig = (apiConfig: Record<string, any> = {}) => {
+  const selectedConfig =
+    typeof apiConfig?.whichApi === 'string' && apiConfig.whichApi
+      ? apiConfig[apiConfig.whichApi]
+      : undefined;
+
+  return selectedConfig && typeof selectedConfig === 'object' ? selectedConfig : apiConfig;
+};
 
 export const hasSueApiConfiguration = (sueConfig: { apiConfig?: Record<string, unknown> } = {}) => {
   const { apiKey, serverUrl } = getSueApiConfig(sueConfig.apiConfig);
