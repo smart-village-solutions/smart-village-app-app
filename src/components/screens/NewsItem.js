@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
-import { Alert, View } from 'react-native';
+import { Alert, DeviceEventEmitter, View } from 'react-native';
 import { useMutation } from 'react-apollo';
 
 import { useProfileContext } from '../../ProfileProvider';
@@ -10,6 +10,7 @@ import { AUTH_MODE_USER, getApolloAuthContext } from '../../graphqlAuth';
 import { matomoTrackingString, momentFormatUtcToLocal, trimNewLines } from '../../helpers';
 import { useDetailRefresh, useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
 import { useTheme } from '../../hooks/useTheme';
+import { DETAIL_REFRESH_EVENT } from '../../hooks/DetailRefresh';
 import { DELETE_NEWS_ITEM } from '../../queries/newsItems';
 import { QUERY_TYPES } from '../../queries';
 import { ScreenName } from '../../types';
@@ -78,7 +79,10 @@ export const NewsItem = ({ data, navigation, readAloudControls, refetch, route }
     awaitRefetchQueries: true,
     refetchQueries: ['NewsItems'],
     variables: { id: data.id },
-    onCompleted: () => navigation.goBack()
+    onCompleted: () => {
+      DeviceEventEmitter.emit(DETAIL_REFRESH_EVENT);
+      navigation.goBack();
+    }
   });
 
   useDetailRefresh(() => {
