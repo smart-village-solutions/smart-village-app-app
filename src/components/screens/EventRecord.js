@@ -2,7 +2,7 @@ import _filter from 'lodash/filter';
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import { useMutation } from 'react-apollo';
-import { ActivityIndicator, Alert, View } from 'react-native';
+import { ActivityIndicator, Alert, DeviceEventEmitter, View } from 'react-native';
 import { WebView } from 'react-native-webview';
 
 import { useProfileContext } from '../../ProfileProvider';
@@ -27,6 +27,7 @@ import { Wrapper, WrapperHorizontal, WrapperRow, WrapperVertical } from '../Wrap
 import { InfoCard } from '../infoCard';
 import { useThemeStyles } from '../../hooks/useThemeStyles';
 import { useTheme } from '../../hooks/useTheme';
+import { DETAIL_REFRESH_EVENT } from '../../hooks/DetailRefresh';
 
 import { OpeningTimesCard } from './OpeningTimesCard';
 import { OperatingCompany } from './OperatingCompany';
@@ -127,7 +128,10 @@ export const EventRecord = ({ data, navigation, readAloudControls, refetch, rout
   const [deleteEventRecord] = useMutation(DELETE_EVENT_RECORD, {
     ...getApolloAuthContext(AUTH_MODE_USER),
     variables: { id: data.id },
-    onCompleted: () => navigation.goBack()
+    onCompleted: () => {
+      DeviceEventEmitter.emit(DETAIL_REFRESH_EVENT);
+      navigation.goBack();
+    }
   });
   useDetailRefresh(() => {
     refetch?.();

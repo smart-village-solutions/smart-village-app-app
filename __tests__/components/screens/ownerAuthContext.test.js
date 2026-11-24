@@ -1,7 +1,9 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import renderer, { act } from 'react-test-renderer';
+import { DeviceEventEmitter } from 'react-native';
 
+import { DETAIL_REFRESH_EVENT } from '../../../src/hooks/DetailRefresh';
 import { AUTH_MODE_USER, getApolloAuthContext } from '../../../src/graphqlAuth';
 import { EventRecord } from '../../../src/components/screens/EventRecord';
 import { NewsItem } from '../../../src/components/screens/NewsItem';
@@ -401,7 +403,11 @@ describe('owner auth context for detail screen actions', () => {
 
   it('passes user auth context to owner delete mutations for content detail screens', async () => {
     await renderComponent(
-      <EventRecord data={{ id: 'event-1', dataProvider: { id: 'provider-1' } }} navigation={navigation} route={route} />
+      <EventRecord
+        data={{ id: 'event-1', dataProvider: { id: 'provider-1' } }}
+        navigation={navigation}
+        route={route}
+      />
     );
     await renderComponent(
       <NewsItem
@@ -445,6 +451,37 @@ describe('owner auth context for detail screen actions', () => {
       })
     );
   });
+
+  it.each([
+    [PointOfInterest, DELETE_POINT_OF_INTEREST],
+    [NewsItem, DELETE_NEWS_ITEM],
+    [EventRecord, DELETE_EVENT_RECORD],
+    [NoticeboardDetail, DELETE_GENERIC_ITEM]
+  ])(
+    'invalidates loaded overview rows before returning after successful deletion (%#)',
+    async (Component, mutation) => {
+      const emit = jest.spyOn(DeviceEventEmitter, 'emit');
+      const goBack = jest.fn(() => {
+        expect(emit).toHaveBeenCalledWith(DETAIL_REFRESH_EVENT);
+      });
+      try {
+        await renderComponent(
+          <Component
+            data={{ id: 'deleted' }}
+            navigation={{ ...navigation, goBack }}
+            route={route}
+          />
+        );
+        expect(emit).not.toHaveBeenCalledWith(DETAIL_REFRESH_EVENT);
+        const options = mockUseMutation.mock.calls.find(([query]) => query === mutation)[1];
+        act(() => options.onCompleted());
+        expect(emit).toHaveBeenCalledTimes(1);
+        expect(goBack).toHaveBeenCalledTimes(1);
+      } finally {
+        emit.mockRestore();
+      }
+    }
+  );
 
   it('passes user auth context only to noticeboard conversation hooks', async () => {
     await renderComponent(
