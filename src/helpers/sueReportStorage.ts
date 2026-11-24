@@ -15,6 +15,7 @@ export type SueOutboxReport = {
   attempts: number;
   nextAttemptAt: number;
   serviceRequestId?: string | number;
+  sentAt?: number;
 };
 
 type Outbox = { version: 1; reports: SueOutboxReport[] };
@@ -181,6 +182,7 @@ export const sueOutboxPresentation = (entry: SueOutboxReport) => ({
   submissionEndpoint: entry.endpoint,
   deliveryStatus: entry.deliveryStatus,
   serviceRequestId: entry.serviceRequestId,
+  sentAt: entry.sentAt,
   id: entry.serviceRequestId || entry.localId
 });
 

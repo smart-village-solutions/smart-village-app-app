@@ -133,6 +133,29 @@ describe('SUE myRequests status handling', () => {
     expect(persistedReports()[0].lastStatusCheck).toBe(1_000_000);
   });
 
+  it('defers the first status lookup for five minutes after delivery, even on refresh', async () => {
+    const endpoint = 'https://example.test/requests';
+    const outboxReport = {
+      localId: 'local-1',
+      endpoint,
+      deliveryStatus: 'sent',
+      serviceRequestId: 123,
+      sentAt: Date.now(),
+      report: { title: 'New report' }
+    };
+    (fetchSueEndpoints as jest.Mock).mockResolvedValue({ suePostRequest: endpoint });
+    (readSueOutbox as jest.Mock).mockResolvedValue([outboxReport]);
+
+    const [saved] = await myRequests({ forceRefresh: true });
+    expect(saved).toMatchObject({ localId: 'local-1', deliveryStatus: 'sent' });
+    expect(requestsWithServiceRequestId).not.toHaveBeenCalled();
+
+    jest.mocked(Date.now).mockReturnValue(outboxReport.sentAt + 5 * 60 * 1000);
+    await myRequests();
+
+    expect(requestsWithServiceRequestId).toHaveBeenCalledWith(123);
+  });
+
   it.each([SUE_STATUS.CLOSED, SUE_STATUS.INVALID])(
     'refreshes a final %s status after the TTL',
     async (status) => {
@@ -164,7 +187,7 @@ describe('SUE myRequests status handling', () => {
   });
 
   it.each([404, 410])(
-    'preserves a pending report that has never been published after HTTP %s',
+    'preserves a pending report without logging an error after HTTP %s',
     async (status) => {
       (readFromStore as jest.Mock).mockResolvedValue(JSON.stringify([storedReport()]));
       (requestsWithServiceRequestId as jest.Mock).mockRejectedValue(new SueRequestError(status));
@@ -174,6 +197,7 @@ describe('SUE myRequests status handling', () => {
 
       expect(reports).toHaveLength(1);
       expect(persistedReports()[0]).not.toHaveProperty('lastStatusCheck');
+      expect(console.error).not.toHaveBeenCalled();
     }
   );
 

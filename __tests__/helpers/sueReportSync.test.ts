@@ -102,7 +102,8 @@ it('keeps offline submissions durable and sends exactly once on reconnection', a
   expect(postRequests).toHaveBeenCalledTimes(1);
   expect((await readSueOutbox())[0]).toMatchObject({
     deliveryStatus: 'sent',
-    serviceRequestId: '38326'
+    serviceRequestId: '38326',
+    sentAt: expect.any(Number)
   });
 });
 

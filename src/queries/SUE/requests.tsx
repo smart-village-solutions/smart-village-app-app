@@ -14,12 +14,14 @@ import {
   sueOutboxPresentation,
   updateSueOutboxStatuses
 } from '../../helpers/sueReportStorage';
-import { StoredSueReport, updateSueMyReports } from '../../helpers/sueReportStorageHelper';
+import {
+  shouldWaitForSueReportStatus,
+  StoredSueReport,
+  SUE_REPORT_STATUS_INTERVAL_MS,
+  updateSueMyReports
+} from '../../helpers/sueReportStorageHelper';
 
 import { requestsWithServiceRequestId, SueRequestError } from './requestsWithServiceRequestId';
-
-// TTL for how often we refresh the status of a stored report (in ms)
-const STATUS_TTL_MS = 5 * 60 * 1000; // 5 minutes
 
 export const requests = async (queryVariables) => {
   const queryParams = new URLSearchParams(queryVariables);
@@ -78,7 +80,8 @@ const shouldRefreshReport = (
   item?.serviceRequestId &&
   connected &&
   (!item.submissionEndpoint || item.submissionEndpoint === endpoint) &&
-  (force || !item.lastStatusCheck || now - item.lastStatusCheck > STATUS_TTL_MS);
+  !shouldWaitForSueReportStatus(item.sentAt, now) &&
+  (force || !item.lastStatusCheck || now - item.lastStatusCheck >= SUE_REPORT_STATUS_INTERVAL_MS);
 
 const hasMatchingStatus = (report: StoredSueReport | undefined, item: StoredSueReport) =>
   report &&
@@ -133,20 +136,13 @@ export const myRequests = async ({
           });
         }
       } catch (error) {
-        const wasConfirmedByApi =
-          inferSueStatusSource(item) === SUE_STATUS_SOURCE.API &&
-          typeof item.lastStatusCheck === 'number' &&
-          item.lastStatusCheck > 0;
-
-        // A newly submitted report may be unavailable until moderation publishes it.
-        // Only remove a missing report that this endpoint previously confirmed.
-        if (
-          !item.localId &&
-          wasConfirmedByApi &&
-          error instanceof SueRequestError &&
-          (error.status === 404 || error.status === 410)
-        ) {
-          statusUpdates.set(reportKey(item), null);
+        if (error instanceof SueRequestError && (error.status === 404 || error.status === 410)) {
+          // Newly submitted reports may be unavailable until moderation publishes them.
+          const wasConfirmedByApi =
+            inferSueStatusSource(item) === SUE_STATUS_SOURCE.API &&
+            typeof item.lastStatusCheck === 'number' &&
+            item.lastStatusCheck > 0;
+          if (!item.localId && wasConfirmedByApi) statusUpdates.set(reportKey(item), null);
         } else {
           console.error(`Error fetching status for ${item.serviceRequestId}`, error);
         }

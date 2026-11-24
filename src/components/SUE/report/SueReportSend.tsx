@@ -19,6 +19,7 @@ import { Wrapper } from '../../Wrapper';
 import { Input } from '../../form';
 import { useThemeStyles } from '../../../hooks/useThemeStyles';
 import { useTheme } from '../../../hooks/useTheme';
+import { QUERY_TYPES as SUE_NAVIGATION_QUERY_TYPES } from '../../../queries/types';
 
 type TNewContent = {
   message: string;
@@ -133,7 +134,7 @@ export const SueReportSend = ({
               notFullWidth
               onPress={() =>
                 navigation.navigate(ScreenName.SueList, {
-                  query: QUERY_TYPES.SUE.MY_REQUESTS,
+                  query: SUE_NAVIGATION_QUERY_TYPES.SUE.MY_REQUESTS,
                   title: texts.sue.myReports
                 })
               }

@@ -2,6 +2,11 @@ import { SUE_MY_REPORTS, SUE_STATUS_SOURCE } from '../config/sue';
 
 import { addToStore, readFromStore } from './storageHelper';
 
+export const SUE_REPORT_STATUS_INTERVAL_MS = 5 * 60 * 1000;
+
+export const shouldWaitForSueReportStatus = (sentAt: unknown, now = Date.now()) =>
+  typeof sentAt === 'number' && now - sentAt < SUE_REPORT_STATUS_INTERVAL_MS;
+
 export type StoredSueReport = Record<string, unknown> & {
   serviceRequestId?: number | string;
   lastStatusCheck?: number;

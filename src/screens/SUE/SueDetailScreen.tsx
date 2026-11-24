@@ -37,6 +37,7 @@ import {
   SueDeliveryStatus
 } from '../../helpers/sueReportStorage';
 import { retrySueReport } from '../../helpers/sueReportSync';
+import { shouldWaitForSueReportStatus } from '../../helpers/sueReportStorageHelper';
 import { useTheme } from '../../hooks/useTheme';
 import { useThemeStyles } from '../../hooks/useThemeStyles';
 import { QUERY_TYPES, getQuery } from '../../queries';
@@ -74,6 +75,11 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
   }/requests`;
   const sameEndpoint =
     !localDetails?.submissionEndpoint || localDetails.submissionEndpoint === currentEndpoint;
+  const canCheckRemoteReport = () =>
+    !!remoteId &&
+    sameEndpoint &&
+    isConnected &&
+    !shouldWaitForSueReportStatus(localDetails?.sentAt);
   const [retrying, setRetrying] = useState(false);
 
   const retry = async () => {
@@ -92,7 +98,7 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
   const { data, refetch, isLoading } = useQuery(
     [QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID, remoteId],
     () => getQuery(QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID)(remoteId),
-    { enabled: !!remoteId && sameEndpoint && isConnected }
+    { enabled: canCheckRemoteReport() }
   );
 
   useEffect(() => {
@@ -153,7 +159,7 @@ export const SueDetailScreen = ({ navigation, route }: StackScreenProps<any>) =>
   const refresh = async () => {
     setRefreshing(true);
     if (localId) await refetchSavedEntry();
-    if (isConnected && remoteId && sameEndpoint) await refetch();
+    if (canCheckRemoteReport()) await refetch();
     setRefreshing(false);
   };
 

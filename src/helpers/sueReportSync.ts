@@ -42,6 +42,7 @@ const sendClaimedReport = async (
       if (!entry) return;
       entry.serviceRequestId = result.service_request_id;
       entry.deliveryStatus = 'sent';
+      entry.sentAt = Date.now();
     });
   } catch (error) {
     await updateSueOutbox((reports) => {
