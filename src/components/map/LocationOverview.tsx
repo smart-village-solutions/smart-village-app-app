@@ -17,6 +17,7 @@ import {
   isOpen,
   parseListItemsFromQuery
 } from '../../helpers';
+import { visibleContent } from '../../helpers/contentVisibility';
 import { useLocationSettings } from '../../hooks';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { MapMarker } from '../../types';
@@ -200,7 +201,8 @@ export const LocationOverview = ({
     }
   });
 
-  let pointsOfInterest: any[] | undefined = overviewData?.[QUERY_TYPES.POINTS_OF_INTEREST];
+  const visibleOverviewData = useMemo(() => visibleContent(overviewData), [overviewData]);
+  let pointsOfInterest: any[] | undefined = visibleOverviewData?.[QUERY_TYPES.POINTS_OF_INTEREST];
 
   useEffect(() => {
     if (!isConnected || !pointsOfInterest?.length) return;

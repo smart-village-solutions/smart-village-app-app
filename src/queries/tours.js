@@ -27,6 +27,7 @@ export const GET_TOURS = gql`
     ) {
       id
       name
+      payload
       category {
         id
         name

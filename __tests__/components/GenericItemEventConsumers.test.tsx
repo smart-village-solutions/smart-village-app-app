@@ -11,6 +11,15 @@ import { EventWidget } from '../../src/components/widgets/EventWidget';
 import { NetworkContext } from '../../src/NetworkProvider';
 import { SettingsContext } from '../../src/SettingsProvider';
 
+const mockRequest = jest.fn();
+jest.mock('../../src/ReactQueryClient', () => ({
+  ReactQueryClient: async () => ({ request: mockRequest })
+}));
+jest.mock('expo-application', () => ({
+  nativeApplicationVersion: '5.0.0',
+  nativeBuildVersion: '1573'
+}));
+
 const mockUseGenericItemEvents = jest.fn();
 const mockUseVolunteerData = jest.fn();
 const mockUseHomeRefresh = jest.fn();
@@ -52,7 +61,7 @@ jest.mock('react-apollo', () => ({
 
 jest.mock('react-query', () => ({
   useQuery: jest.fn(() => mockQueryResult),
-  useInfiniteQuery: jest.fn(([_, variables]) =>
+  useInfiniteQuery: jest.fn(([, variables]) =>
     variables?.dateRange ? mockSubListInfiniteResult : mockInfiniteResult
   )
 }));
@@ -247,6 +256,83 @@ describe('Generic Item event consumers', () => {
     mockNativeCalendarProps = undefined as any;
     mockFocusEffect = undefined;
   });
+
+  it.each(['list', 'calendar'])(
+    'drains restricted recurring event pages in the %s query',
+    async (screen) => {
+      const variables = {
+        limit: 2,
+        categoryId: 'native-category',
+        dateRange: ['2030-01-02', '2030-01-02']
+      };
+      if (screen === 'list') {
+        renderEventRecords(variables);
+      } else {
+        render(
+          <NetworkContext.Provider value={{ isConnected: true, isMainserverUp: true }}>
+            <SettingsContext.Provider
+              value={
+                {
+                  globalSettings: { hdvt: {}, settings: { eventCalendar: { subList: true } } }
+                } as any
+              }
+            >
+              <Calendar
+                isListRefreshing={false}
+                navigation={{ push: jest.fn() } as any}
+                query="eventRecords"
+                queryVariables={variables}
+              />
+            </SettingsContext.Provider>
+          </NetworkContext.Provider>
+        );
+      }
+      const calls = require('react-query').useInfiniteQuery.mock.calls;
+      const [[, requestedVariables], queryFn, options] = calls.find(
+        ([key]: any) => key[1]?.limit === 2
+      );
+      mockRequest
+        .mockResolvedValueOnce({
+          eventRecords: [
+            {
+              id: 'recurring',
+              listDate: '2030-01-01',
+              date: { id: 'date-1' },
+              payload: { minVersion: '6.0.0' }
+            },
+            {
+              id: 'recurring',
+              listDate: '2030-01-02',
+              date: { id: 'date-2' },
+              payload: { minVersion: '6.0.0' }
+            }
+          ]
+        })
+        .mockResolvedValueOnce({
+          eventRecords: [
+            {
+              id: 'recurring',
+              listDate: '2030-01-03',
+              date: { id: 'date-3' },
+              payload: { minVersion: '6.0.0' }
+            },
+            {
+              id: 'recurring',
+              listDate: '2030-01-04',
+              date: { id: 'date-4' },
+              payload: { minVersion: '6.0.0' }
+            }
+          ]
+        })
+        .mockResolvedValueOnce({ eventRecords: [{ id: '5' }] });
+      const result = await queryFn({ pageParam: 0 });
+      expect(mockRequest.mock.calls.map(([, requestVariables]) => requestVariables)).toEqual(
+        [0, 2, 4].map((offset) => ({ ...requestedVariables, offset }))
+      );
+      expect(result.eventRecords).toHaveLength(5);
+      expect(options.getNextPageParam(result, [result])).toBeUndefined();
+    }
+  );
 
   it('merges Generic Item occurrences into EventRecords list data and refreshes them', async () => {
     mockInfiniteResult.data = {

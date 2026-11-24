@@ -28,11 +28,12 @@ export class CategoryList extends React.PureComponent {
     const {
       categoryTitles = {},
       data,
+      ListEmptyComponent,
       ListFooterComponent,
       ListHeaderComponent,
       navigation,
       noSubtitle = false,
-      queryVariables,
+      queryVariables = {},
       refreshControl
     } = this.props;
     const {
@@ -42,9 +43,11 @@ export class CategoryList extends React.PureComponent {
 
     if (!data?.length) {
       return (
-        <LoadingContainer>
-          <ActivityIndicator color={colors.refreshControl} />
-        </LoadingContainer>
+        ListEmptyComponent || (
+          <LoadingContainer>
+            <ActivityIndicator color={colors.refreshControl} />
+          </LoadingContainer>
+        )
       );
     }
 
@@ -109,6 +112,7 @@ CategoryList.propTypes = {
   data: PropTypes.array,
   hasSectionHeader: PropTypes.bool,
   ListFooterComponent: PropTypes.object,
+  ListEmptyComponent: PropTypes.node,
   ListHeaderComponent: PropTypes.object,
   navigation: PropTypes.object.isRequired,
   noSubtitle: PropTypes.bool,

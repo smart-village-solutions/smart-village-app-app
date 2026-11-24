@@ -6,6 +6,7 @@ import _uniqBy from 'lodash/uniqBy';
 import { consts, texts } from '../../config';
 import { QUERY_TYPES } from '../../queries';
 import { GenericType, ScreenName } from '../../types';
+import { visibleContent } from '../contentVisibility';
 import { eventDate, isBeforeEndOfToday, isTodayOrLater } from '../dateTimeHelper';
 import {
   getGenericItemDetailTitle,
@@ -362,8 +363,10 @@ const parseCategories = (data, skipLastDivider, routeName, queryVariables, query
 };
 
 const parsePointsOfInterestAndTours = (data) => {
-  const pointsOfInterest = parsePointOfInterest(data?.[QUERY_TYPES.POINTS_OF_INTEREST]);
-  const tours = parseTours(data?.[QUERY_TYPES.TOURS]);
+  const pointsOfInterest = parsePointOfInterest(
+    data?.[QUERY_TYPES.POINTS_OF_INTEREST]?.filter((item) => item.visible !== false)
+  );
+  const tours = parseTours(data?.[QUERY_TYPES.TOURS]?.filter((item) => item.visible !== false));
 
   return _shuffle([...(pointsOfInterest || []), ...(tours || [])]);
 };
@@ -417,6 +420,7 @@ const parseConversations = (data) =>
  * @returns
  */
 export const parseListItemsFromQuery = (query, data, titleDetail = '', options = {}) => {
+  data = visibleContent(data);
   if (!data) return [];
 
   const {

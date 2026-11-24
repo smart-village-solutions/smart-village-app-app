@@ -8,6 +8,7 @@ import {
   BoldText,
   Button,
   Discount,
+  EmptyMessage,
   HtmlView,
   INCREMENT_VOUCHER_COUNT,
   INITIAL_VOUCHER_COUNT,
@@ -23,6 +24,7 @@ import {
 } from '../../components';
 import { texts } from '../../config';
 import { dateOfAvailabilityText, parseListItemsFromQuery } from '../../helpers';
+import { visibleContent } from '../../helpers/contentVisibility';
 import { getActiveVoucherDateRange } from '../../helpers/voucherAvailability';
 import { getVoucherPartnerAddress } from '../../helpers/voucherAddress';
 import { hasVoucherDiscount } from '../../helpers/voucherDiscount';
@@ -47,7 +49,7 @@ export const VoucherDetailScreen = ({ navigation, route }: StackScreenProps<any>
   const openWebScreen = useOpenWebScreen('Anbieter', undefined, route.params?.rootRouteName);
 
   const {
-    data,
+    data: rawData,
     isLoading: loading,
     refetch
   } = RQuseQuery([query, { memberId, ...queryVariables }], async () => {
@@ -55,6 +57,8 @@ export const VoucherDetailScreen = ({ navigation, route }: StackScreenProps<any>
 
     return await client.request(getQuery(query), { memberId, ...queryVariables });
   });
+
+  const data = useMemo(() => visibleContent(rawData), [rawData]);
 
   const {
     contentBlocks,
@@ -103,6 +107,10 @@ export const VoucherDetailScreen = ({ navigation, route }: StackScreenProps<any>
 
   if (!data || loading) {
     return <LoadingSpinner loading />;
+  }
+
+  if (!data[QUERY_TYPES.GENERIC_ITEM]) {
+    return <EmptyMessage title={texts.empty.content} />;
   }
 
   const activeDateRange = getActiveVoucherDateRange(dates) ?? dates?.[0];
