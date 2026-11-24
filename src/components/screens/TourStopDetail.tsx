@@ -1,9 +1,9 @@
 import * as Location from 'expo-location';
-import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { ScrollView, View } from 'react-native';
 import { Divider } from 'react-native-elements';
 
-import { AudioTrackSourceContext } from '../../AudioPlayerProvider';
+import { AudioTrackSourceProvider } from '../../AudioPlayerProvider';
 import { Icon, normalize, texts } from '../../config';
 import { trimNewLines } from '../../helpers';
 import { getAudioSourceMetadata } from '../../helpers/audioSourceMetadata';
@@ -46,10 +46,6 @@ export const TourStopDetail = ({ route, navigation }: { route: any; navigation: 
   const carouselMedia = mediaContents?.filter(({ contentType }) => contentType !== 'audio');
   const audioMedia = mediaContents?.filter(({ contentType }) => contentType === 'audio');
   const { title: audioTitle, imageUrl } = getAudioSourceMetadata(tourStopData, route.params?.title);
-  const audioSource = useMemo(
-    () => ({ id: String(id), title: audioTitle, imageUrl }),
-    [audioTitle, id, imageUrl]
-  );
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { showDistanceDirection = {} } = settings;
@@ -153,9 +149,9 @@ export const TourStopDetail = ({ route, navigation }: { route: any; navigation: 
       </WrapperRow>
 
       <MediaCarousel mediaContents={carouselMedia} />
-      <AudioTrackSourceContext.Provider value={audioSource}>
+      <AudioTrackSourceProvider id={String(id)} imageUrl={imageUrl} title={audioTitle}>
         <MediaSection mediaContents={audioMedia} />
-      </AudioTrackSourceContext.Provider>
+      </AudioTrackSourceProvider>
 
       <SectionHeader title={texts.tour.overview} />
 

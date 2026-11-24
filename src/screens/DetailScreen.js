@@ -4,7 +4,7 @@ import { ActivityIndicator, DeviceEventEmitter, RefreshControl, ScrollView } fro
 import { useQuery } from 'react-query';
 
 import { AccessibilityContext } from '../AccessibilityProvider';
-import { AudioTrackSourceContext } from '../AudioPlayerProvider';
+import { AudioTrackSourceProvider } from '../AudioPlayerProvider';
 import { getAudioSourceMetadata } from '../helpers/audioSourceMetadata';
 import {
   DetailActions,
@@ -161,13 +161,6 @@ export const DetailScreen = ({ navigation, route }) => {
     }
   );
   const detailData = (data && data[query]) || details;
-  const { title, imageUrl } = getAudioSourceMetadata(detailData, route.params?.title);
-  const { id: detailId } = queryVariables;
-  const rootRouteName = route.params?.rootRouteName;
-  const audioSource = useMemo(
-    () => ({ id: String(detailId), query, rootRouteName, title, imageUrl }),
-    [detailId, imageUrl, query, rootRouteName, title]
-  );
   const detailSpeechItems = useMemo(
     () => getDetailSpeechItems({ detail: detailData, query }),
     [detailData, query]
@@ -235,10 +228,17 @@ export const DetailScreen = ({ navigation, route }) => {
 
   if (!Component) return null;
 
+  const { title, imageUrl } = getAudioSourceMetadata(detailData, route.params?.title);
   const detailActions = <DetailActions data={detailData} route={route} suffix={genericType} />;
 
   return (
-    <AudioTrackSourceContext.Provider value={audioSource}>
+    <AudioTrackSourceProvider
+      id={String(queryVariables.id)}
+      imageUrl={imageUrl}
+      query={query}
+      rootRouteName={route.params?.rootRouteName}
+      title={title}
+    >
       <SafeAreaViewFlex>
         <ScrollView
           contentContainerStyle={scrollContentContainerStyle}
@@ -262,7 +262,7 @@ export const DetailScreen = ({ navigation, route }) => {
           <FeedbackFooter />
         </ScrollView>
       </SafeAreaViewFlex>
-    </AudioTrackSourceContext.Provider>
+    </AudioTrackSourceProvider>
   );
 };
 /* eslint-enable complexity, react-hooks/static-components */

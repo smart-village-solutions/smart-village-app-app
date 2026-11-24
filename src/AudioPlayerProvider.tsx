@@ -22,6 +22,24 @@ export type AudioTrackSource = {
 
 export const AudioTrackSourceContext = createContext<AudioTrackSource | null>(null);
 
+export const AudioTrackSourceProvider = ({
+  children,
+  id,
+  imageUrl,
+  query,
+  rootRouteName,
+  title
+}: React.PropsWithChildren<AudioTrackSource>) => {
+  const source = useMemo(
+    () => ({ id, imageUrl, query, rootRouteName, title }),
+    [id, imageUrl, query, rootRouteName, title]
+  );
+
+  return (
+    <AudioTrackSourceContext.Provider value={source}>{children}</AudioTrackSourceContext.Provider>
+  );
+};
+
 export type AudioTrack = {
   source?: AudioTrackSource;
   title: string;
