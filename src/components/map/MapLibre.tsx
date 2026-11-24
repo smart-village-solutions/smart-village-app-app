@@ -229,9 +229,9 @@ type Props = {
     isFullScreenMap
   }: {
     isFullScreenMap?: boolean;
-  }) => void | Promise<void>;
+  }) => boolean | void | Promise<boolean | void>;
   selectedMarker?: string;
-  selectedPosition?: LocationObjectCoords;
+  selectedPosition?: Pick<LocationObjectCoords, 'latitude' | 'longitude'>;
   setPinEnabled?: boolean;
   showMapFilter?: boolean;
   showMarkerLabels?: boolean;
@@ -1010,7 +1010,10 @@ export const MapLibre = ({
           accessibilityRole="button"
           onPress={async () => {
             try {
-              await onMyLocationButtonPress?.({ isFullScreenMap: isFullscreenMap });
+              const shouldFollow = await onMyLocationButtonPress?.({
+                isFullScreenMap: isFullscreenMap
+              });
+              if (shouldFollow === false) return;
             } catch (error) {
               console.error('My location button press failed', error);
             }

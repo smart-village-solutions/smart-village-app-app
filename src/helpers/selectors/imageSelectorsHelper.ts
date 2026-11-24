@@ -2,12 +2,15 @@ import { ImagePickerAsset } from 'expo-image-picker';
 import { Alert } from 'react-native';
 
 import { consts, texts } from '../../config';
+import type { useReverseGeocode } from '../../hooks/reverseGeocode';
+import type { SueCoordinates, SueLocationRequest } from '../../hooks/useSueReportLocation';
 import { deleteMediaContent } from '../../queries/mediaContent';
 import { calendarDeleteFile } from '../../queries/volunteer';
 import { errorTextGenerator } from '../consul';
 import { deleteArrayItem } from '../deleteArrayItem';
 import { getFileSize } from '../fileSystem';
 import { imageUploadMetadata } from '../imageUploadMetadata';
+import type { SueAddressRequirements } from '../sueReportLocation';
 
 const { IMAGE_FROM, IMAGE_TYPE_REGEX, URL_REGEX, IMAGE_SELECTOR_TYPES } = consts;
 
@@ -111,6 +114,60 @@ export const getLocationFromExif = (exif?: {
   };
 };
 
+const updateSueImageLocation = async ({
+  coordinateCheck,
+  isLatestRequest,
+  location,
+  reverseGeocode
+}: {
+  coordinateCheck: {
+    areaServiceData?: { postalCodes?: string[] };
+    errorMessage?: string;
+    requirements?: SueAddressRequirements;
+    setValue?: Parameters<ReturnType<typeof useReverseGeocode>>[0]['setValue'];
+    setSelectedPosition: (position: SueCoordinates) => void;
+    setUpdateRegionFromImage: (value: boolean) => void;
+    setShowCoordinatesFromImageAlert: (value: boolean) => void;
+  };
+  isLatestRequest: () => boolean;
+  location: { latitude?: number; longitude?: number };
+  reverseGeocode: ReturnType<typeof useReverseGeocode>;
+}) => {
+  if (
+    typeof location.latitude !== 'number' ||
+    typeof location.longitude !== 'number' ||
+    !Number.isFinite(location.latitude) ||
+    !Number.isFinite(location.longitude) ||
+    !isLatestRequest()
+  ) {
+    return;
+  }
+
+  const position = { latitude: location.latitude, longitude: location.longitude };
+  const { areaServiceData, errorMessage = '', requirements, setValue = () => {} } = coordinateCheck;
+  coordinateCheck.setShowCoordinatesFromImageAlert(true);
+  try {
+    const result = await reverseGeocode({
+      areaServiceData,
+      errorMessage,
+      isLatestRequest,
+      position,
+      requirements,
+      setValue
+    });
+
+    if (!isLatestRequest() || result?.isStale) return;
+    if (!result?.isWithinArea) throw new Error(errorMessage);
+    coordinateCheck.setSelectedPosition(position);
+    coordinateCheck.setUpdateRegionFromImage(true);
+    coordinateCheck.setShowCoordinatesFromImageAlert(false);
+  } catch {
+    if (isLatestRequest()) {
+      Alert.alert(texts.sue.report.alerts.hint, texts.sue.report.alerts.imageLocationNotApplied);
+    }
+  }
+};
+
 /* eslint-disable complexity */
 export const onImageSelect = async ({
   configuration,
@@ -121,6 +178,7 @@ export const onImageSelect = async ({
   imagesAttributes,
   infoAndErrorText,
   lastKnownPosition,
+  locationRequest,
   maxFileSize,
   position,
   reverseGeocode,
@@ -136,6 +194,7 @@ export const onImageSelect = async ({
   imagesAttributes: any[];
   infoAndErrorText: string;
   lastKnownPosition?: any;
+  locationRequest?: SueLocationRequest;
   maxFileSize: number;
   position?: any;
   reverseGeocode?: any;
@@ -165,8 +224,6 @@ export const onImageSelect = async ({
     };
   }
 
-  const { areaServiceData = {}, errorMessage = '', setValue = () => {} } = coordinateCheck || {};
-
   /* used to specify the mimeType when uploading to the server */
   const imageType = IMAGE_TYPE_REGEX.exec(uri)?.[1]?.toLowerCase();
   const { mimeType } = imageUploadMetadata(uri, assetMimeType);
@@ -182,28 +239,12 @@ export const onImageSelect = async ({
       return Alert.alert(texts.sue.report.alerts.hint, texts.sue.report.alerts.imageType);
     }
 
-    if (Number.isFinite(location.latitude) && Number.isFinite(location.longitude)) {
-      try {
-        await reverseGeocode({
-          areaServiceData,
-          errorMessage,
-          position: location,
-          setValue
-        });
-
-        coordinateCheck.setSelectedPosition(location);
-        coordinateCheck.setUpdateRegionFromImage(true);
-        coordinateCheck.setShowCoordinatesFromImageAlert(false);
-      } catch (error) {
-        coordinateCheck.setSelectedPosition(undefined);
-        coordinateCheck.setUpdateRegionFromImage(false);
-        setValue('city', '');
-        setValue('houseNumber', '');
-        setValue('street', '');
-        setValue('postalCode', '');
-        console.error(error);
-      }
-    }
+    await updateSueImageLocation({
+      coordinateCheck,
+      isLatestRequest: locationRequest?.isLatestRequest || (() => true),
+      location,
+      reverseGeocode
+    });
   }
 
   errorTextGenerator({

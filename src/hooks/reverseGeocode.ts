@@ -1,21 +1,17 @@
-import { LocationObjectCoords } from 'expo-location';
 import { useCallback } from 'react';
 import { UseFormSetValue } from 'react-hook-form';
 
-import appJson from '../../app.json';
-import { TValues } from '../screens';
+import {
+  fetchSueGeocode,
+  getSueAddressError,
+  SueAddressRequirements,
+  isSuePostalCodeAllowed,
+  getSueLocalityNames,
+  SUE_ROAD_KEYS
+} from '../helpers/sueReportLocation';
+import type { TValues } from '../screens';
 
-const CITY_FALLBACK_KEYS = [
-  'city',
-  'town',
-  'village',
-  'municipality',
-  'city_district',
-  'county'
-] as const;
-
-const normalizePostalCode = (postalCode?: string) =>
-  (postalCode || '').replace(/\s+/g, '').trim();
+import type { SueCoordinates } from './useSueReportLocation';
 
 export const useReverseGeocode = () => {
   return useCallback(
@@ -24,12 +20,14 @@ export const useReverseGeocode = () => {
       errorMessage,
       isLatestRequest,
       position,
+      requirements,
       setValue
     }: {
       areaServiceData?: { postalCodes?: string[] };
       errorMessage: string;
       isLatestRequest?: () => boolean;
-      position: LocationObjectCoords;
+      position: SueCoordinates;
+      requirements?: SueAddressRequirements;
       setValue: UseFormSetValue<TValues>;
     }): Promise<{ isStale: boolean; isWithinArea: boolean }> => {
       const shouldApplyResult = isLatestRequest || (() => true);
@@ -38,41 +36,29 @@ export const useReverseGeocode = () => {
 
       try {
         // https://operations.osmfoundation.org/policies/nominatim/
-        const response = await (
-          await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`,
-            {
-              headers: {
-                'User-Agent': `${appJson.expo.scheme}/${appJson.expo.version}`
-              }
-            }
-          )
-        ).json();
-
-        if (!shouldApplyResult()) {
-          return staleResult;
-        }
+        const result = await fetchSueGeocode(
+          `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`
+        );
+        if (!result) throw new Error(errorMessage);
+        const { address = {} } = result;
+        if (!shouldApplyResult()) return staleResult;
 
         // Nominatim jsonv2 maps address parts from OSM tags, so settlement fields may vary.
-        const city =
-          CITY_FALLBACK_KEYS.map((key) => response?.address?.[key]).find(
-            (value) => typeof value === 'string' && value.length > 0
+        const city = getSueLocalityNames(address)[0];
+        const street =
+          SUE_ROAD_KEYS.map((key) => address[key]).find(
+            (value) => typeof value === 'string' && value.trim()
           ) || '';
-        const houseNumber = response?.address?.house_number || '';
-        const street = response?.address?.road || '';
-        const postalCode = response?.address?.postcode || '';
-        const normalizedPostalCode = normalizePostalCode(postalCode);
-        const isWithinArea =
-          !!normalizedPostalCode &&
-          !!areaServiceData?.postalCodes?.some(
-            (value) => normalizePostalCode(value) === normalizedPostalCode
-          );
+        const { house_number: houseNumber = '', postcode: postalCode = '' } = address;
+        const isWithinArea = areaServiceData
+          ? isSuePostalCodeAllowed(postalCode, areaServiceData.postalCodes || [])
+          : [city, street, postalCode].some(Boolean);
 
-        if (!shouldApplyResult()) {
-          return staleResult;
-        }
-
-        if (isWithinArea) {
+        const addressError = getSueAddressError(
+          { city, houseNumber, street, postalCode },
+          requirements
+        );
+        if (isWithinArea && !addressError) {
           setValue('city', city);
           setValue('houseNumber', houseNumber);
           setValue('street', street);
@@ -80,11 +66,6 @@ export const useReverseGeocode = () => {
 
           return { isStale: false, isWithinArea: true };
         }
-
-        setValue('city', '');
-        setValue('houseNumber', '');
-        setValue('street', '');
-        setValue('postalCode', '');
 
         throw new Error(errorMessage);
       } catch (error) {
