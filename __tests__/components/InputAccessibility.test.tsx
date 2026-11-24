@@ -1,4 +1,5 @@
 import React from 'react';
+import { StyleSheet } from 'react-native';
 import renderer from 'react-test-renderer';
 
 jest.mock('react-native-elements', () => {
@@ -74,6 +75,17 @@ const renderWithAct = (component: React.ReactElement) => {
 };
 
 describe('Input accessibility', () => {
+  it('marks an input invalid when its error message is rendered separately', () => {
+    const tree = renderWithAct(<Input invalid renderErrorMessage={false} />);
+    const { accessibilityState, errorMessage, inputContainerStyle, rightIcon } =
+      tree.root.findByType('TextInput').props;
+
+    expect(accessibilityState.invalid).toBe(true);
+    expect(StyleSheet.flatten(inputContainerStyle).borderColor).toBe('rgb(174, 0, 29)');
+    expect(rightIcon).toBeTruthy();
+    expect(errorMessage).toBeUndefined();
+  });
+
   it('uses the visible label as accessibility label fallback', () => {
     const tree = renderWithAct(
       <Input control={{} as never} label="Name" name="name" placeholder="Name" />

@@ -1,10 +1,12 @@
 import * as Location from 'expo-location';
 import React, { memo, useMemo, useRef } from 'react';
-import { Controller, UseFormSetValue } from 'react-hook-form';
+import { Controller, useWatch, UseFormSetValue } from 'react-hook-form';
 import { StyleSheet, View } from 'react-native';
 
 import { consts, normalize, texts } from '../../../config';
+import { getSueReportTextLimits } from '../../../helpers/sueHelper';
 import { TValues } from '../../../screens';
+import { RegularText } from '../../Text';
 import { Wrapper } from '../../Wrapper';
 import { Input } from '../../form';
 import { MultiImageSelector } from '../../selectors';
@@ -30,7 +32,7 @@ export const SueReportDescription = ({
   configuration: any;
   control: any;
   errorMessage: string;
-  requiredInputs: keyof TValues[];
+  requiredInputs?: keyof TValues[];
   selectedPosition?: Location.LocationObjectCoords;
   storeReportValues: () => Promise<void>;
   setSelectedPosition: (position?: Location.LocationObjectCoords) => void;
@@ -40,6 +42,16 @@ export const SueReportDescription = ({
 }) => {
   const titleRef = useRef();
   const descriptionRef = useRef();
+  const limits = getSueReportTextLimits(configuration?.limitation);
+  const [title, description] = useWatch({
+    control,
+    name: [INPUT_KEYS.SUE.TITLE, INPUT_KEYS.SUE.DESCRIPTION]
+  });
+  const titleLength = title?.length ?? 0;
+  const descriptionLength = description?.length ?? 0;
+  const titleTooLong = limits.title !== undefined && titleLength > limits.title;
+  const descriptionTooLong =
+    limits.description !== undefined && descriptionLength > limits.description;
 
   const imageSelectorProps = useMemo(
     () => ({
@@ -93,9 +105,20 @@ export const SueReportDescription = ({
           label={texts.sue.report.title + ' *'}
           placeholder={texts.sue.report.titlePlaceholder}
           control={control}
+          invalid={titleTooLong}
           ref={titleRef}
           onSubmitEditing={() => descriptionRef.current?.focus()}
         />
+        {limits.title !== undefined && (
+          <RegularText small error={titleTooLong}>
+            {texts.sue.report.characterCount(titleLength, limits.title)}
+          </RegularText>
+        )}
+        {titleTooLong && (
+          <RegularText small error accessibilityLiveRegion="polite">
+            {texts.sue.report.characterLimitExceeded}
+          </RegularText>
+        )}
       </Wrapper>
 
       <Wrapper noPaddingTop>
@@ -110,8 +133,19 @@ export const SueReportDescription = ({
           placeholder={texts.sue.report.descriptionPlaceholder}
           multiline
           control={control}
+          invalid={descriptionTooLong}
           ref={descriptionRef}
         />
+        {limits.description !== undefined && (
+          <RegularText small error={descriptionTooLong}>
+            {texts.sue.report.characterCount(descriptionLength, limits.description)}
+          </RegularText>
+        )}
+        {descriptionTooLong && (
+          <RegularText small error accessibilityLiveRegion="polite">
+            {texts.sue.report.characterLimitExceeded}
+          </RegularText>
+        )}
       </Wrapper>
 
       <Wrapper noPaddingTop>

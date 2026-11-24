@@ -1,5 +1,7 @@
 import {
+  getExceededSueReportTextField,
   getInitialSueStatus,
+  getSueReportTextLimits,
   getSueApiConfig,
   getSueTags,
   getVisibleSueStatus,
@@ -153,4 +155,39 @@ describe('getSueTags', () => {
       expect(getSueTags(value)).toEqual([]);
     }
   );
+});
+
+describe('SUE report text limits', () => {
+  it('reads each limit from the configuration response', () => {
+    expect(
+      getSueReportTextLimits({
+        reportTitleMaxLength: { value: '100' },
+        reportDescriptionMaxLength: { value: '700' }
+      })
+    ).toEqual({ title: 100, description: 700 });
+    expect(getSueReportTextLimits({ reportDescriptionMaxLength: { value: 42 } })).toEqual({
+      title: undefined,
+      description: 42
+    });
+  });
+
+  it.each([undefined, null, true, '', 'invalid', '0', '-1', '1.5', 'Infinity', 2_147_483_648])(
+    'ignores unusable limits %p',
+    (value) => {
+      expect(getSueReportTextLimits({ reportTitleMaxLength: { value } }).title).toBeUndefined();
+    }
+  );
+
+  it('allows the boundary and rejects overlong existing draft values', () => {
+    const limits = { title: 100, description: 700 };
+    const values = { title: 'a'.repeat(100), description: 'b'.repeat(700) };
+    expect(getExceededSueReportTextField(values, limits)).toBeUndefined();
+    expect(getExceededSueReportTextField({ ...values, title: values.title + 'a' }, limits)).toBe(
+      'title'
+    );
+    expect(
+      getExceededSueReportTextField({ ...values, description: values.description + 'b' }, limits)
+    ).toBe('description');
+    expect(getExceededSueReportTextField(values, getSueReportTextLimits())).toBeUndefined();
+  });
 });

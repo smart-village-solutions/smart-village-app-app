@@ -43,6 +43,7 @@ import {
   getSueLimitOfAreaCity,
   readFromStore
 } from '../../helpers';
+import { getExceededSueReportTextField, getSueReportTextLimits } from '../../helpers/sueHelper';
 import { useKeyboardHeight } from '../../hooks';
 import { useTheme } from '../../hooks/useTheme';
 import { useThemeStyles } from '../../hooks/useThemeStyles';
@@ -385,8 +386,23 @@ export const SueReportScreen = ({
 
   const { mutateAsync } = useMutation(postRequests);
 
+  const reportTextLengthError = useCallback(
+    (values: Pick<TValues, 'title' | 'description'>) => {
+      const limits = getSueReportTextLimits(limitation);
+      const field = getExceededSueReportTextField(values, limits);
+      if (field) return texts.sue.report.alerts.textTooLong(texts.sue.report[field], limits[field]);
+    },
+    [limitation]
+  );
+
   const alertTextGeneratorForMissingData = () => {
-    const requiredInputs = sueProgressWithConfig?.[currentProgress]?.requiredInputs;
+    const step = sueProgressWithConfig?.[currentProgress];
+    if (step?.content === 'description') {
+      const textLengthError = reportTextLengthError(getValues());
+      if (textLengthError) return textLengthError;
+    }
+
+    const requiredInputs = step?.requiredInputs;
     const isAnyInputMissing = requiredInputs?.some((inputKey: string) => !getValues(inputKey));
     let alertText = '';
 
@@ -626,6 +642,9 @@ export const SueReportScreen = ({
 
       await storeReportValues();
 
+      const textLengthError = reportTextLengthError(sueReportData);
+      if (textLengthError) return Alert.alert(texts.sue.report.alerts.hint, textLengthError);
+
       if (alertTextGeneratorForMissingData()) {
         return Alert.alert(texts.sue.report.alerts.hint, alertTextGeneratorForMissingData());
       }
@@ -713,6 +732,7 @@ export const SueReportScreen = ({
       service,
       mutateAsync,
       resetStoredValues,
+      reportTextLengthError,
       showInternalPendingStatus,
       storeReportValues
     ]
