@@ -1,10 +1,9 @@
 package expo.modules.changers;
 
-import com.blacksquared.sdk.app.Changers;
 import com.blacksquared.sdk.model.UserToken;
 import com.blacksquared.sdk.service.Prefs;
 
-/** Read-only access to the pinned 1.20.6 SDK session; never authenticates or registers. */
+/** Read-only access to the pinned 1.20.7 SDK session; never authenticates or registers. */
 final class ChangersStatisticsSession {
   final String uuid;
   final String token;
@@ -23,15 +22,14 @@ final class ChangersStatisticsSession {
   static ChangersStatisticsSession current() {
     // These Kotlin-internal accessors are public JVM methods. Keep this adapter
     // version-bound and revalidate it when upgrading the vendor artifact.
-    Changers sdk = Changers.INSTANCE;
-    Prefs prefs = sdk.getSharedPrefs$sdk_stagingRelease();
+    Prefs prefs = ChangersSdkAccess.prefs();
     UserToken user = prefs.getUserToken();
     return new ChangersStatisticsSession(user.getUuid(), user.getToken(),
-      sdk.getAppName$sdk_stagingRelease(), prefs.getUuid(), sdk.xAgent$sdk_stagingRelease());
+      ChangersSdkAccess.app(), prefs.getUuid(), ChangersSdkAccess.agent());
   }
 
   boolean isCurrent() {
-    UserToken user = Changers.INSTANCE.getSharedPrefs$sdk_stagingRelease().getUserToken();
+    UserToken user = ChangersSdkAccess.prefs().getUserToken();
     return uuid.equals(user.getUuid()) && token.equals(user.getToken());
   }
 }

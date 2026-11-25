@@ -272,14 +272,14 @@ const CardAction = ({
   const main = name === 'main';
   const action = config.actions[name];
   const label = promo ? action.promoLabel : action.label;
-  const busy = !!opening && action.target === 'provider';
+  const busy = !!opening && ['provider', 'badges'].includes(action.target);
   const color = main ? config.colors.buttonText : config.colors.shortcutIcon;
   return (
     <Pressable
       accessibilityRole="button"
       accessibilityLabel={busy ? config.texts.opening : label}
       accessibilityHint={
-        action.target === 'provider'
+        ['provider', 'map', 'badges'].includes(action.target)
           ? undefined
           : action.alertMessage || config.texts.comingSoonMessage
       }

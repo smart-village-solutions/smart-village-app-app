@@ -56,35 +56,32 @@ class Driver: UIViewController {
     }
     dismissals = 0
     sheet.onDismiss = { [weak self] in self?.dismissals += 1 }
-    sheet.onClose = { [weak sheet] in sheet?.dismiss(animated: true) }
+    let providerClose = { [weak sheet] in sheet?.dismiss(animated: true) }
     present(sheet, animated: false) {
       sheet.view.layoutIfNeeded()
       self.require(provider.parent === sheet, "provider containment")
-      let button = sheet.view.subviews.compactMap { $0 as? UIButton }.first!
-      self.require(button.accessibilityLabel == "Klima-Taler schließen", "accessible close label")
-      self.require(button.bounds.width >= 44 && button.bounds.height >= 44, "44-point hit target")
-      let frame = button.convert(button.bounds, to: sheet.view)
-      self.require(provider.view.frame == sheet.view.bounds, "provider fills sheet without an extra header")
-      self.require(sheet.view.subviews.count == 2, "only provider and floating close control")
-      self.require(frame.maxX <= sheet.view.bounds.maxX - 8, "close button stays inside right edge")
-      self.require(sheet.view.hitTest(CGPoint(x: frame.midX, y: frame.midY), with: nil) === button, "overlay receives close taps")
+      self.require(sheet.modalPresentationStyle == .fullScreen, "host forces full-screen presentation")
+      self.require(sheet.view.bounds.size == sheet.view.window!.bounds.size, "container fills the app window")
+      self.require(provider.view.frame == sheet.view.bounds, "provider fills the container without a header")
+      self.require(sheet.view.subviews.count == 1, "only provider content is added")
+      self.require(!sheet.view.subviews.contains { $0 is UIButton }, "no host close overlay")
+      self.require(sheet.childForStatusBarStyle === provider, "provider controls status bar style")
+      self.require(sheet.childForStatusBarHidden === provider, "provider controls status bar visibility")
       let contentPoint = CGPoint(x: sheet.view.bounds.midX, y: sheet.view.bounds.midY)
       self.require(sheet.view.hitTest(contentPoint, with: nil)?.isDescendant(of: provider.view) == true, "other touches reach provider")
-      self.require(frame.minY >= sheet.view.safeAreaInsets.top, "button within safe area")
       self.require(!sheet.view.hasAmbiguousLayout, "unambiguous container layout")
       self.require(provider.view.frame.height > sheet.view.bounds.height / 2, "provider retains usable height")
-      self.require(frame.maxY < sheet.view.safeAreaInsets.top + 100, "close button stays at top")
       if scenario == 0 {
-        let renderer = UIGraphicsImageRenderer(bounds: self.view.window!.bounds)
-        let screenshot = renderer.pngData { _ in self.view.window!.drawHierarchy(in: self.view.window!.bounds, afterScreenUpdates: true) }
-        self.writeFile(screenshot, named: "close-button.png")
-        button.sendActions(for: .touchUpInside)
+        let renderer = UIGraphicsImageRenderer(bounds: sheet.view.window!.bounds)
+        let screenshot = renderer.pngData { _ in sheet.view.window!.drawHierarchy(in: sheet.view.window!.bounds, afterScreenUpdates: true) }
+        self.writeFile(screenshot, named: "full-screen.png")
+        providerClose()
         self.afterDismiss(scenario)
       } else if scenario == 1 {
         provider.dismiss(animated: true)
         self.afterDismiss(scenario)
       } else {
-        self.presentChild(provider, button: button, scenario: scenario)
+        self.presentChild(provider, close: { providerClose() }, scenario: scenario)
       }
     }
   }
@@ -92,21 +89,21 @@ class Driver: UIViewController {
     do { try data.write(to: directory.appendingPathComponent(filename)) }
     catch { fatalError("Unable to write test artifact: \(filename): \(error)") }
   }
-  func presentChild(_ provider: UIViewController, button: UIButton, scenario: Int) {
+  func presentChild(_ provider: UIViewController, close: @escaping () -> Void, scenario: Int) {
         let child = UIViewController()
         child.view.backgroundColor = .systemBlue
         child.modalPresentationStyle = .fullScreen
         provider.present(child, animated: false) {
           self.require(self.dismissals == 0, "provider-owned full-screen child does not close entry")
           child.dismiss(animated: false) {
-            button.sendActions(for: .touchUpInside)
+            close()
             self.afterDismiss(scenario)
           }
         }
   }
   func afterDismiss(_ scenario: Int) {
     DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-      self.require(self.presentedViewController == nil, "sheet closed in scenario \(scenario)")
+      self.require(self.presentedViewController == nil, "container closed in scenario \(scenario)")
       self.require(self.dismissals == 1, "exactly one dismissal in scenario \(scenario)")
       if scenario < 2 { self.run(scenario + 1) }
       else {

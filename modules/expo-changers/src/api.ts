@@ -29,10 +29,23 @@ export function maskUUID(uuid: string | null): string {
   if (uuid.length <= 12) return '••••';
   return `${uuid.slice(0, 4)}••••${uuid.slice(-4)}`;
 }
-export function capabilities(platform: string, safeStatistics = false): Capabilities {
+export const isOfferId = (value: unknown): value is number =>
+  typeof value === 'number' && Number.isSafeInteger(value) && value > 0;
+
+const badgeCapability = (native: boolean, enabled: boolean) =>
+  native && enabled
+    ? { supported: true }
+    : { supported: false, reason: 'Für Abzeichen ist eine neue native App-Version erforderlich.' };
+
+export function capabilities(
+  platform: string,
+  safeStatistics = false,
+  offerLinks = false,
+  badgeLinks = false
+): Capabilities {
   const yes = { supported: true };
   const no = (reason: string) => ({ supported: false, reason });
-  const native = platform === 'ios' || platform === 'android';
+  const native = ['ios', 'android'].includes(platform);
   return {
     registerUser:
       platform === 'ios'
@@ -49,14 +62,23 @@ export function capabilities(platform: string, safeStatistics = false): Capabili
     logout: native ? yes : no('Ein nativer Build ist erforderlich.'),
     marketplace:
       platform === 'ios' ? yes : no('Die Schnittstelle für Zielverknüpfungen ist nicht bestätigt.'),
-    badgeList: no('Diese Funktion ist in der SDK-API nicht bestätigt.'),
+    badgeList: badgeCapability(native, badgeLinks),
+    offerDetails:
+      native && offerLinks
+        ? yes
+        : no('Für Angebote ist eine neue native App-Version erforderlich.'),
     poiDetails: no('Eine allgemeine Schnittstelle für POI-Details ist nicht bestätigt.')
   };
 }
 export function createChangers(native: ChangersNative | null, platform: string) {
   // Older Android binaries must never fall back to the unsafe vendor method.
-  const caps = capabilities(platform, native?.safeStatistics === true);
-  async function call<K extends Exclude<keyof ChangersNative, 'safeStatistics'>>(
+  const caps = capabilities(
+    platform,
+    native?.safeStatistics === true,
+    typeof native?.openOffer === 'function',
+    native?.badgeLinks === true && typeof native?.openTarget === 'function'
+  );
+  async function call<K extends Exclude<keyof ChangersNative, 'safeStatistics' | 'badgeLinks'>>(
     key: K,
     ...args: Parameters<ChangersNative[K]>
   ): Promise<Awaited<ReturnType<ChangersNative[K]>>> {
@@ -100,6 +122,11 @@ export function createChangers(native: ChangersNative | null, platform: string) 
     activate: () => call('activate'),
     getUserUUID: () => call('getUserUUID'),
     openProvider: () => call('openProvider'),
+    openOffer: (offerId: number) => {
+      if (!isOfferId(offerId))
+        return Promise.reject(new ChangersError('E_INVALID_ARGUMENT', 'Ungültiges Angebot.'));
+      return call('openOffer', String(offerId));
+    },
     closeProvider: () => call('closeProvider'),
     registerUser: async () => {
       requireCapability('registerUser');
@@ -112,8 +139,10 @@ export function createChangers(native: ChangersNative | null, platform: string) 
     },
     stopTracking: () => call('stopTracking'),
     logout: () => call('logout'),
-    openTarget: async (target: 'marketplace') => {
-      requireCapability('marketplace');
+    openTarget: async (target: 'marketplace' | 'badges') => {
+      if (target !== 'marketplace' && target !== 'badges')
+        throw new ChangersError('E_INVALID_ARGUMENT', 'Ungültiges Ziel.');
+      requireCapability(target === 'badges' ? 'badgeList' : 'marketplace');
       return call('openTarget', target);
     }
   };

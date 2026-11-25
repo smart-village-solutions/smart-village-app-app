@@ -5,6 +5,7 @@
  * Note: Many icon names have been updated from v5 (e.g. times→xmark, home→house)
  */
 
+import { leafIconNames } from './leaf';
 import { refreshIconNames } from './refresh';
 
 export const fontawesome6IconMapping: Record<string, string> = {
@@ -24,6 +25,8 @@ export const fontawesome6IconMapping: Record<string, string> = {
   'condense-map': 'compress',
   plus: 'plus',
   minus: 'minus',
+
+  leaf: leafIconNames.fontawesome6,
 
   // Content & Media
   albums: 'images',

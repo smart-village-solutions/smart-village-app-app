@@ -4,6 +4,8 @@ Klima-Taler uses the Changers native SDK for provider screens, onboarding, conse
 
 For clean-checkout iOS framework preparation and native build requirements, see [Native build setup](KLIMA_TALER_NATIVE_SETUP.md). Historical device notes are not current release acceptance evidence.
 
+The SVA module version is recorded as `expo.extra.klimaTalerVersion` in `app.json` and `app.json.erb.tmpl`, matching `modules/expo-changers/package.json`. About's version information shows it when Klima-Taler is enabled. This integration version is separate from the vendor's iOS and Android SDK versions; older app configurations without the field omit the entry.
+
 ## Customer configuration
 
 Enable the integration with `globalSettings.settings["klima-taler"]`:
@@ -83,7 +85,7 @@ Configure the card through `additionalProps` on its entry in `globalSettings.wid
 | `styles`      | React Native JSON style objects for `card`, `summary`, `logo`, `title`, `description`, `balance`, `status`, `actions`, `button`, `buttonText`, `shortcut`. Dimensions use density-independent pixels. Styles override color/layout defaults; balance typography still adapts to available width. The compact status indicator uses only `status.color`; legacy status text layout and typography overrides no longer apply. |
 | `actions`     | `main`, `wallet`, `map`, `badges`, `settings`. Each accepts `false` or an object with the fields below.                                                                                                                                                                                                                                                                                                                     |
 
-Action fields are `enabled`, `label`, `promoLabel`, `icon`, `showInPromo`, `target`, `alertTitle`, and `alertMessage`. Main is visible in both card states and opens the provider by default. Other actions are hidden by default until their destinations are available. Existing explicit action objects or `true` keep their configured visibility after onboarding, and display the configurable coming-soon alert unless assigned a supported target. Use `false` or `enabled: false` to hide them. Explicit placeholders remain unsupported product functions, not completed deep links. Their individual `alertTitle`/`alertMessage` override the shared alert copy when nonempty. `target: "provider"` opens the general provider screen; `"comingSoon"` (and unknown targets) shows the alert. Wallet, map, badge and settings deep links are not implemented. In particular, the wallet shortcut does not open an unrelated SVA wallet. Each shortcut can be hidden independently without affecting the others.
+Action fields are `enabled`, `label`, `promoLabel`, `icon`, `showInPromo`, `target`, `alertTitle`, and `alertMessage`. Main is visible in both card states and opens the provider by default. Other actions are hidden by default until explicitly enabled. Explicit action objects or `true` enable a shortcut. Karte defaults to the public map target and is visible before onboarding as well; other shortcuts retain their configured promotional visibility and show a configurable coming-soon alert unless assigned a supported target. Use `false` or `enabled: false` to hide them. Explicit placeholders remain unsupported product functions, not completed deep links. Their individual `alertTitle`/`alertMessage` override the shared alert copy when nonempty. `target: "provider"` opens the general provider screen; `"comingSoon"` (and unknown targets) shows the alert. `target: "map"` opens the existing POI map with Klima-Taler locations. The badge shortcut defaults to `target: "badges"`, opening the SDK badge page on a compatible native build. Wallet and settings deep links are not implemented. In particular, the wallet shortcut does not open an unrelated SVA wallet. Each shortcut can be hidden independently without affecting the others.
 
 Explicit `additionalProps.texts` values override `text` on the widget entry. Appearance settings under `settings["klima-taler"]` are not read. Settings updates apply on refresh without a native rebuild. Wrong scalar types and unknown fields are ignored. Customer styles should retain readable contrast, text scaling and at least 48-point touch targets.
 
@@ -111,7 +113,7 @@ Compact widgets share each row's full available width, including incomplete rows
 
 Install JavaScript dependencies from the checked-in lockfile with `yarn install --frozen-lockfile` before generating native projects. Native module or credential changes require a development build; they cannot be delivered to Expo Go.
 
-1. Supply customer-issued mobile SDK values in `secrets[<expo.slug>]['klima-taler']` in the existing private `src/config/secrets.js`: `clientId` (numeric identifier), `clientSecret`, and `clientName` (provider application identifier / `x-app`). Empty placeholders are available in both public secret templates.
+1. Supply customer-issued mobile SDK values in `secrets[<expo.slug>]['klima-taler']` in the existing private `src/config/secrets.js`: `clientId` (numeric identifier), `clientSecret`, and `clientName` (provider application identifier / `x-app`). Optional `environment` is `production` (default) or `stage`; it must match the credentials. Existing staging customers must explicitly select `stage`. Empty placeholders are available in both public secret templates.
 2. For local iOS builds, run `yarn changers:prepare:ios` before prebuild. The EAS `eas-build-pre-install` hook downloads the same pinned frameworks for iOS builds.
 3. Use the normal Expo prebuild and native build workflow. Expo Go cannot load this module.
 
@@ -119,14 +121,14 @@ Credentials are consumed by native build mods and are not serialized in Expo `ex
 
 ## Compatibility
 
-- OTA runtime: `<app version>-changers-3`. This includes the native registration attempt journal and must not share updates with app-version-only, `changers-1` or `changers-2` binaries. Install a new native build before publishing matching updates.
-- iOS: Changers 4.2.0 / MotionTag 6.3.4, pinned to vendor commit `33c65f9b8db1618dfff3530c73a061935a66a9ff`.
-- Android: `com.github.Changers.Android-SDK:sdkstaging:1.20.6` / MotionTag 7.2.5.
-- The provider connection uses iOS `.stage` and Android `sdkstaging`. These names are vendor transport identifiers, not SVA customer environment selectors.
+- OTA runtime: `<app version>-changers-8-<environment>`. This isolates native badge-link support and must not share updates with app-version-only or `changers-1` through `changers-7` binaries. Existing activation and registration journals are retained. Install a new native build before publishing matching updates.
+- iOS: Changers 4.3.0 / MotionTag 6.3.4, pinned to vendor commit `4bcbd85dcf3d303fd262b2165d5f57fa6c620ad0`.
+- Android: `com.github.Changers.Android-SDK:sdk:1.20.7` for production or `sdkstaging:1.20.7` for stage / MotionTag 7.2.5.
+- The provider environment is independent of the SVA customer slug. Production uses iOS `.production`, Android `sdk`, and `https://activity.changers.com/api/statistics/sdk`. Stage uses iOS `.stage`, Android `sdkstaging`, and `https://activity.maroshi.de/api/statistics/sdk`. The config plugin writes the same selected environment to native configuration and Android's `expo.changers.environment` Gradle property. Android fails closed if generated credentials and the compiled environment disagree. Production and staging OTA runtimes are isolated.
 
 The plugin preserves existing permission descriptions, activities, providers and backup rules. It enables iOS Scene support through Expo build-properties, requiring the included Expo SDK 57 patch updates. Lifecycle integration uses Expo subscribers rather than edits to generated application delegates.
 
-The iOS vendor framework contains arm64 device and x86_64 simulator slices, but no arm64 simulator slice. Apple Silicon simulator builds use an unavailable adapter (`E_SIMULATOR_UNSUPPORTED`). A prebuild-persistent CocoaPods hook excludes only that unsupported framework from linking and embedding. Provider testing requires a supported native target.
+The iOS vendor frameworks contain arm64 device and arm64/x86_64 simulator slices. Apple Silicon simulators now use the same provider adapter as devices. The config plugin removes the legacy generated simulator hook while preserving customer Podfile hooks. Regenerate the native project and reinstall pods before rebuilding; do not reuse previously patched CocoaPods build output. Simulator support does not establish physical-device permission or background-tracking acceptance.
 
 Android uses the OkHttp 5.1.0 BOM to align MotionTag's HTTP client with React Native/MapLibre's cookie adapter. Mixing the 4.x cookie adapter with the 5.x client causes a missing-class crash. `ChangersBootReceiver` replaces the vendor boot/update receiver. The Expo Application listener restores the last successfully applied native customer gate and previous explicit activation before initializing Changers in a cold process. The receiver forwards only supported boot/update actions after that initialization. Neither path calls `startTracking`, signs up, or requests permissions. The pinned MotionTag implementation restores its persisted session state during initialization; its boot receiver itself only records the event. Actual resumption still requires provider consent, OS permissions and device verification.
 
@@ -144,9 +146,15 @@ The last known gate is intentionally used while JS/network configuration is unav
 
 See Android's [background service restrictions](https://developer.android.com/develop/background-work/services/fgs/restrictions-bg-start) and [stopped-state behavior](https://developer.android.com/about/versions/15/behavior-changes-all#stopped-state).
 
+The production correction changes the provider transport while keeping activation/registration storage keys, the read-only statistics path and provider presentation/close flow. Provider accounts and tokens from stage must not be treated as production identities. It does not wire the new deep-link methods or implement map/offer navigation. Android session accessors remain version-bound and have been checked against the 1.20.7 artifact; the vendor statistics method is still bypassed.
+
+### Switching provider environments
+
+Changing credentials alone does not switch the SDK server. A native rebuild with the matching environment is required; do not reuse staging credentials, tokens or UUIDs against production. The vendor iOS guide requires uninstall/reinstall when changing environments. Do not automatically uninstall, clear data or log out an existing installation: establish a provider-supported recovery/migration plan first. A successful build or launch does not establish that an existing account was migrated.
+
 ## Provider entry and widget lifecycle
 
-Provider entry presents above the originating screen without an intermediate SVA route. Repeated taps share one pending request. iOS provides an accessible close control over the provider content; Android uses the provider activity and system Back. Closing preserves the account and tracking preference. Failed restoration of an existing session does not silently create another account.
+Provider entry presents above the originating screen without an intermediate SVA route. Repeated taps share one pending request. iOS presents the provider full screen without a host close overlay. The SDK’s own close action/callback returns to the originating app screen; Android uses the existing provider activity and system Back. Closing preserves the account and tracking preference. Failed restoration of an existing session does not silently create another account.
 
 The widget reads iOS `user.coins` or Android `user.recoins`. It distinguishes an actual zero balance from missing, unsupported or failed data. Without a provider session it shows a promotional card. The card uses SVA typography and accessibility text scaling.
 
@@ -162,9 +170,9 @@ The vendor `readStatistics()` method logs an authenticated cURL command and may 
 
 The dedicated HTTP client has no logging interceptors, shared cookies or cache. Redirects and automatic retries are disabled. Requests time out after 20 seconds, responses are limited to 1 MiB, and only finite numeric `user.recoins` is accepted as a balance. Errors expose fixed codes and messages without response bodies, request details or exception causes. No error path clears credentials, creates an account or changes tracking permissions.
 
-`ChangersStatisticsSession.java` isolates version-specific JVM accessors to the SDK's session. Revalidate those accessors, headers, endpoint and response fields when upgrading the vendor SDK. This adapter protects the widget request path; it does not change every logging path inside the vendor SDK.
+`ChangersStatisticsSession.java` uses environment-specific `ChangersSdkAccess.java` sources to read the matching SDK session without reflection. Production and stage expose different JVM accessor names. Revalidate those accessors, headers, endpoint and response fields when upgrading the vendor SDK. This adapter protects the widget request path; it does not change every logging path inside the vendor SDK.
 
-Android statistics require the native `safeStatistics: true` capability. Older binaries retain the unavailable state even with newer JavaScript. Rebuilding Android enables the balance; the capability was introduced in the `changers-2` runtime; current builds use `changers-3`.
+Android statistics require the native `safeStatistics: true` capability. Older binaries retain the unavailable state even with newer JavaScript. Rebuilding Android enables the balance; the capability was introduced in the `changers-2` runtime; current builds use `changers-8-<environment>`.
 
 ## Testing and limitations
 
@@ -181,11 +189,12 @@ Focused checks:
 yarn test __tests__/klimaTaler --runInBand
 cd android
 ./gradlew :expo-changers:testDebugUnitTest :expo-changers:testReleaseUnitTest
+./gradlew :expo-changers:testDebugUnitTest :expo-changers:testReleaseUnitTest -Pexpo.changers.environment=stage
 ```
 
-iOS compatibility checks are in `__tests__/klimaTaler/simulator_compatibility_test.rb`. Run the UIKit presentation harness on a booted Apple Silicon simulator with `sh __tests__/klimaTaler/ios/run-presentation-tests.sh <UDID>`.
+The plugin tests cover removal of the legacy simulator workaround. Run the UIKit presentation harness on a booted Apple Silicon simulator with `sh __tests__/klimaTaler/ios/run-presentation-tests.sh <UDID>`.
 
-Device acceptance should cover initial consent, denied and granted permissions, opening/closing, session restoration, widget refresh, disabling the module, and tracking lifecycle. Account deletion, actual background journey collection, buffered data handling and reboot recovery require separate provider/device validation. Map/POI navigation and badge data remain pending contracts. SVA profiles are not synchronized with provider accounts.
+Device acceptance should cover initial consent, denied and granted permissions, opening/closing, session restoration, widget refresh, disabling the module, and tracking lifecycle. Account deletion, actual background journey collection, buffered data handling and reboot recovery require separate provider/device validation. A separately rendered native badge list and general provider POI details still need data/target contracts. SVA profiles are not synchronized with provider accounts.
 
 ### Registration recovery
 
@@ -202,7 +211,7 @@ xcrun swiftc modules/expo-changers/ios/ChangersRegistration.swift __tests__/klim
 
 ### iOS timeout recovery
 
-The pinned Changers 4.2.0 public Swift interface stores authentication/setup/statistics delegates on the singleton. It exposes no cancellation handle from register/login/statistics, no documented non-destructive reset, and no request identifier in callbacks. The public `URLSessionDataTaskProtocol.cancel()` is not a request handle returned by those methods. `logoutUser`, `clearCache`, and `stopTrackingAndClearData` are not documented cancellation barriers.
+The upgraded Changers 4.3.0 public Swift interface stores authentication/setup/statistics delegates on the singleton. It exposes no cancellation handle from register/login/statistics, no documented non-destructive reset, and no request identifier in callbacks. The public `URLSessionDataTaskProtocol.cancel()` is not a request handle returned by those methods. `logoutUser`, `clearCache`, and `stopTrackingAndClearData` are not documented cancellation barriers.
 
 Accordingly the unresolved operation is still quarantined after `E_TIMEOUT`; freeing it would allow an old callback to settle a newer request or mutate its session. Late completion releases the slot and cannot settle the timed-out promise twice. If no callback arrives, a process restart is still required; **the permanent busy defect is not fixed**. Provider delivery needed: cancellable operations with completion acknowledgment, request-scoped delegates, or a documented reset that preserves identity and prevents late callbacks/session mutation. Registration outcomes also remain uncertain across restart, so restarting is not permission to repeat signup.
 
@@ -214,7 +223,7 @@ For an iOS launch failure mentioning `UIApplicationEvaluateRuntimeIssueForNoScen
 
 ### Offline provider content
 
-The provider sheet can display only `Loading...` while offline, without a specific network error. Content may recover when connectivity returns; this is not a guarantee of bounded timeout recovery. The host close control remains separate from the provider content. Test offline entry and reconnect with the SDK version and customer configuration being shipped. A wireless development client also depends on Metro for JavaScript reloads, so distinguish a lost development-server connection from provider request failures.
+The provider modal can display only `Loading...` while offline, without a specific network error. Content may recover when connectivity returns; this is not a guarantee of bounded timeout recovery. The SDK owns the visible close controls; test its close action while content is still loading. Test offline entry and reconnect with the SDK version and customer configuration being shipped. A wireless development client also depends on Metro for JavaScript reloads, so distinguish a lost development-server connection from provider request failures.
 
 ### Tracking status
 
@@ -222,11 +231,110 @@ The provider sheet can display only `Loading...` while offline, without a specif
 
 ## Extending badge and map support
 
-Do not synthesize badge values or assume that generic provider navigation opens a wallet, badge or POI detail. These features require confirmed provider contracts before implementation.
+### Public offer feed foundation
 
-For badges, obtain stable IDs, labels, images, acquisition state and update signals. For map integration, obtain the public feed's customer/source identification, stable partner/site/offer IDs, coordinates, title, image fallback, validity/deletion rules, pagination and synchronization behavior, plus a verified provider detail target for each platform. Preserve the selected target across onboarding or session recovery. A public POI feed must not contain personal tracking or account data.
+`src/klimaTaler/createOffersClient.ts` provides a read-only client for the public
+`/api/v1/map/offers` endpoint. The existing POI map (`LocationOverview`) consumes this feed as an additional data
+source. Creating the client does not initialize the SDK, register a user, request location permission
+or fetch data. Pass `expo/fetch` as the transport when connecting a screen.
 
-Use the existing SVA map and preview components once these contracts are available. Generic backend POI fields or test fixtures alone do not establish a working provider integration.
+Each `load(environment, query)` explicitly selects `stage` or `production`. The caller
+must use the native configuration's environment; do not infer it from the customer slug.
+Supply either an area preset or coordinates, optionally a radius of 0.5–25 km. Language
+defaults to German and is sent through `Accept-Language`. The client sends no account
+headers or cookies and rejects redirects. Detmold is supplied by the caller as
+`{ area: 'detmold' }`, not hard-coded into shared map code.
+
+Successful results, including empty results, are cached in memory for five minutes,
+separately by environment, language and query. Concurrent identical requests share one
+operation. Requests have a 15-second timeout; failures are not cached as empty results.
+HTTP 429 blocks further network reads in the affected environment until `Retry-After`
+(seconds or HTTP date); a missing/invalid header uses 60 seconds. There are no automatic
+retries. Cached successful data can still be read during this interval.
+
+The client validates response coordinates, counts, offers and their documented HTTPS
+detail links. It preserves all offers per location, shared offer IDs across locations,
+server-adjusted pin positions, empty location images and null offer images. A malformed
+response rejects with a fixed error code; raw response bodies and transport errors are
+not exposed. The Klima-Taler map remains empty if its feed fails or is empty; it never falls back to backend POIs.
+
+Run `yarn test __tests__/klimaTaler/OffersClient.test.ts --runInBand` to check this layer.
+Enable the existing widget's Karte shortcut through
+`globalSettings.widgets[].additionalProps.actions.map: true` (or an object with
+`enabled: true, target: "map"`). It opens the existing POI overview directly in map
+mode with only the Klima-Taler source enabled. Backend POI reads, category filters and the
+list switch are disabled for this entry. No standalone screen is added. The shortcut
+is also available before onboarding; `showInPromo: false` hides it in that state.
+Explicit action targets and disabling the shortcut remain supported. Other POI map
+entries keep their existing sources. The existing map's chip
+filter includes a Klima-Taler source toggle. External pins share MapLibre clustering and
+use an existing fallback marker image. They have namespaced `klima-taler:<id>` IDs; selecting
+them never issues a backend POI-detail request. The existing bottom preview shows the partner;
+tapping a single-offer partner opens that offer inside the existing Klima-Taler provider.
+For multiple offers, tapping the partner reveals an accessible offer selector; an explicit
+selection opens that offer, rather than choosing the first one silently. No host POI-detail
+page is built and no voucher is redeemed automatically.
+
+Only a positive safe-integer offer ID crosses the new `openOffer` bridge. Both native
+platforms independently construct `https://open.klima-taler.com/offers/<id>`; arbitrary
+URLs, a location ID and credentials are not passed. iOS uses `handleDeepLink` after the
+existing wrapped modal is presented. Android uses `openLink`, or `handleDeepLink` when
+its provider activity already exists. External browser navigation and OS-level universal
+link registration are not needed for this internal entry.
+
+On iOS 4.3.0, `handleDeepLink` can return `false` after handing an ordinary offer to the
+web app. Its Bool is not a navigation-success acknowledgement. The adapter deliberately
+ignores that result for its validated offer URL; it must not reject or close the modal.
+The native offer-link harness covers both SDK results and the target-free dashboard case.
+
+Changers 4.3.0 retains `isWebAppReadyForDeepLinks` on its singleton after dismissal.
+Before constructing a fresh provider web controller, the adapter resets this public flag
+so the SDK queues the target until the new web app signals readiness. Reusing an already
+presented controller does not reset it. Without this reset, the first offer can open
+correctly while subsequent presentations lose their target and remain on the dashboard.
+
+The central entry coordinator still prepares the existing session before presenting.
+Repeated taps share a request; retries retain the selected ID. Cancellation during
+session preparation prevents late target delivery. The SDK is responsible for deferring
+a handed-over offer until its own web app/onboarding is ready. This requires native device
+acceptance: especially initial onboarding, closing before completion, reopening the normal
+widget, selecting a different offer and remote disable. Host tests cannot prove vendor
+queue consumption or cancellation. No target is persisted by the host across process death.
+Older binaries fail with the existing app-update message before activation or signup.
+Build runtime `changers-7-<environment>` before distributing the current native presentation changes.
+
+The search defaults to the existing `mapSettings.mapCenterPosition` and German content.
+Radius is omitted unless configured; the API currently defaults to 10 km. An optional `settings["klima-taler"].offers` object can supply `area`,
+`radius` and `language`; shared code does not hard-code a customer. Opening or moving the
+map does not request device location or initialize a provider account. Equivalent map
+settings and map pans do not trigger additional feed requests.
+
+The source toggle affects Klima-Taler pins. Other map entries retain their existing backend category chips. External locations are hidden when the overview requires opening
+hours or a device-centered radius filter, because the public feed cannot verify those
+filters. Remote module disable hides pins and preview immediately and ignores late results.
+Feed errors and empty results are indicated in the source chip without replacing the map.
+
+Acceptance: open Karte in the Klima-Taler widget, check that only Klima-Taler pins appear,
+toggle the source, then open a single-offer partner or select one of multiple offers. Check normal POI selection
+and category filters through an ordinary POI map entry. Check dark mode/large text.
+An empty staging feed should show `Klima-Taler (0)` without unrelated POI pins.
+Automated fixtures cover populated pins/previews; actual populated device testing requires
+Changers to supply public staging partners.
+The integration reuses the existing `MapLibre` and `ChipFilter` components. Normal POIs
+and Klima-Taler locations share `MapPreview`, extracted from the existing location preview,
+with consistent inset image/text spacing. Klima-Taler only adds offer selection and provider
+navigation as optional preview content. Offer rows reuse `TextListItem` and show the
+offer image when supplied. A single-offer preview prefers that image over the partner
+image. Availability is displayed as `10+` above ten and as the exact count at ten or below. The separate SVA wallet in the design reference is not a Klima-Taler balance
+or an SDK wallet target.
+
+### Remaining provider contracts
+
+Badges use the confirmed provider page link described below; the app does not fetch or synthesize badge records. A separately rendered SVA badge list would still require a JSON contract with stable IDs, labels, images, acquisition state and update signals. The other supplied page links (`app`, `offers`, `teams`, `map`) are reserved for future provider navigation; they do not replace the existing SVA map or wallet flows.
+
+For general partner/location details, a provider target remains unconfirmed. Preserve selected targets across onboarding or session recovery. A public POI feed must not contain personal tracking or account data.
+
+Use the existing SVA map and preview components once these contracts are available. Generic backend POI fields or test fixtures alone do not establish a working provider integration. The current contract targets offers; a general partner/location detail link remains unconfirmed.
 
 ## Device acceptance checklist
 
@@ -240,3 +348,104 @@ Use a native binary with the matching runtime and customer-issued configuration.
 6. Complete provider consent and test real route recording after backgrounding, OS process recreation, reboot and package update. Test Android force-stop separately and reopen manually. Revoke permissions and provider consent, confirming that the host does not silently restore them.
 7. Validate logout, consent withdrawal, account deletion and buffered data separately using disposable accounts where necessary. Never infer deletion from hiding the module or stopping tracking.
 8. Review sanitized device logs for sensitive data, verify native/OTA compatibility, and resolve the repository quality gates before release. Badge and POI acceptance additionally require the contracts described above.
+
+## Imported POIs and provider coupons
+
+Instances that import the public feed into Mainserver can use the ordinary POI map,
+preview, POI detail and voucher detail instead of the live provider overlay. This is
+an explicit instance setting; existing instances retain their current map behavior.
+Merge these fields into the existing module configuration:
+
+```json
+{
+  "settings": {
+    "klima-taler": {
+      "offers": {
+        "source": "mainserver",
+        "dataProviderId": "<instance-provider-id>",
+        "categoryId": "<instance-category-id>"
+      }
+    }
+  }
+}
+```
+
+Keep the widget's existing `additionalProps.actions.map: true` setting. Both IDs
+must be positive numeric IDs from the same Mainserver instance. Incomplete settings
+stop navigation rather than opening an unrestricted map. The category is the initial
+`categoryIds` selection; the provider ID is validated but does not constrain the map.
+The imported-map route opts into `showAllPoiCategories`: chips load the instance's
+active categories with positive POI tree counts, retaining the initial KT category
+also at zero count. The initial KT category is placed first so its selected state
+is visible without horizontal scrolling. Only KT starts selected; other categories
+can be added/removed. In this mode the map owns the category selection and updates
+query variables declaratively, avoiding a disposed legacy Apollo `refetch` callback.
+Changing categories clears the old selected marker/preview. Existing category
+maps retain their previous refetch behavior. The catalog uses a separate minimal query without non-null
+variable defaults for compatibility with older Mainserver GraphQL validators.
+Marktplatz category scope and the legacy public-feed map retain their defaults. For the current demo
+staging import they are provider **601**, category **6013**; these values are not
+shared application defaults. Changing `secrets.js` alone does not enable this map
+source; configure these non-secret global settings on the matching instance.
+
+Flow: Karte → normal Mainserver map → normal preview → normal POI detail → tap an
+imported voucher → native SDK offer detail. The shared POI detail opts into direct
+provider opening, including when reached from Marktplatz. Ordinary SVA vouchers
+still open their existing voucher detail. Other voucher lists retain the voucher
+detail and its **In Klima-Taler nutzen** button. Both entry points share availability,
+duplicate-tap protection and failure recovery. The database coupon ID
+remains the SVA route/cache identity; the validated `payload.klimaTaler.offerId`
+is the provider destination. The native runtime environment must match the
+coupon's imported environment. No user credentials are stored in this payload.
+
+The importer writes schema version 1 with `redemptionMode: "provider"`, environment,
+location/offer IDs, cost, remaining stock and canonical provider deeplink. Imported
+coupons have no SVA quota/discount fields, require no local voucher login and do
+not call local quota redemption. Invalid provider metadata cannot fall back to
+local redemption. Lists display `10+` above ten remaining coupons and exact values
+at ten or below; depleted imported coupons are excluded from available lists.
+Provider stock is a database snapshot and Changers remains authoritative at use time.
+Ordinary SVA coupons retain their existing login, quota and redemption flow.
+
+Test on the matching staging instance:
+
+1. Configure the imported source and both instance IDs. Open Karte and verify only
+   KT starts selected, with the other POI category chips also available. Select
+   another category and deselect KT to show ordinary POIs. Close/reopen to verify
+   the initial KT selection and compare with the unchanged Marktplatz scope.
+2. Tap a pin, then its preview. The ordinary POI detail must open without the SDK.
+3. Select an imported coupon on the POI detail. Verify that the SDK opens the matching
+   offer directly, without an intermediate SVA voucher detail. Close it, then repeat
+   with the same and another coupon. Repeat after reaching the POI from Marktplatz.
+4. Open an imported coupon from an ordinary voucher list. Its existing detail and
+   **In Klima-Taler nutzen** button must still open the matching SDK offer.
+5. Verify an ordinary SVA coupon on either POI detail or voucher lists still follows
+   its existing detail, login and redemption flow. Disabled KT, depleted stock,
+   mismatched environments and invalid provider metadata must not open an offer.
+6. Disable the override and verify the existing direct provider map remains available.
+
+The Mainserver `preserveVouchers` opt-in must be deployed before ongoing imports
+update existing POIs or append coupons. This app change does not deploy that API.
+It reuses the existing native bridge and requires the compatible Changers binary
+from the SDK feature branch; it adds no new native API or runtime requirement.
+
+
+## Badge shortcut
+
+Enable the existing widget shortcut through `additionalProps.actions`:
+
+```json
+{ "actions": { "badges": true } }
+```
+
+Existing explicit action options remain supported, for example `"badges": { "enabled": true, "label": "Deine Badges", "target": "badges" }`. Remove a previously configured `target: "comingSoon"` override to use the new default destination. The shortcut stays opt-in and is hidden before onboarding by default, like the existing customer configuration. Set `showInPromo: true` explicitly if it should also start onboarding.
+
+The medal shortcut opens the existing full-screen SDK modal at `https://open.klima-taler.com/badges`. These are provider page links, not a public JSON badge API. The authenticated SDK renders badge data, progress and images; the host supplies no example badge artwork or invented achievements. Provider styling may differ from the design reference.
+
+Both platforms use the same session coordinator as dashboard/offer entry. iOS resets web readiness for each new modal, then forwards the link after presentation. Android opens the link through `Changers.openLink` or forwards it to the current provider activity. Only the fixed `badges` target is accepted for this feature; arbitrary URLs, query strings and unimplemented page names are rejected. Existing marketplace behavior is retained.
+
+The native `badgeLinks` capability and `changers-8-<environment>` runtime require a new iOS/Android binary. Older binaries report unavailable rather than opening the dashboard. The JavaScript bridge preserves the badge target on retries and after closing/reopening, and disabling the module uses the existing close/cancellation flow without discarding the account.
+
+Device acceptance: enable the shortcut, open Badges, verify the SDK list, close with the SDK control and reopen twice. Then open an imported coupon and dashboard to verify independent destinations. Check an existing signed-out session and an explicitly enabled promotional shortcut; onboarding must precede badge display and existing accounts must not be replaced. Test Android separately on a matching native build.
+
+Provider references: [iOS deep links](https://github.com/Changers/changers-ios-sdk#5-deep-links), [Android deep links](https://github.com/Changers/Sample-Android-SDK#5-deep-links).

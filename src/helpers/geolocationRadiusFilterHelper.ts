@@ -2,6 +2,8 @@ import { LocationObject } from 'expo-location';
 
 import { locationServiceEnabledAlert } from '../components';
 
+import { resolveReferencePosition } from './locationReference';
+
 const deg2rad = (deg: number) => deg * (Math.PI / 180);
 
 const getDistanceFromLatLonInKm = (lat1: number, lon1: number, lat2: number, lon2: number) => {
@@ -63,12 +65,10 @@ export const geoLocationFilteredListItem = ({
   setIsLocationAlertShow
 }: GeoLocationListItemProps) => {
   const { locationService: locationServiceEnabled } = locationSettings;
-  const { alternativePosition } = locationSettings;
-  const latitude = currentPosition?.coords.latitude || alternativePosition?.coords.latitude;
-  const longitude = currentPosition?.coords.longitude || alternativePosition?.coords.longitude;
+  const referencePosition = resolveReferencePosition(locationSettings, currentPosition);
 
   if (queryVariables.radiusSearch.currentPosition) {
-    if (!locationServiceEnabled && !isLocationAlertShow) {
+    if (!referencePosition && !isLocationAlertShow) {
       locationServiceEnabledAlert({
         currentPosition,
         locationServiceEnabled,
@@ -78,16 +78,14 @@ export const geoLocationFilteredListItem = ({
 
       return listItem;
     }
-
-    if (!latitude && !longitude) {
-      return listItem;
-    }
   }
+
+  if (!referencePosition) return listItem;
 
   return filterLocationsWithinRadius(
     listItem,
-    latitude,
-    longitude,
+    referencePosition.coords.latitude,
+    referencePosition.coords.longitude,
     queryVariables.radiusSearch.distance
   );
 };

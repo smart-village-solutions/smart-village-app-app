@@ -22,7 +22,7 @@ This setup also applies to unconfigured customer builds, because the shared nati
 
 SDK, config-plugin and native-module changes require a new iOS/Android build. Do not distribute them as a JavaScript-only OTA to an older binary. The plugin assigns a Changers-specific runtime to isolate incompatible binaries.
 
-The pinned vendor frameworks do not support the arm64 iOS simulator. The module returns an explicit unsupported-simulator error instead of creating a simulated account. Use a physical device to test provider onboarding and sessions.
+The pinned Changers 4.3.0 / MotionTag 6.3.4 XCFrameworks include arm64 simulator slices. The old 4.2.0 simulator workaround is removed. Use a physical device to validate tracking and provider sessions under real permission and lifecycle conditions.
 
 ## Validation
 
@@ -43,7 +43,7 @@ cd android
 
 SDK activation and successful account creation are separate states. The iOS adapter persists a registration journal before dispatching signup. A known offline failure before dispatch remains retryable, including after restarting the app. An ambiguous response after dispatch, an existing identity, or an older activated installation must not cause automatic creation of a second account; the entry explains when provider support is required.
 
-This recovery behavior requires a new native build and the `changers-3` runtime. JavaScript detects whether a compatible binary exposes registration history and preserves the conservative fallback on older binaries.
+Registration recovery was introduced with the `changers-3` runtime. The current SDK, offer links, fullscreen presentation and badge links require a new native build using `<app version>-changers-8-<environment>`. The configured `stage` or `production` environment must match the mobile credentials. JavaScript detects older binaries and preserves conservative registration and capability fallbacks.
 
 The journal persistence checks run without provider credentials or an iOS SDK binary:
 

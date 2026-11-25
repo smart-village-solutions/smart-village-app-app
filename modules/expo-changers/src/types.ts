@@ -6,6 +6,7 @@ export type Capabilities = Record<
   | 'stopTracking'
   | 'logout'
   | 'marketplace'
+  | 'offerDetails'
   | 'badgeList'
   | 'poiDetails',
   Capability
@@ -32,12 +33,14 @@ export interface Statistics {
 }
 export interface ChangersNative {
   readonly safeStatistics?: boolean;
+  readonly badgeLinks?: boolean;
   addListener(event: 'onProviderClosed', listener: () => void): { remove(): void };
   getStatus(): Promise<Status>;
   setEnabled(enabled: boolean): Promise<void>;
   activate(): Promise<Status>;
   getUserUUID(): Promise<string | null>;
   openProvider(): Promise<void>;
+  openOffer(offerId: string): Promise<void>;
   closeProvider(): Promise<void>;
   registerUser(): Promise<string | null>;
   loginUser(uuid: string): Promise<string | null>;

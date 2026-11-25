@@ -29,6 +29,18 @@ class ChangersStatisticsClientTest {
     }
   }
 
+  @Test fun `balance requests use the selected native environment`() {
+    assertEquals("https://activity.changers.com/api/statistics/sdk", statisticsEndpoint("production").toString())
+    assertEquals("https://activity.maroshi.de/api/statistics/sdk", statisticsEndpoint("stage").toString())
+    assertEquals(statisticsEndpoint(BuildConfig.CHANGERS_ENVIRONMENT), ChangersStatisticsClient().endpoint)
+    try {
+      statisticsEndpoint("prod")
+      fail("Invalid environments must not send credentials")
+    } catch (error: IllegalArgumentException) {
+      assertEquals("E_CONFIGURATION", error.message)
+    }
+  }
+
   @Test fun `reads current user balance including true zero without using cumulative or organisation totals`() {
     for (balance in listOf(0.0, 12.5)) {
       server.enqueue(MockResponse().setBody("""{"organisation":{"recoins":999},"user":{"recoins":$balance,"recoins_earned":888,"walking":2,"cycling":3,"co2_avoided":4}}"""))

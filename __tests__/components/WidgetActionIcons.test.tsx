@@ -37,7 +37,21 @@ const cases = [
     'MaterialCommunityIcons'
   ],
   ['refresh', 'simplelineicons', 'refresh', VectorIcons.SimpleLineIcons, 'SimpleLineIcons'],
-  ['refresh', 'tabler', 'refresh', Tabler.IconRefresh, null]
+  ['refresh', 'tabler', 'refresh', Tabler.IconRefresh, null],
+  ['leaf', 'tabler', 'leaf', Tabler.IconLeaf, null],
+  ['leaf', 'ionicons', 'leaf-outline', VectorIcons.Ionicons, 'Ionicons'],
+  ['leaf', 'fontawesome', 'leaf', VectorIcons.FontAwesome, 'FontAwesome'],
+  ['leaf', 'fontawesome5', 'leaf', VectorIcons.FontAwesome5, 'FontAwesome5Free'],
+  ['leaf', 'fontawesome6', 'leaf', VectorIcons.FontAwesome6, 'FontAwesome6Free'],
+  ['leaf', 'materialicons', 'energy-savings-leaf', VectorIcons.MaterialIcons, 'MaterialIcons'],
+  [
+    'leaf',
+    'materialcommunityicons',
+    'leaf',
+    VectorIcons.MaterialCommunityIcons,
+    'MaterialCommunityIcons'
+  ],
+  ['leaf', 'simplelineicons', 'globe-alt', VectorIcons.SimpleLineIcons, 'SimpleLineIcons']
 ] as const;
 
 // Verify real installed glyphs, not only a nonempty mapping or the raw-name fallback.

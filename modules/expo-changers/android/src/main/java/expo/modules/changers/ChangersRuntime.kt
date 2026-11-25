@@ -16,7 +16,7 @@ internal object ChangersRuntime {
     write = { prefs.edit().putBoolean("enabled", it).commit() }
   )
   val enabled get() = settingsGate.enabled
-  var environment = "stage"
+  val environment = BuildConfig.CHANGERS_ENVIRONMENT
   var configured = false
   var errorCode: String? = null
   private var configuration = JSONObject()
@@ -32,7 +32,7 @@ internal object ChangersRuntime {
     application = app
     try {
       configuration = JSONObject(app.assets.open("changers-config.json").bufferedReader().use { it.readText() })
-      environment = configuration.optString("environment", "stage")
+      check(configuration.optString("environment", "production") == environment) { "E_CONFIGURATION" }
       configured = listOf("clientId", "clientSecret", "clientName").all { configuration.optString(it).isNotBlank() }
       app.registerActivityLifecycleCallbacks(object : Application.ActivityLifecycleCallbacks {
         override fun onActivityCreated(a: Activity, b: Bundle?) { if (a is WebActivity) { providerActivity = a; opening = false; if (!enabled) a.finish() } }
@@ -61,8 +61,8 @@ internal object ChangersRuntime {
     val intent = application.packageManager.getLaunchIntentForPackage(application.packageName)
     val pending = PendingIntent.getActivity(application, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
     val notification = NotificationCompat.Builder(application, channel)
-      .setSmallIcon(android.R.drawable.ic_menu_mylocation).setContentTitle("Klima-Taler")
-      .setContentText("Klima-Taler berücksichtigt Ihre Tracking-Einstellungen").setContentIntent(pending)
+      .setSmallIcon(android.R.drawable.ic_menu_mylocation)
+      .setContentText(application.getString(R.string.expo_changers_tracking_notification_text)).setContentIntent(pending)
       .setOngoing(true).setCategory(NotificationCompat.CATEGORY_SERVICE).build()
     Changers.with(application, Changers.Settings(appName = configuration.getString("clientName"),
       clientId = configuration.getString("clientId"), clientSecret = configuration.getString("clientSecret"),
@@ -85,7 +85,7 @@ internal object ChangersRuntime {
   fun stop() { if (initialized) Changers.stopTracking(); check(prefs.edit().putBoolean("accepted", false).commit()) { "E_STORAGE" } }
   fun requireReady() { check(enabled) { "E_DISABLED" }; check(configured) { "E_CONFIGURATION" }; check(activated) { "E_NOT_ACTIVE" }; check(initialized) { "E_NOT_READY" } }
   fun status(): Map<String, Any?> = mapOf(
-    "platform" to "android", "environment" to environment, "sdkVersion" to "1.20.6", "motionTagVersion" to "7.2.5",
+    "platform" to "android", "environment" to environment, "sdkVersion" to "1.20.7", "motionTagVersion" to "7.2.5",
     "state" to when {
       !configured -> "unconfigured"
       !activated -> "inactive"

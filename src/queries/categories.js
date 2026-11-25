@@ -74,3 +74,15 @@ export const GET_CATEGORIES_FILTER = gql`
     }
   }
 `;
+
+// Keep the existing category query unchanged for legacy callers and servers.
+export const GET_MAP_POI_CATEGORIES = gql`
+  query MapPoiCategories {
+    categories {
+      id
+      iconName
+      name
+      pointsOfInterestTreeCount
+    }
+  }
+`;

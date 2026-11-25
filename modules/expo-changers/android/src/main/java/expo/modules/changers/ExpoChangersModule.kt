@@ -8,6 +8,7 @@ import expo.modules.kotlin.Promise
 import expo.modules.kotlin.functions.Queues
 import android.os.Handler
 import android.os.Looper
+import android.net.Uri
 import java.util.concurrent.atomic.AtomicBoolean
 
 class ExpoChangersModule : Module() {
@@ -103,9 +104,24 @@ class ExpoChangersModule : Module() {
     ChangersRuntime.stop()
     return null
   }
+  private fun openLink(url: String) {
+    ChangersRuntime.requireReady()
+    check(!ChangersRuntime.networkBusy.get() && !ChangersRuntime.opening) { "E_BUSY" }
+    val activity = ChangersRuntime.providerActivity ?: appContext.currentActivity ?: error("E_NO_ACTIVITY")
+    if (ChangersRuntime.providerActivity != null) {
+      Changers.handleDeepLink(Uri.parse(url))
+    } else {
+      ChangersRuntime.opening = true
+      try {
+        // The SDK holds the target while its own onboarding/web app becomes ready.
+        Changers.openLink(activity, Uri.parse(url))
+      } catch (e: Exception) { ChangersRuntime.opening = false; throw e }
+    }
+  }
+
   override fun definition() = ModuleDefinition {
     Name("ExpoChangers")
-    Constants("safeStatistics" to true)
+    Constants("safeStatistics" to true, "badgeLinks" to true)
     Events("onProviderClosed")
     OnCreate { ChangersRuntime.onProviderClosed = { sendEvent("onProviderClosed", emptyMap<String, Any>()) } }
     OnDestroy { ChangersRuntime.onProviderClosed = null }
@@ -115,11 +131,20 @@ class ExpoChangersModule : Module() {
     AsyncFunction("getUserUUID") { p: Promise -> resolve(p) { ChangersRuntime.requireReady(); if (Changers.isUserAuthenticated(ChangersRuntime.application)) Changers.uuid.takeIf { it.isNotBlank() } else null } }
     AsyncFunction("openProvider") { p: Promise -> resolve(p) { openProvider() } }.runOnQueue(Queues.MAIN)
     AsyncFunction("closeProvider") { ChangersRuntime.providerActivity?.finish(); null }.runOnQueue(Queues.MAIN)
+    AsyncFunction("openOffer") { offerId: String, p: Promise -> resolve(p) {
+      val url = changersOfferLink(offerId) ?: error("E_INVALID_ARGUMENT")
+      openLink(url)
+      null
+    } }.runOnQueue(Queues.MAIN)
     AsyncFunction("loginUser") { uuid: String, p: Promise -> loginUser(uuid, p) }
     AsyncFunction("registerUser") { p: Promise -> p.reject("E_UNSUPPORTED", "Unter Android erfolgt die Registrierung neuer Benutzer in der Anbieteroberfläche.", null) }
     AsyncFunction("fetchStatistics") { p: Promise -> fetchStatistics(p) }.runOnQueue(Queues.MAIN)
     AsyncFunction("stopTracking") { p: Promise -> resolve(p) { ChangersRuntime.stop(); null } }.runOnQueue(Queues.MAIN)
     AsyncFunction("logout") { p: Promise -> resolve(p) { logout() } }.runOnQueue(Queues.MAIN)
-    AsyncFunction("openTarget") { _: String, p: Promise -> p.reject("E_UNSUPPORTED", "Die Schnittstelle für Zielverknüpfungen unter Android ist nicht bestätigt.", null) }
+    AsyncFunction("openTarget") { target: String, p: Promise -> resolve(p) {
+      val url = changersPageLink(target) ?: error("E_INVALID_ARGUMENT")
+      openLink(url)
+      null
+    } }.runOnQueue(Queues.MAIN)
   }
 }

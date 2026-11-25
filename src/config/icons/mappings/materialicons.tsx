@@ -3,6 +3,7 @@
  * Maps unified icon names to MaterialIcons icon names
  */
 
+import { leafIconNames } from './leaf';
 import { refreshIconNames } from './refresh';
 
 export const materialiconsIconMapping: Record<string, string> = {
@@ -22,6 +23,8 @@ export const materialiconsIconMapping: Record<string, string> = {
   'condense-map': 'fullscreen-exit',
   plus: 'add',
   minus: 'remove',
+
+  leaf: leafIconNames.materialicons,
 
   // Content & Media
   albums: 'collections',

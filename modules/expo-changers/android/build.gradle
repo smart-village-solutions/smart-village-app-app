@@ -4,9 +4,20 @@ plugins {
 }
 group = 'expo.modules.changers'
 version = '0.1.0'
+def changersEnvironment = findProperty('expo.changers.environment') ?: 'production'
+if (!(changersEnvironment in ['stage', 'production'])) {
+  throw new GradleException('Changers environment must be stage or production.')
+}
+def changersArtifact = changersEnvironment == 'production' ? 'sdk' : 'sdkstaging'
 android {
   namespace 'expo.modules.changers'
-  defaultConfig { versionCode 1; versionName '0.1.0' }
+  buildFeatures { buildConfig true }
+  defaultConfig {
+    versionCode 1
+    versionName '0.1.0'
+    buildConfigField 'String', 'CHANGERS_ENVIRONMENT', "\"${changersEnvironment}\""
+  }
+  sourceSets.main.java.srcDir("src/${changersEnvironment}/java")
 }
 // Jedes Repository auf seine tatsächlichen Artefakte beschränken; MotionTag nicht über JitPack auflösen.
 repositories {
@@ -14,7 +25,7 @@ repositories {
   maven { url 'https://jitpack.io'; content { includeGroupByRegex 'com.github.Changers.*' } }
 }
 dependencies {
-  implementation "com.github.Changers.Android-SDK:sdkstaging:1.20.6"
+  implementation "com.github.Changers.Android-SDK:${changersArtifact}:1.20.7"
   // Same tracker version already supplied by Changers; used by the guarded receiver.
   implementation 'de.motiontag:tracker:7.2.5'
   // MotionTag 7.2.5 requires OkHttp 5.1.0. Align the host's cookie adapter too:

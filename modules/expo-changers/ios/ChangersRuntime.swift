@@ -1,4 +1,3 @@
-#if !targetEnvironment(simulator) || !arch(arm64)
 import ExpoModulesCore
 import ChangersSDK
 import UIKit
@@ -34,15 +33,22 @@ final class ChangersRuntime {
   }
   var operation: ChangersOperation?
   var config: [String: String] { Bundle.main.object(forInfoDictionaryKey: "ChangersConfiguration") as? [String: String] ?? [:] }
-  var configured: Bool { Int(config["clientId"] ?? "") != nil && !(config["clientSecret"] ?? "").isEmpty && !(config["clientName"] ?? "").isEmpty }
+  var sdkEnvironment: ChangersEnv? {
+    switch config["environment"] ?? "production" {
+    case "production": return .production
+    case "stage": return .stage
+    default: return nil
+    }
+  }
+  var configured: Bool { sdkEnvironment != nil && Int(config["clientId"] ?? "") != nil && !(config["clientSecret"] ?? "").isEmpty && !(config["clientName"] ?? "").isEmpty }
   var activated: Bool { UserDefaults.standard.bool(forKey: activationKey) }
   func initialize() {
-    guard enabled, configured, activated, !initialized else { return }
+    guard enabled, configured, activated, !initialized, let environment = sdkEnvironment else { return }
     ChangersTracking.sharedInstance.initializeMotionTag(with: launchOptions)
     let sdk = ChangersInstance.shared()
     sdk.debug = false; sdk.maxDebug = false; sdk.isWebViewLogsEnabled = false
     sdk.isWebViewInspectable = false
-    sdk.load(config: ChangersConfig(clientId: Int(config["clientId"]!)!, clientSecret: config["clientSecret"]!, clientName: config["clientName"]!, environment: .stage))
+    sdk.load(config: ChangersConfig(clientId: Int(config["clientId"]!)!, clientSecret: config["clientSecret"]!, clientName: config["clientName"]!, environment: environment))
     initialized = true
   }
   func accept(_ promise: Promise) {
@@ -81,7 +87,7 @@ final class ChangersRuntime {
     return "idle"
   }
   func status() -> [String: Any] {
-    ["platform": "ios", "environment": config["environment"] ?? "stage", "sdkVersion": "4.2.0", "motionTagVersion": "6.3.4",
+    ["platform": "ios", "environment": config["environment"] ?? "production", "sdkVersion": "4.3.0", "motionTagVersion": "6.3.4",
      "state": state,
      "activated": activated, "initialized": initialized, "authenticated": initialized && ChangersInstance.shared().isLoggedIn,
      // ChangersInstance observes app activation and requires MotionTag to exist first.
@@ -176,5 +182,3 @@ final class ChangersDismissalObserver: NSObject, UIAdaptivePresentationControlle
     ChangersRuntime.shared.providerClosed()
   }
 }
-
-#endif

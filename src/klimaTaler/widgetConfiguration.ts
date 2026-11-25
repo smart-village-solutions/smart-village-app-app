@@ -24,6 +24,13 @@ const mergeFields = <T extends Record<string, string | boolean | number>>(
 
 export const KLIMA_TALER_ACTIONS = ['main', 'wallet', 'map', 'badges', 'settings'] as const;
 export type KlimaTalerAction = (typeof KLIMA_TALER_ACTIONS)[number];
+const defaultTargets: Record<KlimaTalerAction, string> = {
+  main: 'provider',
+  map: 'map',
+  badges: 'badges',
+  wallet: 'comingSoon',
+  settings: 'comingSoon'
+};
 export type CardStyles = {
   card: ViewStyle;
   summary: ViewStyle;
@@ -114,8 +121,8 @@ export const resolveKlimaTalerWidget = (
               name === 'main' ||
               actions[name] === true ||
               Object.keys(configurationObject(actions[name])).length > 0,
-            showInPromo: name === 'main',
-            target: name === 'main' ? 'provider' : 'comingSoon',
+            showInPromo: name === 'main' || name === 'map',
+            target: defaultTargets[name],
             alertTitle: '',
             alertMessage: ''
           },
