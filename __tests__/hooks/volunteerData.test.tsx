@@ -45,6 +45,123 @@ const deferred = <T,>() => {
 };
 
 describe('useVolunteerData', () => {
+  beforeEach(() => {
+    mockUseQuery.mockReset();
+    mockVolunteerUserData.mockReset();
+  });
+  it('retains processed data and clears loading when a later credential read fails', async () => {
+    jest.spyOn(console, 'warn').mockImplementation(() => {});
+    let queryData = { results: [{ id: 'saved' }] };
+    let latest: ReturnType<typeof useVolunteerData>;
+    mockUseQuery.mockImplementation(() => ({
+      data: queryData,
+      isLoading: false,
+      isRefetching: false,
+      refetch: jest.fn()
+    }));
+    mockVolunteerUserData.mockResolvedValue({ currentUserId: '1', currentUserGuid: 'saved-user' });
+    const Harness = () => {
+      latest = useVolunteerData({ query: 'test' as never });
+      return null;
+    };
+    const tree = render(<Harness />);
+    await act(async () => {});
+    expect(latest!.data).toEqual([{ id: 'saved' }]);
+
+    mockVolunteerUserData.mockRejectedValueOnce(new Error('SecureStore unavailable'));
+    queryData = { results: [{ id: 'new' }] };
+    tree.rerender(<Harness />);
+    await act(async () => {});
+
+    expect(latest!.isLoading).toBe(false);
+    expect(latest!.data).toEqual([{ id: 'saved' }]);
+    expect(latest!.userGuid).toBe('saved-user');
+    jest.restoreAllMocks();
+  });
+
+  it('retries local processing when refresh returns the identical cached conversation object', async () => {
+    const warning = jest.spyOn(console, 'warn').mockImplementation(() => {});
+    const cachedData = { results: [{ id: 'cached-conversation', updated_at: '2026-11-16' }] };
+    const refetchQuery = jest.fn().mockResolvedValue({ data: cachedData });
+    mockUseQuery.mockReturnValue({
+      data: cachedData,
+      isLoading: false,
+      isRefetching: false,
+      refetch: refetchQuery
+    });
+    mockVolunteerUserData
+      .mockRejectedValueOnce(new Error('device locked'))
+      .mockResolvedValue({ currentUserId: '1', currentUserGuid: 'existing-user' });
+    let latest: ReturnType<typeof useVolunteerData>;
+    const Harness = () => {
+      latest = useVolunteerData({ query: 'volunteerConversations' as never });
+      return null;
+    };
+    try {
+      render(<Harness />);
+      await act(async () => {});
+      expect(latest!.isLoading).toBe(false);
+      expect(latest!.data).toEqual([]);
+      const refresh = latest!.refetch;
+      await act(async () => {
+        await refresh();
+      });
+      expect(latest!.data).toEqual(cachedData.results);
+      expect(latest!.userGuid).toBe('existing-user');
+      expect(latest!.isLoading).toBe(false);
+      expect(latest!.refetch).toBe(refresh);
+      expect(refetchQuery).toHaveBeenCalledTimes(1);
+      expect(mockVolunteerUserData).toHaveBeenCalledTimes(2);
+    } finally {
+      warning.mockRestore();
+    }
+  });
+
+  it('does not display retained rows as results for a different filter after a failed read', async () => {
+    const warning = jest.spyOn(console, 'warn').mockImplementation(() => {});
+    const cachedData = {
+      results: [
+        { id: 'saved', name: 'saved' },
+        { id: 'other', name: 'other' }
+      ]
+    };
+    const refetchQuery = jest.fn().mockResolvedValue({ data: cachedData });
+    mockUseQuery.mockReturnValue({
+      data: cachedData,
+      isLoading: false,
+      isRefetching: false,
+      refetch: refetchQuery
+    });
+    mockVolunteerUserData.mockResolvedValue({
+      currentUserId: '1',
+      currentUserGuid: 'existing-user'
+    });
+    let latest: ReturnType<typeof useVolunteerData>;
+    const Harness = ({ search }: { search: string }) => {
+      const filters = React.useMemo(() => ({ search }), [search]);
+      latest = useVolunteerData({ query: 'test' as never, filterVariables: filters });
+      return null;
+    };
+    try {
+      const view = render(<Harness search="" />);
+      await act(async () => {});
+      expect(latest!.data).toHaveLength(2);
+      mockVolunteerUserData.mockRejectedValueOnce(new Error('temporarily locked'));
+      view.rerender(<Harness search="saved" />);
+      await act(async () => {});
+      expect(latest!.data).toEqual([]);
+      expect(latest!.isStorageError).toBe(true);
+      expect(latest!.userGuid).toBe('existing-user');
+      await act(async () => {
+        await latest!.refetch();
+      });
+      expect(latest!.isStorageError).toBe(false);
+      expect(latest!.data).toEqual([{ id: 'saved', name: 'saved' }]);
+    } finally {
+      warning.mockRestore();
+    }
+  });
+
   it('does not publish an older processing result after the range changes', async () => {
     const firstUserData = deferred<{
       currentUserId: string;

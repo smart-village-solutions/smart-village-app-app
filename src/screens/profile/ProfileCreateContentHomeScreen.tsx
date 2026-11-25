@@ -64,13 +64,20 @@ export const ProfileCreateContentHomeScreen = ({ navigation, route }: StackScree
 
   useFocusEffect(
     useCallback(() => {
+      let active = true;
       const getLoginStatus = async () => {
-        const storedProfileAuthToken = await profileAuthToken();
-
-        setIsProfileLoggedIn(!!storedProfileAuthToken);
+        try {
+          const storedProfileAuthToken = await profileAuthToken();
+          if (active) setIsProfileLoggedIn(!!storedProfileAuthToken);
+        } catch (error) {
+          console.warn('Unable to read profile credentials', error);
+        }
       };
 
-      getLoginStatus();
+      void getLoginStatus();
+      return () => {
+        active = false;
+      };
     }, [route.params?.refreshUser])
   );
 

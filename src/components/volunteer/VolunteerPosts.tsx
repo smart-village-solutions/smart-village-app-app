@@ -6,6 +6,7 @@ import { useQuery } from 'react-query';
 
 import { consts, normalize, texts } from '../../config';
 import { volunteerAuthToken } from '../../helpers';
+import { useVolunteerStoredValue } from '../../hooks/volunteer/storedValue';
 import { QUERY_TYPES } from '../../queries';
 import { posts as postsQuery } from '../../queries/volunteer';
 import { ScreenName } from '../../types';
@@ -20,6 +21,7 @@ import { VolunteerCommentModal } from './VolunteerCommentModal';
 import { VolunteerPostListItem } from './VolunteerPostListItem';
 import { VolunteerPostModal } from './VolunteerPostModal';
 import { VolunteerPostTextField } from './VolunteerPostTextField';
+import { VolunteerStorageError } from './VolunteerStorageError';
 
 const { ROOT_ROUTE_NAMES } = consts;
 
@@ -40,7 +42,11 @@ export const VolunteerPosts = ({
   userGuid?: string | null;
 }) => {
   const styles = useThemeStyles(createStyles);
-  const [authToken, setAuthToken] = useState<string | null>(null);
+  const {
+    value: authToken = null,
+    error: authError,
+    retry: retryAuth
+  } = useVolunteerStoredValue(volunteerAuthToken);
   const [commentForModal, setCommentForModal] = useState();
   const [isCommentModalCollapsed, setIsCommentModalCollapsed] = useState(true);
   const [isPostModalCollapsed, setIsPostModalCollapsed] = useState(true);
@@ -69,21 +75,13 @@ export const VolunteerPosts = ({
     (isCommentModalCollapsed || isPostModalCollapsed) && refetch?.();
   }, [isCommentModalCollapsed, isPostModalCollapsed]);
 
-  useEffect(() => {
-    const fetchAuthToken = async () => {
-      const token = await volunteerAuthToken();
-      setAuthToken(token);
-    };
-
-    fetchAuthToken();
-  }, []);
-
   if (isLoading) {
     return <LoadingSpinner loading />;
   }
 
   return (
     <>
+      {authError && <VolunteerStorageError onRetry={retryAuth} />}
       {(!!posts?.length || !!isGroupMember) && (
         <WrapperRow>
           <SectionHeader

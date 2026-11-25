@@ -100,8 +100,12 @@ export const VolunteerStreamScreen = () => {
       setUserGuid(currentUserGuid);
     };
 
-    fetchAuthToken();
-    fetchUserGuid();
+    void fetchAuthToken().catch((error) =>
+      console.warn('Unable to read volunteer credentials', error)
+    );
+    void fetchUserGuid().catch((error) =>
+      console.warn('Unable to read volunteer user data', error)
+    );
   }, []);
 
   const renderCalendarItem = useRenderItem(QUERY_TYPES.VOLUNTEER.CALENDAR, navigation, {

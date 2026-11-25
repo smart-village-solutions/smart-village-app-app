@@ -1,6 +1,6 @@
 import { useFocusEffect } from 'expo-router/react-navigation';
 import { StackScreenProps } from 'expo-router/js-stack';
-import React, { useCallback, useContext, useEffect, useLayoutEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useLayoutEffect } from 'react';
 import { TouchableOpacity, View } from 'react-native';
 import Markdown from 'react-native-markdown-display';
 import { useMutation } from 'react-query';
@@ -25,7 +25,9 @@ import { Touchable } from '../Touchable';
 import { Wrapper, WrapperHorizontal } from '../Wrapper';
 import { useThemeStyles } from '../../hooks/useThemeStyles';
 import { useTheme } from '../../hooks/useTheme';
+import { useVolunteerStoredValue } from '../../hooks/volunteer/storedValue';
 
+import { VolunteerStorageError } from './VolunteerStorageError';
 import { VolunteerAppointmentsCard } from './VolunteerAppointmentsCard';
 import { VolunteerEventAttending } from './VolunteerEventAttending';
 import { VolunteerReportAction } from './VolunteerReportAction';
@@ -95,8 +97,14 @@ export const VolunteerEventRecord = ({
       timeTo: momentFormat(endDatetime, 'HH:mm')
     }
   ];
-  const [isMy, setIsMy] = useState<boolean>();
-  const [isAttendingEvent, setIsAttendingEvent] = useState<boolean>();
+  const {
+    value: storedUser,
+    error: storageError,
+    retry: retryStorage
+  } = useVolunteerStoredValue(volunteerUserData);
+  const currentUserId = storedUser?.currentUserId;
+  const isMy = currentUserId ? currentUserId == content?.metadata?.created_by?.id : undefined;
+  const isAttendingEvent = currentUserId ? isAttending(currentUserId, attending) : undefined;
 
   // action to open source urls
   const openWebScreen = useOpenWebScreen(headerTitle, undefined, rootRouteName);
@@ -113,16 +121,6 @@ export const VolunteerEventRecord = ({
 
     mutate({ id, type: isAttendingEvent ? PARTICIPANT_TYPE.REMOVE : PARTICIPANT_TYPE.ACCEPT });
   }, [hasEventId, id, isAttendingEvent, mutate]);
-
-  const checkIfMe = useCallback(async () => {
-    const { currentUserId } = await volunteerUserData();
-
-    !!currentUserId && setIsMy(currentUserId == content?.metadata?.created_by?.id);
-  }, [data]);
-
-  useEffect(() => {
-    checkIfMe();
-  }, [checkIfMe]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -145,16 +143,6 @@ export const VolunteerEventRecord = ({
     });
   }, [content?.metadata, data, hasEventId, isMy, navigation, navigationType, route]);
 
-  const checkIfAttending = useCallback(async () => {
-    const { currentUserId } = await volunteerUserData();
-
-    !!currentUserId && setIsAttendingEvent(isAttending(currentUserId, attending));
-  }, [participants]);
-
-  useEffect(() => {
-    checkIfAttending();
-  }, [checkIfAttending]);
-
   useEffect(() => {
     isSuccess && dataAttend?.code == 200 && refetchDetails();
   }, [dataAttend, isSuccess, refetchDetails]);
@@ -167,6 +155,7 @@ export const VolunteerEventRecord = ({
 
   return (
     <View>
+      {storageError && <VolunteerStorageError onRetry={retryStorage} />}
       <ImageSection mediaContents={mediaContents} />
       <SectionHeader title={title} />
       {hasEventId && isAttendingEvent !== undefined && !!attending?.length && (

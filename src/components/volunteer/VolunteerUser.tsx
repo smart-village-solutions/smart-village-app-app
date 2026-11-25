@@ -1,5 +1,5 @@
 import { StackScreenProps } from 'expo-router/js-stack';
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
 
 import { SettingsContext } from '../../SettingsProvider';
@@ -23,6 +23,9 @@ import { Wrapper } from '../Wrapper';
 import { AddressSection } from '../infoCard/AddressSection';
 import { ContactSection } from '../infoCard/ContactSection';
 import { UrlSection } from '../infoCard/UrlSection';
+import { useVolunteerStoredValue } from '../../hooks/volunteer/storedValue';
+
+import { VolunteerStorageError } from './VolunteerStorageError';
 
 const { ROOT_ROUTE_NAMES } = consts;
 
@@ -34,7 +37,12 @@ export const VolunteerUser = ({
   const { globalSettings } = useContext(SettingsContext);
   const { navigation: navigationType } = globalSettings;
   const [bannerImageUrl, setBannerImageUrl] = useState<string>();
-  const [isMe, setIsMe] = useState<boolean>();
+  const {
+    value: storedUser,
+    error: storageError,
+    retry: retryStorage
+  } = useVolunteerStoredValue(volunteerUserData);
+  const isMe = storedUser ? storedUser.currentUserId == data?.id : undefined;
 
   const name = data?.display_name;
   const username = data?.account?.username;
@@ -72,16 +80,6 @@ export const VolunteerUser = ({
       (isReachable) => !!isReachable && setBannerImageUrl(volunteerBannerImage(data?.guid))
     );
   }, [data?.guid]);
-
-  const checkIfMe = useCallback(async () => {
-    const { currentUserId } = await volunteerUserData();
-
-    setIsMe(currentUserId == data?.id);
-  }, [data]);
-
-  useEffect(() => {
-    checkIfMe();
-  }, [checkIfMe]);
 
   // configure actions for user detail screens
   useEffect(() => {
@@ -128,6 +126,7 @@ export const VolunteerUser = ({
 
   return (
     <>
+      {storageError && <VolunteerStorageError onRetry={retryStorage} />}
       <ImageSection mediaContents={mediaContents} />
 
       {!!logo && (

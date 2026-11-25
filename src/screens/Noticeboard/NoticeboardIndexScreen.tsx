@@ -192,18 +192,30 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
 
   useFocusEffect(
     useCallback(() => {
+      let active = true;
       const getLoginStatus = async () => {
         setIsLoginLoading(!data);
-        const storedProfileAuthToken = await profileAuthToken();
-        const { currentUserData } = await profileUserData();
+        try {
+          const storedProfileAuthToken = await profileAuthToken();
+          const { currentUserData } = await profileUserData();
 
-        setIsProfileLoggedIn(!!storedProfileAuthToken);
-        setUserData(currentUserData);
-        setIsLoginLoading(false);
+          if (active) {
+            setIsProfileLoggedIn(!!storedProfileAuthToken);
+            setUserData(currentUserData);
+          }
+        } catch (error) {
+          // A transient credential read failure must not discard the current login state.
+          console.warn('Unable to read noticeboard login state', error);
+        } finally {
+          if (active) setIsLoginLoading(false);
+        }
       };
 
-      !isLoadingMember && getLoginStatus();
-    }, [data])
+      if (!isLoadingMember) void getLoginStatus();
+      return () => {
+        active = false;
+      };
+    }, [data, isLoadingMember, setIsLoginLoading, setIsProfileLoggedIn, setUserData])
   );
 
   useFocusEffect(
