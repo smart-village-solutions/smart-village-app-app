@@ -6,6 +6,9 @@ import {
   applyEventReminderUpdates,
   getEventReminderModes,
   getEventRemindersEnabled,
+  pauseEventCategorySubscription,
+  pauseEventReminder,
+  recordEventReminderDelivery,
   readEventReminders,
   readEventReminderSettings,
   refreshEventReminders,
@@ -94,17 +97,21 @@ describe('event reminders scheduling', () => {
   const categoryOnly = { singleEnabled: false, categoryEnabled: true };
   const disabled = { singleEnabled: false, categoryEnabled: false };
 
-  it('requires an explicit opt-in for each reminder mode', () => {
-    const categories = { queryVariables: { tagList: ['news_item', 'event_record'] } };
-    const globalSettings = (eventReminders = {}) => ({
-      settings: { pushNotifications: true, personalizedPush: { categories, eventReminders } }
+  it('uses event_record for category reminders and singleEnabled for individual reminders', () => {
+    const globalSettings = (tagList: string[], eventReminders = {}) => ({
+      settings: {
+        personalizedPush: { categories: { queryVariables: { tagList } }, eventReminders }
+      }
     });
-    expect(getEventReminderModes(globalSettings())).toEqual(disabled);
-    expect(getEventRemindersEnabled(globalSettings(disabled))).toBe(false);
-    expect(getEventReminderModes(globalSettings({ singleEnabled: true }))).toEqual(singleOnly);
-    expect(getEventReminderModes(globalSettings({ categoryEnabled: true }))).toEqual(categoryOnly);
-    expect(getEventRemindersEnabled(globalSettings(categoryOnly))).toBe(true);
-    expect(getEventRemindersEnabled(globalSettings(singleOnly))).toBe(true);
+    expect(getEventReminderModes(globalSettings(['news_item']))).toEqual(disabled);
+    expect(getEventRemindersEnabled(globalSettings(['news_item'], { categoryEnabled: true }))).toBe(
+      false
+    );
+    expect(getEventReminderModes(globalSettings([], { singleEnabled: true }))).toEqual(singleOnly);
+    expect(
+      getEventReminderModes(globalSettings(['event_record'], { categoryEnabled: false }))
+    ).toEqual(categoryOnly);
+    expect(getEventRemindersEnabled(globalSettings(['event_record']))).toBe(true);
   });
 
   it('migrates single reminders into the combined store', async () => {
@@ -133,6 +140,52 @@ describe('event reminders scheduling', () => {
     ],
     coverageThrough: '2027-01-30',
     syncedAt: Date.now()
+  });
+
+  it('keeps paused rules and subscriptions available for reactivation', async () => {
+    const single = { ...venue, occurrenceId: 'single' };
+    await saveEventCategorySubscription(categories[0], rule, eventSnapshot());
+    await saveEventReminder(single, rule);
+
+    await pauseEventReminder(single);
+    await pauseEventCategorySubscription(categories[0].id);
+
+    const paused = await readEventReminderSettings();
+    expect(paused.singles['e1:single']).toMatchObject({ status: 'paused', rule });
+    expect(paused.subscriptions.a).toMatchObject({ paused: true, rule });
+    expect(native.size).toBe(0);
+
+    await saveEventCategorySubscription(
+      paused.subscriptions.a.category,
+      paused.subscriptions.a.rule
+    );
+    await saveEventReminder(single, paused.singles['e1:single'].rule);
+    expect(native.size).toBe(2);
+  });
+
+  it('keeps delayed requests pending and never reschedules a delivered single reminder on source refresh', async () => {
+    await saveEventReminder(venue, rule);
+    const id = 'event-reminder:e1:d1';
+    const deliveredData = native.get(id)?.content.data;
+    jest.spyOn(Date, 'now').mockReturnValue(Date.parse('2026-11-18T10:00:00Z'));
+    await refreshEventReminders();
+    expect(native.has(id)).toBe(true);
+    expect((await readEventReminderSettings()).singles['e1:d1'].status).toBe('scheduled');
+
+    native.delete(id);
+    await recordEventReminderDelivery(deliveredData);
+    await applyEventReminderUpdates([
+      {
+        id: venue.eventId,
+        title: venue.title,
+        dates: [{ id: venue.occurrenceId, dateFrom: '2026-11-28', timeFrom: venue.time }]
+      }
+    ]);
+    expect((await readEventReminderSettings()).singles['e1:d1']).toMatchObject({
+      status: 'elapsed',
+      completedAt: Date.now()
+    });
+    expect(native.size).toBe(0);
   });
 
   it('leaves native scheduling untouched without previously stored reminders', async () => {

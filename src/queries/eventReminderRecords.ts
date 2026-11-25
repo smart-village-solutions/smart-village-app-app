@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 
-import type { CategorySourceSnapshot } from '../helpers/eventReminderPlan';
+import { CategorySourceSnapshot, EVENT_CATEGORY_TAG } from '../helpers/eventReminderPlan';
 import {
   EventReminderCategory,
   EventReminderRecord,
@@ -9,32 +9,21 @@ import {
 } from '../helpers/eventReminderTime';
 import { ReactQueryClient } from '../ReactQueryClient';
 
-const EVENT_REMINDER_CATEGORIES = gql`
-  query EventReminderCategories {
-    categories {
-      id
-      name
-      tagList
-      eventRecordsCount
-    }
-  }
-`;
+import { GET_CATEGORIES_FILTER } from './categories';
 
 export const fetchEventReminderCategories = async (): Promise<EventReminderCategory[]> => {
   const client = await ReactQueryClient();
-  const { categories } = await client.request<{
+  const { categories } = (await client.request(GET_CATEGORIES_FILTER, {
+    tagList: [EVENT_CATEGORY_TAG]
+  })) as {
     categories?: ({
       id: string | number | null;
       name: string | null;
-      tagList: string | null;
-      eventRecordsCount: number | null;
     } | null)[];
-  }>(EVENT_REMINDER_CATEGORIES);
+  };
   if (!Array.isArray(categories)) throw new Error('Event categories are unavailable');
   return categories.flatMap((category) => {
     if (!category?.name || category.id == null) return [];
-    const tags = category.tagList?.split(',').map((tag) => tag.trim()) ?? [];
-    if (!tags.includes('event_record') && !category.eventRecordsCount) return [];
     return [{ id: String(category.id), name: category.name }];
   });
 };
@@ -68,6 +57,16 @@ const EVENT_REMINDER_RECORD = gql`
   query EventReminderRecord($id: ID!) {
     eventRecord(id: $id) {
       ...EventReminderFields
+      addresses {
+        city
+        addition
+      }
+      mediaContents {
+        contentType
+        sourceUrl {
+          url
+        }
+      }
     }
   }
   ${eventReminderFields}

@@ -1426,7 +1426,6 @@ export const texts = {
   eventReminders: {
     title: 'Veranstaltungserinnerungen',
     singles: 'Einzelne Erinnerungen',
-    categorySubscriptions: 'Kategorie-Abos',
     categoryEmpty: 'Es sind keine Veranstaltungskategorien verfügbar.',
     categoriesLoading: 'Veranstaltungskategorien werden geladen.',
     categoriesUnavailable: 'Veranstaltungskategorien können derzeit nicht geladen werden.',
@@ -1437,9 +1436,9 @@ export const texts = {
     categoryName: (name) => `Kategorie: ${name}`,
     categoryCreate: 'Kategorie abonnieren',
     categoryEdit: 'Kategorie-Abo bearbeiten',
-    categoryRemove: 'Kategorie-Abo löschen',
+    categoryRemove: 'Kategorie-Abo deaktivieren',
     categoryConfirmRemove:
-      'Möchten Sie dieses Kategorie-Abo und die zugehörigen Erinnerungen löschen?',
+      'Möchten Sie dieses Kategorie-Abo und die zugehörigen Erinnerungen deaktivieren?',
     categoryUpdateHint: 'Neue Termine und Terminänderungen werden beim Öffnen der App übernommen.',
     categoryPreviewLoading: 'Passende Termine werden geladen.',
     categoryPreviewUnavailable:
@@ -1469,8 +1468,10 @@ export const texts = {
     categoryEffective: (category, when) => `Kategorie-Abo ${category} · ${when}`,
     action: 'Erinnern',
     edit: 'Erinnerung bearbeiten',
-    remove: 'Erinnerung entfernen',
-    confirmRemove: 'Möchten Sie diese Erinnerung entfernen?',
+    remove: 'Erinnerung deaktivieren',
+    confirmRemove: 'Möchten Sie diese Erinnerung deaktivieren?',
+    resume: 'Erinnerung aktivieren',
+    paused: 'Erinnerung deaktiviert.',
     save: 'Speichern',
     cancel: 'Abbrechen',
     occurrence: 'Termin auswählen',
@@ -1715,7 +1716,7 @@ export const texts = {
     personalizedPush: {
       setting: 'Push-Benachrichtigungen',
       sectionTitle: 'Push-Benachrichtigungen für Nachrichtenkategorien',
-      eventSectionTitle: 'Push-Benachrichtigungen für Veranstaltungskategorien'
+      eventSectionTitle: 'Erinnerungen für Veranstaltungskategorien'
     },
     termsAndConditions: {
       abort: 'Abbrechen',

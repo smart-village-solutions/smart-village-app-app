@@ -1,6 +1,7 @@
 import {
   EventOccurrence,
   EventReminderCategory,
+  EventReminderListDetails,
   EventReminderRecord,
   EventReminderRule,
   RelativeEventReminderRule,
@@ -17,6 +18,7 @@ export type ReminderStatus =
   | 'permission'
   | 'failed'
   | 'review'
+  | 'paused'
   | 'elapsed';
 
 export type SingleEventReminder = {
@@ -24,6 +26,8 @@ export type SingleEventReminder = {
   rule: EventReminderRule;
   status: ReminderStatus;
   requiresReview?: boolean;
+  details?: EventReminderListDetails;
+  completedAt?: number;
 };
 
 export type CategorySubscription = {
@@ -31,6 +35,7 @@ export type CategorySubscription = {
   rule: RelativeEventReminderRule;
   revision: number;
   occurrences: Record<string, EventOccurrence>;
+  paused?: boolean;
   syncStatus: 'pending' | 'synced' | 'failed';
   syncedAt?: number;
   sourceCoverageThrough?: string;
@@ -73,6 +78,11 @@ export type ReminderCandidate = {
 
 export type EventReminderModes = { singleEnabled: boolean; categoryEnabled: boolean };
 
+export const EVENT_CATEGORY_TAG = 'event_record';
+export const defaultEventReminderRule: RelativeEventReminderRule = {
+  kind: 'relative',
+  leadDays: 3
+};
 export const allEventReminderModes = { singleEnabled: true, categoryEnabled: true };
 
 const compareCandidates = (left: ReminderCandidate, right: ReminderCandidate) =>
@@ -100,10 +110,18 @@ export const buildReminderCandidates = (
   now: number,
   { singleEnabled, categoryEnabled }: EventReminderModes
 ) => {
-  const singleRules = singleEnabled ? state.singles : {};
+  const singleRules = singleEnabled
+    ? Object.fromEntries(
+        Object.entries(state.singles).filter(([, reminder]) => reminder.status !== 'paused')
+      )
+    : {};
   const singles = Object.entries(singleRules).flatMap(([key, reminder]) => {
     const when = getReminderTimestamp(reminder.occurrence, reminder.rule);
-    if (reminder.requiresReview || !isValidReminderTimestamp(reminder.occurrence, when, now))
+    if (
+      reminder.completedAt != null ||
+      reminder.requiresReview ||
+      !isValidReminderTimestamp(reminder.occurrence, when, now)
+    )
       return [];
     return [{ key, occurrence: reminder.occurrence, when }];
   });
@@ -118,6 +136,7 @@ const buildCategoryCandidates = (
 ) => {
   const categoryCandidates = new Map<string, ReminderCandidate>();
   for (const subscription of Object.values(state.subscriptions)) {
+    if (subscription.paused) continue;
     const end = categoryReminderCoverageEnd(subscription.sourceCoverageThrough);
     for (const [key, occurrence] of Object.entries(subscription.occurrences)) {
       if (singleRules[key] || state.exclusions[key] || state.elapsedCategoryReminders[key])

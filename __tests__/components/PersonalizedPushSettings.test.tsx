@@ -114,7 +114,7 @@ it('loads existing exclusions without writing or resetting them', async () => {
   expect(addExcludeNotificationConfigurationOnServer).not.toHaveBeenCalled();
 });
 
-it('shows each content type separately and changes only the selected type for a shared category', async () => {
+it('keeps shared categories in remote news preferences without writing event preferences', async () => {
   mockCategories([{ id: '1', name: 'Shared', tagList: 'news_item, event_record' }]);
   jest.mocked(getExcludeNotificationConfigurationFromServer).mockResolvedValue({
     news_item: { '1': {} },
@@ -123,43 +123,39 @@ it('shows each content type separately and changes only the selected type for a 
   await mount(withTags('news_item', 'event_record'));
 
   expect(tree.root.findAllByType(RegularText).map(({ props }) => props.children)).toEqual([
-    'News categories',
-    'Event categories'
+    'News categories'
   ]);
   expect(toggle(1)).toMatchObject({ title: 'Shared', value: false });
-  expect(toggle(2)).toMatchObject({ title: 'Shared', value: true });
+  expect(tree.root.findAllByType(SettingsToggle)).toHaveLength(2);
+  expect(useQuery).toHaveBeenLastCalledWith(
+    ['categories', { tagList: ['news_item'] }],
+    expect.any(Function),
+    { enabled: true }
+  );
   await act(async () => {
-    await toggle(2).onDeactivate(jest.fn());
+    await toggle(1).onActivate(jest.fn());
   });
+  expect(toggle(1).value).toBe(true);
   expect(addExcludeNotificationConfigurationOnServer).toHaveBeenLastCalledWith('token-a', {
-    news_item: { '1': {} },
-    event_record: { '1': {}, '3': { '17': {} } }
-  });
-  await act(async () => {
-    await toggle(2).onActivate(jest.fn());
-  });
-  expect(toggle(1).value).toBe(false);
-  expect(toggle(2).value).toBe(true);
-  expect(addExcludeNotificationConfigurationOnServer).toHaveBeenLastCalledWith('token-a', {
-    news_item: { '1': {} },
+    news_item: {},
     event_record: { '3': { '17': {} } }
   });
 });
 
-it('shows only event categories when event_record is the only configured tag', async () => {
+it('leaves the category list to the local reminders footer when only event_record is configured', async () => {
   mockCategories([
     { id: '1', name: 'News', tagList: ['news_item'] },
     { id: '2', name: 'Events', tagList: ['event_record'] }
   ]);
-  await mount(withTags('event_record'));
+  const footer = <View />;
+  await mount(withTags('event_record'), { footer });
 
-  expect(tree.root.findAllByType(RegularText).map(({ props }) => props.children)).toEqual([
-    'Event categories'
-  ]);
+  expect(tree.root.findByType(FlatList).props.ListFooterComponent).toBe(footer);
+  expect(tree.root.findAllByType(RegularText)).toHaveLength(0);
   expect(tree.root.findAllByType(SettingsToggle).map(({ props }) => props.item.title)).toEqual([
-    'Push',
-    'Events'
+    'Push'
   ]);
+  expect(getExcludeNotificationConfigurationFromServer).not.toHaveBeenCalled();
 });
 
 it('shows the event footer without remote categories and leaves remote preferences alone', async () => {

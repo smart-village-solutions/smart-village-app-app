@@ -1,48 +1,39 @@
 # Local event reminders
 
-Configure `settings.personalizedPush.eventReminders` in a municipality's
-`globalSettings`. Set `singleEnabled` for individual reminders and
-`categoryEnabled` for category subscriptions. Each mode is off unless its own
-flag is `true`. This example enables both while keeping existing news categories.
+Configure `settings.personalizedPush` in a municipality's `globalSettings`.
+`eventReminders.singleEnabled` enables individual local reminders. Including
+`event_record` in `categories.queryVariables.tagList` enables category reminders.
+`news_item` enables the existing remote news category preferences.
 
 ```json
 {
   "settings": {
     "personalizedPush": {
       "categories": {
-        "queryVariables": { "tagList": ["news_item"] },
+        "queryVariables": { "tagList": ["news_item", "event_record"] },
         "sectionTitle": "Push-Benachrichtigungen für Nachrichtenkategorien"
       },
-      "eventReminders": { "singleEnabled": true, "categoryEnabled": true }
+      "eventReminders": { "singleEnabled": true }
     }
   }
 }
 ```
 
-Reminders are available on Main-Server event details. When either reminder
-mode is enabled, app settings link to **Push-Benachrichtigungen**, where
-**Veranstaltungserinnerungen** is available. If category reminders are enabled,
-the push settings screen also shows the event category switches directly.
-This location applies with or without a remote push category configuration.
+**Push-Benachrichtigungen** contains one event category list. Tagged event
+categories start off. A category enabled from an event detail is added in
+alphabetical order even if the category has no `event_record` tag. Switching
+off cancels pending notifications and retains the rule for reactivation.
 
-The category switches include categories tagged `event_record` and categories
-assigned to visible events, including those without that tag.
-Switching a category on opens the existing reminder rule editor. Saving the rule
-enables the switch. Switching it off asks for confirmation and cancels the
-associated local reminders. Saved subscriptions remain manageable when the
-category catalog is unavailable.
+**Veranstaltungserinnerungen** shows configured individual reminders using the
+standard event list layout. Tapping a row opens the reminder settings. Pausing
+a reminder retains its rule until the event begins. Completed reminders drop
+out of the list. The app observes incoming deliveries while open and reconciles
+past scheduled reminders against the pending OS inventory when activated.
 
-Remote category switches control messages sent by the server. Setting
-`settings.personalizedPush.categories.queryVariables.tagList` to
-`["news_item", "event_record"]` shows distinct news and event sections. Use
-`["event_record"]` to show only event categories. A shared category has
-independent switches for the two message types. Local reminder rules use Main-Server event
-categories, device storage, and operating system notification permissions.
-They can be managed with remote push switched off.
-When the app receives a disabled mode in `globalSettings`, it removes the
-corresponding pending plans and reconciles the remaining mode. For example, an
-eligible category rule can take over from a disabled single rule. Stored rules
-become available again if their mode is re-enabled.
+Local rules use device storage and the operating system's notification
+permissions. They can be managed with remote push switched off. Removing
+`event_record` or disabling `singleEnabled` cancels the corresponding pending
+requests once the app receives the changed configuration.
 
 The default reminder is three calendar days before the occurrence in
 `Europe/Berlin`. When the source has no fixed start, the default time is noon.

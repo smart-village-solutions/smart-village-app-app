@@ -15,6 +15,7 @@ import { useQuery } from 'react-query';
 import { ReactQueryClient } from '../../ReactQueryClient';
 import { SettingsContext } from '../../SettingsProvider';
 import { texts } from '../../config';
+import { EVENT_CATEGORY_TAG } from '../../helpers/eventReminderPlan';
 import {
   addExcludeNotificationConfigurationOnServer,
   getExcludeNotificationConfigurationFromServer,
@@ -30,7 +31,6 @@ import { Wrapper, WrapperHorizontal } from '../Wrapper';
 import { addToStore, readFromStore, removeFromStore } from '../../helpers';
 
 const DEFAULT_QUERY_VARIABLES = { tagList: ['news_item'] };
-const EVENT_CATEGORY_TAG = 'event_record';
 
 const PERSONALIZED_PUSH_SETTINGS = 'PERSONALIZED_PUSH_SETTINGS';
 
@@ -53,25 +53,28 @@ const tagListArray = (tag: unknown): string[] => {
     : [];
 };
 
-const groupCategories = (categories: Category[] | undefined, configuredTags: string[]) => {
-  const regular: Array<CategoryPreference & { name: string }> = [];
-  const events: typeof regular = [];
-  const showEventSection = configuredTags.includes(EVENT_CATEGORY_TAG);
-  for (const category of categories ?? []) {
-    if (!category?.name || category.id == null) continue;
-    const { id, name } = category;
-    const tags = tagListArray(category.tagList).filter(
-      (tag) => !configuredTags.length || configuredTags.includes(tag)
-    );
-    if (showEventSection && tags.includes(EVENT_CATEGORY_TAG)) {
-      events.push({ id: String(id), name, tags: [EVENT_CATEGORY_TAG] });
-    }
-    const regularTags = showEventSection ? tags.filter((tag) => tag !== EVENT_CATEGORY_TAG) : tags;
-    if (regularTags.length) regular.push({ id: String(id), name, tags: regularTags });
-  }
-  const byName = (left: { name: string }, right: { name: string }) =>
-    left.name.localeCompare(right.name);
-  return { regular: regular.sort(byName), events: events.sort(byName), showEventSection };
+const remoteCategories = (categories: Category[] | undefined, configuredTags: string[]) =>
+  (categories ?? [])
+    .flatMap((category) => {
+      if (!category?.name || category.id == null) return [];
+      const tags = tagListArray(category.tagList).filter(
+        (tag) =>
+          tag !== EVENT_CATEGORY_TAG && (!configuredTags.length || configuredTags.includes(tag))
+      );
+      return tags.length ? [{ id: String(category.id), name: category.name, tags }] : [];
+    })
+    .sort((left, right) => left.name.localeCompare(right.name));
+
+const getRemoteCategoryConfiguration = (queryVariables: { tagList?: unknown }) => {
+  const tags = tagListArray(queryVariables.tagList);
+  const configuredTags = tags.filter((tag) => tag !== EVENT_CATEGORY_TAG);
+  return {
+    configuredTags,
+    hasRemoteTags: !tags.length || !!configuredTags.length,
+    remoteQueryVariables: tags.includes(EVENT_CATEGORY_TAG)
+      ? { ...queryVariables, tagList: configuredTags }
+      : queryVariables
+  };
 };
 
 export const PersonalizedPushSettings = ({
@@ -87,11 +90,11 @@ export const PersonalizedPushSettings = ({
   const { settings = {} } = globalSettings;
   const { personalizedPush = {}, settingsScreenListItemTitles = {} } = settings;
   const queryVariables = personalizedPush.categories?.queryVariables || DEFAULT_QUERY_VARIABLES;
-  const configuredTags = useMemo(
-    () => tagListArray(queryVariables.tagList),
-    [queryVariables.tagList]
+  const { configuredTags, hasRemoteTags, remoteQueryVariables } = useMemo(
+    () => getRemoteCategoryConfiguration(queryVariables),
+    [queryVariables]
   );
-  const hasRemoteCategories = showRemotePush && !!personalizedPush.categories;
+  const hasRemoteCategories = showRemotePush && !!personalizedPush.categories && hasRemoteTags;
 
   const [permission, setPermission] = useState<boolean>(false);
   const [pushToken, setPushToken] = useState<string | null>(null);
@@ -105,11 +108,11 @@ export const PersonalizedPushSettings = ({
   const [excludeCategoryIds, setExcludeCategoryIds] = useState<ExcludeMap>({});
 
   const { data, isLoading: loading } = useQuery(
-    [QUERY_TYPES.CATEGORIES_FILTER, queryVariables],
+    [QUERY_TYPES.CATEGORIES_FILTER, remoteQueryVariables],
     async () => {
       const client = await ReactQueryClient();
 
-      return await client.request(getQuery(QUERY_TYPES.CATEGORIES_FILTER), queryVariables);
+      return await client.request(getQuery(QUERY_TYPES.CATEGORIES_FILTER), remoteQueryVariables);
     },
     {
       enabled: hasRemoteCategories
@@ -319,13 +322,13 @@ export const PersonalizedPushSettings = ({
     }
   };
 
-  const { regular, events, showEventSection } = useMemo(
-    () => groupCategories(hasRemoteCategories ? data?.categories : undefined, configuredTags),
+  const categories = useMemo(
+    () => remoteCategories(hasRemoteCategories ? data?.categories : undefined, configuredTags),
     [configuredTags, data, hasRemoteCategories]
   );
 
   const listItems = useMemo(() => {
-    const toToggle = (section: string, category: CategoryPreference & { name: string }) => {
+    const toToggle = (category: CategoryPreference & { name: string }) => {
       const { id, tags, name } = category;
       const isExcluded = !tags.some((tag) => {
         const value = excludeCategoryIds?.[tag]?.[id];
@@ -334,7 +337,7 @@ export const PersonalizedPushSettings = ({
       });
 
       return {
-        key: `${section}:${id}`,
+        key: id,
         item: {
           bottomDivider: true,
           isDisabled: busy || !permission || !preferencesLoaded,
@@ -346,15 +349,11 @@ export const PersonalizedPushSettings = ({
       };
     };
 
-    return [
-      ...regular.map((category) => toToggle('regular', category)),
-      ...events.map((category) => toToggle(EVENT_CATEGORY_TAG, category))
-    ];
-  }, [busy, changeCategories, events, regular, permission, preferencesLoaded, excludeCategoryIds]);
+    return categories.map(toToggle);
+  }, [busy, changeCategories, categories, permission, preferencesLoaded, excludeCategoryIds]);
 
   const renderCategoryHeading = () => {
     if (!hasRemoteCategories) return null;
-    if (showEventSection && !regular.length && !loading) return null;
     return loading ? (
       <LoadingSpinner loading />
     ) : (
@@ -403,19 +402,10 @@ export const PersonalizedPushSettings = ({
         keyExtractor={keyExtractor}
         ListFooterComponent={footer}
         ListHeaderComponent={renderCategoryHeading()}
-        renderItem={({ item: row, index }) => (
-          <>
-            {!!events.length && index === regular.length && (
-              <Wrapper noPaddingBottom>
-                <RegularText small placeholder>
-                  {texts.settingsContents.personalizedPush.eventSectionTitle}
-                </RegularText>
-              </Wrapper>
-            )}
-            <WrapperHorizontal>
-              <SettingsToggle item={row.item} />
-            </WrapperHorizontal>
-          </>
+        renderItem={({ item: row }) => (
+          <WrapperHorizontal>
+            <SettingsToggle item={row.item} />
+          </WrapperHorizontal>
         )}
       />
     </>

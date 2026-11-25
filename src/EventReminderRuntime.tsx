@@ -1,3 +1,4 @@
+import * as Notifications from 'expo-notifications';
 import { useContext, useEffect, useMemo } from 'react';
 import { AppState, DeviceEventEmitter } from 'react-native';
 
@@ -14,6 +15,7 @@ import {
   applyEventReminderUpdates,
   getEventReminderModes,
   readEventReminderSettings,
+  recordEventReminderDelivery,
   refreshEventReminders
 } from './pushNotifications/EventReminderLocalNotifications';
 import { registerEventReminderRestoration } from './pushNotifications/LocalNotificationCapacity';
@@ -31,7 +33,9 @@ const eventIdsToVerify = (
     results.flatMap(({ snapshot }) => snapshot?.records.map(({ id }) => String(id)) ?? [])
   );
   const ids = new Set(
-    Object.values(singleEnabled ? singles : {}).map(({ occurrence }) => occurrence.eventId)
+    Object.values(singleEnabled ? singles : {})
+      .filter(({ completedAt }) => completedAt == null)
+      .map(({ occurrence }) => occurrence.eventId)
   );
   for (const { occurrence, status } of Object.values(categoryEnabled ? categoryPlan : {})) {
     if (status === 'scheduled' && !coveredIds.has(occurrence.eventId)) ids.add(occurrence.eventId);
@@ -46,7 +50,9 @@ const synchronizeReminderSources = async (
 ) => {
   const settings = await readEventReminderSettings();
   const results: CategorySourceResult[] = [];
-  const subscriptions = modes.categoryEnabled ? Object.values(settings.subscriptions) : [];
+  const subscriptions = modes.categoryEnabled
+    ? Object.values(settings.subscriptions).filter(({ paused }) => !paused)
+    : [];
   for (const { category, revision } of subscriptions) {
     if (!canApply()) return;
     const snapshot = online
@@ -71,6 +77,14 @@ export const EventReminderRuntime = () => {
     [singleEnabled, categoryEnabled]
   );
   const enabled = singleEnabled || categoryEnabled;
+
+  useEffect(() => {
+    if (!singleEnabled) return;
+    const subscription = Notifications.addNotificationReceivedListener(({ request }) => {
+      void recordEventReminderDelivery(request.content.data).catch(() => undefined);
+    });
+    return () => subscription.remove();
+  }, [singleEnabled]);
 
   useEffect(() => {
     const refresh = () => void refreshEventReminders(modes).catch(() => undefined);

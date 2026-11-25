@@ -284,7 +284,7 @@ const getSettingContent = (
     mowas,
     navigation,
     categoryEnabled,
-    eventRemindersEnabled,
+    singleEnabled,
     settingsScreenListItemTitles,
     showRemotePush
   }
@@ -318,7 +318,7 @@ const getSettingContent = (
             ) : null
           }
         >
-          {eventRemindersEnabled &&
+          {singleEnabled &&
             renderItem({
               item: SETTINGS_SCREENS.EVENT_REMINDERS,
               navigation,
@@ -570,7 +570,7 @@ export const SettingsScreen = ({ navigation, route }) => {
     mowas,
     navigation,
     categoryEnabled,
-    eventRemindersEnabled,
+    singleEnabled,
     settingsScreenListItemTitles,
     showRemotePush
   });

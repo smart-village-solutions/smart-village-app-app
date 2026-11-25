@@ -184,6 +184,7 @@ export const CardListItem = memo(
     const themedStyles = useMemo(() => createThemedStyles(colors), [colors]);
     const {
       appDesignSystem = {},
+      onPress,
       overtitle,
       params,
       requestedDatetime,
@@ -210,16 +211,18 @@ export const CardListItem = memo(
       <Touchable
         accessibilityLabel={`${accessibilityLabel} ${consts.a11yLabel.button}`}
         onPress={() =>
-          navigation &&
-          navigateToRoute({
-            navigation,
-            params,
-            routeName: name,
-            targetTabIndex,
-            usePush: true
-          })
+          onPress
+            ? onPress(navigation)
+            : navigation &&
+              navigateToRoute({
+                navigation,
+                params,
+                routeName: name,
+                targetTabIndex,
+                usePush: true
+              })
         }
-        disabled={!navigation}
+        disabled={!onPress && !navigation}
       >
         <View>
           <Card

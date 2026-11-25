@@ -7,6 +7,7 @@ import {
   CategorySourceResult,
   CategorySourceSnapshot,
   CategorySubscription,
+  EVENT_CATEGORY_TAG,
   EventReminderModes,
   EventReminderSettingsState,
   ReminderCandidate,
@@ -19,12 +20,14 @@ import {
 import {
   EventOccurrence,
   EventReminderCategory,
+  EventReminderListDetails,
   EventReminderRule,
   RelativeEventReminderRule,
   eventOccurrenceKey,
   EventReminderRecord,
   getEventOccurrences,
   getEventReminderCategories,
+  getEventReminderListDetails,
   getReminderTimestamp,
   isValidReminderTimestamp,
   occurrenceEndForReminders,
@@ -55,12 +58,20 @@ const recentOccurrenceLookback = 7 * 24 * 60 * 60 * 1000;
 export type { SingleEventReminder } from '../helpers/eventReminderPlan';
 
 export const getEventReminderModes = (globalSettings: unknown): EventReminderModes => {
-  const reminders = (
-    globalSettings as { settings?: { personalizedPush?: { eventReminders?: EventReminderModes } } }
-  )?.settings?.personalizedPush?.eventReminders;
+  const personalizedPush = (
+    globalSettings as {
+      settings?: {
+        personalizedPush?: {
+          categories?: { queryVariables?: { tagList?: unknown } };
+          eventReminders?: { singleEnabled?: boolean };
+        };
+      };
+    }
+  )?.settings?.personalizedPush;
+  const tags = personalizedPush?.categories?.queryVariables?.tagList;
   return {
-    singleEnabled: reminders?.singleEnabled === true,
-    categoryEnabled: reminders?.categoryEnabled === true
+    singleEnabled: personalizedPush?.eventReminders?.singleEnabled === true,
+    categoryEnabled: Array.isArray(tags) && tags.includes(EVENT_CATEGORY_TAG)
   };
 };
 
@@ -113,7 +124,7 @@ const hasSchedulingPermission = async (request = false) => {
 
 const notificationId = (key: string) => `${EVENT_REMINDER_NOTIFICATION_KIND}:${key}`;
 
-const scheduleEventReminder = async ({ key, occurrence, when }: ReminderCandidate) => {
+const scheduleEventReminder = async ({ key, occurrence, when, categoryId }: ReminderCandidate) => {
   const { eventId, occurrenceId, title } = occurrence;
   await Notifications.scheduleNotificationAsync({
     identifier: notificationId(key),
@@ -125,6 +136,7 @@ const scheduleEventReminder = async ({ key, occurrence, when }: ReminderCandidat
         occurrenceId,
         query_type: 'EventRecord',
         notificationKind: EVENT_REMINDER_NOTIFICATION_KIND,
+        reminderScope: categoryId ? 'category' : 'single',
         reminderAt: when
       }
     },
@@ -136,6 +148,14 @@ const scheduleEventReminder = async ({ key, occurrence, when }: ReminderCandidat
   });
 };
 
+const matchesNativeReminder = (
+  data: Notifications.NotificationContent['data'],
+  candidate: ReminderCandidate
+) =>
+  data?.reminderAt === candidate.when &&
+  (data.reminderScope == null ||
+    data.reminderScope === (candidate.categoryId ? 'category' : 'single'));
+
 const commitNativePlan = async (
   eventInventory: Notifications.NotificationRequest[],
   desired: Map<string, ReminderCandidate>
@@ -146,7 +166,7 @@ const commitNativePlan = async (
     const candidate = desired.get(identifier);
     if (
       candidate &&
-      content.data?.reminderAt === candidate.when &&
+      matchesNativeReminder(content.data, candidate) &&
       content.body === candidate.occurrence.title
     )
       continue;
@@ -176,11 +196,14 @@ const verifyNativePlan = async (
   }
   return new Set(
     verified
-      .filter(
-        ({ identifier, content }) =>
+      .filter(({ identifier, content }) => {
+        const candidate = desired.get(identifier);
+        return (
+          candidate &&
           isEventReminderNotification(content.data) &&
-          desired.get(identifier)?.when === content.data?.reminderAt
-      )
+          matchesNativeReminder(content.data, candidate)
+        );
+      })
       .map(({ identifier }) => identifier)
   );
 };
@@ -213,6 +236,23 @@ const pruneReminderSettings = (state: EventReminderSettingsState, now: number) =
   }
 };
 
+const applySinglePlanStatus = (
+  reminder: SingleEventReminder,
+  now: number,
+  getStatus: () => ReminderStatus
+) => {
+  if (reminder.status === 'paused' || reminder.completedAt != null) return;
+  const when = getReminderTimestamp(reminder.occurrence, reminder.rule);
+  if (reminder.requiresReview || !isValidReminderTimestamp(reminder.occurrence, when, -Infinity)) {
+    reminder.status = 'review';
+    return;
+  }
+  const status = getStatus();
+  const elapsed = when <= now && status !== 'scheduled';
+  if (elapsed && reminder.status === 'scheduled') reminder.completedAt = now;
+  reminder.status = elapsed ? 'elapsed' : status;
+};
+
 const applyPlanStatus = (
   state: EventReminderSettingsState,
   now: number,
@@ -221,15 +261,7 @@ const applyPlanStatus = (
   statusFor: (key: string) => ReminderStatus
 ) => {
   for (const [key, reminder] of Object.entries(singleEnabled ? state.singles : {})) {
-    const when = getReminderTimestamp(reminder.occurrence, reminder.rule);
-    if (
-      reminder.requiresReview ||
-      !isValidReminderTimestamp(reminder.occurrence, when, -Infinity)
-    ) {
-      reminder.status = 'review';
-    } else {
-      reminder.status = when <= now ? 'elapsed' : statusFor(key);
-    }
+    applySinglePlanStatus(reminder, now, () => statusFor(key));
   }
   state.categoryPlan = Object.fromEntries(
     candidates.flatMap(({ key, categoryId, occurrence, when }) => {
@@ -240,18 +272,38 @@ const applyPlanStatus = (
   );
 };
 
+const waitingSingleCandidates = (
+  state: EventReminderSettingsState,
+  inventory: Notifications.NotificationRequest[],
+  now: number
+) => {
+  const requests = new Map(inventory.map(({ identifier, content }) => [identifier, content.data]));
+  return Object.entries(state.singles).flatMap(([key, reminder]) => {
+    const { occurrence, rule, status } = reminder;
+    if (status !== 'scheduled' || occurrenceEndForReminders(occurrence) <= now) return [];
+    const when = getReminderTimestamp(occurrence, rule);
+    const candidate = { key, occurrence, when };
+    return when <= now && matchesNativeReminder(requests.get(notificationId(key)), candidate)
+      ? [candidate]
+      : [];
+  });
+};
+
 const reconcileEventReminders = async (
   state: EventReminderSettingsState,
   modes: EventReminderModes
 ) => {
   const now = Date.now();
   pruneReminderSettings(state, now);
-  const candidates = buildReminderCandidates(state, now, modes);
-  const canSchedule = candidates.length > 0 && (await hasSchedulingPermission());
   const inventory = await Notifications.getAllScheduledNotificationsAsync();
   const eventInventory = inventory.filter(({ content }) =>
     isEventReminderNotification(content.data)
   );
+  const candidates = [
+    ...(modes.singleEnabled ? waitingSingleCandidates(state, eventInventory, now) : []),
+    ...buildReminderCandidates(state, now, modes)
+  ];
+  const canSchedule = candidates.length > 0 && (await hasSchedulingPermission());
   const otherCount = inventory.length - eventInventory.length;
   const capacity =
     Platform.OS === 'ios'
@@ -264,6 +316,16 @@ const reconcileEventReminders = async (
     ])
   );
   const confirmed = await commitNativePlan(eventInventory, desired);
+  if (!modes.singleEnabled) {
+    for (const reminder of Object.values(state.singles)) {
+      if (
+        reminder.status === 'scheduled' &&
+        getReminderTimestamp(reminder.occurrence, reminder.rule) > now
+      ) {
+        reminder.status = 'failed';
+      }
+    }
+  }
   applyPlanStatus(state, now, candidates, modes, (key) =>
     planningStatus(key, canSchedule, desired, confirmed)
   );
@@ -277,7 +339,13 @@ const updateEventReminders = async (
     await reconcileEventReminders(state, modes);
   } catch {
     const now = Date.now();
-    applyPlanStatus(state, now, buildReminderCandidates(state, now, modes), modes, () => 'failed');
+    applyPlanStatus(state, now, buildReminderCandidates(state, now, modes), modes, (key) => {
+      const reminder = state.singles[key];
+      return reminder?.status === 'scheduled' &&
+        getReminderTimestamp(reminder.occurrence, reminder.rule) <= now
+        ? 'scheduled'
+        : 'failed';
+    });
     await writeEventReminders(state);
     throw new Error('Event reminder schedule could not be verified');
   }
@@ -291,6 +359,19 @@ export const refreshEventReminders = (modes = allEventReminderModes) =>
         ? await readEventReminderSettings()
         : await readStoredEventReminderSettings();
     if (state) await updateEventReminders(state, modes);
+  });
+
+export const recordEventReminderDelivery = (data: Notifications.NotificationContent['data']) =>
+  runLocalNotificationUpdate(async () => {
+    if (!isEventReminderNotification(data) || data?.reminderScope === 'category') return;
+    const state = await readStoredEventReminderSettings();
+    if (!state) return;
+    const reminder = state.singles[`${data?.id}:${data?.occurrenceId}`];
+    if (!reminder || reminder.completedAt != null) return;
+    if (getReminderTimestamp(reminder.occurrence, reminder.rule) !== data?.reminderAt) return;
+    reminder.status = 'elapsed';
+    reminder.completedAt = Date.now();
+    await writeEventReminders(state);
   });
 
 const hasOlderSourceTimestamp = (record: EventReminderRecord, occurrence: EventOccurrence) => {
@@ -353,28 +434,41 @@ const updateKnownCategoryOccurrences = (
   return changed;
 };
 
+const updateKnownSingleOccurrences = (
+  state: EventReminderSettingsState,
+  records: EventReminderRecord[]
+) => {
+  const byEvent = new Map(records.map((record) => [String(record.id), record]));
+  const occurrences = byOccurrenceKey(records);
+  let changed = false;
+  for (const [key, reminder] of Object.entries(state.singles)) {
+    const record = byEvent.get(reminder.occurrence.eventId);
+    const occurrence = occurrences.get(key);
+    if (!record || hasOlderSourceTimestamp(record, reminder.occurrence)) continue;
+
+    // An absent or replaced ID is not an authoritative cancellation.
+    if (record.visible === false) {
+      delete state.singles[key];
+      changed = true;
+    } else if (occurrence && reminder.completedAt == null) {
+      changed = updateReminderOccurrence(reminder, occurrence) || changed;
+      const details = getEventReminderListDetails(record);
+      if (JSON.stringify(details) !== JSON.stringify(reminder.details ?? {})) {
+        reminder.details = details;
+        changed = true;
+      }
+    }
+  }
+  return changed;
+};
+
 export const applyEventReminderUpdates = (
   records: EventReminderRecord[],
   modes = allEventReminderModes
 ) =>
   runLocalNotificationUpdate(async () => {
     const state = await readEventReminderSettings();
-    const byEvent = new Map(records.map((record) => [String(record.id), record]));
-    const occurrences = byOccurrenceKey(records);
-    let changed = false;
-    for (const [key, reminder] of Object.entries(modes.singleEnabled ? state.singles : {})) {
-      const record = byEvent.get(reminder.occurrence.eventId);
-      const occurrence = occurrences.get(key);
-      if (!record || hasOlderSourceTimestamp(record, reminder.occurrence)) continue;
-
-      // An absent or replaced ID is not an authoritative cancellation.
-      if (record.visible === false) {
-        delete state.singles[key];
-        changed = true;
-      } else if (occurrence && updateReminderOccurrence(reminder, occurrence)) {
-        changed = true;
-      }
-    }
+    const changed = modes.singleEnabled && updateKnownSingleOccurrences(state, records);
     const updatedCategories =
       modes.categoryEnabled && updateKnownCategoryOccurrences(state, records);
     if (changed || updatedCategories) {
@@ -386,7 +480,8 @@ export const applyEventReminderUpdates = (
 export const saveEventReminder = (
   occurrence: EventOccurrence,
   rule: EventReminderRule,
-  modes = allEventReminderModes
+  modes = allEventReminderModes,
+  details?: EventReminderListDetails
 ) =>
   runLocalNotificationUpdate(async () => {
     if (!modes.singleEnabled) return 'invalid';
@@ -396,7 +491,12 @@ export const saveEventReminder = (
 
     const state = await readEventReminderSettings();
     const key = eventOccurrenceKey(occurrence);
-    state.singles[key] = { occurrence, rule, status: 'failed' };
+    state.singles[key] = {
+      occurrence,
+      rule,
+      status: 'failed',
+      details: details ?? state.singles[key]?.details
+    };
     await writeEventReminders(state);
     await updateEventReminders(state, modes);
     return state.singles[key]?.status ?? 'elapsed';
@@ -409,6 +509,17 @@ export const removeEventReminder = (occurrence: EventOccurrence, modes = allEven
     const key = eventOccurrenceKey(occurrence);
     // Persist the deletion first so a restart can retry cancellation without resurrecting the rule.
     delete state.singles[key];
+    await writeEventReminders(state);
+    await updateEventReminders(state, modes);
+  });
+
+export const pauseEventReminder = (occurrence: EventOccurrence, modes = allEventReminderModes) =>
+  runLocalNotificationUpdate(async () => {
+    if (!modes.singleEnabled) return;
+    const state = await readEventReminderSettings();
+    const reminder = state.singles[eventOccurrenceKey(occurrence)];
+    if (!reminder || reminder.completedAt != null || reminder.status === 'paused') return;
+    reminder.status = 'paused';
     await writeEventReminders(state);
     await updateEventReminders(state, modes);
   });
@@ -476,6 +587,7 @@ export const saveEventCategorySubscription = (
       category,
       rule,
       revision,
+      paused: false,
       occurrences: existing?.occurrences ?? {},
       syncStatus: 'pending'
     };
@@ -498,6 +610,18 @@ export const removeEventCategorySubscription = (
     if (!modes.categoryEnabled) return;
     const state = await readEventReminderSettings();
     delete state.subscriptions[categoryId];
+    await writeEventReminders(state);
+    await updateEventReminders(state, modes);
+  });
+
+export const pauseEventCategorySubscription = (categoryId: string, modes = allEventReminderModes) =>
+  runLocalNotificationUpdate(async () => {
+    if (!modes.categoryEnabled) return;
+    const state = await readEventReminderSettings();
+    const subscription = state.subscriptions[categoryId];
+    if (!subscription || subscription.paused) return;
+    subscription.paused = true;
+    subscription.revision = ++state.revision;
     await writeEventReminders(state);
     await updateEventReminders(state, modes);
   });

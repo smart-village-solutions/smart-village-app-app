@@ -23,7 +23,14 @@ type EventDate = {
   useOnlyTimeDescription?: boolean | string | null;
 };
 
-export type EventReminderRecord = {
+export type EventReminderListDetails = {
+  addresses?: { city?: string | null; addition?: string | null }[] | null;
+  mediaContents?:
+    | { contentType?: string | null; sourceUrl?: { url?: string | null } | null }[]
+    | null;
+};
+
+export type EventReminderRecord = EventReminderListDetails & {
   id: string | number;
   title: string;
   dates?: EventDate[] | null;
@@ -33,6 +40,14 @@ export type EventReminderRecord = {
   category?: EventReminderCategory | null;
   categories?: EventReminderCategory[] | null;
 };
+
+export const getEventReminderListDetails = ({
+  addresses,
+  mediaContents
+}: EventReminderListDetails) => ({
+  addresses: addresses?.slice(0, 1),
+  mediaContents
+});
 
 const datePattern = /^\d{4}-\d{2}-\d{2}$/;
 const timePattern = /^([01]\d|2[0-3]):[0-5]\d$/;

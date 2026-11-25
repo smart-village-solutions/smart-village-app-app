@@ -33,6 +33,7 @@ jest.mock('../../src/components/TextListItem', () => ({
 jest.mock('../../src/components/form/Input', () => ({ Input: () => null }));
 jest.mock('../../src/components/SectionHeader', () => ({ SectionHeader: () => null }));
 jest.mock('../../src/components/SettingsToggle', () => ({ SettingsToggle: () => null }));
+jest.mock('../../src/components/ListComponent', () => ({ ListComponent: () => null }));
 jest.mock('react-query', () => ({ ...jest.requireActual('react-query'), useQuery: jest.fn() }));
 
 jest.mock('../../src/hooks', () => ({
@@ -43,10 +44,12 @@ jest.mock('../../src/config', () => ({
   colors: { refreshControl: '#000000' },
   consts: {
     a11yLabel: { button: '(Taste)' },
+    ROOT_ROUTE_NAMES: { EVENT_RECORDS: 'events' },
     MATOMO_TRACKING: { SCREEN_VIEW: { SETTINGS: 'Settings' } }
   },
   normalize: (value) => value,
   texts: {
+    detailTitles: { eventRecord: 'Veranstaltung' },
     errors: {
       errorTitle: 'Fehler'
     },
@@ -71,7 +74,10 @@ jest.mock('../../src/config', () => ({
         onDeactivate: ''
       },
       permanentFilter: { setting: 'Filter' },
-      personalizedPush: { setting: 'Push' },
+      personalizedPush: {
+        setting: 'Push',
+        eventSectionTitle: 'Erinnerungen für Veranstaltungskategorien'
+      },
       termsAndConditions: {
         abort: 'Abbrechen',
         ok: 'OK',
@@ -100,6 +106,7 @@ jest.mock('../../src/helpers', () => ({
   createMatomoUserId: jest.fn(),
   getAccessibilitySettingsEntryEnabled: jest.fn(() => false),
   matomoSettings: jest.fn(),
+  parseListItemsFromQuery: (query, data) => data[query],
   readFromStore: jest.fn(),
   removeMatomoUserId: jest.fn()
 }));
@@ -131,6 +138,7 @@ jest.mock('../../src/NetworkProvider', () => ({
 
 import { clearPersistentCaches } from '../../src/ReactQueryProvider';
 import { EventReminderSettings } from '../../src/components/EventReminderControls';
+import { ListComponent } from '../../src/components/ListComponent';
 import { SectionHeader } from '../../src/components/SectionHeader';
 import { SettingsToggle } from '../../src/components/SettingsToggle';
 import { PersonalizedPushSettings } from '../../src/components/settings';
@@ -170,10 +178,19 @@ describe('SettingsScreen', () => {
         settings: {
           pushNotifications: showRemotePush,
           personalizedPush: {
-            ...(remoteCategories
-              ? { categories: { queryVariables: { tagList: ['news_item'] } } }
+            ...(remoteCategories || categoryEnabled
+              ? {
+                  categories: {
+                    queryVariables: {
+                      tagList: [
+                        ...(remoteCategories ? ['news_item'] : []),
+                        ...(categoryEnabled ? ['event_record'] : [])
+                      ]
+                    }
+                  }
+                }
               : {}),
-            eventReminders: { singleEnabled, categoryEnabled }
+            eventReminders: { singleEnabled }
           }
         }
       };
@@ -199,7 +216,7 @@ describe('SettingsScreen', () => {
         showRemotePush: remoteToggle
       } = tree.root.findByType(PersonalizedPushSettings).props;
       expect(entry ? entry.props.item.params.setting : null).toBe(
-        singleEnabled || categoryEnabled ? SETTINGS_SCREENS.EVENT_REMINDERS : null
+        singleEnabled ? SETTINGS_SCREENS.EVENT_REMINDERS : null
       );
       if (entry) expect(entry.props.item.isHeadlineTitle).toBe(false);
       expect(footer?.props.embeddedCategories ?? false).toBe(categoryEnabled);
@@ -210,7 +227,7 @@ describe('SettingsScreen', () => {
       });
       const groups = tree.root.findAllByType(SectionHeader).map(({ props }) => props.title);
       expect(groups.includes('Einzelne Erinnerungen')).toBe(singleEnabled);
-      expect(groups.includes('Kategorie-Abos')).toBe(categoryEnabled);
+      expect(tree.root.findAllByType(SettingsToggle)).toHaveLength(0);
       await act(async () => tree.unmount());
     }
   );
@@ -220,13 +237,19 @@ describe('SettingsScreen', () => {
     const read = jest.spyOn(eventReminders, 'readEventReminderSettings').mockResolvedValue({
       singles: {},
       subscriptions: {
-        2: { category: { id: '2', name: 'Sport' }, rule: { kind: 'relative', leadDays: 3 } }
+        2: { category: { id: '2', name: 'Sport' }, rule: { kind: 'relative', leadDays: 3 } },
+        3: {
+          category: { id: '3', name: 'Architektur' },
+          paused: true,
+          rule: { kind: 'relative', leadDays: 1 }
+        }
       },
       categoryPlan: {}
     });
-    const remove = jest
-      .spyOn(eventReminders, 'removeEventCategorySubscription')
-      .mockResolvedValue();
+    const remove = jest.spyOn(eventReminders, 'pauseEventCategorySubscription').mockResolvedValue();
+    const save = jest
+      .spyOn(eventReminders, 'saveEventCategorySubscription')
+      .mockResolvedValue('saved');
     const alert = jest.spyOn(Alert, 'alert').mockImplementation(() => {});
     let tree;
     await act(async () => {
@@ -235,7 +258,9 @@ describe('SettingsScreen', () => {
           value={{
             ...initialContext,
             globalSettings: {
-              settings: { personalizedPush: { eventReminders: { categoryEnabled: true } } }
+              settings: {
+                personalizedPush: { categories: { queryVariables: { tagList: ['event_record'] } } }
+              }
             }
           }}
         >
@@ -243,11 +268,19 @@ describe('SettingsScreen', () => {
         </SettingsContext.Provider>
       );
     });
-    const [available, subscribed] = tree.root
+    const [paused, available, subscribed] = tree.root
       .findAllByType(SettingsToggle)
       .map(({ props }) => props.item);
     expect(available).toMatchObject({ title: 'Kultur', value: false });
     expect(subscribed).toMatchObject({ title: 'Sport', value: true });
+    expect(paused).toMatchObject({ title: 'Architektur', value: false });
+    await act(async () => paused.onActivate(jest.fn()));
+    expect(save).toHaveBeenCalledWith(
+      { id: '3', name: 'Architektur' },
+      { kind: 'relative', leadDays: 1 },
+      undefined,
+      { singleEnabled: false, categoryEnabled: true }
+    );
     const revert = jest.fn();
     subscribed.onDeactivate(revert);
     expect(revert).toHaveBeenCalledTimes(1);
@@ -259,6 +292,44 @@ describe('SettingsScreen', () => {
     await act(async () => tree.unmount());
     alert.mockRestore();
     remove.mockRestore();
+    save.mockRestore();
+    read.mockRestore();
+  });
+
+  it('uses the event list layout for upcoming single reminders and hides completed ones', async () => {
+    const entry = (id, status) => ({
+      occurrence: { eventId: id, occurrenceId: id, title: id, date: '2099-06-15', time: '20:00' },
+      rule: { kind: 'relative', leadDays: 1 },
+      status
+    });
+    const read = jest.spyOn(eventReminders, 'readEventReminderSettings').mockResolvedValue({
+      singles: {
+        '1:1': entry('1', 'scheduled'),
+        '2:2': entry('2', 'elapsed'),
+        '3:3': entry('3', 'paused')
+      },
+      subscriptions: {}
+    });
+    let tree;
+    await act(async () => {
+      tree = renderer.create(
+        <SettingsContext.Provider
+          value={{
+            globalSettings: {
+              settings: { personalizedPush: { eventReminders: { singleEnabled: true } } }
+            }
+          }}
+        >
+          <EventReminderSettings navigation={navigation} />
+        </SettingsContext.Provider>
+      );
+    });
+    const list = tree.root.findByType(ListComponent).props;
+    expect(list).toMatchObject({ query: 'eventRecords', horizontal: false, sectionByDate: true });
+    expect(list.navigation).toBe(navigation);
+    expect(list.data.map(({ id }) => id)).toEqual(['1:1', '3:3']);
+    expect(list.data[0].onPress).toEqual(expect.any(Function));
+    await act(async () => tree.unmount());
     read.mockRestore();
   });
 
