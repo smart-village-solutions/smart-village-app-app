@@ -184,7 +184,7 @@ test('native runtime is isolated and credentials are not serialized in public co
       }
     }
   );
-  expect(config.runtimeVersion).toBe('5.0.0-changers-2');
+  expect(config.runtimeVersion).toBe('5.0.0-changers-3');
   expect(config.extra).toEqual({ customer: 'fixture' });
   expect(JSON.stringify(config)).not.toContain('test-only-provider-value');
 });

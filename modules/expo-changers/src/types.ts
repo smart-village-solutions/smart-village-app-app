@@ -22,6 +22,7 @@ export interface Status {
   tracking: 'unknown';
   providerOpen: boolean;
   errorCode?: string;
+  registrationState?: 'notStarted' | 'uncertain' | 'existing';
 }
 export interface Statistics {
   coins: number;
