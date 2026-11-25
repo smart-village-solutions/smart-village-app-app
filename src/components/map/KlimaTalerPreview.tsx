@@ -1,5 +1,5 @@
 import React, { useState, useSyncExternalStore } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { AccessibilityInfo, StyleSheet, View } from 'react-native';
 
 import { Icon } from '../../config/icons/Icon';
 import { texts } from '../../config/texts';
@@ -43,7 +43,9 @@ export const KlimaTalerPreview = ({
       offer.remaining > 10 ? '10+' : offer.remaining.toLocaleString('de-DE')
     } ${copy.available}`;
   const open = (offerId: number) => {
-    if (!opening) void openKlimaTaler(offerId);
+    if (opening) return;
+    AccessibilityInfo.announceForAccessibility(texts.klimaTaler.opening);
+    void openKlimaTaler(offerId);
   };
   return (
     <MapPreview
@@ -71,11 +73,6 @@ export const KlimaTalerPreview = ({
         }
       }}
     >
-      {opening && (
-        <Text italic={false} style={styles.status} accessibilityLiveRegion="polite">
-          {texts.klimaTaler.opening}
-        </Text>
-      )}
       {stale && (
         <Text italic={false} style={styles.status} accessibilityLiveRegion="polite">
           {copy.stale}

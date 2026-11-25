@@ -1,16 +1,24 @@
 import React from 'react';
 import { act, fireEvent, render } from '@testing-library/react-native';
+import { AccessibilityInfo } from 'react-native';
 
 import { LocationOverview } from '../../src/components/map/LocationOverview';
+import { MapPreview } from '../../src/components/map/MapPreview';
 import { klimaTalerMarkerId, offersToMapMarkers } from '../../src/klimaTaler/mapOffers';
 import { openKlimaTaler } from '../../src/klimaTaler/entry';
 
-const mockIdle = { phase: 'idle' };
+let mockEntryState = { phase: 'idle' };
+const mockEntryListeners = new Set<() => void>();
 jest.mock('../../src/klimaTaler/entry', () => ({
   openKlimaTaler: jest.fn().mockResolvedValue(undefined),
   klimaTalerEntry: {
-    subscribe: () => () => undefined,
-    getSnapshot: () => mockIdle
+    subscribe: (listener: () => void) => {
+      mockEntryListeners.add(listener);
+      return () => {
+        mockEntryListeners.delete(listener);
+      };
+    },
+    getSnapshot: () => mockEntryState
   }
 }));
 
@@ -49,6 +57,7 @@ const location = {
   ]
 };
 let mockEnabled = true;
+let mockOffersError: Error | undefined;
 let mockLocations = [location];
 const mockToggle = jest.fn();
 const mockRefetch = jest.fn();
@@ -76,7 +85,7 @@ jest.mock('../../src/klimaTaler/useMapOffers', () => ({
     configured: true,
     locations: eligible && mockEnabled ? mockLocations : [],
     loading: false,
-    error: undefined,
+    error: mockOffersError,
     toggle: mockToggle
   })
 }));
@@ -202,7 +211,10 @@ const rawProps = {
 const props = rawProps as unknown as React.ComponentProps<typeof LocationOverview>;
 beforeEach(() => {
   jest.clearAllMocks();
+  mockEntryState = { phase: 'idle' };
+  mockEntryListeners.clear();
   mockEnabled = true;
+  mockOffersError = undefined;
   mockLocations = [location];
   mockPoiLoading = false;
   mockPoiDataAvailable = true;
@@ -350,6 +362,58 @@ test('single-offer preview opens the offer ID, never the location ID or backend 
   expect(openKlimaTaler).toHaveBeenCalledWith(10);
   expect(rawProps.navigation.navigate).not.toHaveBeenCalled();
   expect(screen.queryByText('Markt 1 32756 Detmold')).toBeNull();
+});
+
+test.each([
+  { single: true, stale: false },
+  { single: true, stale: true },
+  { single: false, stale: false },
+  { single: false, stale: true }
+])('opening a provider offer keeps preview content stable: %p', ({ single, stale }) => {
+  mockOffersError = stale ? new Error('Temporary feed failure') : undefined;
+  mockLocations = [{ ...location, offers: single ? [location.offers[0]] : location.offers }];
+  const announce = jest
+    .spyOn(AccessibilityInfo, 'announceForAccessibility')
+    .mockImplementation(() => undefined);
+  try {
+    const screen = render(<LocationOverview {...props} />);
+    act(() => mockMap.mock.calls.at(-1)[0].onMarkerPress(klimaTalerMarkerId(1)));
+    // Cover both a single-offer card and the intentionally expanded offer chooser.
+    if (!single) fireEvent.press(screen.getByText('Klima Café'));
+    const preview = () => screen.UNSAFE_getByType(MapPreview);
+    const layoutContent = () =>
+      React.Children.toArray(preview().props.children).map((child) =>
+        React.isValidElement(child) ? child.type : child
+      );
+    const content = layoutContent();
+    const item = preview().props.item;
+    fireEvent.press(screen.getByText(single ? 'Klima Café' : 'Kuchen'));
+    expect(openKlimaTaler).toHaveBeenCalledWith(single ? 10 : 11);
+    act(() => {
+      mockEntryState = { phase: 'opening' };
+      mockEntryListeners.forEach((listener) => listener());
+    });
+    expect(layoutContent()).toEqual(content);
+    expect(preview().props.item).toMatchObject({
+      title: item.title,
+      subtitle: item.subtitle,
+      picture: item.picture
+    });
+    expect(preview().props.disabled).toBe(true);
+    expect(screen.queryByText('Klima-Taler wird geöffnet …')).toBeNull();
+    expect(announce).toHaveBeenCalledWith('Klima-Taler wird geöffnet …');
+    fireEvent.press(screen.getByText(single ? 'Klima Café' : 'Kuchen'));
+    expect(openKlimaTaler).toHaveBeenCalledTimes(1);
+    act(() => {
+      mockEntryState = { phase: 'error' };
+      mockEntryListeners.forEach((listener) => listener());
+    });
+    expect(layoutContent()).toEqual(content);
+    fireEvent.press(screen.getByText(single ? 'Klima Café' : 'Kuchen'));
+    expect(openKlimaTaler).toHaveBeenCalledTimes(2);
+  } finally {
+    announce.mockRestore();
+  }
 });
 
 test('multiple offers require an explicit selection and retain the map preview on return', () => {

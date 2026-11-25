@@ -324,7 +324,10 @@ The integration reuses the existing `MapLibre` and `ChipFilter` components. Norm
 and Klima-Taler locations share `MapPreview`, extracted from the existing location preview,
 with consistent inset image/text spacing. Klima-Taler only adds offer selection and provider
 navigation as optional preview content. Offer rows reuse `TextListItem` and show the
-offer image when supplied. A single-offer preview prefers that image over the partner
+offer image when supplied. Opening an offer leaves the preview layout unchanged:
+the existing card is disabled and opening is announced to screen readers without
+adding a status row. Multi-offer selection still expands only when explicitly requested.
+A single-offer preview prefers that image over the partner
 image. Availability is displayed as `10+` above ten and as the exact count at ten or below. The separate SVA wallet in the design reference is not a Klima-Taler balance
 or an SDK wallet target.
 
