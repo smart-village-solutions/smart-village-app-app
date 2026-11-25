@@ -47,7 +47,12 @@ jest.mock('../../src/helpers', () => ({
   updateFilters: ({ currentFilters }: { currentFilters: Record<string, unknown> }) => currentFilters
 }));
 
-jest.mock('react-native-collapsible', () => ({ children }) => children);
+jest.mock(
+  'react-native-collapsible',
+  () =>
+    ({ children }) =>
+      children
+);
 
 jest.mock('../../src/components/Label', () => ({
   Label: ({ children }) => children
@@ -85,6 +90,7 @@ jest.mock('../../src/components/filter/Sue', () => ({
 }));
 
 import { FilterComponent } from '../../src/components/filter/FilterComponent';
+import { DropdownFilter } from '../../src/components/filter/DropdownFilter';
 
 const renderWithAct = (component: React.ReactElement) => {
   let testRenderer: renderer.ReactTestRenderer;
@@ -97,6 +103,19 @@ const renderWithAct = (component: React.ReactElement) => {
 };
 
 describe('FilterComponent accessibility', () => {
+  it('keeps a loading category control mounted before options arrive', () => {
+    const tree = renderWithAct(
+      <FilterComponent
+        filters={{}}
+        filterTypes={[
+          { type: 'dropdown', name: 'categoryId', label: 'Kategorien', data: [], loading: true }
+        ]}
+        setFilters={jest.fn()}
+      />
+    );
+    expect(tree.root.findByType(DropdownFilter).props.loading).toBe(true);
+  });
+
   it('passes the visible checkbox label to the switch element', () => {
     const tree = renderWithAct(
       <FilterComponent
@@ -117,9 +136,7 @@ describe('FilterComponent accessibility', () => {
     const switchNode = tree.root.findByProps({ accessibilityRole: 'switch' });
     const labelNode = tree.root.findByType('mock-regular-text');
 
-    expect(switchNode.props.accessibilityLabel).toBe(
-      'Filtereinstellungen dauerhaft speichern'
-    );
+    expect(switchNode.props.accessibilityLabel).toBe('Filtereinstellungen dauerhaft speichern');
     expect(labelNode.props.accessible).toBe(false);
     expect(labelNode.props.importantForAccessibility).toBe('no');
   });

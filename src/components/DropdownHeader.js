@@ -6,6 +6,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { StyleSheet } from 'react-native';
 
 import { texts } from '../config';
+import { eventCategoryOptions } from '../helpers/eventCategoryOptions';
 import { usePermanentFilter } from '../hooks';
 import { QUERY_TYPES } from '../queries';
 
@@ -36,18 +37,7 @@ export const dropdownEntries = (
       }));
     }
 
-    if (data?.categories?.length) {
-      entries = _uniqBy(data.categories, 'name')
-        .filter((category) => !!category.upcomingEventRecordsCount)
-        .map((category, index) => ({
-          index: index + 1,
-          id: category.id,
-          value: category.name,
-          selected:
-            category.id === queryVariables.categoryId ||
-            queryVariables.categoryIds?.includes(category.id)
-        }));
-    }
+    if (data?.categories?.length) entries = eventCategoryOptions(data, queryVariables);
   } else if (query === QUERY_TYPES.NEWS_ITEMS) {
     const filteredDataProviders = data?.dataProviders?.filter(
       (dataProvider) => !excludeDataProviderIds.includes(dataProvider.id)

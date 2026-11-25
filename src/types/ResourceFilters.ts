@@ -24,6 +24,7 @@ export type FilterTypesProps = {
   inlineDropdown?: boolean;
   isMultiselect?: boolean;
   label?: string;
+  loading?: boolean;
   name: keyof FilterProps;
   placeholder?: string;
   requireSelection?: boolean;

@@ -18,20 +18,11 @@ import { VoucherListItem } from '../components/vouchers/VoucherListItem';
 import { WasteCollectionListItem } from '../components/waste/WasteCollectionListItem';
 import { consts, normalize, texts } from '../config';
 import { momentFormat } from '../helpers';
+import { resolveListType } from '../helpers/listTypeSettings';
 import { QUERY_TYPES } from '../queries';
 import { GenericType, ScreenName } from '../types';
 
 const { LIST_TYPES, ROOT_ROUTE_NAMES } = consts;
-
-const getListType = (query, listTypesSettings) => {
-  switch (query) {
-    case QUERY_TYPES.POINTS_OF_INTEREST:
-    case QUERY_TYPES.TOURS:
-      return listTypesSettings[QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS];
-    default:
-      return listTypesSettings[query];
-  }
-};
 
 const EventSectionHeader = ({ item, navigation, options, query }) => (
   <SectionHeader
@@ -96,7 +87,7 @@ export const useRenderItem = (query, navigation, options = {}) => {
   const { globalSettings, listTypesSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { listsWithoutArrows = false } = settings;
-  const listType = options.listType || getListType(query, listTypesSettings);
+  const listType = options.listType || resolveListType(query, globalSettings, listTypesSettings);
   let renderItem;
 
   const calculateBottomDivider = (item, index, section) => {
@@ -139,12 +130,8 @@ export const useRenderItem = (query, navigation, options = {}) => {
           );
         }
 
-        // in special lists such as `EventList`, since the data starts from the 1st index,
-        // `isIndexStartingAt1` and `index` control has been added
-        if (
-          (index === 0 && !options.isIndexStartingAt1) ||
-          (index === 1 && options.isIndexStartingAt1)
-        ) {
+        const isLeadingItem = index === (options.isIndexStartingAt1 ? 1 : 0);
+        if (isLeadingItem) {
           if (!item?.picture?.url) {
             return (
               <TextListItem
@@ -158,7 +145,7 @@ export const useRenderItem = (query, navigation, options = {}) => {
           }
         }
 
-        if (index === 0) {
+        if (isLeadingItem) {
           return (
             <CardListItem
               bigTitle
@@ -188,8 +175,18 @@ export const useRenderItem = (query, navigation, options = {}) => {
       break;
     }
     case LIST_TYPES.GROUPED_LIST: {
-      renderItem = ({ item }) => {
+      // eslint-disable-next-line react/prop-types -- FlashList row metadata is not component props.
+      renderItem = ({ item, target }) => {
         if (typeof item === 'string') {
+          if (query === QUERY_TYPES.EVENT_RECORDS) {
+            return (
+              <View
+                style={target == 'StickyHeader' ? styles.eventStickyHeader : styles.eventHeader}
+              >
+                <EventSectionHeader {...{ item, navigation, options, query }} />
+              </View>
+            );
+          }
           return <GroupedSectionHeader item={item} />;
         }
 
@@ -207,6 +204,19 @@ export const useRenderItem = (query, navigation, options = {}) => {
 
         if (query === QUERY_TYPES.WASTE_STREET) {
           return <WasteCollectionListItem item={item} options={options.queryVariables} />;
+        }
+
+        // Remote presentation changes do not turn flat data into date-grouped rows.
+        if (!Array.isArray(item) || !options.queryVariables?.groupKey) {
+          return (
+            <TextListItem
+              item={item}
+              navigation={navigation}
+              noSubtitle={options.noSubtitle}
+              noOvertitle={options.noOvertitle}
+              listsWithoutArrows={listsWithoutArrows}
+            />
+          );
         }
 
         return (
@@ -308,11 +318,6 @@ export const useRenderItem = (query, navigation, options = {}) => {
           );
         }
 
-        // `SectionHeader` list item for `Noticeboard`
-        if (query === QUERY_TYPES.GENERIC_ITEMS && !!item.component) {
-          return item.component;
-        }
-
         if (
           query === QUERY_TYPES.GENERIC_ITEMS &&
           options.queryVariables?.genericType === GenericType.ParticipationProject
@@ -355,14 +360,26 @@ export const useRenderItem = (query, navigation, options = {}) => {
     }
   }
 
-  return useCallback(renderItem, [
+  const renderRow = useCallback(renderItem, [
     query,
     listType,
     navigation,
     options.horizontal,
+    options.isIndexStartingAt1,
     options.noSubtitle,
     options.queryVariables
   ]);
+
+  return useCallback(
+    (info) => {
+      // Noticeboard category controls must survive every configured row presentation.
+      if (query === QUERY_TYPES.GENERIC_ITEMS && info.item?.component) {
+        return info.item.component;
+      }
+      return renderRow(info);
+    },
+    [query, renderRow]
+  );
 };
 
 /**

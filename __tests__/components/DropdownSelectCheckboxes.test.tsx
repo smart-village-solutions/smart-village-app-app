@@ -3,6 +3,9 @@ import React from 'react';
 import { fireEvent, render } from '@testing-library/react-native';
 
 import { DropdownSelect } from '../../src/components/DropdownSelect';
+import { DropdownFilter } from '../../src/components/filter/DropdownFilter';
+
+jest.mock('../../src/helpers', () => jest.requireActual('../../src/helpers/filterObjectHelper'));
 
 jest.mock('react-native-modal-dropdown', () => {
   const React = require('react');
@@ -117,6 +120,173 @@ jest.mock('../../src/config', () => {
 });
 
 describe('DropdownSelect multiselect checkboxes', () => {
+  it('keeps an optional selected category individually removable', () => {
+    const { device } = require('../../src/config');
+    const previousPlatform = device.platform;
+    device.platform = 'android';
+    const setFilters = jest.fn();
+    try {
+      const view = render(
+        <DropdownFilter
+          data={[{ id: '1', filterValue: '1', value: 'Sport', selected: true }]}
+          filters={{ categoryId: '1' }}
+          isOverlayFilter
+          label="Kategorie"
+          name="categoryId"
+          placeholder="Alle"
+          setFilters={setFilters}
+        />
+      );
+      fireEvent.press(view.getByRole('button', { name: /Kategorie/ }));
+      fireEvent.press(view.getByRole('button', { name: /^Alle/, selected: false }));
+      expect(setFilters).toHaveBeenCalledWith({});
+    } finally {
+      device.platform = previousPlatform;
+    }
+  });
+
+  it('shows category loading in the control while keeping its dropdown available', () => {
+    const props = {
+      data: [{ id: '1', value: 'Kultur' }],
+      filters: {},
+      label: 'Kategorie',
+      name: 'categoryId' as const,
+      setFilters: jest.fn()
+    };
+    const view = render(<DropdownFilter {...props} loading />);
+    expect(view.getByRole('progressbar', { name: 'Kategorie' }).props.accessibilityState.busy).toBe(
+      true
+    );
+    expect(view.getByTestId('modal-dropdown')).toBeTruthy();
+    view.rerender(<DropdownFilter {...props} loading={false} />);
+    expect(view.queryByRole('progressbar')).toBeNull();
+    expect(view.getByTestId('modal-dropdown')).toBeTruthy();
+  });
+
+  it('exposes Android single-select options as buttons with selected state', () => {
+    const { device } = require('../../src/config');
+    const previousPlatform = device.platform;
+    device.platform = 'android';
+    const setData = jest.fn();
+    try {
+      const view = render(
+        <DropdownSelect
+          data={[
+            { id: 0, selected: true, value: 'Alle' },
+            { id: 1, selected: false, value: 'Kultur' }
+          ]}
+          isOverlayFilter
+          label="Kategorie"
+          setData={setData}
+        />
+      );
+      fireEvent.press(view.getByRole('button', { name: /Kategorie/ }));
+      expect(view.queryByRole('checkbox')).toBeNull();
+      expect(view.getByRole('button', { name: /^Alle/, selected: true })).toBeTruthy();
+      fireEvent.press(view.getByRole('button', { name: /^Kultur/, selected: false }));
+      expect(setData).toHaveBeenCalledWith([
+        { id: 0, selected: false, value: 'Alle' },
+        { id: 1, selected: true, value: 'Kultur' }
+      ]);
+      expect(view.queryByRole('button', { name: /^Kultur/ })).toBeNull();
+    } finally {
+      device.platform = previousPlatform;
+    }
+  });
+
+  it('closes the Android single-select list when the current option is selected again', () => {
+    const { device } = require('../../src/config');
+    const previousPlatform = device.platform;
+    device.platform = 'android';
+    const setData = jest.fn();
+    try {
+      const view = render(
+        <DropdownSelect
+          data={[{ id: 0, selected: true, value: 'Alle' }]}
+          isOverlayFilter
+          label="Kategorie"
+          setData={setData}
+        />
+      );
+      fireEvent.press(view.getByRole('button', { name: /Kategorie/ }));
+      fireEvent.press(view.getByRole('button', { name: /^Alle/, selected: true }));
+      expect(setData).not.toHaveBeenCalled();
+      expect(view.queryByRole('button', { name: /^Alle/, selected: true })).toBeNull();
+    } finally {
+      device.platform = previousPlatform;
+    }
+  });
+
+  it('renders a searchable single-select filter inline on Android', () => {
+    const { device } = require('../../src/config');
+    const previousPlatform = device.platform;
+    device.platform = 'android';
+    const setData = jest.fn();
+
+    try {
+      const screen = render(
+        <DropdownSelect
+          data={[
+            { id: 0, selected: true, value: 'Alle' },
+            { id: 1, selected: false, value: 'Kultur' }
+          ]}
+          isOverlayFilter
+          label="Kategorie"
+          setData={setData}
+          showSearch
+          searchPlaceholder="Suche"
+        />
+      );
+
+      fireEvent.press(screen.getByRole('button', { name: /Kategorie/ }));
+      expect(screen.queryByTestId('modal-dropdown')).toBeNull();
+      fireEvent.changeText(screen.getByPlaceholderText('Suche'), 'Kul');
+      fireEvent.press(screen.getByRole('button', { name: /Kultur/ }));
+      expect(setData).toHaveBeenCalledWith([
+        { id: 0, selected: false, value: 'Alle' },
+        { id: 1, selected: true, value: 'Kultur' }
+      ]);
+    } finally {
+      device.platform = previousPlatform;
+    }
+  });
+
+  it('keeps filtered multiselect options usable on Android', () => {
+    const { device } = require('../../src/config');
+    const previousPlatform = device.platform;
+    device.platform = 'android';
+    const setData = jest.fn();
+
+    try {
+      const screen = render(
+        <DropdownSelect
+          data={[
+            { id: 0, selected: true, value: 'Alle' },
+            { id: 1, selected: false, value: 'Sport' },
+            { id: 2, selected: false, value: 'Kultur' }
+          ]}
+          isOverlayFilter
+          label="Kategorie"
+          multipleSelect
+          setData={setData}
+          showSearch
+          searchPlaceholder="Suche"
+        />
+      );
+
+      fireEvent.press(screen.getByRole('button', { name: /Kategorie/ }));
+      fireEvent.changeText(screen.getByPlaceholderText('Suche'), 'Kul');
+      fireEvent.press(screen.getByRole('checkbox', { name: /Kultur/ }));
+      expect(setData).toHaveBeenCalledWith([
+        { id: 0, selected: false, value: 'Alle' },
+        { id: 1, selected: false, value: 'Sport' },
+        { id: 2, selected: true, value: 'Kultur' }
+      ]);
+    } finally {
+      device.platform = previousPlatform;
+    }
+  });
+
   it('searches within the page and closes after selecting a filtered category', () => {
     const setData = jest.fn();
     const onSearchFocus = jest.fn();
