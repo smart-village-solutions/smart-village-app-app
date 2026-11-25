@@ -126,15 +126,15 @@ Android uses the OkHttp 5.1.0 BOM to align MotionTag's HTTP client with React Na
 
 The last known gate is intentionally used while JS/network configuration is unavailable. A remote change cannot take effect until received. A successfully persisted disable survives process recreation; a storage failure is reported and stop is still requested. Never-activated, disabled, unreadable-gate or unconfigured installations do not initialize from the background. Re-enabling initializes the SDK if necessary but does not override a provider pause/withdrawn consent state; reopen the provider to manage tracking.
 
-| Lifecycle event | Host behavior / remaining limit |
-| --- | --- |
-| Process death / OS eviction | On the next OS-created process, restore the saved gate and activation. No guarantee that the OS immediately recreates it. |
-| Task dismissed | Does not call logout or stop; vendor service declares `stopWithTask=false`. OEM restrictions still apply. |
-| User force-stop | No host workaround; user interaction is needed to leave Android's stopped state. |
-| Reboot / package update | Initialize under the saved gate, then delegate the broadcast. This is implemented; actual route recording is not yet device-verified. |
-| Permission revoked / provider consent withdrawn | Do not call start or grant consent; the provider and OS enforce eligibility. Tracking status remains unknown. |
-| Remote disable | Persist gate, close UI and request stop, retaining identity. Offline installations cannot observe new settings immediately. |
-| Re-enable | Initialize if required; do not automatically undo a provider stop or consent withdrawal. |
+| Lifecycle event                                 | Host behavior / remaining limit                                                                                                       |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| Process death / OS eviction                     | On the next OS-created process, restore the saved gate and activation. No guarantee that the OS immediately recreates it.             |
+| Task dismissed                                  | Does not call logout or stop; vendor service declares `stopWithTask=false`. OEM restrictions still apply.                             |
+| User force-stop                                 | No host workaround; user interaction is needed to leave Android's stopped state.                                                      |
+| Reboot / package update                         | Initialize under the saved gate, then delegate the broadcast. This is implemented; actual route recording is not yet device-verified. |
+| Permission revoked / provider consent withdrawn | Do not call start or grant consent; the provider and OS enforce eligibility. Tracking status remains unknown.                         |
+| Remote disable                                  | Persist gate, close UI and request stop, retaining identity. Offline installations cannot observe new settings immediately.           |
+| Re-enable                                       | Initialize if required; do not automatically undo a provider stop or consent withdrawal.                                              |
 
 See Android's [background service restrictions](https://developer.android.com/develop/background-work/services/fgs/restrictions-bg-start) and [stopped-state behavior](https://developer.android.com/about/versions/15/behavior-changes-all#stopped-state).
 
@@ -177,7 +177,7 @@ cd android
 
 iOS compatibility checks are in `__tests__/klimaTaler/simulator_compatibility_test.rb`. Run the UIKit presentation harness on a booted Apple Silicon simulator with `sh __tests__/klimaTaler/ios/run-presentation-tests.sh <UDID>`.
 
-Device acceptance should cover initial consent, denied and granted permissions, opening/closing, session restoration, widget refresh, disabling the module, and tracking lifecycle. Account deletion, actual background journey collection, buffered data handling and reboot recovery require separate provider/device validation. Map/POI navigation, badge data and SVA profile linkage are not implemented.
+Device acceptance should cover initial consent, denied and granted permissions, opening/closing, session restoration, widget refresh, disabling the module, and tracking lifecycle. Account deletion, actual background journey collection, buffered data handling and reboot recovery require separate provider/device validation. Map/POI navigation and badge data remain pending contracts. SVA profile linkage is intentionally outside the agreed scope.
 
 ### Registration recovery (SVAK-228 / SVAK-230)
 
@@ -197,3 +197,72 @@ xcrun swiftc modules/expo-changers/ios/ChangersRegistration.swift __tests__/klim
 The pinned Changers 4.2.0 public Swift interface stores authentication/setup/statistics delegates on the singleton. It exposes no cancellation handle from register/login/statistics, no documented non-destructive reset, and no request identifier in callbacks. The public `URLSessionDataTaskProtocol.cancel()` is not a request handle returned by those methods. `logoutUser`, `clearCache`, and `stopTrackingAndClearData` are not documented cancellation barriers.
 
 Accordingly the unresolved operation is still quarantined after `E_TIMEOUT`; freeing it would allow an old callback to settle a newer request or mutate its session. Late completion releases the slot and cannot settle the timed-out promise twice. If no callback arrives, a process restart is still required; **the permanent busy defect is not fixed**. Provider delivery needed: cancellable operations with completion acknowledgment, request-scoped delegates, or a documented reset that preserves identity and prevents late callbacks/session mutation. Registration outcomes also remain uncertain across restart, so restarting is not permission to repeat signup.
+
+## Validation and handover — 2026-10-13
+
+> Historical record: the commit IDs, test counts and local build observations below describe the original 13 October snapshot. They are not fresh acceptance evidence for the rebased code. The 17 November integration is a sequence of open PRs starting at [#1606](https://github.com/smart-village-solutions/smart-village-app-app/pull/1606); no PRs have been merged into the epic or master during that work. Consult each PR for current commit IDs and validation results.
+
+### Code and ticket review
+
+Read epic SVAK-223, its 18 child tickets (224–240 and 242), and the 13 October review comments in the authenticated Jira UI. No comments, descriptions, statuses, assignments or links were changed. The three existing commits were verified as a linear chain and integrated locally by fast-forward; none were recreated or cherry-picked.
+
+| Branch                                       | Commit      | Result                                                                                           |
+| -------------------------------------------- | ----------- | ------------------------------------------------------------------------------------------------ |
+| `feature/SVAK-227-changers-expo-integration` | `2da4e19ff` | Existing native integration retained                                                             |
+| `feature/SVAK-230-klima-taler-entry`         | `48b70442d` | Existing provider entry retained                                                                 |
+| `feature/SVAK-231-klima-taler-widget`        | `75255e59a` | Existing widget and ordering retained                                                            |
+| `fix/SVAK-239-config-test-isolation`         | `078d77594` | Config tests run without the private secrets module                                              |
+| `fix/SVAK-228-registration-recovery`         | `63704d715` | Separate activation/registration history; retry undispatched signup, preserve ambiguous outcomes |
+| `fix/SVAK-227-background-initialization`     | `e8aab7a95` | Restore Android gate at process startup, report storage failures                                 |
+| `fix/SVAK-231-widget-unavailable-actions`    | `e9ffcfb23` | Hide absent shortcut configuration, retain explicit customer choices                             |
+
+The table identifies the original local commits before rebase. This handover originated on `docs/SVAK-239-validation-evidence`; its original local integration notes do not describe the current stacked-PR workflow. The current integration leaves every PR open for review and does not perform a merge, store release or Jira transition.
+
+Reviewed the pinned [iOS vendor repository](https://github.com/Changers/changers-ios-sdk/tree/33c65f9b8db1618dfff3530c73a061935a66a9ff) and [Android sample](https://github.com/Changers/Sample-Android-SDK). The local iOS framework metadata confirms Changers 4.2.0 and MotionTag 6.3.4; the public Swift interface was read at the pinned commit. Inspected JVM classes were byte-for-byte checked against the resolved sdkstaging 1.20.6 and MotionTag 7.2.5 AARs before relying on their lifecycle/statistics behavior. No second MotionTag wrapper was introduced.
+
+### Test results recorded on 2026-10-13
+
+Commands ran with Node 22.13.0 and Yarn 1.22.22 using the existing installed dependencies. This is not a clean-install or release acceptance report.
+
+| Check                                                          | Before changes                                                       | Final result                                                                                                                               |
+| -------------------------------------------------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `yarn lint`                                                    | 982 errors, 159 warnings                                             | Same 982 errors, 159 warnings; diagnostic entries identical                                                                                |
+| `yarn test --runInBand`                                        | 169 suites passed, 50 failed; 1035 tests passed, 8 failed, 2 skipped | 170 suites passed, 49 failed; 1044 tests passed, 8 failed, 2 skipped                                                                       |
+| Klima-Taler + widget layout/reordering suites                  | Config suite could not load missing secrets                          | 15 suites / 134 tests passed                                                                                                               |
+| Android native Debug / Release                                 | 7 tests per variant (existing results were up-to-date)               | 13 tests per variant executed and passed, including 6 gate tests                                                                           |
+| Native Swift registration harness                              | Not present                                                          | 10 assertions passed, including offline/restart and ambiguous-attempt preservation                                                         |
+| iOS compatibility Ruby harness                                 | Re-executed                                                          | 2 tests / 24 assertions passed                                                                                                             |
+| UIKit presentation harness, iPhone 17 Pro simulator / iOS 26.5 | Re-executed                                                          | 43 checks passed; no vendor SDK/account                                                                                                    |
+| Swift device-target typecheck                                  | —                                                                    | Runtime/journal typechecked against pinned Changers/MotionTag frameworks; Expo Promise/subscriber were minimal stubs, not a full app build |
+| Isolated Expo prebuild                                         | —                                                                    | iOS + Android generated; repeat with `--no-clean --no-install` left all 56 native files unchanged                                          |
+
+The prebuild fixture used test-only connection strings in a temporary project. Expo 57 defaults to recreating native directories: an initial clean repetition changed generated Xcode object IDs; the non-clean repeat was byte-identical. Existing workspace native projects were not regenerated.
+
+No new failed Jest suites or failing test descriptions remain. The corrected AppConfig suite accounts for the suite improvement. The eight existing failing assertions concern HeaderRight, SettingsScreen, waste reminder/settings accessibility, and owner-auth context. Other pre-existing suites still fail during loading, including imports of absent private secrets. Those unrelated failures were neither suppressed nor repaired by creating secret files. The repository-wide quality gate remains red.
+
+Local raw command logs are in `/tmp/klima-taler-validation`; the UIKit screenshot/result are in `/tmp/sva-klima-presentation.g1Zp40`. These temporary paths are supplementary, not durable release artifacts. The commands, test sources and summarized results here are the reproducible handover.
+
+### Build and device limits
+
+No installable, configured SVA development APK/IPA was produced. The expected private `src/config/secrets.js` is absent, the existing generated Android project has app-version-only runtime and no Changers configuration asset, and the local SVA iOS framework directories are incomplete. The separate research checkout supplied pinned frameworks for API inspection/typecheck only. Connected physical iPhones were offline. No secret material, signing credentials or accounts were created or modified; no paid build was started.
+
+The only newly built iOS application was the credential-free UIKit test harness, which was uninstalled after testing. The simulator started for this test was shut down afterwards. Android unit-test compilation is not an installed SVA build.
+
+### Concrete remaining deliveries
+
+- **SVAK-227:** cancellable/request-scoped iOS operations or a documented identity-preserving reset barrier. Timeout without callback still blocks SDK operations until process restart. No real-SDK no-callback/late-callback/logout recovery acceptance is claimed.
+- **SVAK-228 / SVAK-230:** signup idempotency or authorized identity lookup after an ambiguous response. The new guard recovers definitely undispatched attempts; previous failed/uncertain vendor registrations cannot safely be retried without this delivery. Native request interruption and delayed SDK callbacks still need provider/device verification.
+- **SVAK-231 / SVAK-242:** confirmed badge IDs, labels, images, acquisition state and update signals; actual wallet/map/badge/settings target contracts. Confirm the direct Android statistics endpoint/session adapter with the provider and test sanitized Debug/Release device logs. The read-only widget client does not sanitize every vendor SDK path.
+- **SVAK-232 / SVAK-233 / SVAK-234:** the locally accessible main-server `saas` branch at `b01aead1` has general POI fields (`external_id`, `data_provider`, coordinates, media, `active`, `visible`, `payload`), but no Klima-Taler importer, feed contract or provider-target mapping was found. This does not establish the state of every remote branch or deployment. App map rendering already uses `LocationOverview`/`MapLibre` and shared previews. Required delivery: customer/source identification, stable partner/site/offer IDs, exact detail reference for both SDKs, coordinates/title/media fallback, validity/deletion rules, pagination/sync/error semantics, and onboarding/session completion signals. Generic fields and fixtures are not a completed integration; no speculative endpoint, payload key or URL was added.
+- **SVAK-229 / SVAK-237 / SVAK-238 / SVAK-239:** fresh consent/permission flows, real background journey and server credit, reboot/update/permission withdrawal, logout versus deletion and buffered data, VoiceOver/TalkBack focus and customer-theme acceptance on devices. Re-enabling the host must not silently undo provider consent withdrawal.
+- **SVAK-235 / SVAK-236:** determine whether an additional host action is required; no new payment, wallet or push product was invented.
+- **SVAK-240:** restore the authorized local native build inputs through the established configuration process, create a `changers-3` build, verify provider app registration, resolve/accept the repository-wide gate failures through the owning work, and complete device/security/accessibility acceptance before release approval.
+
+### Device acceptance steps for the next configured build
+
+1. Install the matching `changers-3` development build. On Home, verify no signup or permission prompt; only the default provider action appears without explicit shortcut configuration.
+2. On a fresh iOS test installation, let the network path become offline, open Klima-Taler, then reconnect and retry. Repeat with an app restart between attempts. Confirm one provider identity. Treat a connection loss after dispatch as ambiguous and verify that repeated taps/restarts never create another account.
+3. With an existing account, interrupt login/statistics, restore connectivity and verify the same identity/balance. Check actual zero, unavailable balance and stale cache; changing account must not expose the previous balance.
+4. On Android, enable the module and complete provider consent; verify route recording after backgrounding, OS process recreation, reboot and package update. Test force-stop separately, then reopen manually. Revoke permissions and provider consent; confirm no host-induced re-enablement.
+5. Disable the module remotely while online: entry/provider close and stop request, identity retained. Restart to verify the saved disable; re-enable and manage any tracking restart through the provider. Validate actual stop/server effects separately from `tracking=unknown`.
+6. Open/close repeatedly, including VoiceOver/TalkBack and large text; verify return focus, provider close control, current balance refresh and accessible widget ordering. Badge/POI target acceptance awaits the contracts above.
