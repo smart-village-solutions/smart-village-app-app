@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react';
 import {
   ActivityIndicator,
+  Alert,
   Image,
   Pressable,
   StyleSheet,
@@ -36,7 +37,6 @@ const formatCoins = (config: KlimaTalerWidgetConfiguration, coins?: number) => {
 
 export const KlimaTalerCard = ({ state, opening = false, config, onAction }: Props) => {
   const promo = state.phase === 'noSession';
-  const status = state.stale ? config.statusTexts.stale : config.statusTexts[state.phase];
   const visible = (name: KlimaTalerAction) =>
     config.actions[name].enabled && (!promo || config.actions[name].showInPromo);
   const action = (name: KlimaTalerAction) =>
@@ -60,20 +60,6 @@ export const KlimaTalerCard = ({ state, opening = false, config, onAction }: Pro
         <CardSummary state={state} config={config} promo={promo} />
         {action('settings')}
       </View>
-      {!promo && config.show.status && (
-        <Text
-          testID="klimaTalerStatus"
-          italic={false}
-          style={[styles.status, { color: config.colors.text }, config.styles.status]}
-          accessible={!!status}
-          accessibilityElementsHidden={!status}
-          importantForAccessibility={status ? 'auto' : 'no-hide-descendants'}
-          accessibilityLiveRegion={status ? 'polite' : 'none'}
-        >
-          {/* Keep one scaled line in the layout when a refresh finishes. */}
-          {status || '\u00a0'}
-        </Text>
-      )}
       <View style={[styles.actions, config.styles.actions]}>
         {(['main', 'wallet', 'map', 'badges'] as const).map(action)}
       </View>
@@ -121,18 +107,13 @@ const CardSummary = ({
 }: Pick<Props, 'state' | 'config'> & { promo: boolean }) => {
   const { textScaleMultiplier } = useContext(AccessibilityContext);
   const { fontScale } = useWindowDimensions();
-  const [numberWidth, setNumberWidth] = useState(0);
-  const value = formatCoins(config, state.coins);
   const effectiveScale = resolveEffectiveTextScale(fontScale, textScaleMultiplier);
   const largeText = effectiveScale > 1.3;
   const balanceVisible = !promo && config.show.balance;
   return (
     <View style={[styles.summary, largeText && styles.stacked, config.styles.summary]}>
       <CardLogo config={config} promo={promo} />
-      <View
-        style={[styles.copy, largeText && styles.stackedCopy]}
-        onLayout={({ nativeEvent }) => setNumberWidth(nativeEvent.layout.width)}
-      >
+      <View style={[styles.copy, largeText && styles.stackedCopy]}>
         {config.show.title && (
           <Text
             italic={false}
@@ -157,11 +138,87 @@ const CardSummary = ({
             {config.texts.description}
           </Text>
         )}
-        {balanceVisible && (
-          <CardBalance config={config} value={value} width={numberWidth} scale={effectiveScale} />
-        )}
+        {!promo && <CardBalanceRow state={state} config={config} scale={effectiveScale} />}
       </View>
     </View>
+  );
+};
+
+const CardBalanceRow = ({
+  state,
+  config,
+  scale
+}: Pick<Props, 'state' | 'config'> & { scale: number }) => {
+  const [numberWidth, setNumberWidth] = useState(0);
+  return (
+    <View style={styles.balanceRow}>
+      <View
+        style={styles.balanceValue}
+        onLayout={({ nativeEvent }) => setNumberWidth(nativeEvent.layout.width)}
+      >
+        {config.show.balance && (
+          <CardBalance
+            config={config}
+            value={formatCoins(config, state.coins)}
+            width={numberWidth}
+            scale={scale}
+          />
+        )}
+      </View>
+      {config.show.status && <CardStatus state={state} config={config} />}
+    </View>
+  );
+};
+
+const CardStatus = ({ state, config }: Pick<Props, 'state' | 'config'>) => {
+  const { isReduceMotionEnabled } = useContext(AccessibilityContext);
+  const status = state.stale ? config.statusTexts.stale : config.statusTexts[state.phase];
+  const color =
+    typeof config.styles.status.color === 'string'
+      ? config.styles.status.color
+      : config.colors.text;
+  // Reserve horizontal space only, keeping the balance width stable during refresh.
+  if (!status) return <View style={styles.statusIndicator} />;
+  if (state.phase === 'loading') {
+    return (
+      <View
+        style={styles.statusIndicator}
+        accessible
+        accessibilityRole="progressbar"
+        accessibilityLabel={status}
+        accessibilityState={{ busy: true }}
+        accessibilityLiveRegion="polite"
+      >
+        <View
+          accessible={false}
+          accessibilityElementsHidden
+          importantForAccessibility="no-hide-descendants"
+        >
+          {isReduceMotionEnabled ? (
+            <Icon.NamedIcon name="refresh" size={22} color={color} />
+          ) : (
+            <ActivityIndicator color={color} size="small" />
+          )}
+        </View>
+      </View>
+    );
+  }
+  return (
+    <Pressable
+      style={styles.statusIndicator}
+      accessibilityRole="button"
+      accessibilityLabel={status}
+      accessibilityLiveRegion="polite"
+      onPress={() => Alert.alert(config.texts.balance, status)}
+    >
+      <View
+        accessible={false}
+        accessibilityElementsHidden
+        importantForAccessibility="no-hide-descendants"
+      >
+        <Icon.Info size={22} color={color} />
+      </View>
+    </Pressable>
   );
 };
 
@@ -272,7 +329,9 @@ const styles = StyleSheet.create({
   title: { fontFamily: 'condbold', fontSize: 21, lineHeight: 25 },
   description: { fontFamily: 'regular', fontSize: 14, lineHeight: 18 },
   coins: { fontFamily: 'bold', fontSize: 46, lineHeight: 54, fontVariant: ['tabular-nums'] },
-  status: { fontFamily: 'regular', fontSize: 14, lineHeight: 18 },
+  balanceRow: { flexDirection: 'row', alignItems: 'center' },
+  balanceValue: { flex: 1, minWidth: 0 },
+  statusIndicator: { width: 48, height: 48, alignItems: 'center', justifyContent: 'center' },
   actions: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, alignItems: 'stretch' },
   button: {
     borderRadius: 10,

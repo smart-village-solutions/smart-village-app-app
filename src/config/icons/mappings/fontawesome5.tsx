@@ -4,8 +4,11 @@
  * Reference: https://fontawesome.com/v5/search
  */
 
+import { refreshIconNames } from './refresh';
+
 export const fontawesome5IconMapping: Record<string, string> = {
   // Navigation & Actions
+  refresh: refreshIconNames.fontawesome5,
   about: 'bars',
   'arrow-down': 'arrow-down',
   'arrow-down-circle': 'arrow-circle-down',
