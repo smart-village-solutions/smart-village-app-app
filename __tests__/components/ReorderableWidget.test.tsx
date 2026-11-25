@@ -1,6 +1,6 @@
 import { act, fireEvent, render } from '@testing-library/react-native';
-import React from 'react';
-import { View } from 'react-native';
+import React, { useEffect } from 'react';
+import { Text, View } from 'react-native';
 import { State } from 'react-native-gesture-handler';
 import { fireGestureHandler, getByGestureTestId } from 'react-native-gesture-handler/jest-utils';
 
@@ -32,6 +32,39 @@ const widget = (handlers: ReturnType<typeof callbacks>, lifted = false) => (
 );
 
 afterEach(() => jest.restoreAllMocks());
+
+test('resting content stays visible through data updates and an edit round trip without remounting', () => {
+  const mounted = jest.fn();
+  const handlers = callbacks();
+  const Balance = ({ coins }: { coins: number }) => {
+    useEffect(() => {
+      mounted();
+    }, []);
+    return <Text>{coins} Taler</Text>;
+  };
+  const card = (coins: number, editing: boolean) => (
+    <ReorderableWidget
+      id="balance"
+      label="Balance"
+      editing={editing}
+      disabled={false}
+      lifted={false}
+      style={widgetStyle}
+      testID="balance"
+      {...handlers}
+    >
+      <Balance coins={coins} />
+    </ReorderableWidget>
+  );
+  const tree = render(card(0, false));
+  expect(tree.getByText('0 Taler')).toBeVisible();
+  tree.rerender(card(12, false));
+  expect(tree.getByText('12 Taler')).toBeVisible();
+  tree.rerender(card(12, true));
+  tree.rerender(card(12, false));
+  expect(tree.getByText('12 Taler')).toBeVisible();
+  expect(mounted).toHaveBeenCalledTimes(1);
+});
 
 test('holding and moving reports live hover before release and keeps the same gesture while lifted', async () => {
   const handlers = callbacks();
