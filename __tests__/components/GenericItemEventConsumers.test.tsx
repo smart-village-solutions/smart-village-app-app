@@ -8,6 +8,7 @@ import { Calendar, REFRESH_CALENDAR } from '../../src/components/Calendar';
 import { HomeSection } from '../../src/components/HomeSection';
 import { EventRecords } from '../../src/components/screens/EventRecords';
 import { EventWidget } from '../../src/components/widgets/EventWidget';
+import { filterTypesHelper } from '../../src/helpers';
 import { NetworkContext } from '../../src/NetworkProvider';
 import { SettingsContext } from '../../src/SettingsProvider';
 
@@ -22,6 +23,9 @@ let mockQueryResult: Record<string, any>;
 let mockInfiniteResult: Record<string, any>;
 let mockSubListInfiniteResult: Record<string, any>;
 let mockFocusEffect: (() => void) | undefined;
+let mockCategoryQueryResult: Record<string, any> = { data: {}, loading: false };
+let mockFilterProps: Record<string, any>;
+const mockListUnmount = jest.fn();
 const mockMainRefetch = jest.fn(async () => undefined);
 const mockSubListRefetch = jest.fn(async () => undefined);
 const mockGenericRefetch = jest.fn(async () => undefined);
@@ -47,7 +51,15 @@ jest.mock('react-native-calendars', () => ({
   }
 }));
 jest.mock('react-apollo', () => ({
-  useQuery: jest.fn(() => ({ data: {}, loading: false }))
+  useQuery: jest.fn((...args) => {
+    const options = args[1];
+    const ReactInMock = require('react');
+    const result = options?.variables ? mockCategoryQueryResult : { data: {}, loading: false };
+    ReactInMock.useEffect(() => {
+      if (!result.loading && result.data?.categories) options?.onCompleted?.(result.data);
+    }, [result.loading, result.data, options?.onCompleted]);
+    return result;
+  })
 }));
 
 jest.mock('react-query', () => ({
@@ -88,7 +100,14 @@ jest.mock('../../src/helpers/calendarHelper', () => ({
 jest.mock('../../src/helpers/updateResourceFiltersStateHelper', () => ({
   updateResourceFiltersStateHelper: jest.fn()
 }));
-jest.mock('../../src/components/filter', () => ({ Filter: () => null }));
+jest.mock('../../src/components/filter', () => ({
+  Filter: (props: Record<string, any>) => {
+    mockFilterProps = props;
+    const ReactInMock = require('react');
+    const { Text: TextInMock } = require('react-native');
+    return ReactInMock.createElement(TextInMock, { testID: 'event-filter' }, 'Filter');
+  }
+}));
 jest.mock('../../src/components/calendarArrows', () => ({ renderArrow: jest.fn() }));
 jest.mock('../../src/components/DataListSection', () => ({
   DataListSection: (props: Record<string, any>) => {
@@ -111,6 +130,7 @@ jest.mock('../../src/components/ListComponent', () => ({
     mockListProps = props;
     const ReactInMock = require('react');
     const { Text: TextInMock } = require('react-native');
+    ReactInMock.useEffect(() => () => mockListUnmount(), []);
     return ReactInMock.createElement(
       ReactInMock.Fragment,
       null,
@@ -183,30 +203,36 @@ const settingsValue = {
 } as any;
 const occurrence = { id: 'event', listDate: '2030-01-01', startTime: '10:00', title: 'Event' };
 
+const eventRecordsElement = (
+  queryVariables: Record<string, unknown> = {},
+  settings: Record<string, any> = settingsValue
+) => (
+  <NetworkContext.Provider value={{ isConnected: true, isMainserverUp: true }}>
+    <SettingsContext.Provider value={settings}>
+      <EventRecords
+        navigation={{ navigate: jest.fn() }}
+        route={{
+          params: {
+            query: 'eventRecords',
+            queryVariables: { limit: 15, ...queryVariables },
+            title: 'Events'
+          }
+        }}
+      />
+    </SettingsContext.Provider>
+  </NetworkContext.Provider>
+);
+
 const renderEventRecords = (
   queryVariables: Record<string, unknown> = {},
   settings: Record<string, any> = settingsValue
-) =>
-  render(
-    <NetworkContext.Provider value={{ isConnected: true, isMainserverUp: true }}>
-      <SettingsContext.Provider value={settings}>
-        <EventRecords
-          navigation={{ navigate: jest.fn() }}
-          route={{
-            params: {
-              query: 'eventRecords',
-              queryVariables: { limit: 15, ...queryVariables },
-              title: 'Events'
-            }
-          }}
-        />
-      </SettingsContext.Provider>
-    </NetworkContext.Provider>
-  );
+) => render(eventRecordsElement(queryVariables, settings));
 
 describe('Generic Item event consumers', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.mocked(filterTypesHelper).mockReturnValue([]);
+    mockCategoryQueryResult = { data: {}, loading: false };
     mockUseGenericItemEvents.mockReturnValue({
       data: [occurrence],
       isLoading: false,
@@ -246,6 +272,32 @@ describe('Generic Item event consumers', () => {
     mockListProps = undefined as any;
     mockNativeCalendarProps = undefined as any;
     mockFocusEffect = undefined;
+  });
+
+  it('keeps the event list and filters mounted during a category refresh', () => {
+    const categories = { categories: [{ id: '1', name: 'Kultur' }], eventRecords: [] };
+    mockCategoryQueryResult = { data: categories, loading: false };
+    jest
+      .mocked(filterTypesHelper)
+      .mockReturnValue([
+        { name: 'categoryId', type: 'dropdown', data: [{ id: '1', value: 'Kultur' }] }
+      ] as any);
+    mockInfiniteResult.data = { pages: [{ eventRecords: [occurrence] }] };
+    const view = renderEventRecords();
+
+    mockCategoryQueryResult = { data: undefined, loading: true };
+    view.rerender(eventRecordsElement());
+
+    expect(view.getByText('list')).toBeTruthy();
+    expect(view.getByTestId('event-filter')).toBeTruthy();
+    expect(mockListUnmount).not.toHaveBeenCalled();
+    expect(mockFilterProps.filterTypes[0].loading).toBe(true);
+    expect(filterTypesHelper).toHaveBeenLastCalledWith(expect.objectContaining({ categories }));
+
+    mockCategoryQueryResult = { data: { categories: [], eventRecords: [] }, loading: false };
+    view.rerender(eventRecordsElement());
+    expect(mockFilterProps.filterTypes[0].loading).toBe(false);
+    expect(mockListUnmount).not.toHaveBeenCalled();
   });
 
   it('merges Generic Item occurrences into EventRecords list data and refreshes them', async () => {

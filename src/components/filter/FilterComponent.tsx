@@ -41,6 +41,7 @@ export const FilterComponent = ({
         ?.filter(
           (item) =>
             !!item.data?.length ||
+            !!item.loading ||
             item.type === FILTER_TYPES.CHECKBOX ||
             item.type === FILTER_TYPES.TEXT
         )

@@ -139,8 +139,24 @@ export const EventRecords = ({ navigation, route }) => {
     }
   );
 
+  const [previousEventRecordsCategoriesData, setPreviousEventRecordsCategoriesData] = useState();
+  const keepCategoryOptions = useCallback((result) => {
+    if (Array.isArray(result?.categories)) setPreviousEventRecordsCategoriesData(result);
+  }, []);
   const { data: eventRecordsCategoriesData, loading: eventRecordsCategoriesLoading } = useQuery(
-    getQuery(QUERY_TYPES.EVENT_RECORDS_AND_CATEGORIES)
+    getQuery(QUERY_TYPES.EVENT_RECORDS_AND_CATEGORIES),
+    {
+      onCompleted: keepCategoryOptions,
+      variables: {
+        ids: queryVariables.ids,
+        location: queryVariables.location,
+        locations: queryVariables.locations,
+        dateRange: queryVariables.dateRange,
+        dataProvider: queryVariables.dataProvider,
+        dataProviderId: queryVariables.dataProviderId,
+        onlyUniqEvents: queryVariables.onlyUniqEvents
+      }
+    }
   );
 
   const { data: dataVolunteerEvents, refetch: refetchVolunteerEvents } = useVolunteerData({
@@ -278,14 +294,22 @@ export const EventRecords = ({ navigation, route }) => {
       data,
       query,
       resourceFilters,
-      categories: eventRecordsCategoriesData,
+      categories: eventRecordsCategoriesData?.categories
+        ? eventRecordsCategoriesData
+        : previousEventRecordsCategoriesData,
       locations: eventRecordsAddressesData,
       queryVariables
-    });
+    }).map((filterType) =>
+      filterType.name === 'categoryId' || filterType.name === 'categoryIds'
+        ? { ...filterType, loading: eventRecordsCategoriesLoading }
+        : filterType
+    );
   }, [
     data,
     eventRecordsAddressesData,
     eventRecordsCategoriesData,
+    eventRecordsCategoriesLoading,
+    previousEventRecordsCategoriesData,
     query,
     queryVariables,
     resourceFilters
@@ -329,8 +353,7 @@ export const EventRecords = ({ navigation, route }) => {
       (isLoading || isLoadingGenericItemEvents) &&
       !isRefetching &&
       !isFetchingNextPage) ||
-    eventRecordsAddressesLoading ||
-    eventRecordsCategoriesLoading
+    eventRecordsAddressesLoading
   ) {
     return (
       <LoadingContainer>
