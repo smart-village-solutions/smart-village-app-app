@@ -5,7 +5,7 @@ import { extendMoment } from 'moment-range';
 import React, { MutableRefObject, useCallback, useContext, useRef, useState } from 'react';
 import { useMutation, useQuery } from 'react-apollo';
 import { Controller, FieldErrors, SubmitErrorHandler, useForm } from 'react-hook-form';
-import { Alert, Keyboard, LayoutChangeEvent, ScrollView } from 'react-native';
+import { Alert, DeviceEventEmitter, Keyboard, LayoutChangeEvent, ScrollView } from 'react-native';
 
 import {
   Button,
@@ -38,6 +38,7 @@ import { SettingsContext } from '../../SettingsProvider';
 import { NOTICEBOARD_TYPES } from '../../types';
 import { useThemeStyles } from '../../hooks/useThemeStyles';
 import { useTheme } from '../../hooks/useTheme';
+import { DETAIL_REFRESH_EVENT } from '../../hooks/DetailRefresh';
 
 const { EMAIL_REGEX, IMAGE_SELECTOR_TYPES, IMAGE_SELECTOR_ERROR_TYPES, MEDIA_TYPES } = consts;
 
@@ -361,6 +362,7 @@ export const NoticeboardCreateForm = ({
         }
       });
 
+      DeviceEventEmitter.emit(DETAIL_REFRESH_EVENT);
       navigation.goBack();
       Alert.alert(texts.noticeboard.successScreen.header, texts.noticeboard.successScreen.entry);
     } catch (error) {

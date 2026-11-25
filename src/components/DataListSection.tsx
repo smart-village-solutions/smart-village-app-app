@@ -35,6 +35,7 @@ const cachePointsOfInterestAndToursListData = (cacheKey: number, listData: unkno
 
 type Props = {
   additionalData?: unknown[];
+  bookmarkSuffix?: number | string;
   buttonTitle?: string;
   dateTimeFormat?: string;
   horizontal?: boolean;
@@ -69,6 +70,7 @@ const removeLastDivider = (data: unknown[]) =>
 /* eslint-disable complexity */
 export const DataListSection = ({
   additionalData,
+  bookmarkSuffix,
   buttonTitle,
   dateTimeFormat,
   horizontal,
@@ -116,6 +118,7 @@ export const DataListSection = ({
 
   const isPointsOfInterestAndTours = query === QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS;
   const queryOptions = {
+    bookmarkSuffix,
     withDate:
       (query === QUERY_TYPES.EVENT_RECORDS &&
         (showEventDateTime || !queryVariables?.onlyUniqEvents)) ||
