@@ -7,7 +7,11 @@ import { AccessibilityContext } from '../../AccessibilityProvider';
 import { consts, normalize, texts } from '../../config';
 import { ConfigurationsContext } from '../../ConfigurationsProvider';
 import { filterProfileEditorialTiles } from '../../helpers/profileEditorialContentHelper';
-import { DEFAULT_TILE_GRID_COLUMNS, resolveTileGridLayout } from '../../helpers/serviceTileLayout';
+import {
+  DEFAULT_TILE_GRID_COLUMNS,
+  groupServiceTileRows,
+  resolveTileGridLayout
+} from '../../helpers/serviceTileLayout';
 import { umlautSwitcher } from '../../helpers/umlautSwitcher';
 import { usePersonalizedTiles } from '../../hooks';
 import { OrientationContext } from '../../OrientationProvider';
@@ -95,6 +99,19 @@ export const Service = ({
           }),
     [isEditMode, hasDiagonalGradientBackground, navigation, staticJsonName]
   );
+  const configureTile = useCallback(
+    (item: TServiceTile) =>
+      tileLayoutColumns
+        ? {
+            ...item,
+            numberOfTiles: {
+              landscape: tileLayoutColumns.landscape ?? item.numberOfTiles?.landscape,
+              portrait: tileLayoutColumns.portrait ?? item.numberOfTiles?.portrait
+            }
+          }
+        : item,
+    [tileLayoutColumns]
+  );
   const renderItem = useCallback(
     (item: TServiceTile, index: number) => (
       <ServiceTile
@@ -102,18 +119,7 @@ export const Service = ({
         draggableKey={`item${item.title || item.accessibilityLabel}-index${index}`}
         hasDiagonalGradientBackground={hasDiagonalGradientBackground}
         isEditMode={isEditMode}
-        item={
-          tileLayoutColumns
-            ? {
-                ...item,
-                numberOfTiles: {
-                  ...item.numberOfTiles,
-                  landscape: tileLayoutColumns.landscape ?? item.numberOfTiles?.landscape,
-                  portrait: tileLayoutColumns.portrait ?? item.numberOfTiles?.portrait
-                }
-              }
-            : item
-        }
+        item={item}
         key={`item${item.title || item.accessibilityLabel}-index${index}`}
         onToggleVisibility={onToggleVisibility}
         serviceTiles={serviceTiles}
@@ -129,7 +135,6 @@ export const Service = ({
       hasDiagonalGradientBackground,
       onToggleVisibility,
       serviceTiles,
-      tileLayoutColumns,
       itemsPerRow,
       tileSizeFactor,
       staticJsonName,
@@ -168,11 +173,12 @@ export const Service = ({
     return tiles;
   }, [tiles, route.name, isEditMode, roles]);
 
-  // Split the visible tiles into rows for grid layout based on screen orientation.
-  const rows: TServiceTile[][] = [];
-  for (let i = 0; i < (visibleTiles?.length || 0); i += itemsPerRow) {
-    rows.push(visibleTiles.slice(i, i + itemsPerRow));
-  }
+  const rows = groupServiceTileRows(
+    (visibleTiles ?? []).map(configureTile),
+    orientation as 'portrait' | 'landscape',
+    itemsPerRow,
+    serviceTiles.tileStyle
+  );
 
   return isEditMode ? (
     <DiagonalGradient
@@ -180,7 +186,7 @@ export const Service = ({
       style={styles.diagonalGradient}
     >
       <DraggableGrid columns={itemsPerRow} onDragEnd={onDragEnd}>
-        {tiles?.map((item, index) => renderItem(item, index))}
+        {tiles?.map((item, index) => renderItem(configureTile(item), index))}
       </DraggableGrid>
       {toggler}
     </DiagonalGradient>
@@ -188,12 +194,13 @@ export const Service = ({
     <>
       {rows.map((row) => {
         const isLastRow = rows[rows.length - 1] === row;
-        const isIncompleteRow = row.length < itemsPerRow;
+        const isIncompleteRow = row.fill < 1 - 1e-6;
         // Remount rows when the grid changes so native percentage sizes are recalculated.
         const rowKey = JSON.stringify([
           orientation,
           itemsPerRow,
-          ...row.map((tile) => tile.title || tile.accessibilityLabel)
+          row.fill,
+          ...row.tiles.map((tile) => tile.title || tile.accessibilityLabel)
         ]);
         const isLastAndIncompleteRow = isLastRow && isIncompleteRow;
         const shouldCenterIncompleteRow = isLastAndIncompleteRow && !alignIncompleteRowsLeft;
@@ -205,9 +212,14 @@ export const Service = ({
             onLayout={({ nativeEvent: { layout } }) =>
               setGridWidth(Math.max(0, layout.width - 2 * rowHorizontalPadding))
             }
-            style={{ columnGap: gridGap, paddingHorizontal: rowHorizontalPadding }}
+            // Rows are already grouped above; native wrapping would split them a second time.
+            style={{
+              ...styles.gridRow,
+              columnGap: gridGap,
+              paddingHorizontal: rowHorizontalPadding
+            }}
           >
-            {row.map((item, index) => renderItem(item, index))}
+            {row.tiles.map((item, index) => renderItem(item, index))}
           </WrapperWrap>
         );
       })}
@@ -218,6 +230,10 @@ export const Service = ({
 /* eslint-enable complexity */
 
 const createStyles = () => ({
+  gridRow: {
+    flexWrap: 'nowrap'
+  },
+
   diagonalGradient: {
     flex: 1
   },

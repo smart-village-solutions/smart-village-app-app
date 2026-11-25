@@ -1,6 +1,7 @@
 import { useFocusEffect } from 'expo-router/react-navigation';
 import * as Location from 'expo-location';
 import _camelCase from 'lodash/camelCase';
+import _isEqual from 'lodash/isEqual';
 import _uniqBy from 'lodash/uniqBy';
 import PropTypes from 'prop-types';
 import React, {
@@ -9,6 +10,7 @@ import React, {
   useEffect,
   useLayoutEffect,
   useMemo,
+  useRef,
   useState
 } from 'react';
 import { useQuery } from 'react-apollo';
@@ -42,6 +44,7 @@ import {
   sortPOIsByDistanceFromPosition
 } from '../../helpers';
 import { compareParticipationProjects } from '../../helpers/participationProjectSortHelper';
+import { DETAIL_REFRESH_EVENT } from '../../hooks/DetailRefresh';
 import { updateResourceFiltersStateHelper } from '../../helpers/updateResourceFiltersStateHelper';
 import {
   useLastKnownPosition,
@@ -340,22 +343,18 @@ export const Overviews = ({ navigation, route }) => {
 
     return participationQueryVariables;
   }, [isParticipationProjectOverview, queryVariables]);
+  // Distance sorting and opening-hours filtering need the full result set.
+  const pageSize =
+    isParticipationProjectOverview || sortByDistance || queryVariables.onlyCurrentlyOpen
+      ? undefined
+      : route.params?.queryVariables?.limit;
 
   const { data, loading, fetchMore, refetch } = useQuery(getQuery(query, { showNewsFilter }), {
     ...(authMode ? getApolloAuthContext(authMode) : {}),
     fetchPolicy,
     variables: {
       ...networkQueryVariables,
-      // if we want to sort by distance, we need to fetch all the entries at once. this is not a
-      // big issue if we want to sort by distance, because getting the location usually takes longer
-      // than fetching all entries.
-      // if we filter by opening times, we need to also remove the limit as otherwise we might not
-      // have any open POIs in the next batch that would result in the list not getting any new
-      // items and not reliably triggering another `fetchMore`
-      limit:
-        isParticipationProjectOverview || sortByDistance || queryVariables.onlyCurrentlyOpen
-          ? undefined
-          : route.params?.queryVariables?.limit
+      limit: pageSize
     }
   });
 
@@ -468,24 +467,77 @@ export const Overviews = ({ navigation, route }) => {
         )
     );
 
+  const hasLoadedMore = useRef(false);
+  const loadedCount = useRef(0);
+  const lastViewedRange = useRef();
+  const detailRevision = useRef(0);
+  const reconciledDetailRevision = useRef(0);
+
   const refresh = useCallback(() => {
+    lastViewedRange.current = undefined;
     setRefreshing(true);
     if (isConnected) {
-      refetch();
+      refetch({ ...networkQueryVariables, limit: pageSize });
     }
     setRefreshing(false);
-  }, [isConnected, setRefreshing, refetch]);
+  }, [isConnected, setRefreshing, refetch, networkQueryVariables, pageSize]);
+
+  useEffect(() => {
+    // Successful content saves and explicit detail refreshes already emit this event.
+    const subscription = DeviceEventEmitter.addListener(DETAIL_REFRESH_EVENT, () => {
+      detailRevision.current += 1;
+    });
+    return () => subscription.remove();
+  }, []);
+  useLayoutEffect(() => {
+    loadedCount.current = data?.[query]?.length ?? 0;
+    hasLoadedMore.current = pageSize > 0 && loadedCount.current > pageSize;
+  }, [data, pageSize, query]);
 
   useFocusEffect(
     useCallback(() => {
-      if (!isConnected || !query) {
-        return undefined;
+      const rememberViewedRange = () => {
+        const previous = lastViewedRange.current;
+        const keepPendingRange =
+          detailRevision.current > reconciledDetailRevision.current &&
+          previous?.query === query &&
+          _isEqual(previous?.variables, networkQueryVariables);
+        lastViewedRange.current = {
+          query,
+          variables: networkQueryVariables,
+          count: keepPendingRange
+            ? Math.max(previous.count, loadedCount.current)
+            : loadedCount.current
+        };
+      };
+      const hasDetailChanges = detailRevision.current > reconciledDetailRevision.current;
+      // Unchanged detail visits retain their pages; successful edits must reconcile membership.
+      const shouldRefetch = isConnected && query && (!hasLoadedMore.current || hasDetailChanges);
+      if (shouldRefetch) {
+        const viewedCount =
+          lastViewedRange.current?.query === query &&
+          _isEqual(lastViewedRange.current?.variables, networkQueryVariables)
+            ? lastViewedRange.current.count
+            : 0;
+        const revision = detailRevision.current;
+        const variables = {
+          ...networkQueryVariables,
+          limit:
+            hasDetailChanges && pageSize
+              ? Math.max(pageSize, loadedCount.current, viewedCount)
+              : pageSize
+        };
+        void Promise.resolve(refetch?.(variables))
+          .then(() => {
+            reconciledDetailRevision.current = Math.max(reconciledDetailRevision.current, revision);
+          })
+          .catch(() => {
+            // Keep the invalidation pending so a later focus/reconnect can retry it.
+          });
       }
 
-      refetch?.();
-
-      return undefined;
-    }, [isConnected, query, refetch])
+      return rememberViewedRange;
+    }, [isConnected, query, refetch, networkQueryVariables, pageSize])
   );
 
   const filterTypes = useMemo(() => {

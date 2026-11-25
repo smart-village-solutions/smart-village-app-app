@@ -105,15 +105,15 @@ const WidgetItem = ({
   mode: WidgetLayoutMode;
   measurementKey: string;
   measurementId: string;
-  onLabelWidth?: (key: string, width: number) => void;
+  onLabelWidth: (key: string, width: number) => void;
 }) => {
   const reportLabelWidth = useCallback(
-    (width: number) => onLabelWidth?.(measurementId, width),
+    (width: number) => onLabelWidth(measurementId, width),
     [measurementId, onLabelWidth]
   );
   const value = useMemo(
-    () => ({ mode, measurementKey, onLabelWidth: onLabelWidth ? reportLabelWidth : undefined }),
-    [mode, measurementKey, onLabelWidth, reportLabelWidth]
+    () => ({ mode, measurementKey, onLabelWidth: reportLabelWidth }),
+    [mode, measurementKey, reportLabelWidth]
   );
   return (
     <WidgetLayoutContext.Provider value={value}>
@@ -168,7 +168,7 @@ export const Widgets = ({ widgetConfigs, widgetStyle }: Props) => {
   );
   const minItemWidth = Math.max(
     normalize(WIDGET_MIN_WIDTH),
-    balanceWidgetRows ? measuredMinItemWidth / effectiveTextScale : 0
+    measuredMinItemWidth / effectiveTextScale
   );
   const measuredContainerWidth =
     containerMeasurement.windowWidth === width ? containerMeasurement.measuredWidth : width;
@@ -188,16 +188,7 @@ export const Widgets = ({ widgetConfigs, widgetStyle }: Props) => {
     [availableWidth, balanceWidgetRows, effectiveTextScale, minItemWidth, widgetComponents.length]
   );
   const itemColumns = layout.rowSizes?.flatMap((size) => new Array<number>(size).fill(size));
-  const layoutContext = useMemo(
-    () => ({
-      mode:
-        layout.columns === 1 &&
-        (!balanceWidgetRows || measuredMinItemWidth + normalize(108) <= availableWidth)
-          ? ('list' as const)
-          : ('grid' as const)
-    }),
-    [availableWidth, balanceWidgetRows, layout.columns, measuredMinItemWidth]
-  );
+  const mode: WidgetLayoutMode = layout.columns === 1 ? 'list' : 'grid';
   const onLayout = useCallback(
     ({ nativeEvent }: LayoutChangeEvent) => {
       const nextWidth = nativeEvent.layout.width;
@@ -215,38 +206,36 @@ export const Widgets = ({ widgetConfigs, widgetStyle }: Props) => {
   if (!widgetComponents.length) return null;
 
   return (
-    <WidgetLayoutContext.Provider value={layoutContext}>
-      <View
-        onLayout={onLayout}
-        accessibilityElementsHidden={isMeasuring}
-        importantForAccessibility={isMeasuring ? 'no-hide-descendants' : 'auto'}
-        pointerEvents={isMeasuring ? 'none' : 'auto'}
-        style={[
-          styles.container,
-          {
-            paddingLeft: horizontalPadding + safeAreaInsets.left,
-            paddingRight: horizontalPadding + safeAreaInsets.right,
-            rowGap
-          },
-          isMeasuring && styles.measuring
-        ]}
-      >
-        {widgetComponents.map((entry, index) => (
-          <WidgetItem
-            key={entry.key}
-            columns={itemColumns?.[index] ?? layout.columns}
-            columnPadding={columnPadding}
-            isGrid={layout.columns > 1}
-            mode={layoutContext.mode}
-            measurementKey={measurementKey}
-            measurementId={getMeasurementKey(entry.key)}
-            onLabelWidth={balanceWidgetRows ? onLabelWidth : undefined}
-          >
-            {entry.component}
-          </WidgetItem>
-        ))}
-      </View>
-    </WidgetLayoutContext.Provider>
+    <View
+      onLayout={onLayout}
+      accessibilityElementsHidden={isMeasuring}
+      importantForAccessibility={isMeasuring ? 'no-hide-descendants' : 'auto'}
+      pointerEvents={isMeasuring ? 'none' : 'auto'}
+      style={[
+        styles.container,
+        {
+          paddingLeft: horizontalPadding + safeAreaInsets.left,
+          paddingRight: horizontalPadding + safeAreaInsets.right,
+          rowGap
+        },
+        isMeasuring && styles.measuring
+      ]}
+    >
+      {widgetComponents.map((entry, index) => (
+        <WidgetItem
+          key={entry.key}
+          columns={itemColumns?.[index] ?? layout.columns}
+          columnPadding={columnPadding}
+          isGrid={layout.columns > 1}
+          mode={mode}
+          measurementKey={measurementKey}
+          measurementId={getMeasurementKey(entry.key)}
+          onLabelWidth={onLabelWidth}
+        >
+          {entry.component}
+        </WidgetItem>
+      ))}
+    </View>
   );
 };
 

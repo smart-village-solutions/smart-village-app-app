@@ -164,16 +164,16 @@ describe('Widgets responsive layout', () => {
     const container = tree.UNSAFE_getAllByType(View).find((view) => view.props.onLayout)!;
     fireEvent(container, 'layout', { nativeEvent: { layout: { width: 420 } } });
     measureAll(tree);
-    expect(getItemViewsByWidth(tree, '25%')).toHaveLength(4);
+    expect(getItemViewsByWidth(tree, `${100 / 3}%`)).toHaveLength(4);
     tree.rerender(configuredWidgets(true));
     measureAll(tree);
     expect(getItemViewsByWidth(tree, '50%')).toHaveLength(4);
     tree.rerender(configuredWidgets('true'));
-    expect(getItemViewsByWidth(tree, '25%')).toHaveLength(4);
+    expect(getItemViewsByWidth(tree, `${100 / 3}%`)).toHaveLength(4);
   });
 
   it.each([3, 4, 5, 7])(
-    'preserves master layout immediately when disabled for %s widgets',
+    'shows the unbalanced layout immediately when disabled for %s widgets',
     (count) => {
       const tree = render(configuredWidgets(false, count));
       const container = tree.UNSAFE_getAllByType(View).find((view) => view.props.onLayout)!;
@@ -213,7 +213,7 @@ describe('Widgets responsive layout', () => {
     const container = tree.UNSAFE_getAllByType(View).find((view) => view.props.onLayout)!;
     fireEvent(container, 'layout', { nativeEvent: { layout: { width: 420 } } });
     measureAll(tree);
-    expect(getItemViewsByWidth(tree, '25%')).toHaveLength(4);
+    expect(getItemViewsByWidth(tree, `${100 / 3}%`)).toHaveLength(4);
   });
 
   it('requires fresh measurements after text scale changes', () => {

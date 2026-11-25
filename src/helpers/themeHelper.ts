@@ -32,12 +32,15 @@ const parseRgbColor = (value: string): RgbColor | undefined => {
   const match = RGB_COLOR_PATTERN.exec(value);
   if (!match) return undefined;
 
-  const channels = match[2].split(',').map((channel) => Number(channel.trim()));
+  const rawChannels = match[2].split(',').map((channel) => channel.trim());
+  if (rawChannels.some((channel) => channel === '')) return undefined;
+  const channels = rawChannels.map(Number);
   const expectsAlpha = match[1].toLowerCase() === 'rgba';
   if (channels.length !== (expectsAlpha ? 4 : 3)) return undefined;
 
   const [red, green, blue, alpha = 1] = channels;
-  if (![red, green, blue].every(isByte) || alpha < 0 || alpha > 1) return undefined;
+  if (![red, green, blue].every(isByte) || !Number.isFinite(alpha) || alpha < 0 || alpha > 1)
+    return undefined;
 
   return { alpha, blue, green, red };
 };
@@ -210,12 +213,13 @@ const applyContrastFallbacks = (palette: ThemeColorPalette, basePalette: ThemeCo
 
 export const resolveThemePalette = (
   basePalette: ThemeColorPalette,
-  overrides?: ThemePaletteOverrides
+  overrides?: ThemePaletteOverrides,
+  autoContrastEnabled = true
 ): ThemeColorPalette => {
   const validOverrides = sanitizeOverrides(basePalette, overrides);
   const palette = { ...basePalette, ...validOverrides };
 
-  applyContrastFallbacks(palette, basePalette);
+  if (autoContrastEnabled) applyContrastFallbacks(palette, basePalette);
   synchronizeLegacyAliases(palette, validOverrides);
 
   return Object.freeze(palette);
@@ -223,9 +227,11 @@ export const resolveThemePalette = (
 
 export const resolveThemePalettes = (globalSettings?: ThemeGlobalSettings | null) => {
   const configuredPalettes = globalSettings?.settings?.accessibility?.themePalettes;
+  const autoContrastEnabled =
+    globalSettings?.settings?.accessibility?.enabledFeatures?.autoContrastEnabled !== false;
 
   return Object.freeze({
-    dark: resolveThemePalette(darkColors, configuredPalettes?.dark),
-    light: resolveThemePalette(lightColors, configuredPalettes?.light)
+    dark: resolveThemePalette(darkColors, configuredPalettes?.dark, autoContrastEnabled),
+    light: resolveThemePalette(lightColors, configuredPalettes?.light, autoContrastEnabled)
   }) satisfies Record<ResolvedThemeMode, ThemeColorPalette>;
 };
