@@ -103,6 +103,7 @@ test('opening keeps the card in place and disables repeated taps', () => {
   const screen = render(<KlimaTalerWidget />);
   expect(screen.getByTestId('klimaTalerCard')).toBeTruthy();
   const button = screen.getByRole('button', { name: 'Klima-Taler wird geöffnet …' });
+  expect(screen.queryByText('Klima-Taler wird geöffnet …')).toBeNull();
   expect(button.props.accessibilityState).toMatchObject({ busy: true, disabled: true });
   fireEvent.press(button);
   expect(openKlimaTaler).not.toHaveBeenCalled();

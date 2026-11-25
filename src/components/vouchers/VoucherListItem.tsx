@@ -112,12 +112,6 @@ export const VoucherListItem = memo(
                 </RegularText>
               )}
 
-              {opening && (
-                <RegularText small accessibilityLiveRegion="polite">
-                  {texts.klimaTaler.opening}
-                </RegularText>
-              )}
-
               {!!pointOfInterest?.operatingCompany?.name && (
                 <RegularText small numberOfLines={1}>
                   {pointOfInterest.operatingCompany.name}

@@ -14,7 +14,8 @@ export const KlimaTalerVoucherRedeem = ({ payload }: { payload: unknown }) => {
     <>
       {!available && <RegularText>{copy.unavailableMessage}</RegularText>}
       <Button
-        title={opening ? texts.klimaTaler.opening : actionTitle}
+        title={actionTitle}
+        accessibilityLabel={opening ? texts.klimaTaler.opening : undefined}
         disabled={!available || opening}
         onPress={open}
       />

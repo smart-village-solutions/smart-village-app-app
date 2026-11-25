@@ -81,11 +81,13 @@ jest.mock('../../src/components/Button', () => ({
   Button: ({
     title,
     onPress,
-    disabled
+    disabled,
+    accessibilityLabel
   }: {
     title: string;
     onPress: () => void;
     disabled: boolean;
+    accessibilityLabel?: string;
   }) => {
     const React = jest.requireActual('react');
     const { Pressable, Text } = jest.requireActual('react-native');
@@ -95,7 +97,7 @@ jest.mock('../../src/components/Button', () => ({
         onPress,
         disabled,
         accessibilityRole: 'button',
-        accessibilityLabel: title,
+        accessibilityLabel: accessibilityLabel || title,
         accessibilityState: { disabled }
       },
       React.createElement(Text, null, title)
@@ -188,6 +190,8 @@ test('repeated taps during opening do not launch another modal and failures allo
   const alert = jest.spyOn(Alert, 'alert').mockImplementation(() => undefined);
   const screen = render(<VoucherDetailScreen {...props} />);
   fireEvent.press(screen.getByRole('button', { name: 'In Klima-Taler nutzen' }));
+  expect(screen.getByText('In Klima-Taler nutzen')).toBeTruthy();
+  expect(screen.queryByText('Klima-Taler wird geöffnet …')).toBeNull();
   fireEvent.press(screen.getByRole('button', { name: 'Klima-Taler wird geöffnet …' }));
   expect(redeemImportedKlimaTalerVoucher).toHaveBeenCalledTimes(1);
   reject(new Error('Native failure'));

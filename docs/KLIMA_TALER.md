@@ -396,7 +396,9 @@ imported voucher → native SDK offer detail. The shared POI detail opts into di
 provider opening, including when reached from Marktplatz. Ordinary SVA vouchers
 still open their existing voucher detail. Other voucher lists retain the voucher
 detail and its **In Klima-Taler nutzen** button. Both entry points share availability,
-duplicate-tap protection and failure recovery. The database coupon ID
+duplicate-tap protection and failure recovery. Coupon cards do not add visible
+opening text, and the detail button retains its normal title while opening.
+Disabled/busy states and screen-reader feedback remain available. The database coupon ID
 remains the SVA route/cache identity; the validated `payload.klimaTaler.offerId`
 is the provider destination. The native runtime environment must match the
 coupon's imported environment. No user credentials are stored in this payload.

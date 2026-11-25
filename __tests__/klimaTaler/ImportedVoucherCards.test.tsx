@@ -168,7 +168,11 @@ test('duplicate taps share one opening, and the same and another offer can be re
   fireEvent.press(screen.getByLabelText(item.title));
   fireEvent.press(screen.getByLabelText(item.title));
   await waitFor(() => expect(openKlimaTaler).toHaveBeenCalledTimes(1));
-  expect(screen.getByText('Klima-Taler wird geöffnet …')).toBeTruthy();
+  expect(screen.queryByText('Klima-Taler wird geöffnet …')).toBeNull();
+  expect(screen.getByLabelText(item.title).props.accessibilityState).toEqual({
+    busy: true,
+    disabled: true
+  });
   await act(async () => finish());
   fireEvent.press(screen.getByLabelText(item.title));
   await waitFor(() => expect(openKlimaTaler).toHaveBeenCalledTimes(2));
