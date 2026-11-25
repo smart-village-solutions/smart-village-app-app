@@ -20,15 +20,13 @@ type Props = {
   visual: ReactNode;
 };
 
-const LIST_PADDING = 12;
 const LIST_VISUAL_GAP = 12;
 const LIST_MIN_VISUAL_WIDTH = 72;
 
 const canFitListContent = (containerWidth: number, visualWidth: number, wordWidth: number) =>
   wordWidth > 0 &&
   visualWidth > 0 &&
-  2 * normalize(LIST_PADDING) +
-    Math.max(visualWidth, normalize(LIST_MIN_VISUAL_WIDTH)) +
+  Math.max(visualWidth, normalize(LIST_MIN_VISUAL_WIDTH)) +
     normalize(LIST_VISUAL_GAP) +
     wordWidth <=
     containerWidth;
@@ -54,12 +52,7 @@ export const WidgetContent = ({ label, labelStyle, visual }: Props) => {
   return (
     <View
       onLayout={({ nativeEvent }) => setContainerWidth(nativeEvent.layout.width)}
-      style={[
-        styles.container,
-        { paddingHorizontal: normalize(4), paddingVertical: normalize(16) },
-        isList && styles.listContainer,
-        isList && { minHeight: normalize(64), paddingHorizontal: normalize(LIST_PADDING) }
-      ]}
+      style={[styles.container, isList && styles.listContainer]}
     >
       {(onLabelWidth || mode === 'list') && (
         <View
@@ -79,7 +72,7 @@ export const WidgetContent = ({ label, labelStyle, visual }: Props) => {
         onLayout={({ nativeEvent }) => setVisualWidth(nativeEvent.layout.width)}
         style={[
           styles.visualRow,
-          isList ? { minHeight: normalize(48) } : { height: normalize(48) },
+          { minHeight: normalize(48) },
           isList && styles.listVisualRow,
           isList && {
             marginRight: normalize(LIST_VISUAL_GAP),
@@ -141,6 +134,7 @@ const styles = StyleSheet.create({
   },
   visualRow: {
     alignItems: 'center',
-    flexShrink: 0
+    flexShrink: 0,
+    maxWidth: '100%'
   }
 });

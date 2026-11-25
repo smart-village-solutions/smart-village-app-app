@@ -42,7 +42,7 @@ describe('WidgetContent label measurements', () => {
     expect(tree.UNSAFE_getAllByType(Text)).toHaveLength(2);
   });
 
-  it('keeps a wide image above the label and permits list mode only when both fit with padding', () => {
+  it('keeps a wide image above the label and permits list mode only when both fit inside the content width', () => {
     const tree = render(
       <WidgetLayoutContext.Provider value={{ mode: 'list' }}>
         <WidgetContent label="Baustellen" visual={<View />} />
@@ -59,7 +59,7 @@ describe('WidgetContent label measurements', () => {
 
     fireEvent(container, 'layout', { nativeEvent: { layout: { width: 340 } } });
     expect(StyleSheet.flatten(container.props.style).flexDirection).toBe('row');
-    fireEvent(container, 'layout', { nativeEvent: { layout: { width: 330 } } });
+    fireEvent(container, 'layout', { nativeEvent: { layout: { width: 312 } } });
     expect(StyleSheet.flatten(container.props.style).flexDirection).not.toBe('row');
   });
 
@@ -79,7 +79,7 @@ describe('WidgetContent label measurements', () => {
     expect(StyleSheet.flatten(container.props.style).flexDirection).toBe('row');
 
     fireEvent(tree.UNSAFE_getByType(WrapperRow), 'layout', {
-      nativeEvent: { layout: { width: 130 } }
+      nativeEvent: { layout: { width: 140 } }
     });
     expect(StyleSheet.flatten(container.props.style).flexDirection).not.toBe('row');
     fireEvent(measure, 'textLayout', { nativeEvent: { lines: [{ width: 210 }] } });

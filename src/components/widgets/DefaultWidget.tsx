@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 import { consts, IconProps, IconUrl, normalize } from '../../config';
 import { Image } from '../Image';
@@ -8,7 +8,7 @@ import { WrapperRow } from '../Wrapper';
 import { normalizeStyleValues } from '../../helpers';
 
 import { WidgetContent } from './WidgetContent';
-import { omitResponsiveDimensions } from './WidgetLayoutContext';
+import { WidgetContainer } from './WidgetContainer';
 
 const WIDGET_ICON_SIZE = 24;
 
@@ -49,7 +49,7 @@ const WidgetVisual = ({ Icon, count, iconStyle, image, svg }: WidgetVisualProps)
   const iconSize = normalize(WIDGET_ICON_SIZE);
 
   return (
-    <WrapperRow center>
+    <WrapperRow center style={styles.visual}>
       {image?.uri ? (
         <Image
           source={image}
@@ -70,7 +70,7 @@ const WidgetVisual = ({ Icon, count, iconStyle, image, svg }: WidgetVisualProps)
         <Icon size={iconSize} style={visualStyle} {...themedIconProps} />
       )}
       {count !== undefined && (
-        <BoldText primary big>
+        <BoldText primary big style={styles.count}>
           {count}
         </BoldText>
       )}
@@ -88,7 +88,7 @@ export const DefaultWidget = ({
   svg,
   widgetStyle
 }: Props) => {
-  const { fontStyle, iconStyle, widgetStyle: customWidgetStyle } = widgetStyle || {};
+  const { fontStyle = {}, iconStyle = {}, widgetStyle: customWidgetStyle } = widgetStyle || {};
   const baseAccessibilityLabel = accessibilityLabel ?? text;
   const buttonAccessibilityLabel = baseAccessibilityLabel.includes(consts.a11yLabel.button)
     ? baseAccessibilityLabel
@@ -96,14 +96,12 @@ export const DefaultWidget = ({
 
   const normalizedFontStyle = normalizeStyleValues(fontStyle);
   const normalizedIconStyle = normalizeStyleValues(iconStyle);
-  const normalizedWidgetStyle = omitResponsiveDimensions(normalizeStyleValues(customWidgetStyle));
 
   return (
-    <TouchableOpacity
+    <WidgetContainer
       accessibilityLabel={buttonAccessibilityLabel}
-      accessibilityRole="button"
       onPress={onPress}
-      style={[normalizedWidgetStyle, styles.button]}
+      widgetStyle={customWidgetStyle}
     >
       <WidgetContent
         label={text}
@@ -118,18 +116,20 @@ export const DefaultWidget = ({
           />
         }
       />
-    </TouchableOpacity>
+    </WidgetContainer>
   );
 };
 
 const styles = StyleSheet.create({
-  button: {
-    alignItems: 'stretch',
-    justifyContent: 'center',
-    minHeight: 48,
-    width: '100%'
+  count: {
+    flexShrink: 1,
+    maxWidth: '100%'
   },
   iconWithCount: {
     paddingRight: normalize(8)
+  },
+  visual: {
+    flexWrap: 'wrap',
+    maxWidth: '100%'
   }
 });

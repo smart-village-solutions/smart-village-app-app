@@ -31,6 +31,26 @@ const getBookmarkCount = (bookmarks, isLoggedIn) => {
   return count;
 };
 
+const getNewsSections = (bookmarks, categoriesNews) => {
+  const sections = (categoriesNews ?? []).map((category) => [
+    String(category.parentCategoryId || category.categoryId || ''),
+    category
+  ]);
+  const configuredSuffixes = new Set(sections.map(([suffix]) => suffix));
+  const defaultCategory =
+    sections.find(([suffix]) => suffix === '')?.[1] ?? texts.homeCategoriesNews;
+  const prefix = `${QUERY_TYPES.NEWS_ITEMS}-`;
+
+  for (const key of Object.keys(bookmarks)) {
+    if (key !== QUERY_TYPES.NEWS_ITEMS && !key.startsWith(prefix)) continue;
+
+    const suffix = key.slice(prefix.length);
+    if (!configuredSuffixes.has(suffix)) sections.push([suffix, defaultCategory]);
+  }
+
+  return sections;
+};
+
 export const BookmarkScreen = ({ navigation, route }) => {
   const { colors } = useTheme();
 
@@ -49,17 +69,17 @@ export const BookmarkScreen = ({ navigation, route }) => {
   const volunteerEventBookmarkIds = bookmarks?.[QUERY_TYPES.VOLUNTEER.CALENDAR_ALL] || [];
 
   const getSection = useCallback(
-    (itemType, categoryTitle, suffix, categoryTitleDetail, parentCategoryId) => {
-      const bookmarkKey = getKeyFromTypeAndSuffix(itemType, parentCategoryId || suffix);
+    (itemType, categoryTitle, suffix, categoryTitleDetail, sectionIndex) => {
+      const bookmarkKey = getKeyFromTypeAndSuffix(itemType, suffix);
 
       if (!bookmarks[bookmarkKey]?.length || (!!query && query !== bookmarkKey)) return null;
 
       return (
         <BookmarkSection
-          suffix={parentCategoryId || suffix}
+          suffix={suffix}
           categoryTitleDetail={categoryTitleDetail}
           ids={bookmarks[bookmarkKey]}
-          key={bookmarkKey}
+          key={sectionIndex === undefined ? bookmarkKey : `${bookmarkKey}:${sectionIndex}`}
           navigation={navigation}
           query={itemType}
           sectionTitle={categoryTitle}
@@ -86,6 +106,8 @@ export const BookmarkScreen = ({ navigation, route }) => {
     );
   }
 
+  const newsSections = getNewsSections(bookmarks, categoriesNews);
+
   return (
     <SafeAreaViewFlex>
       <ScrollView
@@ -98,15 +120,8 @@ export const BookmarkScreen = ({ navigation, route }) => {
           />
         }
       >
-        {categoriesNews?.map(
-          ({ categoryId, categoryTitle, categoryTitleDetail, parentCategoryId }) =>
-            getSection(
-              QUERY_TYPES.NEWS_ITEMS,
-              categoryTitle,
-              categoryId,
-              categoryTitleDetail,
-              parentCategoryId
-            )
+        {newsSections.map(([suffix, { categoryTitle, categoryTitleDetail }], index) =>
+          getSection(QUERY_TYPES.NEWS_ITEMS, categoryTitle, suffix, categoryTitleDetail, index)
         )}
         {getSection(QUERY_TYPES.POINTS_OF_INTEREST, bookmarkCategoryTitlesPointsOfInterest)}
         {getSection(QUERY_TYPES.TOURS, bookmarkCategoryTitlesTours)}

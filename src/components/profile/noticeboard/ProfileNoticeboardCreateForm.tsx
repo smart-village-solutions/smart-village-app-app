@@ -12,7 +12,7 @@ import React, {
 } from 'react';
 import { useMutation, useQuery as useQueryWithApollo } from 'react-apollo';
 import { Controller, FieldErrors, SubmitErrorHandler, useForm } from 'react-hook-form';
-import { Alert, Keyboard, LayoutChangeEvent, ScrollView } from 'react-native';
+import { Alert, DeviceEventEmitter, Keyboard, LayoutChangeEvent, ScrollView } from 'react-native';
 import { useQuery } from 'react-query';
 
 import {
@@ -50,6 +50,7 @@ import { NOTICEBOARD_TYPES, ProfileMember, ScreenName } from '../../../types';
 import { DocumentSelector, MultiImageSelector } from '../../selectors';
 import { useThemeStyles } from '../../../hooks/useThemeStyles';
 import { useTheme } from '../../../hooks/useTheme';
+import { DETAIL_REFRESH_EVENT } from '../../../hooks/DetailRefresh';
 
 const {
   EMAIL_REGEX,
@@ -557,6 +558,7 @@ export const ProfileNoticeboardCreateForm = ({
         }
       });
 
+      DeviceEventEmitter.emit(DETAIL_REFRESH_EVENT);
       navigation.goBack();
       Alert.alert(
         texts.noticeboard.successScreen.header,
