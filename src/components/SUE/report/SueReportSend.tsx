@@ -1,6 +1,5 @@
 /* eslint-disable complexity */
 import React, { useContext, useRef, useState } from 'react';
-import { useMutation } from 'react-apollo';
 import { Controller, useForm } from 'react-hook-form';
 import { Alert, Keyboard, ScrollView, View } from 'react-native';
 import { Divider, Rating } from 'react-native-elements';
@@ -8,7 +7,7 @@ import { Divider, Rating } from 'react-native-elements';
 import { ConfigurationsContext } from '../../../ConfigurationsProvider';
 import { device, normalize, texts } from '../../../config';
 import { useAppInfo, useKeyboardHeight } from '../../../hooks';
-import { QUERY_TYPES, createQuery } from '../../../queries';
+import { sendUserFeedback } from '../../../queries/SUE';
 import { ScreenName } from '../../../types';
 import { SueDeliveryStatus } from '../../../helpers/sueReportStorage';
 import { Button } from '../../Button';
@@ -19,7 +18,7 @@ import { Wrapper } from '../../Wrapper';
 import { Input } from '../../form';
 import { useThemeStyles } from '../../../hooks/useThemeStyles';
 import { useTheme } from '../../../hooks/useTheme';
-import { QUERY_TYPES as SUE_NAVIGATION_QUERY_TYPES } from '../../../queries/types';
+import { QUERY_TYPES } from '../../../queries/types';
 
 type TNewContent = {
   message: string;
@@ -54,12 +53,14 @@ export const SueReportSend = ({
   const { feedbackHeader, ratingTitle, messageTitle, messagePlaceholder } = feedbackFormTexts;
   const [showFeedbackSection, setShowFeedbackSection] = useState(feedbackSection);
   const [rating, setRating] = useState(defaultRating);
+  const [loading, setLoading] = useState(false);
+  const submitting = useRef(false);
 
   const appInfo = useAppInfo();
   const keyboardHeight = useKeyboardHeight();
   const scrollViewRef = useRef(null);
 
-  const { control, reset, handleSubmit, getValues } = useForm({
+  const { control, reset, handleSubmit } = useForm({
     defaultValues: {
       message: '',
       rating
@@ -74,25 +75,14 @@ export const SueReportSend = ({
     subtitle = texts.sue.delivery.messages[deliveryStatus];
   }
 
-  const [createAppUserContent, { loading }] = useMutation(
-    createQuery(QUERY_TYPES.APP_USER_CONTENT)
-  );
-
-  const onSubmit = async (createAppUserContentNewData: TNewContent) => {
+  const onSubmit = async (data: TNewContent) => {
+    if (submitting.current) return;
+    submitting.current = true;
+    setLoading(true);
     Keyboard.dismiss();
 
-    const formData = {
-      dataType: 'json',
-      dataSource: 'form',
-      content: JSON.stringify({
-        action: 'notify_and_destroy',
-        appInfo,
-        ...createAppUserContentNewData
-      })
-    };
-
     try {
-      await createAppUserContent({ variables: formData });
+      await sendUserFeedback({ ...data, appVersion: appInfo.appVersion });
 
       Alert.alert(texts.feedbackScreen.alert.title, texts.feedbackScreen.alert.message, [
         {
@@ -102,8 +92,12 @@ export const SueReportSend = ({
           }
         }
       ]);
-    } catch (error) {
-      console.error(error);
+    } catch {
+      // Keep the feedback for retry and show a generic failure without logging private transport details.
+      Alert.alert(texts.feedbackScreen.alert.errorTitle, texts.feedbackScreen.alert.errorMessage);
+    } finally {
+      submitting.current = false;
+      setLoading(false);
     }
   };
 
@@ -134,7 +128,7 @@ export const SueReportSend = ({
               notFullWidth
               onPress={() =>
                 navigation.navigate(ScreenName.SueList, {
-                  query: SUE_NAVIGATION_QUERY_TYPES.SUE.MY_REQUESTS,
+                  query: QUERY_TYPES.SUE.MY_REQUESTS,
                   title: texts.sue.myReports
                 })
               }
@@ -196,7 +190,7 @@ export const SueReportSend = ({
 
                   <Button
                     disabled={loading || rating === 0}
-                    onPress={handleSubmit(onSubmit)}
+                    onPress={() => handleSubmit(onSubmit)()}
                     title={
                       loading
                         ? texts.feedbackScreen.sendButton.disabled
