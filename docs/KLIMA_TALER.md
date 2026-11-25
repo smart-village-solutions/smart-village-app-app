@@ -2,6 +2,8 @@
 
 Klima-Taler uses the Changers native SDK for provider screens, onboarding, consent and tracking. The provider account is independent of the SVA profile. The shared app includes the native module; each customer controls its availability through the existing global settings.
 
+For clean-checkout iOS framework preparation and native build requirements, see [Native build setup](KLIMA_TALER_NATIVE_SETUP.md). Historical device notes are not current release acceptance evidence.
+
 ## Customer configuration
 
 Enable the integration with `globalSettings.settings["klima-taler"]`:
@@ -70,16 +72,16 @@ Configure the card through `additionalProps` on its entry in `globalSettings.wid
 }
 ```
 
-| Field         | Options                                                                                                                                                                                                                                                                                          |
-| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `enabled`     | `false` hides only the card; provider Service tiles and module activation remain available.                                                                                                                                                                                                      |
-| `texts`       | `title` (promotional title), `description`, `balance` (balance heading/accessibility label), `opening`, `unavailableBalance`, `locale`, `comingSoonTitle`, `comingSoonMessage`.                                                                                                                  |
-| `statusTexts` | `loading`, `disabled`, `unconfigured`, `noSession`, `ready`, `empty`, `error`, `unsupported`, `stale`. Empty strings suppress individual messages.                                                                                                                                               |
-| `show`        | Boolean switches for `logo`, `title`, `description`, `balance`, `status`; all default to `true`.                                                                                                                                                                                                 |
-| `logo`        | `uri` (HTTPS image), `icon` (SVA named icon fallback), `color` (icon color, defaults to card text), `size` and `promoSize` (icon sizes).                                                                                                                                                         |
-| `colors`      | `background`, `text`, `button`, `buttonText`, `shortcut`, `shortcutIcon`. Optional `dark` object overrides the same fields in dark mode.                                                                                                                                                         |
-| `styles`      | React Native JSON style objects for `card`, `summary`, `logo`, `title`, `description`, `balance`, `status`, `actions`, `button`, `buttonText`, `shortcut`. Dimensions use density-independent pixels. Styles override color/layout defaults; balance typography still adapts to available width. |
-| `actions`     | `main`, `wallet`, `map`, `badges`, `settings`. Each accepts `false` or an object with the fields below.                                                                                                                                                                                          |
+| Field         | Options                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `enabled`     | `false` hides only the card; provider Service tiles and module activation remain available.                                                                                                                                                                                                                                                                                                                                 |
+| `texts`       | `title` (promotional title), `description`, `balance` (balance heading/accessibility label), `opening`, `unavailableBalance`, `locale`, `comingSoonTitle`, `comingSoonMessage`.                                                                                                                                                                                                                                             |
+| `statusTexts` | `loading`, `disabled`, `unconfigured`, `noSession`, `ready`, `empty`, `error`, `unsupported`, `stale`. Messages provide accessible labels and the detail text for the status indicator. Empty strings suppress individual indicators.                                                                                                                                                                                       |
+| `show`        | Boolean switches for `logo`, `title`, `description`, `balance`, `status`; all default to `true`.                                                                                                                                                                                                                                                                                                                            |
+| `logo`        | `uri` (HTTPS image), `icon` (SVA named icon fallback), `color` (icon color, defaults to card text), `size` and `promoSize` (icon sizes).                                                                                                                                                                                                                                                                                    |
+| `colors`      | `background`, `text`, `button`, `buttonText`, `shortcut`, `shortcutIcon`. Optional `dark` object overrides the same fields in dark mode.                                                                                                                                                                                                                                                                                    |
+| `styles`      | React Native JSON style objects for `card`, `summary`, `logo`, `title`, `description`, `balance`, `status`, `actions`, `button`, `buttonText`, `shortcut`. Dimensions use density-independent pixels. Styles override color/layout defaults; balance typography still adapts to available width. The compact status indicator uses only `status.color`; legacy status text layout and typography overrides no longer apply. |
+| `actions`     | `main`, `wallet`, `map`, `badges`, `settings`. Each accepts `false` or an object with the fields below.                                                                                                                                                                                                                                                                                                                     |
 
 Action fields are `enabled`, `label`, `promoLabel`, `icon`, `showInPromo`, `target`, `alertTitle`, and `alertMessage`. Main is visible in both card states and opens the provider by default. Other actions are hidden by default until their destinations are available. Existing explicit action objects or `true` keep their configured visibility after onboarding, and display the configurable coming-soon alert unless assigned a supported target. Use `false` or `enabled: false` to hide them. Explicit placeholders remain unsupported product functions, not completed deep links. Their individual `alertTitle`/`alertMessage` override the shared alert copy when nonempty. `target: "provider"` opens the general provider screen; `"comingSoon"` (and unknown targets) shows the alert. Wallet, map, badge and settings deep links are not implemented. In particular, the wallet shortcut does not open an unrelated SVA wallet. Each shortcut can be hidden independently without affecting the others.
 
@@ -89,7 +91,7 @@ Explicit `additionalProps.texts` values override `text` on the widget entry. App
 
 The card follows SVA's active light/dark palette through `useTheme`, including customer theme palettes. Colors resolve in this order: active app palette, shared `additionalProps.colors` fields, then `additionalProps.colors.dark` fields when the resolved theme is dark (including system-selected dark mode). Missing or incorrectly typed dark fields retain their shared or palette value. Switching themes updates the mounted widget immediately. Explicit `styles` colors still override these colors, so configure theme-dependent colors in `colors` rather than hard-coding them in `styles`. Accessibility adjustments described below take precedence. It uses the shared text component for system/app text scaling and bold text. At large text sizes, the summary stacks vertically and the balance can wrap instead of shrinking away the user's preferred size.
 
-High contrast takes precedence over widget branding colors and uses the theme's surface/text pairs with visible borders. Reduce Transparency replaces translucent color pairs with opaque theme pairs, removes configured opacity, and disables faded press feedback. Grayscale adapts configured colors; the existing app-wide filter also covers logo images. Reduce Motion suppresses the opening spinner while retaining its accessible busy/disabled state; widget ordering continues to use the existing reduced-motion behavior.
+High contrast takes precedence over widget branding colors and uses the theme's surface/text pairs with visible borders. Reduce Transparency replaces translucent color pairs with opaque theme pairs, removes configured opacity, and disables faded press feedback. Grayscale adapts configured colors; the existing app-wide filter also covers logo images. Reduce Motion replaces the balance refresh spinner with a static icon and suppresses the opening spinner while retaining accessible busy/disabled states; widget ordering continues to use the existing reduced-motion behavior.
 
 Actions have separate screen-reader labels, minimum 48-point touch targets, and coming-soon hints for placeholder destinations. Decorative artwork is excluded from the accessibility tree. The balance includes its meaning in its spoken label and announces updates politely on Android. These settings apply to the SVA widget. The provider's own native screens remain controlled by the Changers SDK; the current SDK bridge has no theme or accessibility preference API.
 
@@ -105,8 +107,10 @@ Compact widgets share each row's full available width, including incomplete rows
 
 ## Native build setup
 
+Install JavaScript dependencies from the checked-in lockfile with `yarn install --frozen-lockfile` before generating native projects. Native module or credential changes require a development build; they cannot be delivered to Expo Go.
+
 1. Supply customer-issued mobile SDK values in `secrets[<expo.slug>]['klima-taler']` in the existing private `src/config/secrets.js`: `clientId` (numeric identifier), `clientSecret`, and `clientName` (provider application identifier / `x-app`). Empty placeholders are available in both public secret templates.
-2. For local iOS builds, run `sh scripts/fetch-changers-ios-frameworks.sh` before prebuild. The EAS `eas-build-pre-install` hook downloads the same pinned frameworks for iOS builds.
+2. For local iOS builds, run `yarn changers:prepare:ios` before prebuild. The EAS `eas-build-pre-install` hook downloads the same pinned frameworks for iOS builds.
 3. Use the normal Expo prebuild and native build workflow. Expo Go cannot load this module.
 
 Credentials are consumed by native build mods and are not serialized in Expo `extra`. The provider requires them in the native binary, where they can be extracted; use only credentials issued for a mobile client, never server-only secrets. Credential changes require a new binary. After installing a compatible binary, global settings toggles require no code changes or rebuild.
@@ -144,9 +148,11 @@ Provider entry presents above the originating screen without an intermediate SVA
 
 The widget reads iOS `user.coins` or Android `user.recoins`. It distinguishes an actual zero balance from missing, unsupported or failed data. Without a provider session it shows a promotional card. The card uses SVA typography and accessibility text scaling.
 
+The card keeps its compact height during refresh. A small indicator beside the balance shows loading; no status text row or vertical placeholder is added. Errors, unavailable data and stale cached values show an information button in the same space. Tapping it opens the configured message in a native alert. Screen readers receive the complete status label. `show.status: false` hides the indicator, and promotional cards have no status indicator.
+
 The memory-only cache is scoped to provider identity. Home revisits reuse verified values for up to five minutes; pull-to-refresh and provider return request fresh statistics. Backgrounding or provider entry hides old values until identity is revalidated. Temporary failures can display a verified cached value as stale. Late results cannot overwrite a newer session. Rendering and refreshing never activate the module, create accounts or request permissions.
 
-Provider entry pauses summary refreshes and waits for an in-flight native statistics request to finish before presenting the provider. Invalidation only hides stale values; it does not cancel the native SDK operation. On dismissal or cancellation, refreshes resume, and subsequent reads wait for the previous native read to release its operation slot.
+Provider entry pauses new summary reads and waits for an in-flight native statistics request before opening SDK UI. Dismissal or cancellation resumes refreshes; stale results remain hidden and identity is revalidated before displaying a balance.
 
 ## Android statistics safety
 
@@ -177,9 +183,9 @@ cd android
 
 iOS compatibility checks are in `__tests__/klimaTaler/simulator_compatibility_test.rb`. Run the UIKit presentation harness on a booted Apple Silicon simulator with `sh __tests__/klimaTaler/ios/run-presentation-tests.sh <UDID>`.
 
-Device acceptance should cover initial consent, denied and granted permissions, opening/closing, session restoration, widget refresh, disabling the module, and tracking lifecycle. Account deletion, actual background journey collection, buffered data handling and reboot recovery require separate provider/device validation. Map/POI navigation and badge data remain pending contracts. SVA profile linkage is intentionally outside the agreed scope.
+Device acceptance should cover initial consent, denied and granted permissions, opening/closing, session restoration, widget refresh, disabling the module, and tracking lifecycle. Account deletion, actual background journey collection, buffered data handling and reboot recovery require separate provider/device validation. Map/POI navigation and badge data remain pending contracts. SVA profiles are not synchronized with provider accounts.
 
-### Registration recovery (SVAK-228 / SVAK-230)
+### Registration recovery
 
 On iOS, activation and registration are separate. Native status reports `notStarted`, `uncertain`, or `existing`. A known offline path rejects before calling the SDK and leaves registration retryable, including after restarting the app. Activation interrupted before dispatch is also retryable. The attempt marker is persisted before dispatch; repeated taps share the entry request. An existing UUID always uses login, never signup. Logout, tracking stop, and remote disable do not reset the registration history.
 
@@ -192,130 +198,43 @@ xcrun swiftc modules/expo-changers/ios/ChangersRegistration.swift __tests__/klim
 /tmp/changers-registration-tests
 ```
 
-### iOS timeout recovery dependency (SVAK-227)
+### iOS timeout recovery
 
 The pinned Changers 4.2.0 public Swift interface stores authentication/setup/statistics delegates on the singleton. It exposes no cancellation handle from register/login/statistics, no documented non-destructive reset, and no request identifier in callbacks. The public `URLSessionDataTaskProtocol.cancel()` is not a request handle returned by those methods. `logoutUser`, `clearCache`, and `stopTrackingAndClearData` are not documented cancellation barriers.
 
 Accordingly the unresolved operation is still quarantined after `E_TIMEOUT`; freeing it would allow an old callback to settle a newer request or mutate its session. Late completion releases the slot and cannot settle the timed-out promise twice. If no callback arrives, a process restart is still required; **the permanent busy defect is not fixed**. Provider delivery needed: cancellable operations with completion acknowledgment, request-scoped delegates, or a documented reset that preserves identity and prevents late callbacks/session mutation. Registration outcomes also remain uncertain across restart, so restarting is not permission to repeat signup.
 
-## Validation and handover — 2026-10-13
+## Troubleshooting
 
-> Historical record: the commit IDs, test counts and local build observations below describe the original 13 October snapshot. They are not fresh acceptance evidence for the rebased code. The 17 November integration is a sequence of open PRs starting at [#1606](https://github.com/smart-village-solutions/smart-village-app-app/pull/1606); no PRs have been merged into the epic or master during that work. Consult each PR for current commit IDs and validation results.
+### iOS scene lifecycle
 
-### Code and ticket review
+For an iOS launch failure mentioning `UIApplicationEvaluateRuntimeIssueForNoSceneLifecycleAdoption`, verify that installed Expo dependencies match the lockfile, regenerate the native project with the configured scene-support plugin, and reinstall the affected pods before rebuilding. The generated `UIApplicationSceneManifest` should reference `EXExpoAppSceneDelegate`. Do not patch generated application delegates to bypass the plugin. See Expo's [scene lifecycle guidance](https://github.com/expo/fyi/blob/main/ios-scene-lifecycle.md).
 
-Read epic SVAK-223, its 18 child tickets (224–240 and 242), and the 13 October review comments in the authenticated Jira UI. No comments, descriptions, statuses, assignments or links were changed. The three existing commits were verified as a linear chain and integrated locally by fast-forward; none were recreated or cherry-picked.
+### Offline provider content
 
-| Branch                                       | Commit      | Result                                                                                           |
-| -------------------------------------------- | ----------- | ------------------------------------------------------------------------------------------------ |
-| `feature/SVAK-227-changers-expo-integration` | `2da4e19ff` | Existing native integration retained                                                             |
-| `feature/SVAK-230-klima-taler-entry`         | `48b70442d` | Existing provider entry retained                                                                 |
-| `feature/SVAK-231-klima-taler-widget`        | `75255e59a` | Existing widget and ordering retained                                                            |
-| `fix/SVAK-239-config-test-isolation`         | `078d77594` | Config tests run without the private secrets module                                              |
-| `fix/SVAK-228-registration-recovery`         | `63704d715` | Separate activation/registration history; retry undispatched signup, preserve ambiguous outcomes |
-| `fix/SVAK-227-background-initialization`     | `e8aab7a95` | Restore Android gate at process startup, report storage failures                                 |
-| `fix/SVAK-231-widget-unavailable-actions`    | `e9ffcfb23` | Hide absent shortcut configuration, retain explicit customer choices                             |
+The provider sheet can display only `Loading...` while offline, without a specific network error. Content may recover when connectivity returns; this is not a guarantee of bounded timeout recovery. The host close control remains separate from the provider content. Test offline entry and reconnect with the SDK version and customer configuration being shipped. A wireless development client also depends on Metro for JavaScript reloads, so distinguish a lost development-server connection from provider request failures.
 
-The table identifies the original local commits before rebase. This handover originated on `docs/SVAK-239-validation-evidence`; its original local integration notes do not describe the current stacked-PR workflow. The current integration leaves every PR open for review and does not perform a merge, store release or Jira transition.
+### Tracking status
 
-Reviewed the pinned [iOS vendor repository](https://github.com/Changers/changers-ios-sdk/tree/33c65f9b8db1618dfff3530c73a061935a66a9ff) and [Android sample](https://github.com/Changers/Sample-Android-SDK). The local iOS framework metadata confirms Changers 4.2.0 and MotionTag 6.3.4; the public Swift interface was read at the pinned commit. Inspected JVM classes were byte-for-byte checked against the resolved sdkstaging 1.20.6 and MotionTag 7.2.5 AARs before relying on their lifecycle/statistics behavior. No second MotionTag wrapper was introduced.
+`tracking: "unknown"` does not establish that tracking is active or stopped. Opening the dashboard, retaining an account or receiving a successful host stop request is not proof of route collection or deletion. Validate consent, OS permissions, background journeys and server-side credit separately. Keep logout, tracking pause, consent withdrawal and server account deletion as distinct operations.
 
-### Initial test results recorded on 2026-10-13 (before physical-device preparation)
+## Extending badge and map support
 
-Commands ran with Node 22.13.0 and Yarn 1.22.22 using the existing installed dependencies. This is not a clean-install or release acceptance report.
+Do not synthesize badge values or assume that generic provider navigation opens a wallet, badge or POI detail. These features require confirmed provider contracts before implementation.
 
-| Check                                                          | Before changes                                                       | Final result                                                                                                                               |
-| -------------------------------------------------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| `yarn lint`                                                    | 982 errors, 159 warnings                                             | Same 982 errors, 159 warnings; diagnostic entries identical                                                                                |
-| `yarn test --runInBand`                                        | 169 suites passed, 50 failed; 1035 tests passed, 8 failed, 2 skipped | 170 suites passed, 49 failed; 1044 tests passed, 8 failed, 2 skipped                                                                       |
-| Klima-Taler + widget layout/reordering suites                  | Config suite could not load missing secrets                          | 15 suites / 134 tests passed                                                                                                               |
-| Android native Debug / Release                                 | 7 tests per variant (existing results were up-to-date)               | 13 tests per variant executed and passed, including 6 gate tests                                                                           |
-| Native Swift registration harness                              | Not present                                                          | 10 assertions passed, including offline/restart and ambiguous-attempt preservation                                                         |
-| iOS compatibility Ruby harness                                 | Re-executed                                                          | 2 tests / 24 assertions passed                                                                                                             |
-| UIKit presentation harness, iPhone 17 Pro simulator / iOS 26.5 | Re-executed                                                          | 43 checks passed; no vendor SDK/account                                                                                                    |
-| Swift device-target typecheck                                  | —                                                                    | Runtime/journal typechecked against pinned Changers/MotionTag frameworks; Expo Promise/subscriber were minimal stubs, not a full app build |
-| Isolated Expo prebuild                                         | —                                                                    | iOS + Android generated; repeat with `--no-clean --no-install` left all 56 native files unchanged                                          |
+For badges, obtain stable IDs, labels, images, acquisition state and update signals. For map integration, obtain the public feed's customer/source identification, stable partner/site/offer IDs, coordinates, title, image fallback, validity/deletion rules, pagination and synchronization behavior, plus a verified provider detail target for each platform. Preserve the selected target across onboarding or session recovery. A public POI feed must not contain personal tracking or account data.
 
-The prebuild fixture used test-only connection strings in a temporary project. Expo 57 defaults to recreating native directories: an initial clean repetition changed generated Xcode object IDs; the non-clean repeat was byte-identical. Existing workspace native projects were not regenerated.
+Use the existing SVA map and preview components once these contracts are available. Generic backend POI fields or test fixtures alone do not establish a working provider integration.
 
-No new failed Jest suites or failing test descriptions remain. The corrected AppConfig suite accounts for the suite improvement. The eight existing failing assertions concern HeaderRight, SettingsScreen, waste reminder/settings accessibility, and owner-auth context. Other pre-existing suites still fail during loading, including imports of absent private secrets. Those unrelated failures were neither suppressed nor repaired by creating secret files. The repository-wide quality gate remains red.
+## Device acceptance checklist
 
-Local raw command logs are in `/tmp/klima-taler-validation`; the UIKit screenshot/result are in `/tmp/sva-klima-presentation.g1Zp40`. These temporary paths are supplementary, not durable release artifacts. The commands, test sources and summarized results here are the reproducible handover.
+Use a native binary with the matching runtime and customer-issued configuration. Record results separately for iOS and Android; passing unit tests or a simulator presentation harness does not establish provider or tracking acceptance.
 
-### Initial build and device limits (superseded by the iOS follow-up below)
-
-No installable, configured SVA development APK/IPA was produced. The expected private `src/config/secrets.js` is absent, the existing generated Android project has app-version-only runtime and no Changers configuration asset, and the local SVA iOS framework directories are incomplete. The separate research checkout supplied pinned frameworks for API inspection/typecheck only. Connected physical iPhones were offline. No secret material, signing credentials or accounts were created or modified; no paid build was started.
-
-The only newly built iOS application was the credential-free UIKit test harness, which was uninstalled after testing. The simulator started for this test was shut down afterwards. Android unit-test compilation is not an installed SVA build.
-
-### Concrete remaining deliveries
-
-- **SVAK-227:** cancellable/request-scoped iOS operations or a documented identity-preserving reset barrier. Timeout without callback still blocks SDK operations until process restart. No real-SDK no-callback/late-callback/logout recovery acceptance is claimed.
-- **SVAK-228 / SVAK-230:** signup idempotency or authorized identity lookup after an ambiguous response. The new guard recovers definitely undispatched attempts; previous failed/uncertain vendor registrations cannot safely be retried without this delivery. Native request interruption and delayed SDK callbacks still need provider/device verification.
-- **SVAK-231 / SVAK-242:** confirmed badge IDs, labels, images, acquisition state and update signals; actual wallet/map/badge/settings target contracts. Confirm the direct Android statistics endpoint/session adapter with the provider and test sanitized Debug/Release device logs. The read-only widget client does not sanitize every vendor SDK path.
-- **SVAK-232 / SVAK-233 / SVAK-234:** the locally accessible main-server `saas` branch at `b01aead1` has general POI fields (`external_id`, `data_provider`, coordinates, media, `active`, `visible`, `payload`), but no Klima-Taler importer, feed contract or provider-target mapping was found. This does not establish the state of every remote branch or deployment. App map rendering already uses `LocationOverview`/`MapLibre` and shared previews. Required delivery: customer/source identification, stable partner/site/offer IDs, exact detail reference for both SDKs, coordinates/title/media fallback, validity/deletion rules, pagination/sync/error semantics, and onboarding/session completion signals. Generic fields and fixtures are not a completed integration; no speculative endpoint, payload key or URL was added.
-- **SVAK-229 / SVAK-237 / SVAK-238 / SVAK-239:** fresh consent/permission flows, real background journey and server credit, reboot/update/permission withdrawal, logout versus deletion and buffered data, VoiceOver/TalkBack focus and customer-theme acceptance on devices. Re-enabling the host must not silently undo provider consent withdrawal.
-- **SVAK-235 / SVAK-236:** determine whether an additional host action is required; no new payment, wallet or push product was invented.
-- **SVAK-240:** restore the authorized local native build inputs through the established configuration process, create a `changers-3` build, verify provider app registration, resolve/accept the repository-wide gate failures through the owning work, and complete device/security/accessibility acceptance before release approval.
-
-### Device acceptance steps for the next configured build
-
-1. Install the matching `changers-3` development build. On Home, verify no signup or permission prompt; only the default provider action appears without explicit shortcut configuration.
-2. On a fresh iOS test installation, let the network path become offline, open Klima-Taler, then reconnect and retry. Repeat with an app restart between attempts. Confirm one provider identity. Treat a connection loss after dispatch as ambiguous and verify that repeated taps/restarts never create another account.
-3. With an existing account, interrupt login/statistics, restore connectivity and verify the same identity/balance. Check actual zero, unavailable balance and stale cache; changing account must not expose the previous balance.
-4. On Android, enable the module and complete provider consent; verify route recording after backgrounding, OS process recreation, reboot and package update. Test force-stop separately, then reopen manually. Revoke permissions and provider consent; confirm no host-induced re-enablement.
-5. Disable the module remotely while online: entry/provider close and stop request, identity retained. Restart to verify the saved disable; re-enable and manage any tracking restart through the provider. Validate actual stop/server effects separately from `tracking=unknown`.
-6. Open/close repeatedly, including VoiceOver/TalkBack and large text; verify return focus, provider close control, current balance refresh and accessible widget ordering. Badge/POI target acceptance awaits the contracts above.
-
-## Physical iOS follow-up — 2026-10-13 (SVAK-239)
-
-> Historical device evidence from 13 October. This session does not validate the current rebased SDK, registration, lifecycle or widget changes. Current results and remaining device acceptance are recorded in the stacked PRs.
-
-The user supplied the private configuration and made an iPhone 16 Pro available over the local network. The following results supersede the initial iOS build limitation above; Android device acceptance remains deferred until after the iOS session and disk cleanup.
-
-### Build preparation and launch failure
-
-Generated an isolated native project, preserving the workspace's existing `ios` and `android` projects. The fixture used the existing registered bundle ID `de.dev.smartvillage.klima-taler.app`, cached signing profile and device authorization. No signing account, credentials or private secrets were created or modified. The pinned vendor frameworks were restored from the verified local research checkout into ignored framework directories.
-
-The first installed build crashed before JavaScript on iOS 27. Its crash report identified `UIApplicationEvaluateRuntimeIssueForNoSceneLifecycleAdoption`. The installed Expo packages were stale relative to the existing lockfile: Expo 57.0.14 and expo-build-properties 57.0.12 did not generate the intended scene configuration. `yarn install --frozen-lockfile` restored the already-declared Expo 57.0.27 / expo-build-properties 57.0.22 / ExpoModulesCore 57.0.21 versions without manifest or lockfile changes. Regenerated the isolated iOS project and updated its affected Expo pods. The resulting `UIApplicationSceneManifest` references `EXExpoAppSceneDelegate`; the rebuilt application launches successfully. See Expo's [scene lifecycle guidance](https://github.com/expo/fyi/blob/main/ios-scene-lifecycle.md).
-
-The device build used Xcode 27, Debug/arm64, four build jobs and disabled native debug-symbol generation to fit the available disk. `xcodebuild` succeeded and `codesign --verify --deep --strict` passed. Installed in place, preserving application data: app version 5.0.0 (build 1), runtime `5.0.0-changers-3`, Changers 4.2.0 and MotionTag 6.3.4. This is a local development client requiring Metro, not a distributed IPA or release build.
-
-### Observed on the physical device
-
-| Scenario                       | Result                                                                                                                                     |
-| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| Home with an existing account  | Widget loads without a signup or permission prompt; native state is initialized/authenticated/ready, registration `existing`               |
-| Native statistics              | Finite `coins = 0.0004264`; widget and provider dashboard both display rounded `0`. This is not an exact-zero fixture                      |
-| Main provider entry            | `Mein Bereich` opens the actual provider dashboard; native `providerOpen` becomes true                                                     |
-| Close and refresh              | One close returns to Home, `providerOpen` becomes false, loading indicator resolves to the balance                                         |
-| Rapid double tap               | One visible dashboard; one close returns to Home, without a second stacked provider sheet                                                  |
-| Background / foreground        | Home and balance recover after leaving the app and bringing the existing process forward                                                   |
-| Process termination / relaunch | Home and dashboard reopen successfully; this is a process restart, not a device reboot or an OS-kill tracking test                         |
-| Identity preservation          | Local SHA-256 comparison matches the initial identity after open/close, background/foreground and process restart; no raw UUID is logged   |
-| Explicit wallet shortcut       | Displays `Bald verfügbar`; retained customer configuration is not a completed wallet destination                                           |
-| Tracking                       | Native status remains `unknown`; provider dashboard requests activation of automatic journey recording. Active tracking is not established |
-
-No fresh registration, account deletion, consent/permission change, real recorded journey/server credit, remote feature disable, OS reboot, VoiceOver acceptance, or deterministic missing/late SDK callback was verified in this session. The iOS permanent-busy and ambiguous-registration provider dependencies remain open.
-
-The user subsequently performed the coordinated offline/reconnect step on the same iPhone. Their screenshot shows the provider sheet with only `Loading...` and the host close control; no offline explanation was displayed. They reported that normal operation resumed after networking was restored. A subsequent native check confirmed the original identity fingerprint, an authenticated/ready session and successful dashboard presentation. This demonstrates recovery in that attempt, not bounded offline feedback, fresh-signup recovery or a forced missing-callback test. The provider-owned loading screen's lack of offline feedback remains an acceptance issue.
-
-### Quality gate after dependency reconciliation
-
-- `yarn lint`: failed, 982 errors / 159 warnings, unchanged totals.
-- `yarn test --runInBand`: failed, 210 suites passed / 9 failed; 1343 tests passed / 13 failed / 8 skipped; 18 snapshots passed / 5 failed.
-- All 15 Klima-Taler and widget layout/reordering suites passed within the full run.
-
-The test environment now contains the user-provided private configuration and lockfile-aligned dependencies, so these totals are not directly comparable to the earlier missing-secrets/stale-dependency run. Failures remain in waste settings/accessibility, owner-auth context, HeaderRight, SettingsScreen, ImageButtonTheme and Button/Link/HtmlScreen snapshots. No snapshots were updated or failing tests suppressed. This follow-up changes documentation only; the repository-wide quality gate is still red.
-
-Local evidence is under `/tmp/klima-taler-device-validation`: `ios-build-aligned.log`, `ios-install-aligned.log`, `ios-provider-dashboard.png`, `ios-widget-restarted.png`, `lint-aligned.log` and `jest-aligned.log`. Keep logs local; they are not release artifacts. The signed `.app` is under `ios-derived/Build/Products/Debug-iphoneos/SmartVillageApp.app` in that directory.
-
-For disk cleanup after testing, the generated `ios-derived` directory occupies approximately 2.7 GiB and the isolated project's `ios/Pods` approximately 1.1 GiB; deleting text logs alone recovers little space. The isolated project path is recorded in `/tmp/klima-taler-device-validation/build-root.txt`. Preserve the small screenshots/report and any build needed for further installation before removing generated products. Cleanup does not require changing the repository's native projects or the installed application's data.
-
-### Widget refresh layout correction (SVAK-231)
-
-The physical-device test exposed a layout jump: adding/removing the status text also added/removed a card row and its spacing on every refresh. The card now retains one text-scaled status line while status display is enabled, using a non-breaking space when there is no message. The empty line is excluded from accessibility and live announcements. Promotional cards and `show.status: false` do not reserve the line. Long status messages can still wrap and increase height; text is not clipped to enforce a fixed card size.
-
-Verified loading-to-ready after provider dismissal on the physical iPhone: the card edges and action row remain in place. The regression test also covers large text, the hidden empty accessibility element, stale-data copy and explicit status hiding. This is JavaScript-only and runs in the existing development client without another native build. Local screenshots: `/tmp/klima-taler-device-validation/ios-status-ready.png` and `ios-status-return.png`.
-
-After this correction, the widget suite passes all 17 tests. The full gate remains at 210 passed / 9 failed suites, now 1344 passed / 13 failed / 8 skipped tests; lint remains at 982 errors / 159 warnings. Logs: `jest-status-layout-final.log`, `widget-status-test.log` and `lint-status-layout.log` in the same local evidence directory.
+1. On Home, verify that rendering and refreshing the widget do not register an account or request permissions. Check a real zero, a nonzero balance, missing data and stale cached data.
+2. On an authorized fresh test installation, attempt entry while offline, reconnect and retry. Repeat with an app restart between attempts. Distinguish definitely undispatched registration from an ambiguous response after dispatch, and verify that repeated taps or restarts do not create duplicate accounts.
+3. With an existing account, interrupt login/statistics and restore connectivity. Verify the same identity and balance, and that changing the account cannot display the previous account's cached data.
+4. Open and close the provider repeatedly, including rapid taps. Verify balance refresh, compact loading/error indicators, large text and VoiceOver/TalkBack navigation. Test light/dark themes and customer overrides.
+5. Disable the module remotely: verify provider closure and the stop request, with identity retained. Restart to verify persisted disable. Re-enable and manage tracking through the provider; independently verify actual stop/server effects.
+6. Complete provider consent and test real route recording after backgrounding, OS process recreation, reboot and package update. Test Android force-stop separately and reopen manually. Revoke permissions and provider consent, confirming that the host does not silently restore them.
+7. Validate logout, consent withdrawal, account deletion and buffered data separately using disposable accounts where necessary. Never infer deletion from hiding the module or stopping tracking.
+8. Review sanitized device logs for sensitive data, verify native/OTA compatibility, and resolve the repository quality gates before release. Badge and POI acceptance additionally require the contracts described above.
