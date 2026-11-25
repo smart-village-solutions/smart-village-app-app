@@ -1,5 +1,7 @@
 import { normalizeWidgetName, type WidgetConfig } from '../klimaTaler/settings';
 
+import { balancedWidgetRowSizes } from './widgetLayout';
+
 export const identifyWidgets = (configs: WidgetConfig[]) => {
   const occurrences = new Map<string, number>();
   return configs.map((config) => {
@@ -29,24 +31,39 @@ export const applyWidgetOrder = <T extends { id: string }>(items: T[], order: un
 // A full-width card splits compact runs without changing the configured order.
 export const widgetRows = <T extends { fullWidth: boolean }>(
   items: T[],
-  columns: number
+  columns: number,
+  balanceRows = false
 ): T[][] => {
   const rows: T[][] = [];
-  let row: T[] = [];
-  items.forEach((item) => {
-    if (item.fullWidth) {
-      if (row.length) rows.push(row);
-      rows.push([item]);
-      row = [];
+  const columnCount = Math.max(1, columns);
+  let compactRun: T[] = [];
+
+  const flush = () => {
+    if (balanceRows) {
+      let offset = 0;
+      for (const size of balancedWidgetRowSizes(compactRun.length, columnCount)) {
+        rows.push(compactRun.slice(offset, offset + size));
+        offset += size;
+      }
     } else {
-      row.push(item);
-      if (row.length === columns) {
-        rows.push(row);
-        row = [];
+      for (let offset = 0; offset < compactRun.length; offset += columnCount) {
+        rows.push(compactRun.slice(offset, offset + columnCount));
       }
     }
-  });
-  if (row.length) rows.push(row);
+
+    compactRun = [];
+  };
+
+  for (const item of items) {
+    if (item.fullWidth) {
+      flush();
+      rows.push([item]);
+    } else {
+      compactRun.push(item);
+    }
+  }
+
+  flush();
   return rows;
 };
 

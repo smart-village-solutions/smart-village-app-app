@@ -41,13 +41,14 @@ import { VoucherWidget } from './VoucherWidget';
 import { WaterTemperatureWidget } from './WaterTemperatureWidget';
 import { WeatherWidget } from './WeatherWidget';
 import { WebWidget } from './WebWidget';
-import { WidgetLayoutContext } from './WidgetLayoutContext';
+import { WidgetLayoutContext, type WidgetLayoutMode } from './WidgetLayoutContext';
 import { ReorderableWidget } from './ReorderableWidget';
 
 const WIDGET_CONTAINER_PADDING = 16;
 const WIDGET_COLUMN_PADDING = 4;
 const WIDGET_MIN_WIDTH = 64;
-const WIDGET_ROW_GAP = 24;
+const WIDGET_ROW_GAP = 8;
+const MANAGED_WIDGET_ROW_GAP = 24;
 
 // The grid owns outer spacing for every widget type and ordering. Footer controls
 // provide their own padding, like the service tile editor.
@@ -77,13 +78,128 @@ const EXISTING_WIDGETS: {
   web: WebWidget
 };
 
-export const Widgets = ({ widgetConfigs, widgetStyle }: Props) => {
-  const { fontScale, width } = useWindowDimensions();
-  const safeAreaInsets = useSafeAreaInsets();
-  const { textScaleMultiplier = 1 } = useContext(AccessibilityContext);
-  const { globalSettings } = useContext(SettingsContext);
-  const editable = configurationObject(globalSettings?.settings).personalizedWidgets === true;
-  const { order, loaded, save } = useWidgetOrder(editable);
+const getWidgetComponents = (
+  orderedConfigs: ReturnType<typeof identifyWidgets>,
+  widgetStyle: Props['widgetStyle']
+) => {
+  return orderedConfigs.flatMap(({ config: widgetConfig, id }) => {
+    const widgetName = normalizeWidgetName(
+      typeof widgetConfig === 'string' ? widgetConfig : widgetConfig.widgetName
+    );
+    const widgetText = typeof widgetConfig === 'string' ? undefined : widgetConfig.text;
+    const additionalProps =
+      typeof widgetConfig === 'string' ? undefined : widgetConfig.additionalProps;
+
+    const Component = EXISTING_WIDGETS[widgetName];
+
+    if (!Component) return [];
+
+    const mergedWidgetStyle = {
+      ...widgetStyle,
+      ...(typeof widgetConfig !== 'string' && widgetConfig.widgetStyle)
+    };
+
+    return [
+      {
+        component: (
+          <Component
+            additionalProps={additionalProps}
+            text={widgetText}
+            widgetStyle={mergedWidgetStyle}
+          />
+        ),
+        key: id,
+        id,
+        label: widgetText || widgetLabel(widgetName),
+        fullWidth: widgetName === 'klimaTaler',
+        styleKey: JSON.stringify(mergedWidgetStyle)
+      }
+    ];
+  });
+};
+
+const WidgetItem = ({
+  children,
+  mode,
+  measurementKey,
+  onLabelWidth,
+  managedGrid
+}: {
+  children: React.ReactNode;
+  mode: WidgetLayoutMode;
+  measurementKey: string;
+  onLabelWidth: (key: string, width: number) => void;
+  managedGrid: boolean;
+}) => {
+  const reportLabelWidth = useCallback(
+    (width: number) => onLabelWidth(measurementKey, width),
+    [measurementKey, onLabelWidth]
+  );
+  const value = useMemo(
+    () => ({
+      mode,
+      measurementKey,
+      onLabelWidth: reportLabelWidth,
+      contentPaddingVertical: managedGrid ? 0 : undefined
+    }),
+    [managedGrid, mode, measurementKey, reportLabelWidth]
+  );
+
+  return <WidgetLayoutContext.Provider value={value}>{children}</WidgetLayoutContext.Provider>;
+};
+
+const getWidgetGrid = (
+  widgetComponents: ReturnType<typeof getWidgetComponents>,
+  {
+    availableWidth,
+    balanceWidgetRows,
+    columnPadding,
+    editable,
+    effectiveTextScale,
+    hasMeasured,
+    labelWidths
+  }: {
+    availableWidth: number;
+    balanceWidgetRows: boolean;
+    columnPadding: number;
+    editable: boolean;
+    effectiveTextScale: number;
+    hasMeasured: boolean;
+    labelWidths: Record<string, number>;
+  }
+) => {
+  const compactWidgets = widgetComponents.filter((entry) => !entry.fullWidth);
+  const managedGrid = editable || compactWidgets.length !== widgetComponents.length;
+  const getMeasurementKey = (entry: (typeof widgetComponents)[number]) =>
+    `${entry.id}:${entry.styleKey}:${effectiveTextScale}`;
+  const isMeasuring =
+    balanceWidgetRows &&
+    compactWidgets.length > 0 &&
+    (!hasMeasured ||
+      compactWidgets.some((entry) => labelWidths[getMeasurementKey(entry)] === undefined));
+  const measuredMinItemWidth = Math.max(
+    0,
+    ...compactWidgets.map(
+      (entry) => (labelWidths[getMeasurementKey(entry)] ?? 0) + 2 * columnPadding
+    )
+  );
+  const layout = resolveWidgetLayout({
+    availableWidth,
+    itemCount: compactWidgets.length,
+    minItemWidth: Math.max(normalize(WIDGET_MIN_WIDTH), measuredMinItemWidth / effectiveTextScale),
+    textScale: effectiveTextScale
+  });
+
+  return {
+    columns: layout.columns,
+    getMeasurementKey,
+    isMeasuring,
+    managedGrid,
+    rows: widgetRows(widgetComponents, layout.columns, balanceWidgetRows)
+  };
+};
+
+const useWidgetEditing = (editable: boolean, save: (nextOrder: string[]) => Promise<void>) => {
   const [draft, setDraft] = useState<string[]>();
   const [saving, setSaving] = useState(false);
   const [dragging, setDragging] = useState<string>();
@@ -170,9 +286,125 @@ export const Widgets = ({ widgetConfigs, widgetStyle }: Props) => {
       setSaving(false);
     }
   };
+  return {
+    draft,
+    setDraft,
+    saving,
+    dragging,
+    gridRef,
+    editing,
+    onDrag,
+    onDragEnd,
+    onHover,
+    onMove,
+    onWidgetLayout,
+    finishEditing
+  };
+};
+
+const WidgetEditingControls = ({
+  editable,
+  editing,
+  loaded,
+  saving,
+  onStart,
+  onCancel,
+  onFinish
+}: {
+  editable: boolean;
+  editing: boolean;
+  loaded: boolean;
+  saving: boolean;
+  onStart: () => void;
+  onCancel: () => void;
+  onFinish: () => Promise<void>;
+}) => {
   const { colors } = useTheme();
+  if (!editable) return null;
+
+  if (!editing) {
+    return (
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={texts.widgets.editTitle}
+        accessibilityState={{ disabled: !loaded }}
+        disabled={!loaded}
+        onPress={onStart}
+        style={styles.edit}
+      >
+        <Text italic={false} style={{ color: colors.primary }}>
+          {texts.widgets.edit}
+        </Text>
+      </Pressable>
+    );
+  }
+
+  return (
+    <View style={styles.editor}>
+      <Text italic={false} style={[styles.hint, { color: colors.text }]}>
+        {texts.widgets.editHint}
+      </Text>
+      <View style={styles.controls}>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={texts.widgets.cancel}
+          disabled={saving}
+          onPress={onCancel}
+          style={styles.edit}
+        >
+          <Text italic={false} style={{ color: colors.primary }}>
+            {texts.widgets.cancel}
+          </Text>
+        </Pressable>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={texts.widgets.done}
+          accessibilityState={{ busy: saving, disabled: saving }}
+          disabled={saving}
+          onPress={onFinish}
+          style={styles.edit}
+        >
+          <Text italic={false} style={{ color: colors.primary }}>
+            {texts.widgets.done}
+          </Text>
+        </Pressable>
+      </View>
+    </View>
+  );
+};
+
+export const Widgets = ({ widgetConfigs, widgetStyle }: Props) => {
+  const { fontScale, width } = useWindowDimensions();
+  const safeAreaInsets = useSafeAreaInsets();
+  const { textScaleMultiplier = 1 } = useContext(AccessibilityContext);
+  const { globalSettings } = useContext(SettingsContext);
+  const editable = configurationObject(globalSettings?.settings).personalizedWidgets === true;
+  const balanceWidgetRows =
+    globalSettings?.settings?.accessibility?.enabledFeatures?.balanceWidgetRows === true;
+  const [labelWidths, setLabelWidths] = useState<Record<string, number>>({});
+  const onLabelWidth = useCallback((key: string, measuredWidth: number) => {
+    setLabelWidths((current) =>
+      current[key] === measuredWidth ? current : { ...current, [key]: measuredWidth }
+    );
+  }, []);
+  const { order, loaded, save } = useWidgetOrder(editable);
+  const {
+    draft,
+    setDraft,
+    saving,
+    dragging,
+    gridRef,
+    editing,
+    onDrag,
+    onDragEnd,
+    onHover,
+    onMove,
+    onWidgetLayout,
+    finishEditing
+  } = useWidgetEditing(editable, save);
   const [containerMeasurement, setContainerMeasurement] = useState({
     measuredWidth: width,
+    hasMeasured: false,
     windowWidth: width
   });
   const visibleWidgetConfigs = klimaTalerWidgets(globalSettings, widgetConfigs).filter(
@@ -189,43 +421,9 @@ export const Widgets = ({ widgetConfigs, widgetStyle }: Props) => {
     identifyWidgets(visibleWidgetConfigs),
     editing ? draft : order
   );
-  const widgetComponents = orderedConfigs.flatMap(({ config: widgetConfig, id }) => {
-    const widgetName = normalizeWidgetName(
-      typeof widgetConfig === 'string' ? widgetConfig : widgetConfig.widgetName
-    );
-    const widgetText = typeof widgetConfig === 'string' ? undefined : widgetConfig.text;
-    const additionalProps =
-      typeof widgetConfig === 'string' ? undefined : widgetConfig.additionalProps;
-
-    const Component = EXISTING_WIDGETS[widgetName];
-
-    if (!Component) return [];
-
-    return [
-      {
-        component: (
-          <Component
-            additionalProps={additionalProps}
-            text={widgetText}
-            widgetStyle={{
-              ...widgetStyle,
-              ...(typeof widgetConfig !== 'string' && widgetConfig.widgetStyle)
-            }}
-          />
-        ),
-        key: id,
-        id,
-        label: widgetText || widgetLabel(widgetName),
-        fullWidth: widgetName === 'klimaTaler'
-      }
-    ];
-  });
-  const compactWidgets = widgetComponents.filter((entry) => !entry.fullWidth);
-  const compactWidgetCount = compactWidgets.length;
+  const widgetComponents = getWidgetComponents(orderedConfigs, widgetStyle);
   const horizontalPadding = normalize(WIDGET_CONTAINER_PADDING);
   const columnPadding = normalize(WIDGET_COLUMN_PADDING);
-  const rowGap = normalize(WIDGET_ROW_GAP);
-  const minItemWidth = normalize(WIDGET_MIN_WIDTH);
   const measuredContainerWidth =
     containerMeasurement.windowWidth === width ? containerMeasurement.measuredWidth : width;
   const availableWidth = Math.max(
@@ -233,28 +431,30 @@ export const Widgets = ({ widgetConfigs, widgetStyle }: Props) => {
     measuredContainerWidth - safeAreaInsets.left - safeAreaInsets.right - 2 * horizontalPadding
   );
   const effectiveTextScale = resolveEffectiveTextScale(fontScale, textScaleMultiplier);
-  const layout = resolveWidgetLayout({
-    availableWidth,
-    itemCount: compactWidgetCount,
-    minItemWidth,
-    textScale: effectiveTextScale
-  });
-  const itemStyle = { paddingHorizontal: columnPadding };
-  const rows = widgetRows(widgetComponents, layout.columns);
-  const layoutMode = layout.columns === 1 ? ('list' as const) : ('grid' as const);
-  const layoutContext = useMemo(
-    () => ({ mode: layoutMode, contentPaddingVertical: 0 }),
-    [layoutMode]
+  const { columns, getMeasurementKey, isMeasuring, managedGrid, rows } = getWidgetGrid(
+    widgetComponents,
+    {
+      availableWidth,
+      balanceWidgetRows,
+      columnPadding,
+      editable,
+      effectiveTextScale,
+      hasMeasured: containerMeasurement.hasMeasured && containerMeasurement.windowWidth === width,
+      labelWidths
+    }
   );
+  const rowGap = normalize(managedGrid ? MANAGED_WIDGET_ROW_GAP : WIDGET_ROW_GAP);
+  const itemStyle = { paddingHorizontal: columnPadding };
+  const layoutMode: WidgetLayoutMode = columns === 1 ? 'list' : 'grid';
   const onLayout = useCallback(
     ({ nativeEvent }: LayoutChangeEvent) => {
       const nextWidth = nativeEvent.layout.width;
       if (!Number.isFinite(nextWidth) || nextWidth <= 0) return;
 
       setContainerMeasurement((current) =>
-        current.measuredWidth === nextWidth && current.windowWidth === width
+        current.hasMeasured && current.measuredWidth === nextWidth && current.windowWidth === width
           ? current
-          : { measuredWidth: nextWidth, windowWidth: width }
+          : { measuredWidth: nextWidth, windowWidth: width, hasMeasured: true }
       );
     },
     [width]
@@ -263,101 +463,91 @@ export const Widgets = ({ widgetConfigs, widgetStyle }: Props) => {
   if (!widgetComponents.length) return null;
 
   return (
-    <WidgetLayoutContext.Provider value={layoutContext}>
+    <View
+      onLayout={onLayout}
+      accessibilityElementsHidden={isMeasuring}
+      importantForAccessibility={isMeasuring ? 'no-hide-descendants' : 'auto'}
+      pointerEvents={isMeasuring ? 'none' : 'auto'}
+      style={[
+        styles.container,
+        {
+          paddingLeft: horizontalPadding + safeAreaInsets.left,
+          paddingRight: horizontalPadding + safeAreaInsets.right
+        },
+        isMeasuring && styles.measuring
+      ]}
+    >
       <View
-        onLayout={onLayout}
+        ref={gridRef}
+        collapsable={false}
+        testID="widgetGrid"
         style={[
-          styles.container,
-          {
-            paddingLeft: horizontalPadding + safeAreaInsets.left,
-            paddingRight: horizontalPadding + safeAreaInsets.right
-          }
+          styles.grid,
+          { rowGap },
+          managedGrid && [styles.managedGrid, widgetGridInsets(editable)]
         ]}
       >
-        <View
-          ref={gridRef}
-          collapsable={false}
-          testID="widgetGrid"
-          style={[styles.grid, { rowGap }, widgetGridInsets(editable)]}
-        >
-          {rows.flatMap((row) =>
-            row.map((entry) => (
-              <ReorderableWidget
-                key={entry.key}
-                id={entry.id}
-                label={entry.label}
-                editing={editing}
-                disabled={saving}
-                lifted={dragging === entry.id}
-                onLayout={onWidgetLayout}
-                onDrag={onDrag}
-                onHover={onHover}
-                onDragEnd={onDragEnd}
-                onMove={onMove}
-                testID={entry.fullWidth ? 'klimaTalerCardContainer' : 'compactWidgetContainer'}
-                style={[
-                  entry.fullWidth ? styles.fullWidthItem : [styles.gridItem, itemStyle],
-                  // Reserve one physical pixel for Yoga rounding; flexGrow fills the remainder.
-                  {
-                    width:
-                      Math.floor((availableWidth * PixelRatio.get() - 1) / row.length) /
-                      PixelRatio.get()
-                  }
-                ]}
-              >
-                {entry.component}
-              </ReorderableWidget>
-            ))
-          )}
-        </View>
-        {editable && !editing && (
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel={texts.widgets.editTitle}
-            accessibilityState={{ disabled: !loaded }}
-            disabled={!loaded}
-            onPress={() => setDraft(widgetComponents.map(({ id }) => id))}
-            style={styles.edit}
-          >
-            <Text italic={false} style={{ color: colors.primary }}>
-              {texts.widgets.edit}
-            </Text>
-          </Pressable>
-        )}
-        {editing && (
-          <View style={styles.editor}>
-            <Text italic={false} style={[styles.hint, { color: colors.text }]}>
-              {texts.widgets.editHint}
-            </Text>
-            <View style={styles.controls}>
-              <Pressable
-                accessibilityRole="button"
-                accessibilityLabel={texts.widgets.cancel}
-                disabled={saving}
-                onPress={() => setDraft(undefined)}
-                style={styles.edit}
-              >
-                <Text italic={false} style={{ color: colors.primary }}>
-                  {texts.widgets.cancel}
-                </Text>
-              </Pressable>
-              <Pressable
-                accessibilityRole="button"
-                accessibilityLabel={texts.widgets.done}
-                accessibilityState={{ busy: saving, disabled: saving }}
-                disabled={saving}
-                onPress={finishEditing}
-                style={styles.edit}
-              >
-                <Text italic={false} style={{ color: colors.primary }}>
-                  {texts.widgets.done}
-                </Text>
-              </Pressable>
-            </View>
-          </View>
+        {rows.flatMap((row) =>
+          row.map((entry) => (
+            <WidgetItem
+              key={entry.key}
+              mode={layoutMode}
+              measurementKey={getMeasurementKey(entry)}
+              onLabelWidth={onLabelWidth}
+              managedGrid={managedGrid}
+            >
+              {managedGrid ? (
+                <ReorderableWidget
+                  id={entry.id}
+                  label={entry.label}
+                  editing={editing}
+                  disabled={saving}
+                  lifted={dragging === entry.id}
+                  onLayout={onWidgetLayout}
+                  onDrag={onDrag}
+                  onHover={onHover}
+                  onDragEnd={onDragEnd}
+                  onMove={onMove}
+                  testID={entry.fullWidth ? 'klimaTalerCardContainer' : 'compactWidgetContainer'}
+                  style={[
+                    entry.fullWidth ? styles.fullWidthItem : [styles.gridItem, itemStyle],
+                    // Reserve one physical pixel; flexGrow fills the remainder.
+                    {
+                      width:
+                        Math.max(
+                          0,
+                          Math.floor((availableWidth * PixelRatio.get() - 1) / row.length)
+                        ) / PixelRatio.get()
+                    }
+                  ]}
+                >
+                  {entry.component}
+                </ReorderableWidget>
+              ) : (
+                <View
+                  testID="compactWidgetContainer"
+                  style={{
+                    paddingHorizontal: columnPadding,
+                    width: `${100 / (balanceWidgetRows ? row.length : columns)}%`
+                  }}
+                >
+                  {entry.component}
+                </View>
+              )}
+            </WidgetItem>
+          ))
         )}
       </View>
-    </WidgetLayoutContext.Provider>
+      <WidgetEditingControls
+        editable={editable}
+        editing={editing}
+        loaded={loaded}
+        saving={saving}
+        onStart={() => setDraft(widgetComponents.map(({ id }) => id))}
+        onCancel={() => setDraft(undefined)}
+        onFinish={finishEditing}
+      />
+    </View>
   );
 };
 
@@ -370,7 +560,9 @@ const styles = StyleSheet.create({
     alignItems: 'stretch',
     width: '100%'
   },
-  grid: { flexDirection: 'row', flexWrap: 'wrap', width: '100%', alignItems: 'stretch' },
+  grid: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'stretch' },
+  managedGrid: { width: '100%' },
+  measuring: { height: 0, opacity: 0, overflow: 'hidden' },
   gridItem: { flexGrow: 1, minWidth: 0 },
   edit: {
     minHeight: 48,

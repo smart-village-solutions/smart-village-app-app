@@ -83,3 +83,14 @@ test('drop targeting handles empty, unmeasured and single-widget layouts', () =>
     'only'
   );
 });
+
+it('balances compact runs independently around full-width cards without reordering them', () => {
+  const compact = Array.from({ length: 9 }, (_, index) => ({ id: String(index), fullWidth: false }));
+  const card = { id: 'klimaTaler', fullWidth: true };
+  const ordered = [...compact.slice(0, 4), card, ...compact.slice(4)];
+  const rows = widgetRows(ordered, 3, true);
+
+  expect(rows.map((row) => row.length)).toEqual([2, 2, 1, 3, 2]);
+  expect(rows[2]).toEqual([card]);
+  expect(rows.flat()).toEqual(ordered);
+});

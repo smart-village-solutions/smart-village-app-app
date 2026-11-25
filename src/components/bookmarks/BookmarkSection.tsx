@@ -160,6 +160,7 @@ export const BookmarkSection = ({
     <WrapperVertical>
       <DataListSection
         additionalData={additionalListData}
+        bookmarkSuffix={suffix}
         buttonTitle={texts.bookmarks.showAll}
         limit={Math.min(ids.length + additionalIds.length, 3)}
         loading={loading}

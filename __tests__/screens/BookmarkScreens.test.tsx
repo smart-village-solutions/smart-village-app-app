@@ -7,6 +7,12 @@ import { BookmarkCategoryScreen } from '../../src/screens/BookmarkCategoryScreen
 import { BookmarkScreen } from '../../src/screens/BookmarkScreen';
 
 let mockBookmarks: Record<string, string[]> | undefined;
+let mockNewsCategories: {
+  categoryId?: string;
+  categoryTitle: string;
+  categoryTitleDetail: string;
+  parentCategoryId?: string;
+}[];
 let mockQueryErrors: Record<string, boolean> = {};
 
 jest.mock('expo-router/react-navigation', () => ({
@@ -67,6 +73,7 @@ jest.mock('../../src/config', () => ({
       tours: 'Tours'
     },
     errors: { noData: 'No data', unexpected: 'Unexpected error' },
+    homeCategoriesNews: { categoryTitle: 'News', categoryTitleDetail: 'News detail' },
     homeTitles: { events: 'Events' },
     navigationTitles: { home: 'Overview' },
     screenTitles: { events: 'Events overview', volunteer: { home: 'Volunteer' } },
@@ -88,13 +95,7 @@ jest.mock('../../src/helpers/genericTypeHelper', () => ({
 jest.mock('../../src/hooks', () => ({
   useBookmarks: () => mockBookmarks,
   useMatomoTrackScreenView: jest.fn(),
-  useNewsCategories: () => [
-    {
-      categoryId: 'news',
-      categoryTitle: 'News',
-      categoryTitleDetail: 'News detail'
-    }
-  ]
+  useNewsCategories: () => mockNewsCategories
 }));
 
 jest.mock('../../src/hooks/useTheme', () => ({
@@ -129,11 +130,72 @@ describe('bookmark list types', () => {
 
   beforeEach(() => {
     mockQueryErrors = {};
+    mockNewsCategories = [
+      { categoryId: 'news', categoryTitle: 'News', categoryTitleDetail: 'News detail' }
+    ];
     mockBookmarks = {
       'NewsItems-news': ['news-1'],
       EventRecords: ['event-1'],
       CalendarAll: ['volunteer-event-1']
     };
+  });
+
+  it('shows saved news with a category ID when the configured news section has none', () => {
+    mockNewsCategories = [{ categoryTitle: 'News', categoryTitleDetail: 'News' }];
+    mockBookmarks = { 'NewsItems-7558': ['news-1', 'news-2'] };
+
+    let testRenderer: renderer.ReactTestRenderer;
+
+    renderer.act(() => {
+      testRenderer = renderer.create(
+        <SettingsContext.Provider value={initialContext}>
+          <BookmarkScreen navigation={navigation} route={{}} />
+        </SettingsContext.Provider>
+      );
+    });
+
+    expect(testRenderer!.root.findByType('mock-bookmark-section').props).toMatchObject({
+      ids: ['news-1', 'news-2'],
+      query: 'NewsItems',
+      sectionTitle: 'News',
+      suffix: '7558'
+    });
+  });
+
+  it('keeps configured news sections that share a parent and appends missing groups', () => {
+    mockNewsCategories = [
+      {
+        categoryId: 'local',
+        parentCategoryId: 'city',
+        categoryTitle: 'Local',
+        categoryTitleDetail: 'Local news'
+      },
+      {
+        categoryId: 'culture',
+        parentCategoryId: 'city',
+        categoryTitle: 'Culture',
+        categoryTitleDetail: 'Culture news'
+      }
+    ];
+    mockBookmarks = { 'NewsItems-other': ['news-2'], 'NewsItems-city': ['news-1'] };
+
+    let testRenderer: renderer.ReactTestRenderer;
+
+    renderer.act(() => {
+      testRenderer = renderer.create(
+        <SettingsContext.Provider value={initialContext}>
+          <BookmarkScreen navigation={navigation} route={{}} />
+        </SettingsContext.Provider>
+      );
+    });
+
+    const sections = testRenderer!.root.findAllByType('mock-bookmark-section');
+
+    expect(sections.map(({ props }) => [props.sectionTitle, props.suffix, props.ids])).toEqual([
+      ['Local', 'city', ['news-1']],
+      ['Culture', 'city', ['news-1']],
+      ['News', 'other', ['news-2']]
+    ]);
   });
 
   it('does not override the configured list type in bookmark sections', () => {
@@ -176,6 +238,12 @@ describe('bookmark list types', () => {
     const list = testRenderer!.root.findByType('mock-list-component');
 
     expect(list.props.listType).toBeUndefined();
+    expect(parseListItemsFromQuery).toHaveBeenCalledWith(
+      'NewsItems',
+      expect.anything(),
+      '',
+      expect.objectContaining({ bookmarkSuffix: 'news' })
+    );
   });
 
   it('keeps the time on native events in the combined event category', () => {
