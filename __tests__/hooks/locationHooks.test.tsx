@@ -84,6 +84,22 @@ test('GPS takes precedence while the saved alternative remains intact', async ()
   );
 });
 
+test('clears loading and preserves settings when a permission request fails', async () => {
+  settings.locationService = true;
+  (requestForegroundPermissionsAsync as jest.Mock).mockRejectedValueOnce(
+    new Error('Temporary permission lookup failure')
+  );
+  jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+  const { result } = renderHook(() => usePosition(), { wrapper });
+  await waitFor(() => expect(result.current.loading).toBe(false));
+
+  expect(result.current.position).toBeUndefined();
+  expect(settings.alternativePosition).toBe(alternative);
+  expect(setLocationSettings).not.toHaveBeenCalled();
+  expect(storageHelper.setLocationSettings).not.toHaveBeenCalled();
+});
+
 test('a late permission response cannot re-enable GPS after the user switches it off', async () => {
   let resolvePermission: (value: { status: string }) => void = () => undefined;
   (requestForegroundPermissionsAsync as jest.Mock).mockReturnValue(

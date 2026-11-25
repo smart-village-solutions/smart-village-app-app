@@ -94,9 +94,9 @@ export const useSystemPermission = () => {
         // Keep the last confirmed permission when a temporary lookup fails.
       }
     };
-    refresh();
+    void refresh();
     const subscription = AppState.addEventListener('change', (state) => {
-      if (state === 'active') refresh();
+      if (state === 'active') void refresh();
     });
     return () => {
       mounted = false;
@@ -153,6 +153,9 @@ const usePos = (func: RequestPermissionAndFetchFunction, skip?: boolean) => {
           if (mounted && result) {
             setPosition(result);
           }
+        })
+        .catch(() => {
+          if (mounted) console.warn('Unable to refresh the device location');
         })
         .finally(() => {
           if (mounted) setLoading(false);
