@@ -296,7 +296,9 @@ The device build used Xcode 27, Debug/arm64, four build jobs and disabled native
 | Explicit wallet shortcut       | Displays `Bald verfügbar`; retained customer configuration is not a completed wallet destination                                           |
 | Tracking                       | Native status remains `unknown`; provider dashboard requests activation of automatic journey recording. Active tracking is not established |
 
-No fresh registration, account deletion, consent/permission change, real recorded journey/server credit, remote feature disable, OS reboot, VoiceOver acceptance, or deterministic missing/late SDK callback was verified in this session. The iOS permanent-busy and ambiguous-registration provider dependencies remain open. Offline/reconnect recovery requires a separate coordinated device step because turning off networking also disconnects the wireless development session.
+No fresh registration, account deletion, consent/permission change, real recorded journey/server credit, remote feature disable, OS reboot, VoiceOver acceptance, or deterministic missing/late SDK callback was verified in this session. The iOS permanent-busy and ambiguous-registration provider dependencies remain open.
+
+The user subsequently performed the coordinated offline/reconnect step on the same iPhone. Their screenshot shows the provider sheet with only `Loading...` and the host close control; no offline explanation was displayed. They reported that normal operation resumed after networking was restored. A subsequent native check confirmed the original identity fingerprint, an authenticated/ready session and successful dashboard presentation. This demonstrates recovery in that attempt, not bounded offline feedback, fresh-signup recovery or a forced missing-callback test. The provider-owned loading screen's lack of offline feedback remains an acceptance issue.
 
 ### Quality gate after dependency reconciliation
 
@@ -309,3 +311,11 @@ The test environment now contains the user-provided private configuration and lo
 Local evidence is under `/tmp/klima-taler-device-validation`: `ios-build-aligned.log`, `ios-install-aligned.log`, `ios-provider-dashboard.png`, `ios-widget-restarted.png`, `lint-aligned.log` and `jest-aligned.log`. Keep logs local; they are not release artifacts. The signed `.app` is under `ios-derived/Build/Products/Debug-iphoneos/SmartVillageApp.app` in that directory.
 
 For disk cleanup after testing, the generated `ios-derived` directory occupies approximately 2.7 GiB and the isolated project's `ios/Pods` approximately 1.1 GiB; deleting text logs alone recovers little space. The isolated project path is recorded in `/tmp/klima-taler-device-validation/build-root.txt`. Preserve the small screenshots/report and any build needed for further installation before removing generated products. Cleanup does not require changing the repository's native projects or the installed application's data.
+
+### Widget refresh layout correction (SVAK-231)
+
+The physical-device test exposed a layout jump: adding/removing the status text also added/removed a card row and its spacing on every refresh. The card now retains one text-scaled status line while status display is enabled, using a non-breaking space when there is no message. The empty line is excluded from accessibility and live announcements. Promotional cards and `show.status: false` do not reserve the line. Long status messages can still wrap and increase height; text is not clipped to enforce a fixed card size.
+
+Verified loading-to-ready after provider dismissal on the physical iPhone: the card edges and action row remain in place. The regression test also covers large text, the hidden empty accessibility element, stale-data copy and explicit status hiding. This is JavaScript-only and runs in the existing development client without another native build. Local screenshots: `/tmp/klima-taler-device-validation/ios-status-ready.png` and `ios-status-return.png`.
+
+After this correction, the widget suite passes all 17 tests. The full gate remains at 210 passed / 9 failed suites, now 1344 passed / 13 failed / 8 skipped tests; lint remains at 982 errors / 159 warnings. Logs: `jest-status-layout-final.log`, `widget-status-test.log` and `lint-status-layout.log` in the same local evidence directory.

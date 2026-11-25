@@ -79,6 +79,35 @@ test('opening keeps the card in place and disables repeated taps', () => {
   expect(openKlimaTaler).not.toHaveBeenCalled();
 });
 
+test('refresh status keeps a scaled line without an empty accessibility announcement', () => {
+  const widget = (showStatus = true) => (
+    <AccessibilityContext.Provider value={{ textScaleMultiplier: 2 } as never}>
+      <KlimaTalerWidget additionalProps={{ show: { status: showStatus } }} />
+    </AccessibilityContext.Provider>
+  );
+  mockState = { phase: 'loading' };
+  const screen = render(widget());
+  const loading = screen.getByTestId('klimaTalerStatus');
+  expect(loading.props.children).toBe('Wird geladen …');
+  expect(loading).toHaveStyle({ lineHeight: 36 });
+
+  mockState = { phase: 'ready', coins: 0 };
+  screen.rerender(widget());
+  const reserved = screen.getByTestId('klimaTalerStatus', { includeHiddenElements: true });
+  expect(reserved.props.children).toBe('\u00a0');
+  expect(reserved.props.accessible).toBe(false);
+  expect(reserved.props.accessibilityLiveRegion).toBe('none');
+  expect(reserved).toHaveStyle({ lineHeight: 36 });
+  expect(screen.queryByTestId('klimaTalerStatus')).toBeNull();
+
+  mockState = { phase: 'error', coins: 0, stale: true };
+  screen.rerender(widget());
+  expect(screen.getByText('Zuletzt bestätigte Punkte')).toBeTruthy();
+  expect(screen.getByTestId('klimaTalerStatus').props.numberOfLines).toBeUndefined();
+  screen.rerender(widget(false));
+  expect(screen.queryByTestId('klimaTalerStatus', { includeHiddenElements: true })).toBeNull();
+});
+
 test('large text keeps the complete balance accessible in a separate vertical layout', () => {
   mockState = { phase: 'ready', coins: 12345 };
   const screen = render(
