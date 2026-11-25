@@ -15,7 +15,11 @@ jest.mock('../../src/config', () => ({
       alert: { title: 'Sent', message: 'Thanks', errorTitle: 'Failed', errorMessage: 'Try again' },
       sendButton: { disabled: 'Sending' }
     },
-    sue: { report: { sendReportDone: { toEntryList: 'Reports', sendButton: 'Send feedback' } } }
+    sue: {
+      myReports: 'Meine Meldungen',
+      viewMyReports: 'Meine Meldungen ansehen',
+      report: { sendReportDone: { sendButton: 'Send feedback' } }
+    }
   }
 }));
 jest.mock('../../src/hooks', () => ({
@@ -63,6 +67,8 @@ jest.mock('../../src/components/form', () => ({
 
 import { SueReportSend } from '../../src/components/SUE/report/SueReportSend';
 import { sendUserFeedback } from '../../src/queries/SUE';
+import { QUERY_TYPES } from '../../src/queries/types';
+import { ScreenName } from '../../src/types';
 
 beforeEach(() => {
   jest.clearAllMocks();
@@ -115,4 +121,18 @@ it('sends only one request when two submissions race before the loading render',
   });
   await waitFor(() => expect(sendUserFeedback).toHaveBeenCalledTimes(1));
   await act(async () => finish());
+});
+
+it('opens saved reports from the completion screen', () => {
+  const navigate = jest.fn();
+  const { getByRole } = render(
+    <SueReportSend isDone isLoading={false} navigation={{ navigate }} deliveryStatus="sent" />
+  );
+
+  fireEvent.press(getByRole('button', { name: 'Meine Meldungen ansehen' }));
+
+  expect(navigate).toHaveBeenCalledWith(ScreenName.SueList, {
+    query: QUERY_TYPES.SUE.MY_REQUESTS,
+    title: 'Meine Meldungen'
+  });
 });
