@@ -61,6 +61,13 @@ Full-scan tests still run for visibility but do not block PRs by themselves.
 
 ## Color, Motion, and Typography
 
+Home widgets measure the widest word in each title using the rendered font and text scaling.
+The grid reduces its column count when a title needs more room. At one column it uses list
+mode when the title also fits beside the icon, otherwise the icon stays above the title.
+Titles can wrap at spaces; they are not truncated or automatically reduced in size.
+Check long bilingual titles (for example, `Umfragen / Ankiety`) on narrow screens and with
+both system and in-app text scaling enabled.
+
 1. Avoid relying only on color to communicate status.
 2. Ensure sufficient contrast for text and critical UI states.
 3. Respect reduced-motion behavior where animations are non-essential.

@@ -1,13 +1,17 @@
 import { useNavigation, useRoute } from 'expo-router/react-navigation';
 import { StackNavigationProp } from 'expo-router/js-stack';
-import React, { useCallback, useContext, useMemo } from 'react';
+import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { TouchableOpacity, View } from 'react-native';
 
 import { AccessibilityContext } from '../../AccessibilityProvider';
 import { consts, normalize, texts } from '../../config';
 import { ConfigurationsContext } from '../../ConfigurationsProvider';
 import { filterProfileEditorialTiles } from '../../helpers/profileEditorialContentHelper';
-import { DEFAULT_TILE_GRID_COLUMNS, resolveTileGridLayout } from '../../helpers/serviceTileLayout';
+import {
+  DEFAULT_TILE_GRID_COLUMNS,
+  groupServiceTileRows,
+  resolveTileGridLayout
+} from '../../helpers/serviceTileLayout';
 import { umlautSwitcher } from '../../helpers/umlautSwitcher';
 import { usePersonalizedTiles } from '../../hooks';
 import { OrientationContext } from '../../OrientationProvider';
@@ -60,6 +64,8 @@ export const Service = ({
   const { personalizedTiles: isPersonalizable = false, tileSizeFactor = 1 } = settings;
   const { appDesignSystem } = useContext(ConfigurationsContext);
   const { serviceTiles = {} } = appDesignSystem;
+  const [gridWidth, setGridWidth] = useState<number>();
+  const gridGap = normalize(5);
   const navigation = useNavigation<StackNavigationProp<any>>();
   const { isLoading, tiles, onDragEnd, onToggleVisibility } = usePersonalizedTiles(
     isPersonalizable,
@@ -93,30 +99,33 @@ export const Service = ({
           }),
     [isEditMode, hasDiagonalGradientBackground, navigation, staticJsonName]
   );
+  const configureTile = useCallback(
+    (item: TServiceTile) =>
+      tileLayoutColumns
+        ? {
+            ...item,
+            numberOfTiles: {
+              landscape: tileLayoutColumns.landscape ?? item.numberOfTiles?.landscape,
+              portrait: tileLayoutColumns.portrait ?? item.numberOfTiles?.portrait
+            }
+          }
+        : item,
+    [tileLayoutColumns]
+  );
   const renderItem = useCallback(
-    (item: TServiceTile, index: number, shouldAddMargin?: boolean) => (
+    (item: TServiceTile, index: number) => (
       <ServiceTile
         draggableId={umlautSwitcher(item.title) || umlautSwitcher(item.accessibilityLabel)}
         draggableKey={`item${item.title || item.accessibilityLabel}-index${index}`}
         hasDiagonalGradientBackground={hasDiagonalGradientBackground}
         isEditMode={isEditMode}
-        item={
-          tileLayoutColumns
-            ? {
-                ...item,
-                numberOfTiles: {
-                  ...item.numberOfTiles,
-                  landscape: tileLayoutColumns.landscape ?? item.numberOfTiles?.landscape,
-                  portrait: tileLayoutColumns.portrait ?? item.numberOfTiles?.portrait
-                }
-              }
-            : item
-        }
+        item={item}
         key={`item${item.title || item.accessibilityLabel}-index${index}`}
         onToggleVisibility={onToggleVisibility}
         serviceTiles={serviceTiles}
         staticJsonName={staticJsonName}
-        shouldAddMargin={shouldAddMargin}
+        gridWidth={isEditMode ? undefined : gridWidth}
+        gridGap={isEditMode ? undefined : gridGap}
         layoutColumns={itemsPerRow}
         tileSizeFactor={tileSizeFactor}
       />
@@ -126,9 +135,11 @@ export const Service = ({
       hasDiagonalGradientBackground,
       onToggleVisibility,
       serviceTiles,
-      tileLayoutColumns,
       itemsPerRow,
-      tileSizeFactor
+      tileSizeFactor,
+      staticJsonName,
+      gridWidth,
+      gridGap
     ]
   );
   const toggler = isPersonalizable && (
@@ -162,11 +173,12 @@ export const Service = ({
 
   if (isLoading && isEditMode) return <LoadingSpinner loading />;
 
-  // Split the visible tiles into rows for grid layout based on screen orientation.
-  const rows: TServiceTile[][] = [];
-  for (let i = 0; i < (visibleTiles?.length || 0); i += itemsPerRow) {
-    rows.push(visibleTiles.slice(i, i + itemsPerRow));
-  }
+  const rows = groupServiceTileRows(
+    (visibleTiles ?? []).map(configureTile),
+    orientation as 'portrait' | 'landscape',
+    itemsPerRow,
+    serviceTiles.tileStyle
+  );
 
   return isEditMode ? (
     <DiagonalGradient
@@ -174,7 +186,7 @@ export const Service = ({
       style={styles.diagonalGradient}
     >
       <DraggableGrid columns={itemsPerRow} onDragEnd={onDragEnd}>
-        {tiles?.map((item, index) => renderItem(item, index))}
+        {tiles?.map((item, index) => renderItem(configureTile(item), index))}
       </DraggableGrid>
       {toggler}
     </DiagonalGradient>
@@ -182,21 +194,32 @@ export const Service = ({
     <>
       {rows.map((row) => {
         const isLastRow = rows[rows.length - 1] === row;
-        const isIncompleteRow = row.length < itemsPerRow;
-        const rowKey = row.map((tile) => tile.title || tile.accessibilityLabel);
+        const isIncompleteRow = row.fill < 1 - 1e-6;
+        // Remount rows when the grid changes so native percentage sizes are recalculated.
+        const rowKey = JSON.stringify([
+          orientation,
+          itemsPerRow,
+          row.fill,
+          ...row.tiles.map((tile) => tile.title || tile.accessibilityLabel)
+        ]);
         const isLastAndIncompleteRow = isLastRow && isIncompleteRow;
         const shouldCenterIncompleteRow = isLastAndIncompleteRow && !alignIncompleteRowsLeft;
-        // marginLeft add only if it's the last row, centered and there is more than one item
-        const shouldAddMargin = shouldCenterIncompleteRow && row.length > 1;
-
         return (
           <WrapperWrap
             key={rowKey}
             center={shouldCenterIncompleteRow}
             spaceBetween={!isLastAndIncompleteRow}
-            style={rowHorizontalPadding ? { paddingHorizontal: rowHorizontalPadding } : undefined}
+            onLayout={({ nativeEvent: { layout } }) =>
+              setGridWidth(Math.max(0, layout.width - 2 * rowHorizontalPadding))
+            }
+            // Rows are already grouped above; native wrapping would split them a second time.
+            style={{
+              ...styles.gridRow,
+              columnGap: gridGap,
+              paddingHorizontal: rowHorizontalPadding
+            }}
           >
-            {row.map((item, index) => renderItem(item, index, shouldAddMargin))}
+            {row.tiles.map((item, index) => renderItem(item, index))}
           </WrapperWrap>
         );
       })}
@@ -207,6 +230,10 @@ export const Service = ({
 /* eslint-enable complexity */
 
 const createStyles = () => ({
+  gridRow: {
+    flexWrap: 'nowrap'
+  },
+
   diagonalGradient: {
     flex: 1
   },

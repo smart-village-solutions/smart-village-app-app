@@ -1,10 +1,12 @@
 import React from 'react';
+import { AppState } from 'react-native';
 import * as Notifications from 'expo-notifications';
 import PropTypes from 'prop-types';
 import renderer, { act } from 'react-test-renderer';
 
 import { usePushNotifications } from '../../src/hooks/PushNotification';
-import { updatePushToken } from '../../src/pushNotifications';
+import { readFromStore } from '../../src/helpers';
+import { getPushTokenFromStorage, updatePushToken } from '../../src/pushNotifications';
 
 const mockNotificationResponseSubscription = { remove: jest.fn() };
 let mockNotificationResponseListener;
@@ -197,7 +199,7 @@ describe('usePushNotifications', () => {
     await act(async () => {
       await mockPushTokenListener({ data: 'native-secret', type: 'ios' });
     });
-    expect(updatePushToken).toHaveBeenCalledWith();
+    expect(updatePushToken).toHaveBeenCalledWith({ data: 'native-secret', type: 'ios' });
 
     act(() => tree.unmount());
     expect(mockPushTokenSubscription.remove).toHaveBeenCalledTimes(1);
@@ -225,4 +227,37 @@ describe('usePushNotifications', () => {
     expect(JSON.stringify(warn.mock.calls)).not.toContain('native-secret');
     warn.mockRestore();
   });
+});
+
+it('handles delayed foreground token refresh failures without an unhandled rejection', async () => {
+  jest.useFakeTimers();
+  const warn = jest.spyOn(console, 'warn').mockImplementation(() => undefined);
+  let appStateListener;
+  const listener = jest
+    .spyOn(AppState, 'addEventListener')
+    .mockImplementation((_event, callback) => {
+      appStateListener = callback;
+      return { remove: jest.fn() };
+    });
+  readFromStore.mockResolvedValue(true);
+  getPushTokenFromStorage.mockResolvedValue(null);
+  updatePushToken.mockRejectedValue(new Error('network request failed'));
+  let tree;
+  try {
+    await act(async () => {
+      tree = renderer.create(<TestPushNotifications active={true} onInteraction={jest.fn()} />);
+    });
+    await act(async () => {
+      appStateListener('active');
+      await jest.advanceTimersByTimeAsync(3000);
+    });
+    expect(warn).toHaveBeenCalledWith(
+      'An error occurred while restoring the push notification token.'
+    );
+  } finally {
+    act(() => tree.unmount());
+    listener.mockRestore();
+    warn.mockRestore();
+    jest.useRealTimers();
+  }
 });

@@ -11,6 +11,7 @@ import {
   resolveServiceTileIconSize,
   resolveServiceTileStyle
 } from '../../helpers';
+import { resolveServiceTileColumns } from '../../helpers/serviceTileLayout';
 import { IconLibrary } from '../../IconProvider';
 import { OrientationContext } from '../../OrientationProvider';
 import { Image } from '../Image';
@@ -46,23 +47,6 @@ export type TServiceTile = {
   title: string;
 };
 
-const resolveColumns = ({
-  item,
-  layoutColumns,
-  orientation
-}: {
-  item: TServiceTile;
-  layoutColumns: number;
-  orientation: string;
-}) => {
-  const itemColumns =
-    orientation === 'landscape' ? item?.numberOfTiles?.landscape : item?.numberOfTiles?.portrait;
-
-  if (typeof itemColumns === 'number' && itemColumns > 0) return itemColumns;
-
-  return layoutColumns;
-};
-
 const omitTileDimensionOverrides = (style: { [key: string]: any } = {}) => {
   const sanitizedStyle = { ...style };
 
@@ -87,7 +71,8 @@ export const ServiceTile = ({
   onToggleVisibility,
   serviceTiles,
   staticJsonName,
-  shouldAddMargin = false,
+  gridWidth,
+  gridGap,
   tileSizeFactor = 1
 }: {
   draggableId: string;
@@ -102,7 +87,8 @@ export const ServiceTile = ({
   ) => void;
   serviceTiles?: any;
   staticJsonName?: string;
-  shouldAddMargin?: boolean;
+  gridWidth?: number;
+  gridGap?: number;
   tileSizeFactor?: number;
 }) => {
   const { colors: colors } = useTheme();
@@ -113,11 +99,16 @@ export const ServiceTile = ({
   const { textScaleMultiplier = 1 } = useContext(AccessibilityContext);
   const { orientation, dimensions } = useContext(OrientationContext);
   const safeAreaInsets = useSafeAreaInsets();
-  const columns = resolveColumns({ item, layoutColumns, orientation });
+  const columns = resolveServiceTileColumns(
+    item.numberOfTiles,
+    orientation as 'portrait' | 'landscape',
+    layoutColumns
+  );
   const defaultColumns =
     orientation === 'landscape'
       ? DEFAULT_TILE_GRID_COLUMNS.landscape
       : DEFAULT_TILE_GRID_COLUMNS.portrait;
+  const [contentWidth, setContentWidth] = useState<number>();
   const [isVisible, setIsVisible] = useState(item.isVisible ?? true);
   const onPress = useCallback(
     () =>
@@ -184,17 +175,17 @@ export const ServiceTile = ({
     <ServiceBox
       bigTile={!!item.tile}
       columns={columns}
+      gridWidth={gridWidth}
+      gridGap={gridGap}
       hasTileStyle={hasTileStyle}
       orientation={orientation}
-      style={[
-        normalizedTileStyle,
-        isEditMode && styles.editableTile,
-        !isEditMode && shouldAddMargin && styles.marginLeft,
-        styles.squareTile
-      ]}
+      style={[normalizedTileStyle, isEditMode && styles.editableTile, styles.squareTile]}
     >
       <TouchableOpacity
         style={[hasTileStyle && styles.button]}
+        onLayout={
+          item.tile ? ({ nativeEvent: { layout } }) => setContentWidth(layout.width) : undefined
+        }
         onPress={onPress}
         accessibilityLabel={
           item.accessibilityLabel
@@ -244,6 +235,8 @@ export const ServiceTile = ({
                 !!item.tile &&
                   stylesWithProps({
                     columns,
+                    contentWidth,
+                    hasTileStyle,
                     dimensions,
                     safeAreaInsets,
                     tileSizeFactor
@@ -271,6 +264,8 @@ export const ServiceTile = ({
                 !!item.tile &&
                   stylesWithProps({
                     columns,
+                    contentWidth,
+                    hasTileStyle,
                     dimensions,
                     safeAreaInsets,
                     tileSizeFactor
@@ -299,10 +294,6 @@ const createStyles = (colors) => ({
     flex: 1,
     marginBottom: 0,
     width: '100%'
-  },
-
-  marginLeft: {
-    marginLeft: normalize(8)
   },
 
   squareTile: {
@@ -341,11 +332,15 @@ const createStyles = (colors) => ({
 /* this works properly, we do not want that warning */
 const stylesWithProps = ({
   columns,
+  contentWidth,
+  hasTileStyle,
   dimensions,
   safeAreaInsets,
   tileSizeFactor = 1
 }: {
   columns: number;
+  contentWidth?: number;
+  hasTileStyle?: boolean;
   dimensions: { width: number; height: number };
   safeAreaInsets: EdgeInsets;
   tileSizeFactor?: number;
@@ -357,10 +352,12 @@ const stylesWithProps = ({
 
   // calculate tile sizes based on live window dimensions, safe area insets and padding
   const tileSize = Math.max(0, availableWidth) / safeColumns;
-  const computedBigTileSize = Math.min(
-    tileSize,
-    (tileSize - containerPadding / 2) * tileSizeFactor
-  );
+  // Image tiles use their actual content box, including any flex shrink.
+  // A fixed inset keeps the visible background equally thin in full and incomplete rows.
+  const imageBounds = contentWidth ?? tileSize;
+  const imageInset =
+    contentWidth !== undefined && hasTileStyle ? 2 * normalize(1) : containerPadding / 2;
+  const computedBigTileSize = Math.min(imageBounds, (imageBounds - imageInset) * tileSizeFactor);
   const bigTileSize = Math.max(0, computedBigTileSize);
 
   return StyleSheet.create({

@@ -39,6 +39,34 @@ Remote service SVGs inherit the configured icon color. Monochrome black `fill` a
 are converted to that color; invalid, missing, or timed-out icon sources render a themed fallback
 icon instead of remaining blank or showing an endless loading indicator.
 
+## Service tile layout and label wrapping
+
+Styled service tiles use a shared default gap of `normalize(5)` horizontally and vertically.
+Their width is calculated from the measured row width and current column count. Incomplete rows
+are centered as a group unless `alignIncompleteRowsLeft` is enabled. Custom tile margins can
+override the default spacing; a `marginBottom` override is not required for equal default gaps.
+Rows are grouped by the responsive column count and do not wrap again in the native layout.
+Rows use the same effective orientation-specific column counts as their tiles, including global and mixed per-item overrides. Mixed sizes are packed in order by their share of a row.
+Unstyled icon tiles retain the default row counts. A fractional override such as `2.7` tunes
+their width while keeping three icons per row. Image tiles and tiles with a global or per-item
+tile style use the full configured column share, so the same `2.7` override fits two per row.
+Measured tiles can shrink within their row to accommodate rounding and custom spacing. Image tiles, including unstyled tiles, size their images from the measured content width to prevent clipping.
+
+Long compound labels can include a zero-width space (`\u200B`) at a preferred word boundary in
+the remote `homeService` JSON. It allows a line break without displaying a space or hyphen:
+
+```json
+{
+  "title": "Familien\u200Bportal",
+  "accessibilityLabel": "Familienportal"
+}
+```
+
+Likewise, use `"Senioren\u200Bportal"` for the visible title and keep the accessibility label and
+`params.title` as `"Seniorenportal"`. A soft hyphen (`\u00AD`) is another option when a visible
+hyphen is desired at the line break. These are preferred break opportunities, not mandatory
+newlines; labels can remain on one line when there is enough room.
+
 ## Static-content carousel button icons
 
 Carousel button styles support the same recursive `dark` override. Place it directly beside the

@@ -1,0 +1,197 @@
+import { fireEvent, render } from '@testing-library/react-native';
+import React from 'react';
+
+const mockTileMount = jest.fn();
+let mockTilesLoading = false;
+
+jest.mock('expo-router/react-navigation', () => ({
+  useNavigation: () => ({}),
+  useRoute: () => ({ name: 'Services' })
+}));
+
+jest.mock('../../src/AccessibilityProvider', () => ({
+  AccessibilityContext: jest.requireActual('react').createContext({ textScaleMultiplier: 1 })
+}));
+jest.mock('../../src/ConfigurationsProvider', () => ({
+  ConfigurationsContext: jest.requireActual('react').createContext({ appDesignSystem: {} })
+}));
+jest.mock('../../src/OrientationProvider', () => ({
+  OrientationContext: jest.requireActual('react').createContext({ orientation: 'portrait' })
+}));
+jest.mock('../../src/ProfileProvider', () => ({
+  ProfileContext: jest.requireActual('react').createContext({ currentUserData: {} })
+}));
+jest.mock('../../src/SettingsProvider', () => ({
+  SettingsContext: jest.requireActual('react').createContext({ globalSettings: {} })
+}));
+jest.mock('../../src/config', () => ({
+  consts: { MATOMO_TRACKING: { SCREEN_VIEW: {} } },
+  normalize: (value: number) => value,
+  texts: {}
+}));
+jest.mock('../../src/hooks', () => ({
+  usePersonalizedTiles: (_enabled: boolean, data: unknown[]) => ({
+    tiles: data,
+    isLoading: mockTilesLoading
+  })
+}));
+jest.mock('../../src/hooks/useTheme', () => ({
+  useTheme: () => ({ colors: {} })
+}));
+jest.mock('../../src/components/DiagonalGradient', () => ({
+  DiagonalGradient: ({ children }: { children: React.ReactNode }) => children
+}));
+jest.mock('../../src/components/LoadingSpinner', () => ({ LoadingSpinner: () => null }));
+jest.mock('../../src/components/Text', () => ({ RegularText: () => null }));
+jest.mock('../../src/components/screens/DraggableGrid', () => ({ DraggableGrid: () => null }));
+jest.mock('../../src/components/screens/ServiceTile', () => ({
+  ServiceTile: ({ item, layoutColumns }: { item: { title: string }; layoutColumns: number }) => {
+    const { useEffect, useRef } = jest.requireActual('react');
+    const { Text } = jest.requireActual('react-native');
+    const initialLayout = useRef({ title: item.title, columns: layoutColumns });
+
+    useEffect(() => {
+      mockTileMount(initialLayout.current.title, initialLayout.current.columns);
+    }, []);
+
+    return <Text>{`${item.title}:${layoutColumns}`}</Text>;
+  }
+}));
+
+import { AccessibilityContext } from '../../src/AccessibilityProvider';
+import { ConfigurationsContext } from '../../src/ConfigurationsProvider';
+import { LoadingSpinner } from '../../src/components/LoadingSpinner';
+import { DraggableGrid } from '../../src/components/screens/DraggableGrid';
+import { Service } from '../../src/components/screens/Service';
+import { ServiceTile } from '../../src/components/screens/ServiceTile';
+import { WrapperWrap } from '../../src/components/Wrapper';
+
+const tiles = ['Administration', 'Appointments', 'Trees', 'Map', 'Family', 'Seniors'].map(
+  (title) => ({ title })
+);
+
+const serviceAtScale = (textScaleMultiplier: number) => (
+  <AccessibilityContext.Provider value={{ textScaleMultiplier } as never}>
+    <Service data={tiles} staticJsonName="services" />
+  </AccessibilityContext.Provider>
+);
+
+describe('Service layout changes', () => {
+  beforeEach(() => {
+    mockTileMount.mockClear();
+    mockTilesLoading = false;
+  });
+
+  it('renders the editable grid when personalized tiles finish loading', () => {
+    const service = <Service data={tiles} isEditMode staticJsonName="services" />;
+    mockTilesLoading = true;
+    const tree = render(service);
+    expect(tree.UNSAFE_getByType(LoadingSpinner).props.loading).toBe(true);
+
+    mockTilesLoading = false;
+    tree.rerender(<Service data={tiles} isEditMode staticJsonName="services" />);
+    expect(tree.UNSAFE_getByType(DraggableGrid)).toBeTruthy();
+  });
+
+  it.each([0.9, 1, 1.2])('keeps grouped rows on one native line at text scale %s', (scale) => {
+    const tree = render(serviceAtScale(scale));
+
+    for (const row of tree.UNSAFE_getAllByType(WrapperWrap)) {
+      expect(row.props.style.flexWrap).toBe('nowrap');
+    }
+  });
+
+  it('centers the incomplete row with the same gap and no leading tile margin', () => {
+    const tree = render(serviceAtScale(0.9));
+    const rows = tree.UNSAFE_getAllByType(WrapperWrap);
+
+    expect(rows).toHaveLength(2);
+    expect(rows[1].props.center).toBe(true);
+    expect(rows[1].props.spaceBetween).toBe(false);
+    expect(rows[1].props.style.columnGap).toBe(rows[0].props.style.columnGap);
+  });
+
+  it('groups a global two-column override before laying out non-wrapping rows', () => {
+    const tree = render(
+      <Service data={tiles} staticJsonName="services" tileLayoutColumns={{ portrait: 2 }} />
+    );
+    const rows = tree.UNSAFE_getAllByType(WrapperWrap);
+    expect(
+      rows.map((row) => row.findAllByType(ServiceTile).map((tile) => tile.props.item.title))
+    ).toEqual([
+      ['Administration', 'Appointments'],
+      ['Trees', 'Map'],
+      ['Family', 'Seniors']
+    ]);
+    expect(rows.every((row) => !row.props.center)).toBe(true);
+    expect(
+      tree
+        .UNSAFE_getAllByType(ServiceTile)
+        .every((tile) => tile.props.item.numberOfTiles.portrait === 2)
+    ).toBe(true);
+  });
+
+  it('uses effective styling when grouping the existing fractional icon override', () => {
+    const service = (tileStyle = {}) => (
+      <ConfigurationsContext.Provider
+        value={{ appDesignSystem: { serviceTiles: { tileStyle } } } as never}
+      >
+        <Service data={tiles} staticJsonName="services" tileLayoutColumns={{ portrait: 2.7 }} />
+      </ConfigurationsContext.Provider>
+    );
+    const tree = render(service());
+    const counts = () =>
+      tree.UNSAFE_getAllByType(WrapperWrap).map((row) => row.findAllByType(ServiceTile).length);
+    expect(counts()).toEqual([3, 3]);
+    tree.rerender(service({ backgroundColor: '#fff' }));
+    expect(counts()).toEqual([2, 2, 2]);
+  });
+
+  it('preserves order and packs mixed item overrides without squeezing oversized rows', () => {
+    const mixed = tiles
+      .slice(0, 5)
+      .map((tile, i) => ({ ...tile, numberOfTiles: { portrait: [2, 3, 6, 2, 2][i] } }));
+    const tree = render(<Service data={mixed} staticJsonName="services" />);
+    expect(
+      tree
+        .UNSAFE_getAllByType(WrapperWrap)
+        .map((row) => row.findAllByType(ServiceTile).map((tile) => tile.props.item.title))
+    ).toEqual([
+      ['Administration', 'Appointments', 'Trees'],
+      ['Map', 'Family']
+    ]);
+  });
+
+  it('updates every tile with the measured width when its container is resized', () => {
+    const tree = render(serviceAtScale(0.9));
+
+    for (const width of [360, 480]) {
+      fireEvent(tree.UNSAFE_getAllByType(WrapperWrap)[0], 'layout', {
+        nativeEvent: { layout: { width } }
+      });
+
+      for (const tile of tree.UNSAFE_getAllByType(ServiceTile)) {
+        expect(tile.props.gridWidth).toBe(width);
+        expect(tile.props.gridGap).toBe(5);
+      }
+    }
+  });
+
+  it.each([
+    [1.2, 0.9, 4],
+    [0.9, 1.2, 2]
+  ])(
+    'recreates the last row when text scale changes from %s to %s',
+    (initialScale, nextScale, columns) => {
+      const tree = render(serviceAtScale(initialScale));
+      mockTileMount.mockClear();
+
+      tree.rerender(serviceAtScale(nextScale));
+
+      for (const title of ['Family', 'Seniors']) {
+        expect(tree.getByText(`${title}:${columns}`)).toBeTruthy();
+        expect(mockTileMount).toHaveBeenCalledWith(title, columns);
+      }
+    }
+  );
+});
