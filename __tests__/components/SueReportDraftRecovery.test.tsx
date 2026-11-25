@@ -5,7 +5,10 @@ import { AppState } from 'react-native';
 
 import { ConfigurationsContext } from '../../src/ConfigurationsProvider';
 import { SueReportDescription, SueReportProgress } from '../../src/components';
-import { readSueReportDraft, storeSueReportDraft } from '../../src/helpers/sueReportDraftHelper';
+import {
+  readSueReportDraftForEndpoint,
+  storeSueReportDraftForEndpoint
+} from '../../src/helpers/sueReportDraftHelper';
 import { SueReportScreen } from '../../src/screens/SUE/SueReportScreen';
 
 const mockScrollTo = jest.fn();
@@ -44,6 +47,7 @@ jest.mock('react-native', () => {
     })
   };
 });
+jest.mock('expo-crypto', () => ({ randomUUID: () => 'draft-id' }));
 jest.mock('expo-screen-orientation', () => ({ OrientationLock: {}, lockAsync: jest.fn() }));
 jest.mock('../../src/ConfigurationsProvider', () => ({
   ConfigurationsContext: require('react').createContext({})
@@ -112,8 +116,13 @@ jest.mock('../../src/helpers', () => ({
   getSueLimitOfAreaCity: () => ''
 }));
 jest.mock('../../src/helpers/sueReportDraftHelper', () => ({
-  storeSueReportDraft: jest.fn(async () => undefined),
-  readSueReportDraft: jest.fn()
+  storeSueReportDraftForEndpoint: jest.fn(async () => undefined),
+  readSueReportDraftForEndpoint: jest.fn()
+}));
+jest.mock('../../src/helpers/sueHelper', () => ({
+  fetchSueEndpoints: jest
+    .fn()
+    .mockResolvedValue({ suePostRequest: 'https://example.test/requests' })
 }));
 jest.mock('../../src/helpers/sueReportStorageHelper', () => ({ updateSueMyReports: jest.fn() }));
 jest.mock('../../src/hooks', () => ({ useKeyboardHeight: () => 0 }));
@@ -179,7 +188,7 @@ beforeEach(() => {
   mockSetValue.mockImplementation((key: string, value: unknown) => {
     mockValues[key] = value;
   });
-  (readSueReportDraft as jest.Mock).mockResolvedValue(draft);
+  (readSueReportDraftForEndpoint as jest.Mock).mockResolvedValue(draft);
 });
 afterEach(() => {
   if (tree) act(() => tree.unmount());
@@ -190,9 +199,9 @@ it('restores all fields and the saved step after configuration and area data arr
   await act(async () => {
     tree = renderer.create(renderScreen([]));
   });
-  expect(readSueReportDraft).not.toHaveBeenCalled();
+  expect(readSueReportDraftForEndpoint).not.toHaveBeenCalled();
   await act(async () => tree.update(renderScreen([{ content: '', inputs: [] }])));
-  expect(readSueReportDraft).not.toHaveBeenCalled();
+  expect(readSueReportDraftForEndpoint).not.toHaveBeenCalled();
   await act(async () => tree.update(renderScreen()));
   expect(mockValues).toMatchObject({
     title: draft.title,
@@ -200,7 +209,7 @@ it('restores all fields and the saved step after configuration and area data arr
     images: draft.images
   });
   expect(mockScrollTo).not.toHaveBeenCalled();
-  expect(storeSueReportDraft).not.toHaveBeenCalled();
+  expect(storeSueReportDraftForEndpoint).not.toHaveBeenCalled();
 
   mockAreaLoading = false;
   await act(async () => tree.update(renderScreen()));
@@ -222,24 +231,27 @@ it('stores current fields and step for recovery within the same app session', as
   });
   mockValues.title = 'Edited before settings';
   await act(async () => tree.root.findByType(SueReportDescription).props.storeReportValues());
-  expect(storeSueReportDraft).toHaveBeenLastCalledWith(
+  expect(storeSueReportDraftForEndpoint).toHaveBeenLastCalledWith(
     expect.objectContaining({
       title: 'Edited before settings',
       currentProgress: 1,
       service: draft.service,
       selectedPosition: draft.selectedPosition
-    })
+    }),
+    'https://example.test/requests'
   );
 });
 
 it('preserves a recoverable draft on storage failure and allows retry before editing', async () => {
   mockAreaLoading = false;
-  (readSueReportDraft as jest.Mock).mockRejectedValueOnce(new Error('Temporarily unavailable'));
+  (readSueReportDraftForEndpoint as jest.Mock).mockRejectedValueOnce(
+    new Error('Temporarily unavailable')
+  );
   await act(async () => {
     tree = renderer.create(renderScreen());
   });
   expect(tree.root.findAllByType(SueReportDescription)).toHaveLength(0);
-  expect(storeSueReportDraft).not.toHaveBeenCalled();
+  expect(storeSueReportDraftForEndpoint).not.toHaveBeenCalled();
   await act(async () => tree.root.findByProps({ title: 'Retry' }).props.onPress());
   expect(tree.root.findByType(SueReportProgress).props.currentProgress).toBe(2);
   expect(mockValues.title).toBe(draft.title);
@@ -269,6 +281,6 @@ it('keeps the current form and step on a warm Settings return and configuration 
     images: draft.images
   });
   expect(tree.root.findByType(SueReportProgress).props.currentProgress).toBe(2);
-  expect(readSueReportDraft).toHaveBeenCalledTimes(1);
-  expect(storeSueReportDraft).toHaveBeenCalledTimes(1);
+  expect(readSueReportDraftForEndpoint).toHaveBeenCalledTimes(1);
+  expect(storeSueReportDraftForEndpoint).toHaveBeenCalledTimes(1);
 });

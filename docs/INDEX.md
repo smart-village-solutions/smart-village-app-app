@@ -2,6 +2,8 @@
 
 Detailed documentation of the app's code will grow here.
 
+- [SUE offline report delivery and upgrade verification](./SUE_OFFLINE_REPORTS.md)
+
 ## Codebase Overview
 
 The Smart Village App is an open source React Native application built with Expo for Android and iOS. This repository contains application code, documentation, test cases and example configurations.
@@ -53,6 +55,8 @@ To start the app simply use one of the following commands.
 Jest is used for unit and snapshot tests (for example `__tests__/components/Button.test.js`). Maestro flows cover common user paths.
 
 For executing tests run `npm run test` or `yarn test`.
+
+For release template generation and Firebase requirements, see [release template configuration](./RELEASE_TEMPLATE.md).
 
 ## Lint the app
 

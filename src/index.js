@@ -21,6 +21,7 @@ import {
   createEndOfDayExpiringStorage,
   geoLocationToLocationObject,
   graphqlFetchPolicy,
+  hasSueApiConfiguration,
   parsedImageAspectRatio,
   storageHelper
 } from './helpers';
@@ -38,6 +39,7 @@ import { initialContext, SettingsContext, SettingsProvider } from './SettingsPro
 import { AppThemeProvider } from './ThemeProvider';
 import { UnreadMessagesProvider } from './UnreadMessagesProvider';
 import { WasteReminderRuntime } from './WasteReminderRuntime';
+import { SueReportRuntime } from './SueReportRuntime';
 import { OtaUpdateManager, VolunteerReportProvider } from './components';
 
 const { LIST_TYPES } = consts;
@@ -57,6 +59,7 @@ const MainAppWithSettings = () => {
       <AccessibilityProvider>
         <AppThemeProvider>
           <ConfigurationsProvider>
+            <SueReportRuntime />
             <OnboardingManager>
               <ProfileProvider>
                 <UnreadMessagesProvider>
@@ -142,16 +145,10 @@ const MainAppWithApolloProvider = () => {
     return client;
   };
 
-  // we wait for NetInfo to check for main server reachability, which is made when `isMainserverUp`
-  // becomes `true` or `false` and is not `null` anymore.
-  useEffect(() => {
-    // setup the apollo client if NetInfo finished and if there is no client existing already
-    isMainserverUp !== null && !client && auth(setupApolloClient);
-  }, [isMainserverUp]);
-
-  const setupInitialGlobalSettings = async ({ client }) => {
-    const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
-
+  const setupInitialGlobalSettings = async ({
+    client,
+    fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp })
+  }) => {
     // rehydrate data from the async storage to the global state
     let globalSettings = (await storageHelper.globalSettings()) || initialGlobalSettings;
 
@@ -220,11 +217,39 @@ const MainAppWithApolloProvider = () => {
     setLoading(false);
   };
 
+  // we wait for NetInfo to check for main server reachability, which is made when `isMainserverUp`
+  // becomes `true` or `false` and is not `null` anymore.
+  useEffect(() => {
+    // setup the apollo client if NetInfo finished and if there is no client existing already
+    const prepare = async () => {
+      const savedSettings = isMainserverUp === false && (await storageHelper.globalSettings());
+      if (savedSettings && hasSueApiConfiguration(savedSettings.settings?.sue)) {
+        // SUE's saved forms and outbox must be reachable after an offline restart,
+        // even when the main-server token has expired.
+        const client = await setupApolloClient();
+        await setupInitialGlobalSettings({ client });
+        return;
+      }
+      await auth(setupApolloClient);
+    };
+    if (isMainserverUp !== null && !client) prepare().catch(console.warn);
+  }, [isMainserverUp]);
+
   // setup the apollo client and setup global settings after apollo client setup finished
   useEffect(() => {
     async function prepare() {
       try {
-        await auth();
+        try {
+          await auth();
+        } catch (error) {
+          const savedSettings = await storageHelper.globalSettings();
+          if (!hasSueApiConfiguration(savedSettings?.settings?.sue)) throw error;
+          // SUE has its own endpoint: a main-server authentication failure must not
+          // prevent delivery of reports already saved on this device.
+          const client = await setupApolloClient();
+          await setupInitialGlobalSettings({ client, fetchPolicy: 'cache-only' });
+          return;
+        }
 
         const client = await setupApolloClient();
 

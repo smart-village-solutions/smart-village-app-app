@@ -32,3 +32,29 @@ export const storeSueReportDraft = async (draft: Record<string, unknown>) => {
   await addToStore(SUE_REPORT_VALUES, draft);
   canRestoreDraft = true;
 };
+
+const boundDraftKey = (endpoint: string) => {
+  if (!endpoint) throw new Error('Missing SUE draft endpoint');
+  return `sueReportDraftV2:${endpoint}`;
+};
+
+export const readSueReportDraftForEndpoint = async (endpoint: string) => {
+  const stored = await readFromStore(boundDraftKey(endpoint));
+  if (stored == null) return undefined;
+  if (
+    stored.version !== 2 ||
+    stored.endpoint !== endpoint ||
+    !stored.values ||
+    typeof stored.values !== 'object' ||
+    Array.isArray(stored.values)
+  ) {
+    throw new Error('Cannot read SUE draft');
+  }
+  return stored.values;
+};
+
+export const storeSueReportDraftForEndpoint = (values: Record<string, unknown>, endpoint: string) =>
+  addToStore(boundDraftKey(endpoint), { version: 2, endpoint, values });
+
+export const removeSueReportDraftForEndpoint = (endpoint: string) =>
+  AsyncStorage.removeItem(boundDraftKey(endpoint));

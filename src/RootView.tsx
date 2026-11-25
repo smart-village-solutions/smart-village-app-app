@@ -1,13 +1,12 @@
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
-import React, { useCallback, useContext, useRef, useState } from 'react';
+import React, { useCallback, useContext, useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { AccessibilityContext } from './AccessibilityProvider';
 import { AppWideGrayscaleFilter } from './components/AppWideGrayscaleFilter';
 import { AppStatusBar } from './components/AppStatusBar';
 import { fontConfig } from './config';
-import { initializeSueReportSession } from './helpers/sueReportDraftHelper';
 import { useTheme } from './hooks/useTheme';
 
 const RootView = ({ children }: { children: React.ReactNode }) => {
@@ -15,16 +14,10 @@ const RootView = ({ children }: { children: React.ReactNode }) => {
   const { features, isGrayscaleEnabled, isHydrated } = useContext(AccessibilityContext);
   const { colors } = useTheme();
   const hasHandledInitialLayout = useRef(false);
-  const [isReportSessionReady, setIsReportSessionReady] = useState(false);
 
   const onLayoutRootView = useCallback(async () => {
     if (isFontLoaded && !hasHandledInitialLayout.current) {
       hasHandledInitialLayout.current = true;
-
-      // Unfinished reports belong to this app session. A warm return from Settings
-      // keeps this root mounted and must not clear the active form.
-      await initializeSueReportSession();
-      setIsReportSessionReady(true);
 
       // Keep the native splash visible until the hydrated theme has rendered
       // and the root view has performed layout. This prevents a light blank
@@ -39,7 +32,7 @@ const RootView = ({ children }: { children: React.ReactNode }) => {
     <View style={[styles.root, { backgroundColor: colors.background }]} onLayout={onLayoutRootView}>
       <AppStatusBar backgroundColor={colors.background} />
       <AppWideGrayscaleFilter isGrayscaleEnabled={isGrayscaleEnabled}>
-        {isReportSessionReady ? children : null}
+        {children}
       </AppWideGrayscaleFilter>
     </View>
   );

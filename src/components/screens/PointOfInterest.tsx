@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { useMutation } from 'react-apollo';
-import { Alert, FlatList, StyleSheet, View } from 'react-native';
+import { Alert, DeviceEventEmitter, FlatList, StyleSheet, View } from 'react-native';
 
 import { NetworkContext } from '../../NetworkProvider';
 import { useProfileContext } from '../../ProfileProvider';
@@ -10,6 +10,7 @@ import { AUTH_MODE_USER, getApolloAuthContext } from '../../graphqlAuth';
 import { isValidGeoLocation, matomoTrackingString, parseListItemsFromQuery } from '../../helpers';
 import { useDetailRefresh, useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
 import { useTheme } from '../../hooks/useTheme';
+import { DETAIL_REFRESH_EVENT } from '../../hooks/DetailRefresh';
 import { QUERY_TYPES } from '../../queries';
 import { DELETE_POINT_OF_INTEREST } from '../../queries/pointsOfInterest';
 import { ScreenName } from '../../types';
@@ -166,7 +167,10 @@ export const PointOfInterest = ({
   const [deletePointOfInterest] = useMutation(DELETE_POINT_OF_INTEREST, {
     ...getApolloAuthContext(AUTH_MODE_USER),
     variables: { id: data.id },
-    onCompleted: () => navigation.goBack()
+    onCompleted: () => {
+      DeviceEventEmitter.emit(DETAIL_REFRESH_EVENT);
+      navigation.goBack();
+    }
   });
   useDetailRefresh(() => {
     refetch?.();

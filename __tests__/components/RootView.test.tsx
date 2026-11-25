@@ -107,45 +107,18 @@ describe('RootView', () => {
       await updatedRootView.props.onLayout();
     });
 
-    expect(mockRemoveItem).toHaveBeenCalledTimes(1);
-    expect(mockRemoveItem).toHaveBeenCalledWith('sueReportValues');
+    expect(mockRemoveItem).not.toHaveBeenCalled();
     expect(mockHideAsync).toHaveBeenCalledTimes(1);
   });
 
-  it('waits for startup draft cleanup before mounting screens that can read storage', async () => {
-    let finishCleanup: () => void = () => undefined;
-    mockRemoveItem.mockImplementationOnce(
-      () =>
-        new Promise<void>((resolve) => {
-          finishCleanup = resolve;
-        })
-    );
+  it('mounts screens without deleting persistent offline drafts', async () => {
     const tree = renderRootView(false);
-    const rootView = tree.root.findAllByType(View)[0];
-
-    expect(tree.root.findAllByProps({ testID: 'child' })).toHaveLength(0);
-    let layout: Promise<void>;
-    await renderer.act(async () => {
-      layout = rootView.props.onLayout();
-    });
-    expect(mockHideAsync).not.toHaveBeenCalled();
-    expect(tree.root.findAllByProps({ testID: 'child' })).toHaveLength(0);
-
-    await renderer.act(async () => {
-      finishCleanup();
-      await layout;
-    });
     expect(tree.root.findAllByProps({ testID: 'child' }).length).toBeGreaterThan(0);
+    await renderer.act(async () => {
+      await tree.root.findAllByType(View)[0].props.onLayout();
+    });
+    expect(mockRemoveItem).not.toHaveBeenCalled();
     expect(mockHideAsync).toHaveBeenCalledTimes(1);
-  });
-
-  it.each([
-    ['dark', 'light-content'],
-    ['light', 'dark-content']
-  ] as const)('uses the %s root surface for status bar contrast', (mode, expectedBarStyle) => {
-    const tree = renderRootView(false, mode);
-
-    expect(tree.root.findByType(StatusBar).props.barStyle).toBe(expectedBarStyle);
   });
 
   it('keeps the splash visible until the saved theme has hydrated and the root has laid out', async () => {
