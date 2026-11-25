@@ -150,6 +150,12 @@ export const EventRecord = ({ data, navigation, readAloudControls, refetch, rout
     eventDates.shift();
   }
 
+  const eventRemindersEnabled = getEventRemindersEnabled(globalSettings);
+  const reminderOccurrences = eventRemindersEnabled ? getEventOccurrences(data) : [];
+  const reminderOccurrenceId = route.params?.eventReminderOccurrenceId;
+  const showReminderActions =
+    eventRemindersEnabled && (reminderOccurrences.length > 0 || !!reminderOccurrenceId);
+
   return (
     <View>
       {isCurrentUser && (
@@ -221,24 +227,27 @@ export const EventRecord = ({ data, navigation, readAloudControls, refetch, rout
       </Wrapper>
       {readAloudControls}
 
-      {getEventRemindersEnabled(globalSettings) && (
-        <Wrapper>
-          <EventReminderActions
-            occurrences={getEventOccurrences(data)}
-            selectedOccurrenceId={route.params?.details?.date?.id}
-            notificationOccurrenceId={route.params?.eventReminderOccurrenceId}
-          />
-        </Wrapper>
-      )}
-
-      {!!eventDates?.length && (
+      {(!!eventDates.length || showReminderActions) && (
         <WrapperVertical noPaddingTop={!!readAloudControls}>
           <SectionHeader title={texts.eventRecord.appointments} />
-          <OpeningTimesCard
-            openingHours={eventDates}
-            MAX_INITIAL_NUM_TO_RENDER={MAX_INITIAL_NUM_TO_RENDER}
-            appointmentsShowMoreButton={appointmentsShowMoreButton}
-          />
+          {!!eventDates.length && (
+            <OpeningTimesCard
+              openingHours={eventDates}
+              MAX_INITIAL_NUM_TO_RENDER={MAX_INITIAL_NUM_TO_RENDER}
+              appointmentsShowMoreButton={appointmentsShowMoreButton}
+            />
+          )}
+          {showReminderActions && (
+            <WrapperHorizontal>
+              <EventReminderActions
+                listsWithoutArrows={settings.listsWithoutArrows}
+                navigation={navigation}
+                occurrences={reminderOccurrences}
+                selectedOccurrenceId={route.params?.details?.date?.id}
+                notificationOccurrenceId={reminderOccurrenceId}
+              />
+            </WrapperHorizontal>
+          )}
         </WrapperVertical>
       )}
 

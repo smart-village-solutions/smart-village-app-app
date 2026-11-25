@@ -275,10 +275,12 @@ const SettingsDevelopmentFooter = () => {
   );
 };
 
-const getSettingContent = (setting, { ar, mowas }) => {
+const getSettingContent = (setting, { ar, listsWithoutArrows, mowas, navigation }) => {
   switch (setting) {
     case SETTINGS_SCREENS.EVENT_REMINDERS:
-      return <EventReminderSettings />;
+      return (
+        <EventReminderSettings listsWithoutArrows={listsWithoutArrows} navigation={navigation} />
+      );
     case SETTINGS_SCREENS.LOCATION:
       return <LocationSettings />;
     case SETTINGS_SCREENS.PERMANENT_FILTER:
@@ -532,7 +534,12 @@ export const SettingsScreen = ({ navigation, route }) => {
     );
   }
 
-  const settingContent = getSettingContent(setting, { ar: settings.ar, mowas });
+  const settingContent = getSettingContent(setting, {
+    ar: settings.ar,
+    listsWithoutArrows,
+    mowas,
+    navigation
+  });
   return (
     <SafeAreaViewFlex>
       {settingContent ?? (

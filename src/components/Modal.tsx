@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useMemo, useRef } from 'react';
-import { Platform, StyleSheet, View } from 'react-native';
+import { Platform, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import { Overlay } from 'react-native-elements';
 
 import { AccessibilityContext } from '../AccessibilityProvider';
@@ -12,6 +12,7 @@ import { Touchable } from './Touchable';
 type TModal = {
   children: React.ReactNode;
   closeButton?: React.ReactNode;
+  contentStyle?: StyleProp<ViewStyle>;
   height?: string;
   isBackdropPress: boolean;
   isListView: boolean;
@@ -25,6 +26,7 @@ type TModal = {
 export const Modal = ({
   children,
   closeButton,
+  contentStyle,
   height = 'auto',
   isBackdropPress,
   isListView,
@@ -60,7 +62,7 @@ export const Modal = ({
       statusBarTranslucent
       supportedOrientations={['portrait', 'landscape']}
     >
-      <View accessibilityViewIsModal importantForAccessibility="yes">
+      <View accessibilityViewIsModal importantForAccessibility="yes" style={contentStyle}>
         {children}
 
         {closeButton || (

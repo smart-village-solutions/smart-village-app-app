@@ -25,6 +25,10 @@ jest.mock('../../src/components/settings', () => ({
   PersonalizedPushSettings: () => null
 }));
 
+jest.mock('../../src/components/TextListItem', () => ({
+  TextListItem: jest.requireMock('../../src/components').TextListItem
+}));
+
 jest.mock('../../src/hooks', () => ({
   useMatomoTrackScreenView: jest.fn()
 }));
