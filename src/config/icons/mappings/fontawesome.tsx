@@ -35,6 +35,7 @@ export const fontawesomeIconMapping: Record<string, string> = {
   copy: 'copy',
 
   // Status & Feedback
+  medal: 'trophy',
   check: 'check-circle',
   'circle-check-filled': 'check-circle',
   'alert-hexagon-filled': 'exclamation-triangle',

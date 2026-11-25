@@ -35,6 +35,7 @@ export const tablerIconMapping: Record<string, string> = {
   copy: 'copy',
 
   // Status & Feedback
+  medal: 'medal',
   check: 'circle-check-filled',
   'circle-check-filled': 'circle-check-filled',
   'alert-hexagon-filled': 'alert-hexagon-filled',

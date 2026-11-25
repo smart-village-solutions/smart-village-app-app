@@ -5,13 +5,14 @@ import { texts } from '../config/texts';
 
 import { klimaTalerConfiguration } from './configuration';
 import { createEntry } from './createEntry';
+import { klimaTalerSummary } from './summary';
 
 export const isKlimaTalerEnabled = klimaTalerConfiguration.isEnabled;
-export const klimaTalerEntry = createEntry(
-  changers,
-  isKlimaTalerEnabled,
-  klimaTalerConfiguration.ready
-);
+export const klimaTalerEntry = createEntry(changers, isKlimaTalerEnabled, async () => {
+  klimaTalerSummary.pause();
+  await klimaTalerConfiguration.ready();
+  await klimaTalerSummary.waitForIdle();
+});
 
 let opening: Promise<void> | undefined;
 

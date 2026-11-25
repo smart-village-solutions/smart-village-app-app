@@ -3,6 +3,30 @@ import appJson from '../../app.json';
 export const texts = {
   klimaTaler: {
     title: 'Klima-Taler',
+    card: {
+      title: 'Dein Klima-Bonus',
+      description: 'Taler sammeln. Vorteile vor Ort entdecken.',
+      discover: 'Klima-Taler entdecken',
+      balance: 'Deine Klima-Taler',
+      open: 'Mein Bereich',
+      wallet: 'Wallet',
+      map: 'Karte',
+      badges: 'Abzeichen',
+      settings: 'Einstellungen',
+      comingSoonTitle: 'Bald verfügbar',
+      comingSoonMessage: 'Diese Funktion wird bald ergänzt.'
+    },
+    widget: {
+      loading: 'Wird geladen …',
+      disabled: 'Noch nicht aktiviert',
+      unconfigured: 'Noch nicht eingerichtet',
+      noSession: 'Zum Starten öffnen',
+      ready: '',
+      empty: 'Keine Punktedaten verfügbar',
+      error: 'Aktualisierung fehlgeschlagen',
+      unsupported: 'Deine Klima-Taler findest du in deinem Bereich.',
+      stale: 'Zuletzt bestätigte Punkte'
+    },
     opening: 'Klima-Taler wird geöffnet …',
     retry: 'Erneut versuchen',
     errors: {
@@ -2369,6 +2393,14 @@ export const texts = {
     sendCode: 'Bericht anzeigen'
   },
   widgets: {
+    edit: 'Anpassen',
+    editTitle: 'Widgets anordnen',
+    editHint: 'Widgets gedrückt halten und an die gewünschte Position ziehen.',
+    done: 'Fertig',
+    cancel: 'Abbrechen',
+    moveEarlier: 'Nach vorne verschieben',
+    moveLater: 'Nach hinten verschieben',
+    saveError: 'Die Reihenfolge konnte nicht gespeichert werden. Bitte erneut versuchen.',
     constructionSites: 'Baustellen',
     custom: 'Benutzerdefiniert',
     events: 'Events',
