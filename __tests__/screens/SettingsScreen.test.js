@@ -29,6 +29,8 @@ jest.mock('../../src/components/TextListItem', () => ({
   TextListItem: jest.requireMock('../../src/components').TextListItem
 }));
 
+jest.mock('../../src/components/form/Input', () => ({ Input: () => null }));
+
 jest.mock('../../src/hooks', () => ({
   useMatomoTrackScreenView: jest.fn()
 }));
@@ -113,6 +115,10 @@ jest.mock('../../src/types', () => ({
 
 jest.mock('../../src/ReactQueryProvider', () => ({
   clearPersistentCaches: jest.fn()
+}));
+
+jest.mock('../../src/NetworkProvider', () => ({
+  NetworkContext: require('react').createContext({ isConnected: false, isMainserverUp: false })
 }));
 
 import { clearPersistentCaches } from '../../src/ReactQueryProvider';

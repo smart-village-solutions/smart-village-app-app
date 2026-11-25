@@ -10,7 +10,7 @@ import { SettingsContext } from '../../SettingsProvider';
 import { Icon, consts, normalize, texts } from '../../config';
 import { AUTH_MODE_USER, getApolloAuthContext } from '../../graphqlAuth';
 import { isTodayOrLater, matomoTrackingString, openLink, trimNewLines } from '../../helpers';
-import { getEventOccurrences } from '../../helpers/eventReminderTime';
+import { getEventOccurrences, getEventReminderCategories } from '../../helpers/eventReminderTime';
 import { useDetailRefresh, useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
 import { getEventRemindersEnabled } from '../../pushNotifications/EventReminderLocalNotifications';
@@ -240,6 +240,7 @@ export const EventRecord = ({ data, navigation, readAloudControls, refetch, rout
           {showReminderActions && (
             <WrapperHorizontal>
               <EventReminderActions
+                categories={getEventReminderCategories(data)}
                 listsWithoutArrows={settings.listsWithoutArrows}
                 navigation={navigation}
                 occurrences={reminderOccurrences}

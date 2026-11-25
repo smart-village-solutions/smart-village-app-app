@@ -32,6 +32,8 @@ jest.mock('../../../src/ProfileProvider', () => ({
   useProfileContext: () => mockUseProfileContext()
 }));
 
+jest.mock('../../../src/components/form/Input', () => ({ Input: () => null }));
+
 jest.mock('../../../src/SettingsProvider', () => {
   const React = require('react');
 

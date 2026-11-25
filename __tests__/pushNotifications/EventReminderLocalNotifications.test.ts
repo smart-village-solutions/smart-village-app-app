@@ -1,12 +1,18 @@
 import * as Notifications from 'expo-notifications';
 
+import { addToStore } from '../../src/helpers/storageHelper';
 import {
+  applyEventCategorySourceResults,
   applyEventReminderUpdates,
   getEventRemindersEnabled,
   readEventReminders,
+  readEventReminderSettings,
   refreshEventReminders,
   removeEventReminder,
-  saveEventReminder
+  removeEventCategorySubscription,
+  saveEventCategorySubscription,
+  saveEventReminder,
+  setEventCategoryExclusion
 } from '../../src/pushNotifications/EventReminderLocalNotifications';
 import {
   IOS_LOCAL_NOTIFICATION_BUDGET,
@@ -26,12 +32,12 @@ jest.mock('../../src/config', () => ({
 }));
 
 jest.mock('../../src/helpers/storageHelper', () => {
-  let stored: string;
+  const stored = new Map<string, string>();
   return {
-    addToStore: jest.fn(async (_key, value) => {
-      stored = JSON.stringify(value);
+    addToStore: jest.fn(async (key, value) => {
+      stored.set(key, JSON.stringify(value));
     }),
-    readFromStore: jest.fn(async () => (stored ? JSON.parse(stored) : null))
+    readFromStore: jest.fn(async (key) => JSON.parse(stored.get(key) ?? 'null'))
   };
 });
 
@@ -78,10 +84,8 @@ describe('event reminders scheduling', () => {
   });
 
   afterEach(async () => {
-    const reminders = await readEventReminders();
-    for (const { occurrence } of Object.values(reminders)) {
-      await removeEventReminder(occurrence);
-    }
+    await addToStore('@eventReminders:v1', null);
+    await addToStore('@eventReminders:v2', null);
     jest.restoreAllMocks();
   });
 
@@ -90,6 +94,111 @@ describe('event reminders scheduling', () => {
     expect(
       getEventRemindersEnabled({ settings: { eventCalendar: { reminders: { enabled: true } } } })
     ).toBe(true);
+  });
+
+  it('migrates single reminders into the combined store', async () => {
+    await addToStore('@eventReminders:v1', {
+      'e1:d1': { occurrence: venue, rule, status: 'scheduled' }
+    });
+    await refreshEventReminders();
+    expect((await readEventReminderSettings()).singles['e1:d1'].status).toBe('scheduled');
+    await removeEventReminder(venue);
+    expect(await readEventReminders()).toEqual({});
+  });
+
+  const categories = [
+    { id: 'a', name: 'Kultur' },
+    { id: 'b', name: 'Familie' }
+  ];
+  const eventSnapshot = () => ({
+    records: [
+      {
+        id: venue.eventId,
+        title: venue.title,
+        categories,
+        visible: true,
+        dates: [{ id: venue.occurrenceId, dateFrom: venue.date, timeFrom: venue.time }]
+      }
+    ],
+    coverageThrough: '2027-01-30',
+    syncedAt: Date.now()
+  });
+
+  it('shares one native request across overlapping subscriptions and an explicit reminder', async () => {
+    await saveEventCategorySubscription(categories[0], rule, eventSnapshot());
+    await saveEventCategorySubscription(categories[1], { ...rule, leadDays: 1 }, eventSnapshot());
+    expect((await readEventReminderSettings()).categoryPlan['e1:d1'].categoryId).toBe('a');
+    expect(native.size).toBe(1);
+
+    await saveEventReminder(venue, { ...rule, leadDays: 2 });
+    expect((await readEventReminderSettings()).categoryPlan).toEqual({});
+    expect(native.get('event-reminder:e1:d1')?.content.data.reminderAt).toBe(
+      Date.parse('2026-11-18T18:00:00Z')
+    );
+    await removeEventCategorySubscription('a');
+    expect(native.size).toBe(1);
+    await removeEventReminder(venue);
+    expect((await readEventReminderSettings()).categoryPlan['e1:d1'].categoryId).toBe('b');
+
+    await setEventCategoryExclusion(venue, true);
+    await refreshEventReminders();
+    expect(native.size).toBe(0);
+    await setEventCategoryExclusion(venue, false);
+    expect(native.size).toBe(1);
+  });
+
+  it('preserves a plan after an incomplete or missing page and rejects a result from a deleted subscription', async () => {
+    await saveEventCategorySubscription(categories[0], rule, eventSnapshot());
+    const initial = (await readEventReminderSettings()).subscriptions.a;
+    const request = { categoryId: 'a', revision: initial.revision };
+    await applyEventCategorySourceResults([request]);
+    const failed = (await readEventReminderSettings()).subscriptions.a;
+    expect(failed).toMatchObject({ syncedAt: initial.syncedAt, syncStatus: 'failed' });
+    expect(native.size).toBe(1);
+    await applyEventCategorySourceResults([
+      { ...request, snapshot: { ...eventSnapshot(), records: [] } }
+    ]);
+    expect(native.size).toBe(1);
+
+    await removeEventCategorySubscription('a');
+    await saveEventCategorySubscription(categories[0], rule);
+    await applyEventCategorySourceResults([{ ...request, snapshot: eventSnapshot() }]);
+    expect(native.size).toBe(0);
+  });
+
+  it('does not schedule a second category notification after the first is due', async () => {
+    await saveEventCategorySubscription(categories[0], rule, eventSnapshot());
+    await saveEventCategorySubscription(categories[1], { ...rule, leadDays: 1 }, eventSnapshot());
+    jest.spyOn(Date, 'now').mockReturnValue(Date.parse('2026-11-18T10:00:00Z'));
+    await refreshEventReminders();
+    expect(native.size).toBe(0);
+  });
+
+  it('ranks category and single events together after existing native requests consume capacity', async () => {
+    for (let index = 0; index < IOS_LOCAL_NOTIFICATION_BUDGET - 1; index++) {
+      const identifier = `waste-${index}`;
+      native.set(identifier, {
+        identifier,
+        content: { data: { query_type: 'WasteAddresses' } }
+      } as Notifications.NotificationRequest);
+    }
+
+    const later = { ...venue, eventId: 'e2', date: '2026-11-21' };
+    await saveEventReminder(later, rule);
+    await saveEventCategorySubscription(categories[0], rule, eventSnapshot());
+
+    const settings = await readEventReminderSettings();
+    expect(settings.categoryPlan['e1:d1'].status).toBe('scheduled');
+    expect(settings.singles['e2:d1'].status).toBe('capacity');
+    expect(native.size).toBe(IOS_LOCAL_NOTIFICATION_BUDGET);
+  });
+
+  it('removes a category request after the source confirms the membership changed', async () => {
+    const snapshot = eventSnapshot();
+    await saveEventCategorySubscription(categories[0], rule, snapshot);
+    await applyEventReminderUpdates([{ ...snapshot.records[0], category: null, categories: [] }]);
+    expect(native.size).toBe(0);
+    expect((await readEventReminderSettings()).subscriptions.a.category).toEqual(categories[0]);
   });
 
   it('confirms the native record and does not duplicate it on refresh', async () => {

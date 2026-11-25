@@ -9,9 +9,11 @@ export type EventOccurrence = {
   sourceUpdatedAt?: number;
 };
 
-export type EventReminderRule =
-  | { kind: 'relative'; leadDays: number; time?: string }
-  | { kind: 'absolute'; timestamp: number };
+export type RelativeEventReminderRule = { kind: 'relative'; leadDays: number; time?: string };
+
+export type EventReminderRule = RelativeEventReminderRule | { kind: 'absolute'; timestamp: number };
+
+export type EventReminderCategory = { id: string; name: string };
 
 type EventDate = {
   id?: string | number | null;
@@ -28,6 +30,8 @@ export type EventReminderRecord = {
   recurring?: boolean | null;
   visible?: boolean | null;
   updatedAt?: string | null;
+  category?: EventReminderCategory | null;
+  categories?: EventReminderCategory[] | null;
 };
 
 const datePattern = /^\d{4}-\d{2}-\d{2}$/;
@@ -83,17 +87,19 @@ export const eventLocalTimestamp = (date: string, time: string): number => {
   );
 };
 
-const shiftCalendarDate = (date: string, days: number) =>
+export const shiftEventCalendarDate = (date: string, days: number) =>
   new Date(utcDate(date) + days * dayMs).toISOString().slice(0, 10);
 
 export const occurrenceEndForReminders = ({ date, time }: EventOccurrence) =>
-  time ? eventLocalTimestamp(date, time) : eventLocalTimestamp(shiftCalendarDate(date, 1), '00:00');
+  time
+    ? eventLocalTimestamp(date, time)
+    : eventLocalTimestamp(shiftEventCalendarDate(date, 1), '00:00');
 
 export const getReminderTimestamp = (occurrence: EventOccurrence, rule: EventReminderRule) => {
   if (rule.kind === 'absolute') return rule.timestamp;
 
   return eventLocalTimestamp(
-    shiftCalendarDate(occurrence.date, -rule.leadDays),
+    shiftEventCalendarDate(occurrence.date, -rule.leadDays),
     rule.time ?? occurrence.time ?? '12:00'
   );
 };
@@ -147,3 +153,14 @@ export const parseEventRecordUpdateTime = (timestamp?: string | null) => {
 
 export const eventOccurrenceKey = ({ eventId, occurrenceId }: EventOccurrence) =>
   `${eventId}:${occurrenceId}`;
+
+export const getEventReminderCategories = ({ categories, category }: EventReminderRecord) => {
+  const names = categories?.length ? categories : category ? [category] : [];
+  return [
+    ...new Map(
+      names
+        .filter(({ id, name }) => id && name)
+        .map(({ id, name }) => [String(id), { id: String(id), name }])
+    ).values()
+  ];
+};
