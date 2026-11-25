@@ -83,3 +83,26 @@ test.each([undefined, null, false, [], 'invalid', { background: 42, text: null }
     expect(config.colors.text).toBe(darkColors.onPrimary);
   }
 );
+
+test('shortcut visibility preserves explicit customer configuration and hides absent defaults', () => {
+  const defaults = resolveKlimaTalerWidget({}, lightColors);
+  expect(defaults.actions.main.enabled).toBe(true);
+  for (const name of ['wallet', 'map', 'badges', 'settings'] as const) {
+    expect(defaults.actions[name].enabled).toBe(false);
+  }
+  const config = resolveKlimaTalerWidget(
+    {
+      actions: {
+        wallet: true,
+        map: { target: 'provider', label: 'Anbieter' },
+        badges: { enabled: true },
+        settings: { enabled: false, label: 'Hidden' }
+      }
+    },
+    lightColors
+  );
+  expect(config.actions.wallet.enabled).toBe(true);
+  expect(config.actions.map).toMatchObject({ enabled: true, target: 'provider' });
+  expect(config.actions.badges).toMatchObject({ enabled: true, target: 'comingSoon' });
+  expect(config.actions.settings.enabled).toBe(false);
+});

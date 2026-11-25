@@ -109,7 +109,11 @@ export const resolveKlimaTalerWidget = (
         const action = mergeFields(
           {
             ...defaults[name],
-            enabled: true as boolean,
+            // Preserve explicitly configured shortcuts; unfinished defaults stay hidden.
+            enabled:
+              name === 'main' ||
+              actions[name] === true ||
+              Object.keys(configurationObject(actions[name])).length > 0,
             showInPromo: name === 'main',
             target: name === 'main' ? 'provider' : 'comingSoon',
             alertTitle: '',
