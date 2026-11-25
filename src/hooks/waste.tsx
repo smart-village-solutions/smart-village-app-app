@@ -230,7 +230,13 @@ export const useFilterStreets = (inputValueCity: string, isStreetInputFocused: b
   };
 };
 
-export const useRenderSuggestions = (selectionCallback?: (item: any) => void) => {
+type WasteAddressSelectionOptions = {
+  isAutoSelectedSingleOption?: boolean;
+};
+
+export const useRenderSuggestions = (
+  selectionCallback?: (item: any, options?: WasteAddressSelectionOptions) => void
+) => {
   const styles = useThemeStyles(createWasteSuggestionStyles);
   const [inputValueCity, setInputValueCity] = useState('');
   const [inputValueCitySelected, setInputValueCitySelected] = useState(false);
@@ -257,6 +263,14 @@ export const useRenderSuggestions = (selectionCallback?: (item: any) => void) =>
     [setInputValue, setInputValueCity, setInputValueCitySelected, styles.divider, styles.row]
   );
 
+  const onSelectItem = useCallback(
+    (item: any, options?: WasteAddressSelectionOptions) => {
+      setInputValue(getStreetString(item));
+      selectionCallback?.(item, options);
+    },
+    [getStreetString, selectionCallback]
+  );
+
   const renderSuggestion = useCallback(
     ({ item }) => {
       const streetString = getStreetString(item);
@@ -265,8 +279,7 @@ export const useRenderSuggestions = (selectionCallback?: (item: any) => void) =>
         <TouchableOpacity
           accessibilityLabel={streetString}
           onPress={() => {
-            setInputValue(streetString);
-            selectionCallback?.(item);
+            onSelectItem(item);
             Keyboard.dismiss();
           }}
         >
@@ -277,7 +290,7 @@ export const useRenderSuggestions = (selectionCallback?: (item: any) => void) =>
         </TouchableOpacity>
       );
     },
-    [getStreetString, selectionCallback, setInputValue, styles.divider, styles.row]
+    [getStreetString, onSelectItem, styles.divider, styles.row]
   );
 
   return {
@@ -287,6 +300,7 @@ export const useRenderSuggestions = (selectionCallback?: (item: any) => void) =>
     setInputValueCity,
     inputValueCitySelected,
     setInputValueCitySelected,
+    onSelectItem,
     renderSuggestionCities,
     renderSuggestion
   };

@@ -1,8 +1,9 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import Autocomplete from 'react-native-autocomplete-input';
 
 import { texts } from '../../config';
-import { useFilterCities, useWasteAddresses } from '../../hooks';
+import { getAutoSelectableWasteAddress } from '../../helpers/wasteAddressHelper';
+import { useFilterCities, useRenderSuggestions, useWasteAddresses } from '../../hooks';
 import { useTheme } from '../../hooks/useTheme';
 import { useThemeStyles } from '../../hooks/useThemeStyles';
 import { OrientationContext } from '../../OrientationProvider';
@@ -15,13 +16,15 @@ import { WasteSuggestionList } from './WasteSuggestionList';
 
 type Props = {
   isFocused: boolean;
-  renderSuggestions: {
-    inputValueCity: string;
-    setInputValueCity: (value: string) => void;
-    inputValueCitySelected: boolean;
-    setInputValueCitySelected: (value: boolean) => void;
-    renderSuggestionCities: ({ item }: { item: any }) => JSX.Element;
-  };
+  renderSuggestions: Pick<
+    ReturnType<typeof useRenderSuggestions>,
+    | 'inputValueCity'
+    | 'setInputValueCity'
+    | 'inputValueCitySelected'
+    | 'setInputValueCitySelected'
+    | 'onSelectItem'
+    | 'renderSuggestionCities'
+  >;
   setIsFocused: (val: boolean) => void;
   setSelectedStreetId: (id?: number) => void;
 };
@@ -50,14 +53,47 @@ export const WasteCityInput = ({
     setInputValueCity,
     inputValueCitySelected,
     setInputValueCitySelected,
+    onSelectItem,
     renderSuggestionCities
   } = renderSuggestions;
-  const { data } = useWasteAddresses({
+  const { data, error, loading } = useWasteAddresses({
     minSearchLength: minSearchLengthTwoStep,
     search: inputValueCity
   });
   const { filterCities } = useFilterCities(isFocused);
-  const cities = filterCities(inputValueCity, data?.wasteAddresses);
+  const addresses = data?.wasteAddresses;
+  const cities = filterCities(inputValueCity, addresses);
+  const autoSelectedCity = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (!inputValueCitySelected) {
+      autoSelectedCity.current = null;
+      return;
+    }
+
+    if (
+      !hasWasteAddressesTwoStep ||
+      loading ||
+      error ||
+      autoSelectedCity.current === inputValueCity
+    ) {
+      return;
+    }
+
+    const address = getAutoSelectableWasteAddress(addresses, inputValueCity);
+    if (!address) return;
+
+    autoSelectedCity.current = inputValueCity;
+    onSelectItem(address, { isAutoSelectedSingleOption: true });
+  }, [
+    addresses,
+    error,
+    hasWasteAddressesTwoStep,
+    inputValueCity,
+    inputValueCitySelected,
+    loading,
+    onSelectItem
+  ]);
 
   /**
    * The variable `isCityResultsHidden` indicates whether the city results should be hidden based
