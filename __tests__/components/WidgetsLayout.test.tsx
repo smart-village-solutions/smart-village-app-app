@@ -43,7 +43,10 @@ jest.mock('../../src/components/widgets/ConstructionSiteWidget', () => ({
   ConstructionSiteWidget: () => null
 }));
 jest.mock('../../src/components/widgets/CustomWidget', () => ({
-  CustomWidget: () => null
+  CustomWidget: () => {
+    const Content = jest.requireActual('../../src/components/widgets/WidgetContent').WidgetContent;
+    return <Content label="Custom" visual={null} />;
+  }
 }));
 jest.mock('../../src/components/widgets/EventWidget', () => ({
   EventWidget: () => null
@@ -79,11 +82,73 @@ import { AccessibilityContext } from '../../src/AccessibilityProvider';
 import { SettingsContext } from '../../src/SettingsProvider';
 import { Widgets } from '../../src/components/widgets/Widgets';
 import { ReorderableWidget } from '../../src/components/widgets/ReorderableWidget';
+import { WidgetContent } from '../../src/components/widgets/WidgetContent';
 
 const widgetItems = (tree: ReturnType<typeof render>) =>
   tree.UNSAFE_getAllByType(ReorderableWidget);
 const widths = (tree: ReturnType<typeof render>) =>
   widgetItems(tree).map((item) => StyleSheet.flatten(item.props.style).width as number);
+
+const spacingCases = [
+  ['first', ['klimaTaler', 'custom', 'custom', 'custom', 'custom']],
+  ['middle', ['custom', 'custom', 'klimaTaler', 'custom', 'custom']],
+  ['last', ['custom', 'custom', 'custom', 'custom', 'klimaTaler']],
+  ['card only', ['klimaTaler']],
+  ['compact only', Array(8).fill('custom')]
+] as [string, string[]][];
+
+describe.each([false, true])('consistent widget spacing with personalization=%s', (editable) => {
+  describe.each([
+    [320, 1],
+    [844, 1],
+    [320, 1.4],
+    [320, 2.2]
+  ])('at width %s and text scale %s', (width, fontScale) => {
+    test.each(spacingCases)('%s', (_position, widgetConfigs) => {
+      mockUseWindowDimensions.mockReturnValue({ width, height: 900, scale: 3, fontScale });
+      const tree = render(
+        <SettingsContext.Provider
+          value={
+            {
+              globalSettings: {
+                settings: {
+                  personalizedWidgets: editable,
+                  'klima-taler': widgetConfigs.includes('klimaTaler')
+                }
+              }
+            } as never
+          }
+        >
+          <Widgets widgetConfigs={widgetConfigs} />
+        </SettingsContext.Provider>
+      );
+      const assertSpacing = () => {
+        expect(StyleSheet.flatten(tree.getByTestId('widgetGrid').props.style)).toMatchObject({
+          paddingTop: 16,
+          paddingBottom: editable ? 0 : 16,
+          rowGap: 24
+        });
+        // Real compact content must not add a second inset inside the grid.
+        tree.UNSAFE_queryAllByType(WidgetContent).forEach((content) => {
+          const root = content.findAllByType(View)[0];
+          expect(StyleSheet.flatten(root.props.style).paddingVertical).toBe(0);
+        });
+      };
+      assertSpacing();
+      if (editable) {
+        const edit = tree.getByRole('button', { name: 'Widgets anordnen' });
+        expect(StyleSheet.flatten(edit.props.style)).toMatchObject({
+          paddingVertical: 14,
+          minHeight: 48
+        });
+        fireEvent.press(edit);
+        assertSpacing();
+        fireEvent.press(tree.getByRole('button', { name: 'Abbrechen' }));
+        assertSpacing();
+      }
+    });
+  });
+});
 
 beforeEach(() => {
   mockUseWindowDimensions.mockReturnValue({ width: 360, height: 800, scale: 3, fontScale: 1 });

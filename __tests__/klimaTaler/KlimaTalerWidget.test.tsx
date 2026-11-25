@@ -47,6 +47,31 @@ test('real zero is prominent, with direct modal entry and no diagnostic labels',
   expect(mockNavigation.navigate).not.toHaveBeenCalled();
 });
 
+test.each([
+  [0.001, '0'],
+  [0.999, '0'],
+  [1, '1'],
+  [1.999, '1'],
+  [10.999, '10'],
+  [11, '11'],
+  [11.001, '11'],
+  [12345.999, '12.345']
+] as const)('balance %s displays %s without rounding up', (coins, expected) => {
+  mockState = { phase: 'ready', coins };
+  const screen = render(<KlimaTalerWidget />);
+  expect(screen.getByText(expected)).toBeTruthy();
+  expect(screen.getByLabelText(`Deine Klima-Taler: ${expected}`)).toBeTruthy();
+});
+
+test.each([
+  ['en-US', '12,345'],
+  ['invalid_locale', '12.345']
+])('whole balances preserve formatting for locale %s', (locale, expected) => {
+  mockState = { phase: 'error', coins: 12345.999, stale: true };
+  const screen = render(<KlimaTalerWidget additionalProps={{ texts: { locale } }} />);
+  expect(screen.getByLabelText(`Deine Klima-Taler: ${expected}`)).toBeTruthy();
+});
+
 test('a missing session shows the promotional card', () => {
   mockState = { phase: 'noSession' };
   const screen = render(<KlimaTalerWidget />);

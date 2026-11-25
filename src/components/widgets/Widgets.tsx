@@ -47,7 +47,14 @@ import { ReorderableWidget } from './ReorderableWidget';
 const WIDGET_CONTAINER_PADDING = 16;
 const WIDGET_COLUMN_PADDING = 4;
 const WIDGET_MIN_WIDTH = 64;
-const WIDGET_ROW_GAP = 8;
+const WIDGET_ROW_GAP = 24;
+
+// The grid owns outer spacing for every widget type and ordering. Footer controls
+// provide their own padding, like the service tile editor.
+const widgetGridInsets = (editable: boolean) => ({
+  paddingTop: normalize(16),
+  paddingBottom: editable ? 0 : normalize(16)
+});
 
 type Props = {
   widgetConfigs?: WidgetConfig[];
@@ -235,7 +242,10 @@ export const Widgets = ({ widgetConfigs, widgetStyle }: Props) => {
   const itemStyle = { paddingHorizontal: columnPadding };
   const rows = widgetRows(widgetComponents, layout.columns);
   const layoutMode = layout.columns === 1 ? ('list' as const) : ('grid' as const);
-  const layoutContext = useMemo(() => ({ mode: layoutMode }), [layoutMode]);
+  const layoutContext = useMemo(
+    () => ({ mode: layoutMode, contentPaddingVertical: 0 }),
+    [layoutMode]
+  );
   const onLayout = useCallback(
     ({ nativeEvent }: LayoutChangeEvent) => {
       const nextWidth = nativeEvent.layout.width;
@@ -260,8 +270,7 @@ export const Widgets = ({ widgetConfigs, widgetStyle }: Props) => {
           styles.container,
           {
             paddingLeft: horizontalPadding + safeAreaInsets.left,
-            paddingRight: horizontalPadding + safeAreaInsets.right,
-            rowGap
+            paddingRight: horizontalPadding + safeAreaInsets.right
           }
         ]}
       >
@@ -269,7 +278,7 @@ export const Widgets = ({ widgetConfigs, widgetStyle }: Props) => {
           ref={gridRef}
           collapsable={false}
           testID="widgetGrid"
-          style={[styles.grid, { rowGap }]}
+          style={[styles.grid, { rowGap }, widgetGridInsets(editable)]}
         >
           {rows.flatMap((row) =>
             row.map((entry) => (
@@ -355,8 +364,7 @@ export const Widgets = ({ widgetConfigs, widgetStyle }: Props) => {
 const styles = StyleSheet.create({
   fullWidthItem: {
     flexGrow: 1,
-    width: '100%',
-    marginTop: 16
+    width: '100%'
   },
   container: {
     alignItems: 'stretch',
@@ -364,8 +372,14 @@ const styles = StyleSheet.create({
   },
   grid: { flexDirection: 'row', flexWrap: 'wrap', width: '100%', alignItems: 'stretch' },
   gridItem: { flexGrow: 1, minWidth: 0 },
-  edit: { minHeight: 48, minWidth: 80, alignItems: 'center', justifyContent: 'center' },
-  editor: { gap: 8 },
+  edit: {
+    minHeight: 48,
+    minWidth: 80,
+    paddingVertical: normalize(14),
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  editor: { gap: 8, paddingTop: normalize(14) },
   hint: { fontSize: 14, textAlign: 'center' },
   controls: { flexDirection: 'row', justifyContent: 'space-evenly' }
 });

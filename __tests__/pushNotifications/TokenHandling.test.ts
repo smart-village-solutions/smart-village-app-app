@@ -17,6 +17,8 @@ jest.mock('expo-secure-store', () => ({
   setItemAsync: jest.fn()
 }));
 
+jest.mock('../../app.json', () => ({ expo: { slug: 'smart-village-app' } }));
+
 jest.mock('../../src/config', () => ({
   device: { platform: 'ios' },
   secrets: {
@@ -30,7 +32,10 @@ jest.mock('../../src/config', () => ({
 
 describe('handleIncomingToken', () => {
   beforeEach(() => {
+    jest.restoreAllMocks();
     jest.clearAllMocks();
+    (SecureStore.setItemAsync as jest.Mock).mockResolvedValue(undefined);
+    (SecureStore.deleteItemAsync as jest.Mock).mockResolvedValue(undefined);
     global.fetch = jest
       .fn()
       .mockResolvedValueOnce({ status: 204 })
@@ -78,6 +83,64 @@ describe('handleIncomingToken', () => {
     await expect(handleIncomingToken('token-a')).resolves.toBe(true);
     expect(SecureStore.setItemAsync).not.toHaveBeenCalled();
     expect(emit).not.toHaveBeenCalled();
+  });
+
+  it('registers a new token once when several updates arrive together', async () => {
+    (SecureStore.getItemAsync as jest.Mock).mockImplementation(async (key) =>
+      key === PushNotificationStorageKeys.PUSH_TOKEN ? null : 'access-token'
+    );
+    global.fetch = jest.fn().mockResolvedValue({ status: 201 }) as jest.Mock;
+    const emit = jest.spyOn(DeviceEventEmitter, 'emit').mockImplementation(() => undefined);
+
+    await expect(
+      Promise.all([
+        handleIncomingToken('token-b'),
+        handleIncomingToken('token-b'),
+        handleIncomingToken('token-b')
+      ])
+    ).resolves.toEqual([true, true, true]);
+
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+    expect(SecureStore.setItemAsync).toHaveBeenCalledTimes(1);
+    expect(emit).toHaveBeenCalledTimes(1);
+  });
+
+  it('shows one alert when concurrent registration of a token fails', async () => {
+    (SecureStore.getItemAsync as jest.Mock).mockImplementation(async (key) =>
+      key === PushNotificationStorageKeys.PUSH_TOKEN ? null : 'access-token'
+    );
+    global.fetch = jest.fn().mockResolvedValue({ status: 422 }) as jest.Mock;
+    const alert = jest.spyOn(Alert, 'alert').mockImplementation(() => undefined);
+
+    await expect(
+      Promise.all([handleIncomingToken('token-b'), handleIncomingToken('token-b')])
+    ).resolves.toEqual([false, false]);
+
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+    expect(alert).toHaveBeenCalledTimes(1);
+    expect(SecureStore.setItemAsync).not.toHaveBeenCalled();
+  });
+
+  it('applies different token changes in order', async () => {
+    let storedToken: string | null = null;
+    (SecureStore.getItemAsync as jest.Mock).mockImplementation(async (key) =>
+      key === PushNotificationStorageKeys.PUSH_TOKEN ? storedToken : 'access-token'
+    );
+    (SecureStore.setItemAsync as jest.Mock).mockImplementation(async (_, token) => {
+      storedToken = token;
+    });
+    global.fetch = jest
+      .fn()
+      .mockResolvedValueOnce({ status: 201 })
+      .mockResolvedValueOnce({ status: 204 })
+      .mockResolvedValueOnce({ status: 201 }) as jest.Mock;
+
+    await expect(
+      Promise.all([handleIncomingToken('token-a'), handleIncomingToken('token-b')])
+    ).resolves.toEqual([true, true]);
+
+    expect(global.fetch).toHaveBeenCalledTimes(3);
+    expect(storedToken).toBe('token-b');
   });
 
   it('does not persist or emit when removing token A fails before adding token B', async () => {
