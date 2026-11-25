@@ -1,6 +1,7 @@
 import React from 'react';
 import { FlatList, View } from 'react-native';
 import renderer, { act } from 'react-test-renderer';
+import { useQuery } from 'react-query';
 
 import { SettingsContext } from '../../src/SettingsProvider';
 import { addToStore, readFromStore, removeFromStore } from '../../src/helpers';
@@ -12,12 +13,15 @@ import {
 } from '../../src/pushNotifications';
 import { onActivatePushNotifications, onDeactivatePushNotifications } from '../../src/screens';
 import { SettingsToggle } from '../../src/components/SettingsToggle';
+import { RegularText } from '../../src/components/Text';
 import { PersonalizedPushSettings } from '../../src/components/settings/PersonalizedPushSettings';
 
 jest.mock('../../src/config', () => ({
   texts: {
     settingsTitles: { pushNotifications: 'Push' },
-    settingsContents: { personalizedPush: { sectionTitle: 'Categories' } }
+    settingsContents: {
+      personalizedPush: { sectionTitle: 'News categories', eventSectionTitle: 'Event categories' }
+    }
   }
 }));
 jest.mock('../../src/pushNotifications', () => ({
@@ -32,12 +36,7 @@ jest.mock('../../src/helpers', () => ({
   removeFromStore: jest.fn()
 }));
 jest.mock('../../src/ReactQueryClient', () => ({ ReactQueryClient: jest.fn() }));
-jest.mock('react-query', () => ({
-  useQuery: () => ({
-    data: { categories: [{ id: '1', name: 'News', tagList: ['news_item'] }] },
-    isLoading: false
-  })
-}));
+jest.mock('react-query', () => ({ useQuery: jest.fn() }));
 jest.mock('../../src/queries', () => ({
   getQuery: jest.fn(),
   QUERY_TYPES: { CATEGORIES_FILTER: 'categories' }
@@ -81,8 +80,20 @@ const mount = async (
   });
 };
 
+const mockCategories = (categories: { id: string; name: string; tagList: string | string[] }[]) =>
+  jest
+    .mocked(useQuery)
+    .mockReturnValue({ data: { categories }, isLoading: false } as ReturnType<typeof useQuery>);
+
+const withTags = (...tagList: string[]) => ({
+  globalSettings: {
+    settings: { personalizedPush: { categories: { queryVariables: { tagList } } } }
+  }
+});
+
 beforeEach(() => {
   jest.resetAllMocks();
+  mockCategories([{ id: '1', name: 'News', tagList: ['news_item'] }]);
   jest.mocked(getInAppPermission).mockResolvedValue(true);
   jest.mocked(getPushTokenFromStorage).mockResolvedValue('token-a');
   jest
@@ -101,6 +112,54 @@ it('loads existing exclusions without writing or resetting them', async () => {
   await mount();
   expect(toggle(1).value).toBe(false);
   expect(addExcludeNotificationConfigurationOnServer).not.toHaveBeenCalled();
+});
+
+it('shows each content type separately and changes only the selected type for a shared category', async () => {
+  mockCategories([{ id: '1', name: 'Shared', tagList: 'news_item, event_record' }]);
+  jest.mocked(getExcludeNotificationConfigurationFromServer).mockResolvedValue({
+    news_item: { '1': {} },
+    event_record: { '3': { '17': {} } }
+  });
+  await mount(withTags('news_item', 'event_record'));
+
+  expect(tree.root.findAllByType(RegularText).map(({ props }) => props.children)).toEqual([
+    'News categories',
+    'Event categories'
+  ]);
+  expect(toggle(1)).toMatchObject({ title: 'Shared', value: false });
+  expect(toggle(2)).toMatchObject({ title: 'Shared', value: true });
+  await act(async () => {
+    await toggle(2).onDeactivate(jest.fn());
+  });
+  expect(addExcludeNotificationConfigurationOnServer).toHaveBeenLastCalledWith('token-a', {
+    news_item: { '1': {} },
+    event_record: { '1': {}, '3': { '17': {} } }
+  });
+  await act(async () => {
+    await toggle(2).onActivate(jest.fn());
+  });
+  expect(toggle(1).value).toBe(false);
+  expect(toggle(2).value).toBe(true);
+  expect(addExcludeNotificationConfigurationOnServer).toHaveBeenLastCalledWith('token-a', {
+    news_item: { '1': {} },
+    event_record: { '3': { '17': {} } }
+  });
+});
+
+it('shows only event categories when event_record is the only configured tag', async () => {
+  mockCategories([
+    { id: '1', name: 'News', tagList: ['news_item'] },
+    { id: '2', name: 'Events', tagList: ['event_record'] }
+  ]);
+  await mount(withTags('event_record'));
+
+  expect(tree.root.findAllByType(RegularText).map(({ props }) => props.children)).toEqual([
+    'Event categories'
+  ]);
+  expect(tree.root.findAllByType(SettingsToggle).map(({ props }) => props.item.title)).toEqual([
+    'Push',
+    'Events'
+  ]);
 });
 
 it('shows the event footer without remote categories and leaves remote preferences alone', async () => {

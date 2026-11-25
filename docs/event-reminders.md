@@ -32,8 +32,11 @@ enables the switch. Switching it off asks for confirmation and cancels the
 associated local reminders. Saved subscriptions remain manageable when the
 category catalog is unavailable.
 
-Remote category switches control messages sent by the server. The `tagList`
-filters those categories. Local reminder rules use Main-Server event
+Remote category switches control messages sent by the server. Setting
+`settings.personalizedPush.categories.queryVariables.tagList` to
+`["news_item", "event_record"]` shows distinct news and event sections. Use
+`["event_record"]` to show only event categories. A shared category has
+independent switches for the two message types. Local reminder rules use Main-Server event
 categories, device storage, and operating system notification permissions.
 They can be managed with remote push switched off.
 When the app receives a disabled mode in `globalSettings`, it removes the

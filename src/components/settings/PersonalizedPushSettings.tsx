@@ -30,26 +30,48 @@ import { Wrapper, WrapperHorizontal } from '../Wrapper';
 import { addToStore, readFromStore, removeFromStore } from '../../helpers';
 
 const DEFAULT_QUERY_VARIABLES = { tagList: ['news_item'] };
+const EVENT_CATEGORY_TAG = 'event_record';
 
 const PERSONALIZED_PUSH_SETTINGS = 'PERSONALIZED_PUSH_SETTINGS';
 
 type Category = {
-  iconName?: string | null;
-  id: string;
-  name: string;
-  tagList: string[];
+  id: string | number | null;
+  name: string | null;
+  tagList: string[] | string | null;
 };
 
+type CategoryPreference = { id: string; tags: string[] };
 type ExcludeMap = Record<string, Record<string, unknown>>;
 
-const keyExtractor = (item, index) => `index${index}-id${item.id}`;
+const keyExtractor = ({ key }: { key: string }) => key;
 
-const tagListArray = (tag) => {
+const tagListArray = (tag: unknown): string[] => {
   return Array.isArray(tag)
     ? tag
     : typeof tag === 'string'
     ? tag.split(',').map((x) => x.trim())
     : [];
+};
+
+const groupCategories = (categories: Category[] | undefined, configuredTags: string[]) => {
+  const regular: Array<CategoryPreference & { name: string }> = [];
+  const events: typeof regular = [];
+  const showEventSection = configuredTags.includes(EVENT_CATEGORY_TAG);
+  for (const category of categories ?? []) {
+    if (!category?.name || category.id == null) continue;
+    const { id, name } = category;
+    const tags = tagListArray(category.tagList).filter(
+      (tag) => !configuredTags.length || configuredTags.includes(tag)
+    );
+    if (showEventSection && tags.includes(EVENT_CATEGORY_TAG)) {
+      events.push({ id: String(id), name, tags: [EVENT_CATEGORY_TAG] });
+    }
+    const regularTags = showEventSection ? tags.filter((tag) => tag !== EVENT_CATEGORY_TAG) : tags;
+    if (regularTags.length) regular.push({ id: String(id), name, tags: regularTags });
+  }
+  const byName = (left: { name: string }, right: { name: string }) =>
+    left.name.localeCompare(right.name);
+  return { regular: regular.sort(byName), events: events.sort(byName), showEventSection };
 };
 
 export const PersonalizedPushSettings = ({
@@ -65,6 +87,10 @@ export const PersonalizedPushSettings = ({
   const { settings = {} } = globalSettings;
   const { personalizedPush = {}, settingsScreenListItemTitles = {} } = settings;
   const queryVariables = personalizedPush.categories?.queryVariables || DEFAULT_QUERY_VARIABLES;
+  const configuredTags = useMemo(
+    () => tagListArray(queryVariables.tagList),
+    [queryVariables.tagList]
+  );
   const hasRemoteCategories = showRemotePush && !!personalizedPush.categories;
 
   const [permission, setPermission] = useState<boolean>(false);
@@ -92,7 +118,6 @@ export const PersonalizedPushSettings = ({
 
   const addIdsOnServer = useCallback(
     async (categories: { id: string; tags: string[] }[], token: string, base: ExcludeMap) => {
-      const tagList = queryVariables?.tagList ?? [];
       const categoryIds: ExcludeMap = _cloneDeep(base);
       const selectedByTag = new Map<string, Set<string>>();
 
@@ -104,7 +129,7 @@ export const PersonalizedPushSettings = ({
         });
       });
 
-      tagList.forEach((t: string) => {
+      configuredTags.forEach((t) => {
         const ids = selectedByTag.get(t) ?? new Set<string>();
         const obj: Record<string, Record<string, never>> = {};
 
@@ -119,7 +144,7 @@ export const PersonalizedPushSettings = ({
 
       return success ? categoryIds : undefined;
     },
-    [queryVariables?.tagList]
+    [configuredTags]
   );
 
   useEffect(() => {
@@ -204,7 +229,7 @@ export const PersonalizedPushSettings = ({
   );
 
   const changeCategories = useCallback(
-    async (categories: { id: string; tags: string[] }[], revert: () => void) => {
+    async ({ id, tags }: CategoryPreference, excluded: boolean, revert: () => void) => {
       if (operationInProgress.current || !pushToken || !preferencesLoaded) {
         revert?.();
         return;
@@ -213,9 +238,18 @@ export const PersonalizedPushSettings = ({
       operationInProgress.current = true;
       setBusy(true);
       try {
-        const nextCategories = await addIdsOnServer(categories, pushToken, excludeCategoryIds);
-
-        if (nextCategories) setExcludeCategoryIds(nextCategories);
+        const nextCategories = { ...excludeCategoryIds };
+        for (const tag of tags) {
+          const entries = { ...nextCategories[tag] };
+          if (excluded) entries[id] = {};
+          else delete entries[id];
+          nextCategories[tag] = entries;
+        }
+        const success = await addExcludeNotificationConfigurationOnServer(
+          pushToken,
+          nextCategories
+        );
+        if (success) setExcludeCategoryIds(nextCategories);
         else revert?.();
       } catch {
         console.warn('Could not save push notification preferences.');
@@ -225,7 +259,7 @@ export const PersonalizedPushSettings = ({
         setBusy(false);
       }
     },
-    [addIdsOnServer, excludeCategoryIds, preferencesLoaded, pushToken]
+    [excludeCategoryIds, preferencesLoaded, pushToken]
   );
 
   const onActivate = async (revert: () => void) => {
@@ -285,48 +319,42 @@ export const PersonalizedPushSettings = ({
     }
   };
 
+  const { regular, events, showEventSection } = useMemo(
+    () => groupCategories(hasRemoteCategories ? data?.categories : undefined, configuredTags),
+    [configuredTags, data, hasRemoteCategories]
+  );
+
   const listItems = useMemo(() => {
-    if (!hasRemoteCategories) return [];
-    const parsedListItems = data?.categories?.map((category: Category) => {
-      const tags = tagListArray(category.tagList);
+    const toToggle = (section: string, category: CategoryPreference & { name: string }) => {
+      const { id, tags, name } = category;
       const isExcluded = !tags.some((tag) => {
-        const value = excludeCategoryIds?.[tag]?.[category.id];
+        const value = excludeCategoryIds?.[tag]?.[id];
 
         return value !== undefined && _isEmpty(value);
       });
 
       return {
-        bottomDivider: true,
-        categoryId: category.id,
-        iconName: category.iconName,
-        id: category.id,
-        isDisabled: busy || !permission || !preferencesLoaded,
-        onActivate: (revert: () => void) =>
-          changeCategories(
-            selectedCategoryIds.filter((item) => item.id !== category.id),
-            revert
-          ),
-        onDeactivate: (revert: () => void) =>
-          changeCategories([...selectedCategoryIds, { id: category.id, tags }], revert),
-        title: category.name,
-        value: isExcluded
+        key: `${section}:${id}`,
+        item: {
+          bottomDivider: true,
+          isDisabled: busy || !permission || !preferencesLoaded,
+          onActivate: (revert: () => void) => changeCategories(category, false, revert),
+          onDeactivate: (revert: () => void) => changeCategories(category, true, revert),
+          title: name,
+          value: isExcluded
+        }
       };
-    });
+    };
 
-    return parsedListItems?.sort((a, b) => a.title.localeCompare(b.title)) || [];
-  }, [
-    busy,
-    changeCategories,
-    data,
-    hasRemoteCategories,
-    permission,
-    preferencesLoaded,
-    excludeCategoryIds,
-    selectedCategoryIds
-  ]);
+    return [
+      ...regular.map((category) => toToggle('regular', category)),
+      ...events.map((category) => toToggle(EVENT_CATEGORY_TAG, category))
+    ];
+  }, [busy, changeCategories, events, regular, permission, preferencesLoaded, excludeCategoryIds]);
 
   const renderCategoryHeading = () => {
     if (!hasRemoteCategories) return null;
+    if (showEventSection && !regular.length && !loading) return null;
     return loading ? (
       <LoadingSpinner loading />
     ) : (
@@ -375,10 +403,19 @@ export const PersonalizedPushSettings = ({
         keyExtractor={keyExtractor}
         ListFooterComponent={footer}
         ListHeaderComponent={renderCategoryHeading()}
-        renderItem={({ item }) => (
-          <WrapperHorizontal>
-            <SettingsToggle item={item} />
-          </WrapperHorizontal>
+        renderItem={({ item: row, index }) => (
+          <>
+            {!!events.length && index === regular.length && (
+              <Wrapper noPaddingBottom>
+                <RegularText small placeholder>
+                  {texts.settingsContents.personalizedPush.eventSectionTitle}
+                </RegularText>
+              </Wrapper>
+            )}
+            <WrapperHorizontal>
+              <SettingsToggle item={row.item} />
+            </WrapperHorizontal>
+          </>
         )}
       />
     </>

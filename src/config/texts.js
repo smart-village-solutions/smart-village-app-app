@@ -1714,7 +1714,8 @@ export const texts = {
     },
     personalizedPush: {
       setting: 'Push-Benachrichtigungen',
-      sectionTitle: 'Push-Benachrichtigungen für Nachrichtenkategorien'
+      sectionTitle: 'Push-Benachrichtigungen für Nachrichtenkategorien',
+      eventSectionTitle: 'Push-Benachrichtigungen für Veranstaltungskategorien'
     },
     termsAndConditions: {
       abort: 'Abbrechen',
