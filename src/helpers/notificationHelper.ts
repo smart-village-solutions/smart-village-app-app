@@ -2,6 +2,11 @@ import type { NotificationResponse } from 'expo-notifications';
 
 type NotificationData = Record<string, unknown>;
 
+export const EVENT_REMINDER_NOTIFICATION_KIND = 'event-reminder';
+
+export const isEventReminderNotification = (data?: NotificationData | null) =>
+  data?.notificationKind === EVENT_REMINDER_NOTIFICATION_KIND;
+
 export type PushNotificationNavigationData = {
   data: NotificationData;
   id?: string | number;
@@ -70,22 +75,33 @@ export const getPushNotificationNavigationData = (
  * can omit it. Always return a key so a valid response is never confused with the
  * initial `undefined` handled state.
  */
-export const getNotificationResponseKey = (response: NotificationResponse): string => {
-  const identifier = response?.notification?.request?.identifier;
-
-  if (typeof identifier === 'string' && identifier.trim().length > 0) {
-    return identifier;
-  }
-
-  const target = getPushNotificationNavigationData(response);
+const getFallbackNotificationResponseKey = (
+  response: NotificationResponse,
+  target?: PushNotificationNavigationData
+) => {
   const content = response?.notification?.request?.content;
 
-  return JSON.stringify([
-    response?.actionIdentifier ?? '',
-    target?.queryType ?? '',
-    target?.id ?? '',
-    response?.notification?.date ?? '',
-    content?.title ?? '',
-    content?.body ?? ''
-  ]);
+  return JSON.stringify(
+    [
+      response?.actionIdentifier ?? '',
+      target?.queryType ?? '',
+      target?.id ?? '',
+      response?.notification?.date ?? '',
+      content?.title ?? '',
+      content?.body ?? ''
+    ].concat(
+      isEventReminderNotification(target?.data) ? [String(target?.data.occurrenceId ?? '')] : []
+    )
+  );
+};
+
+export const getNotificationResponseKey = (response: NotificationResponse): string => {
+  const identifier = response?.notification?.request?.identifier;
+  const target = getPushNotificationNavigationData(response);
+  if (typeof identifier !== 'string' || !identifier.trim()) {
+    return getFallbackNotificationResponseKey(response, target);
+  }
+  return isEventReminderNotification(target?.data)
+    ? JSON.stringify([identifier, response?.notification?.date ?? ''])
+    : identifier;
 };

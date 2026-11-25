@@ -3,7 +3,10 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { AppState, AppStateStatus } from 'react-native';
 
 import { readFromStore } from '../helpers';
-import { getNotificationResponseKey } from '../helpers/notificationHelper';
+import {
+  getNotificationResponseKey,
+  isEventReminderNotification
+} from '../helpers/notificationHelper';
 import {
   PushNotificationStorageKeys,
   getPushTokenFromStorage,
@@ -17,7 +20,8 @@ export const usePushNotifications = (
   notificationHandler?: NotificationHandler,
   interactionHandler?: ResponseHandler,
   behavior?: Notifications.NotificationBehavior,
-  active?: boolean
+  active?: boolean,
+  eventRemindersEnabled = false
 ): void => {
   // this causes the active state to never change between rerenders.
   // like this enabling or disabling the pushNotifications requires an app restart.
@@ -97,18 +101,44 @@ export const usePushNotifications = (
     const shouldHandlePushNotifications = isActive !== false;
     let subscription: ReturnType<typeof AppState.addEventListener> | undefined;
 
-    if (shouldHandlePushNotifications) {
+    if (shouldHandlePushNotifications || eventRemindersEnabled) {
       Notifications.setNotificationHandler({
-        handleNotification: async () =>
-          behaviorRef.current ?? {
-            shouldShowAlert: true,
-            shouldPlaySound: false,
-            shouldSetBadge: false,
-            shouldShowBanner: __DEV__,
-            shouldShowList: __DEV__
+        handleNotification: async (notification) => {
+          if (
+            eventRemindersEnabled &&
+            isEventReminderNotification(notification?.request?.content?.data)
+          ) {
+            return {
+              shouldPlaySound: false,
+              shouldSetBadge: false,
+              shouldShowBanner: true,
+              shouldShowList: true
+            };
           }
-      });
 
+          if (!shouldHandlePushNotifications) {
+            return {
+              shouldPlaySound: false,
+              shouldSetBadge: false,
+              shouldShowBanner: false,
+              shouldShowList: false
+            };
+          }
+
+          return (
+            behaviorRef.current ?? {
+              shouldShowAlert: true,
+              shouldPlaySound: false,
+              shouldSetBadge: false,
+              shouldShowBanner: __DEV__,
+              shouldShowList: __DEV__
+            }
+          );
+        }
+      });
+    }
+
+    if (shouldHandlePushNotifications) {
       subscription = AppState.addEventListener('change', onGetActive);
 
       // This listener is fired whenever a notification is received while the app is foregrounded
@@ -134,11 +164,14 @@ export const usePushNotifications = (
     );
 
     return () => {
+      if (!shouldHandlePushNotifications && eventRemindersEnabled) {
+        Notifications.setNotificationHandler(null);
+      }
       notificationListener.current?.remove();
       pushTokenListener.current?.remove();
       responseListener.current?.remove();
 
       subscription?.remove();
     };
-  }, [handleNotificationResponse, isActive, onGetActive]);
+  }, [eventRemindersEnabled, handleNotificationResponse, isActive, onGetActive]);
 };

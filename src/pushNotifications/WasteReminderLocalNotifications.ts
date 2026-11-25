@@ -29,6 +29,7 @@ import {
   reportWasteReminderOwnerMigration,
   reportWasteReminderSchedulingTransition
 } from './WasteReminderDiagnostics';
+import { releaseEventSlotsForWaste, runWasteNotificationUpdate } from './LocalNotificationCapacity';
 
 const WASTE_REMINDER_COVERAGE_ONE_MONTH_KEY = 'waste-sync:one-month-before';
 const WASTE_REMINDER_COVERAGE_ONE_WEEK_KEY = 'waste-sync:one-week-before';
@@ -101,7 +102,7 @@ const scheduleWasteReminderBatch = async ({
   }
 };
 
-export const scheduleWasteReminderNotifications = async ({
+const scheduleWasteReminderBatchWithVerification = async ({
   hasMoreReminders = false,
   localCoverageUntil,
   now = new Date(),
@@ -171,6 +172,7 @@ export const scheduleWasteReminderNotifications = async ({
       return getUnavailableSchedulingResult(availability);
     }
 
+    await releaseEventSlotsForWaste(expectedCount).catch(() => undefined);
     await scheduleWasteReminderBatch({
       coverageReminders,
       reminders,
@@ -237,6 +239,10 @@ export const scheduleWasteReminderNotifications = async ({
     return { errorClass, status: 'failed' };
   }
 };
+
+export const scheduleWasteReminderNotifications = (
+  params: ScheduleWasteReminderNotificationsParams
+) => runWasteNotificationUpdate(() => scheduleWasteReminderBatchWithVerification(params));
 
 class WasteReminderVerificationError extends Error {
   actualCount?: number;
@@ -436,7 +442,7 @@ const reportSchedulingTransition = (
   });
 };
 
-export const clearWasteReminderLocalNotifications = async () => {
+const clearScheduledWasteReminderNotifications = async () => {
   const localState = await readWasteReminderLocalState();
   const storedNotificationIds = localState?.scheduledNotificationIds ?? [];
   const scheduledWasteNotificationIds = await getScheduledWasteReminderNotificationIds();
@@ -461,6 +467,9 @@ export const clearWasteReminderLocalNotifications = async () => {
     scheduledReminderKeys: []
   });
 };
+
+export const clearWasteReminderLocalNotifications = () =>
+  runWasteNotificationUpdate(clearScheduledWasteReminderNotifications);
 
 export const storeWasteReminderSettingsWithoutScheduling = async (
   serverSyncPayload: WasteReminderServerSyncPayload,

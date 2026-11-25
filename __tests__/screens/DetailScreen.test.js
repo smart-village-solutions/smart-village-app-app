@@ -2,6 +2,8 @@ import React from 'react';
 import renderer, { act } from 'react-test-renderer';
 import { useQuery } from 'react-query';
 
+import { EmptyMessage } from '../../src/components/EmptyMessage';
+import { texts } from '../../src/config';
 import { ReactQueryClient } from '../../src/ReactQueryClient';
 import { DetailScreen } from '../../src/screens/DetailScreen';
 
@@ -80,6 +82,28 @@ describe('DetailScreen', () => {
       expect.anything(),
       { id: 'hidden-noticeboard-entry' },
       { authMode: 'user' }
+    );
+  });
+
+  it('explains when an event opened from a reminder is unavailable', async () => {
+    let component;
+    await act(async () => {
+      component = renderer.create(
+        <DetailScreen
+          navigation={navigation}
+          route={{
+            params: {
+              eventReminderOccurrenceId: 'date-2',
+              query: 'eventRecord',
+              queryVariables: { id: 'event-1' }
+            }
+          }}
+        />
+      );
+    });
+
+    expect(component.root.findByType(EmptyMessage).props.title).toBe(
+      texts.eventReminders.unavailable
     );
   });
 

@@ -10,13 +10,16 @@ import { SettingsContext } from '../../SettingsProvider';
 import { Icon, consts, normalize, texts } from '../../config';
 import { AUTH_MODE_USER, getApolloAuthContext } from '../../graphqlAuth';
 import { isTodayOrLater, matomoTrackingString, openLink, trimNewLines } from '../../helpers';
+import { getEventOccurrences } from '../../helpers/eventReminderTime';
 import { useDetailRefresh, useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
+import { getEventRemindersEnabled } from '../../pushNotifications/EventReminderLocalNotifications';
 import { DELETE_EVENT_RECORD } from '../../queries/eventRecords';
 import { ScreenName } from '../../types';
 import { Button } from '../Button';
 import { DataProviderButton } from '../DataProviderButton';
 import { DataProviderNotice } from '../DataProviderNotice';
+import { EventReminderActions } from '../EventReminderControls';
 import { HtmlView } from '../HtmlView';
 import { ImageSection } from '../ImageSection';
 import { LoadingContainer } from '../LoadingContainer';
@@ -217,6 +220,16 @@ export const EventRecord = ({ data, navigation, readAloudControls, refetch, rout
         />
       </Wrapper>
       {readAloudControls}
+
+      {getEventRemindersEnabled(globalSettings) && (
+        <Wrapper>
+          <EventReminderActions
+            occurrences={getEventOccurrences(data)}
+            selectedOccurrenceId={route.params?.details?.date?.id}
+            notificationOccurrenceId={route.params?.eventReminderOccurrenceId}
+          />
+        </Wrapper>
+      )}
 
       {!!eventDates?.length && (
         <WrapperVertical noPaddingTop={!!readAloudControls}>

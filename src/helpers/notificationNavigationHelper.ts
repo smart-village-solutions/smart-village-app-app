@@ -7,6 +7,7 @@ import {
 import { QUERY_TYPES, getQueryType } from '../queries/types';
 import { ScreenName } from '../types';
 
+import { isEventReminderNotification } from './notificationHelper';
 import { queryVariablesFromQuery, rootRouteName, routeNameFromQuery } from './queryHelper';
 
 type NotificationNavigationTarget = {
@@ -105,7 +106,12 @@ const getStandardNavigationTarget = ({
       queryVariables: queryVariablesFromQuery(query, data),
       rootRouteName: rootRouteName(query),
       shareContent: null,
-      title: title || texts.detailTitles[query]
+      title: title || texts.detailTitles[query],
+      ...(query === QUERY_TYPES.EVENT_RECORD &&
+      typeof data.occurrenceId === 'string' &&
+      isEventReminderNotification(data)
+        ? { eventReminderOccurrenceId: data.occurrenceId }
+        : {})
     }
   };
 };

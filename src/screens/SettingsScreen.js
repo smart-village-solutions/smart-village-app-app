@@ -20,6 +20,7 @@ import {
   PermanentFilterSettings,
   PersonalizedPushSettings
 } from '../components/settings';
+import { EventReminderSettings } from '../components/EventReminderControls';
 import { consts, normalize, texts } from '../config';
 import {
   addToStore,
@@ -41,6 +42,7 @@ import {
   setInAppPermission,
   showSystemPermissionMissingDialog
 } from '../pushNotifications';
+import { getEventRemindersEnabled } from '../pushNotifications/EventReminderLocalNotifications';
 import { clearPersistentCaches } from '../ReactQueryProvider';
 import { SettingsContext } from '../SettingsProvider';
 import { ScreenName } from '../types';
@@ -54,6 +56,7 @@ const keyExtractor = (item, index) => `index${index}-item${item.title || item}`;
 export const SETTINGS_SCREENS = {
   ACCESSIBILITY: 'accessibilitySettings',
   AR: 'augmentedRealitySettings',
+  EVENT_REMINDERS: 'eventReminderSettings',
   LIST: 'listSettings',
   LOCATION: 'locationSettings',
   MOWAS_REGION: 'mowasRegionSettings',
@@ -127,6 +130,19 @@ const renderItem = ({ item, navigation, listsWithoutArrows, settingsScreenListIt
           params: { setting: item, title: title || texts.settingsContents.ar.setting },
           routeName: ScreenName.Settings,
           title: title || texts.settingsContents.ar.setting
+        }}
+        listsWithoutArrows={listsWithoutArrows}
+        navigation={navigation}
+      />
+    );
+  } else if (item === SETTINGS_SCREENS.EVENT_REMINDERS) {
+    const entryTitle = title || texts.eventReminders.title;
+    component = (
+      <TextListItem
+        item={{
+          params: { setting: item, title: entryTitle },
+          routeName: ScreenName.Settings,
+          title: entryTitle
         }}
         listsWithoutArrows={listsWithoutArrows}
         navigation={navigation}
@@ -259,6 +275,29 @@ const SettingsDevelopmentFooter = () => {
   );
 };
 
+const getSettingContent = (setting, { ar, mowas }) => {
+  switch (setting) {
+    case SETTINGS_SCREENS.EVENT_REMINDERS:
+      return <EventReminderSettings />;
+    case SETTINGS_SCREENS.LOCATION:
+      return <LocationSettings />;
+    case SETTINGS_SCREENS.PERMANENT_FILTER:
+      return <PermanentFilterSettings />;
+    case SETTINGS_SCREENS.MOWAS_REGION:
+      return <MowasRegionSettings mowasRegionalKeys={mowas?.regionalKeys} />;
+    case SETTINGS_SCREENS.LIST:
+      return <ListSettings />;
+    case SETTINGS_SCREENS.AR:
+      return <AugmentedReality id={ar?.tourId} onSettingsScreen />;
+    case SETTINGS_SCREENS.PERSONALIZED_PUSH:
+      return <PersonalizedPushSettings />;
+    case SETTINGS_SCREENS.ACCESSIBILITY:
+      return <AccessibilitySettings />;
+    default:
+      return null;
+  }
+};
+
 export const SettingsScreen = ({ navigation, route }) => {
   const { colors: colors } = useTheme();
 
@@ -272,6 +311,7 @@ export const SettingsScreen = ({ navigation, route }) => {
   } = settings;
   const [data, setData] = useState([]);
   const { setting = '' } = route?.params || {};
+  const eventRemindersEnabled = getEventRemindersEnabled(globalSettings);
 
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.SETTINGS);
 
@@ -304,6 +344,10 @@ export const SettingsScreen = ({ navigation, route }) => {
             ]
           });
         }
+      }
+
+      if (eventRemindersEnabled) {
+        settingsList.push({ data: [SETTINGS_SCREENS.EVENT_REMINDERS] });
       }
 
       // settings should sometimes contain matomo analytics next, depending on server settings
@@ -477,7 +521,7 @@ export const SettingsScreen = ({ navigation, route }) => {
     /* eslint-enable complexity */
 
     setting == '' && updateData();
-  }, [setting]);
+  }, [eventRemindersEnabled, setting]);
   /* eslint-enable react-hooks/exhaustive-deps */
 
   if (setting == '' && !data.length) {
@@ -488,33 +532,10 @@ export const SettingsScreen = ({ navigation, route }) => {
     );
   }
 
-  // switch to have a condition on `setting` to decide which component to render
-  let Component;
-
-  switch (setting) {
-    case SETTINGS_SCREENS.LOCATION:
-      Component = <LocationSettings />;
-      break;
-    case SETTINGS_SCREENS.PERMANENT_FILTER:
-      Component = <PermanentFilterSettings />;
-      break;
-    case SETTINGS_SCREENS.MOWAS_REGION:
-      Component = <MowasRegionSettings mowasRegionalKeys={mowas?.regionalKeys} />;
-      break;
-    case SETTINGS_SCREENS.LIST:
-      Component = <ListSettings />;
-      break;
-    case SETTINGS_SCREENS.AR:
-      Component = <AugmentedReality id={settings.ar?.tourId} onSettingsScreen />;
-      break;
-    case SETTINGS_SCREENS.PERSONALIZED_PUSH:
-      Component = <PersonalizedPushSettings />;
-      break;
-    case SETTINGS_SCREENS.ACCESSIBILITY:
-      Component = <AccessibilitySettings />;
-      break;
-    default:
-      Component = (
+  const settingContent = getSettingContent(setting, { ar: settings.ar, mowas });
+  return (
+    <SafeAreaViewFlex>
+      {settingContent ?? (
         <SectionList
           initialNumToRender={100}
           keyExtractor={keyExtractor}
@@ -532,11 +553,9 @@ export const SettingsScreen = ({ navigation, route }) => {
           ListFooterComponent={SettingsDevelopmentFooter}
           style={styles.container}
         />
-      );
-      break;
-  }
-
-  return <SafeAreaViewFlex>{Component}</SafeAreaViewFlex>;
+      )}
+    </SafeAreaViewFlex>
+  );
 };
 /* eslint-enable complexity */
 
