@@ -52,9 +52,16 @@ correct occurrence. Using the same test CMS event (record `9998`, occurrence
 `92231`), a category subscription displayed a confirmed request in the app and
 the OS inventory. Excluding and re-including the occurrence changed the detail
 status. Deleting the subscription cleared its entry and removed the pending
-request from the OS inventory.
+request from the OS inventory. The deleted subscription stayed absent after an
+app restart.
+
+On the Pixel 4a Android emulator, denying notification permission showed the
+explanation and opened the system settings from the provided action. After
+enabling notifications there, saving the same category subscription created
+one native notification request for occurrence `92231`. Deleting the
+subscription removed that request and cleared the app's entry.
 
 Release acceptance still requires checking source-confirmed moves and
-cancellations, full waste queue coexistence, permission changes, device reboot,
-time-zone changes, and accessibility on the supported platforms, plus Android
-delivery and navigation from a terminated app.
+cancellations, full waste queue coexistence, permission revocation, device
+reboot, time-zone changes, and accessibility on the supported platforms, plus
+Android delivery and navigation from a terminated app.
