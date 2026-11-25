@@ -69,6 +69,7 @@ class AppTemplateTest < Minitest::Test
     config = render
     plugins = config.fetch("plugins").map { |plugin| plugin.is_a?(Array) ? plugin.first : plugin }
     assert_equal 1, plugins.count("@maplibre/maplibre-react-native")
+    assert_equal 1, plugins.count("./config-plugins/withAndroidOptionalPortrait")
     assert_includes plugins, "expo-notifications"
     assert_includes config.fetch("android").fetch("blockedPermissions"), "READ_EXTERNAL_STORAGE"
     assert_equal "1.1.3", config.fetch("extra").fetch("sueVersion")
