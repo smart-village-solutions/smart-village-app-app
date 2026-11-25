@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires, react/prop-types */
 import React from 'react';
-import { Alert, SectionList, TouchableOpacity } from 'react-native';
+import { Alert, DeviceEventEmitter, SectionList, TouchableOpacity } from 'react-native';
 import renderer, { act } from 'react-test-renderer';
 import { useQuery } from 'react-query';
 
@@ -32,15 +32,22 @@ jest.mock('../../src/components/TextListItem', () => ({
 
 jest.mock('../../src/components/form/Input', () => ({ Input: () => null }));
 jest.mock('../../src/components/SectionHeader', () => ({ SectionHeader: () => null }));
+jest.mock('../../src/components/Radiobutton', () => ({ Radiobutton: () => null }));
 jest.mock('../../src/components/SettingsToggle', () => ({ SettingsToggle: () => null }));
 jest.mock('../../src/components/ListComponent', () => ({ ListComponent: () => null }));
+jest.mock('../../src/components/Modal', () => ({ Modal: ({ children }) => children }));
 jest.mock('react-query', () => ({ ...jest.requireActual('react-query'), useQuery: jest.fn() }));
+jest.mock('react-native-safe-area-context', () => ({
+  ...jest.requireActual('react-native-safe-area-context'),
+  useSafeAreaInsets: () => ({ top: 0, bottom: 0, left: 0, right: 0 })
+}));
 
 jest.mock('../../src/hooks', () => ({
   useMatomoTrackScreenView: jest.fn()
 }));
 
 jest.mock('../../src/config', () => ({
+  Icon: { ArrowRight: () => null },
   colors: { refreshControl: '#000000' },
   consts: {
     a11yLabel: { button: '(Taste)' },
@@ -139,8 +146,10 @@ jest.mock('../../src/NetworkProvider', () => ({
 import { clearPersistentCaches } from '../../src/ReactQueryProvider';
 import { EventReminderSettings } from '../../src/components/EventReminderControls';
 import { ListComponent } from '../../src/components/ListComponent';
+import { Modal } from '../../src/components/Modal';
 import { SectionHeader } from '../../src/components/SectionHeader';
 import { SettingsToggle } from '../../src/components/SettingsToggle';
+import { TextListItem } from '../../src/components/TextListItem';
 import { PersonalizedPushSettings } from '../../src/components/settings';
 import * as eventReminders from '../../src/pushNotifications/EventReminderLocalNotifications';
 import {
@@ -233,23 +242,41 @@ describe('SettingsScreen', () => {
   );
 
   it('lists available event categories and keeps a saved subscription usable when missing from the catalog', async () => {
-    useQuery.mockReturnValue({ data: [{ id: '1', name: 'Kultur' }] });
-    const read = jest.spyOn(eventReminders, 'readEventReminderSettings').mockResolvedValue({
+    useQuery.mockImplementation(([key]) => ({
+      data:
+        key === 'event-reminder-categories' ? [{ id: '1', name: 'Kultur &#x2F; Musik' }] : undefined
+    }));
+    const local = {
       singles: {},
       subscriptions: {
-        2: { category: { id: '2', name: 'Sport' }, rule: { kind: 'relative', leadDays: 3 } },
+        2: {
+          category: { id: '2', name: 'Sport &#47; Spiel' },
+          rule: { kind: 'relative', leadDays: 3 }
+        },
         3: {
-          category: { id: '3', name: 'Architektur' },
+          category: { id: '3', name: '&#196;rger &amp; Spa&szlig;' },
           paused: true,
-          rule: { kind: 'relative', leadDays: 1 }
+          rule: { kind: 'relative', leadDays: 1 },
+          syncedAt: Date.UTC(2026, 10, 25, 14),
+          syncStatus: 'failed'
         }
       },
       categoryPlan: {}
-    });
+    };
+    const read = jest
+      .spyOn(eventReminders, 'readEventReminderSettings')
+      .mockImplementation(async () => ({ ...local }));
     const remove = jest.spyOn(eventReminders, 'pauseEventCategorySubscription').mockResolvedValue();
     const save = jest
       .spyOn(eventReminders, 'saveEventCategorySubscription')
-      .mockResolvedValue('saved');
+      .mockImplementation(async ({ id }) => {
+        local.subscriptions[id].paused = false;
+        DeviceEventEmitter.emit(eventReminders.EVENT_REMINDERS_CHANGED);
+        return 'saved';
+      });
+    const deleteSubscription = jest
+      .spyOn(eventReminders, 'removeEventCategorySubscription')
+      .mockResolvedValue();
     const alert = jest.spyOn(Alert, 'alert').mockImplementation(() => {});
     let tree;
     await act(async () => {
@@ -271,28 +298,57 @@ describe('SettingsScreen', () => {
     const [paused, available, subscribed] = tree.root
       .findAllByType(SettingsToggle)
       .map(({ props }) => props.item);
-    expect(available).toMatchObject({ title: 'Kultur', value: false });
-    expect(subscribed).toMatchObject({ title: 'Sport', value: true });
-    expect(paused).toMatchObject({ title: 'Architektur', value: false });
+    expect(available).toMatchObject({ title: 'Kultur / Musik', value: false });
+    expect(subscribed).toMatchObject({ title: 'Sport / Spiel', value: true });
+    expect(paused).toMatchObject({ title: 'Ärger & Spaß', value: false });
     await act(async () => paused.onActivate(jest.fn()));
     expect(save).toHaveBeenCalledWith(
-      { id: '3', name: 'Architektur' },
+      { id: '3', name: '&#196;rger &amp; Spa&szlig;' },
       { kind: 'relative', leadDays: 1 },
       undefined,
       { singleEnabled: false, categoryEnabled: true }
     );
+    const active = tree.root.findAllByType(SettingsToggle)[0].props.item;
+    expect(active.value).toBe(true);
+    expect(tree.root.findAllByType(SettingsToggle)).toHaveLength(3);
+    expect(tree.root.findAllByType(TextListItem)).toHaveLength(0);
+    expect(tree.root.findAllByType(Modal)).toHaveLength(0);
+    act(() => active.onOpen());
+    expect(tree.root.findByType(Modal)).toBeTruthy();
+    const containsText = (text) =>
+      tree.root.findAll(
+        (node) => typeof node.props.children === 'string' && node.props.children.includes(text)
+      ).length > 0;
+    expect(containsText('Kategorie: Ärger & Spaß')).toBe(true);
+    expect(containsText('Letzter erfolgreicher Abgleich')).toBe(true);
+    expect(containsText('Datenabgleich derzeit nicht möglich')).toBe(true);
+    expect(tree.root.findByType(Modal).findByType(SectionHeader).props.title).toBe(
+      'Kategorie-Abo bearbeiten'
+    );
+    const deleteAction = tree.root
+      .findAllByType(TouchableOpacity)
+      .find(({ props }) => props.accessibilityLabel === 'Kategorie-Abo löschen');
+    act(() => deleteAction.props.onPress());
+    await act(async () => {
+      await alert.mock.lastCall[2].find(({ style }) => style === 'destructive').onPress();
+    });
+    expect(deleteSubscription).toHaveBeenCalledWith('3', {
+      singleEnabled: false,
+      categoryEnabled: true
+    });
     const revert = jest.fn();
     subscribed.onDeactivate(revert);
     expect(revert).toHaveBeenCalledTimes(1);
     expect(remove).not.toHaveBeenCalled();
     await act(async () => {
-      await alert.mock.calls[0][2].find(({ style }) => style === 'destructive').onPress();
+      await alert.mock.lastCall[2].find(({ style }) => style === 'destructive').onPress();
     });
     expect(remove).toHaveBeenCalledWith('2', { singleEnabled: false, categoryEnabled: true });
     await act(async () => tree.unmount());
     alert.mockRestore();
     remove.mockRestore();
     save.mockRestore();
+    deleteSubscription.mockRestore();
     read.mockRestore();
   });
 
@@ -310,6 +366,8 @@ describe('SettingsScreen', () => {
       },
       subscriptions: {}
     });
+    const deleteReminder = jest.spyOn(eventReminders, 'removeEventReminder').mockResolvedValue();
+    const alert = jest.spyOn(Alert, 'alert').mockImplementation(() => {});
     let tree;
     await act(async () => {
       tree = renderer.create(
@@ -328,8 +386,22 @@ describe('SettingsScreen', () => {
     expect(list).toMatchObject({ query: 'eventRecords', horizontal: false, sectionByDate: true });
     expect(list.navigation).toBe(navigation);
     expect(list.data.map(({ id }) => id)).toEqual(['1:1', '3:3']);
-    expect(list.data[0].onPress).toEqual(expect.any(Function));
+    act(() => list.data[1].onPress());
+    const editor = tree.root.findByType(Modal);
+    const deleteAction = editor
+      .findAllByType(TouchableOpacity)
+      .find(({ props }) => props.accessibilityLabel === 'Einzelerinnerung löschen');
+    act(() => deleteAction.props.onPress());
+    await act(async () => {
+      await alert.mock.lastCall[2].find(({ style }) => style === 'destructive').onPress();
+    });
+    expect(deleteReminder).toHaveBeenCalledWith(entry('3', 'paused').occurrence, {
+      singleEnabled: true,
+      categoryEnabled: false
+    });
     await act(async () => tree.unmount());
+    alert.mockRestore();
+    deleteReminder.mockRestore();
     read.mockRestore();
   });
 

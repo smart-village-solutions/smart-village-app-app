@@ -1,3 +1,4 @@
+import { decodeHTMLStrict } from 'entities';
 import _cloneDeep from 'lodash/cloneDeep';
 import _isEmpty from 'lodash/isEmpty';
 import React, {
@@ -61,7 +62,9 @@ const remoteCategories = (categories: Category[] | undefined, configuredTags: st
         (tag) =>
           tag !== EVENT_CATEGORY_TAG && (!configuredTags.length || configuredTags.includes(tag))
       );
-      return tags.length ? [{ id: String(category.id), name: category.name, tags }] : [];
+      return tags.length
+        ? [{ id: String(category.id), name: decodeHTMLStrict(category.name), tags }]
+        : [];
     })
     .sort((left, right) => left.name.localeCompare(right.name));
 

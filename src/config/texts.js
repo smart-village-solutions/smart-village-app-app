@@ -1436,9 +1436,13 @@ export const texts = {
     categoryName: (name) => `Kategorie: ${name}`,
     categoryCreate: 'Kategorie abonnieren',
     categoryEdit: 'Kategorie-Abo bearbeiten',
+    categorySettings: (name) => `Benachrichtigungseinstellungen für ${name}`,
     categoryRemove: 'Kategorie-Abo deaktivieren',
     categoryConfirmRemove:
       'Möchten Sie dieses Kategorie-Abo und die zugehörigen Erinnerungen deaktivieren?',
+    categoryPaused: 'Kategorie-Abo deaktiviert.',
+    categoryDelete: 'Kategorie-Abo löschen',
+    categoryConfirmDelete: 'Möchten Sie dieses Kategorie-Abo und seine Regel dauerhaft löschen?',
     categoryUpdateHint: 'Neue Termine und Terminänderungen werden beim Öffnen der App übernommen.',
     categoryPreviewLoading: 'Passende Termine werden geladen.',
     categoryPreviewUnavailable:
@@ -1461,7 +1465,6 @@ export const texts = {
     categoryTimeMode: 'Uhrzeitregel',
     categoryStartTime: 'Wie Veranstaltungsbeginn, ersatzweise 12:00 Uhr',
     categoryFixedTime: 'Feste Uhrzeit',
-    categoryRule: (days, time) => `${days} Kalendertage vorher · ${time}`,
     categoryExclude: 'Für diesen Termin nicht erinnern',
     categoryIncludeAgain: 'Kategorie-Erinnerungen wieder zulassen',
     categoryExcluded: 'Kategorie-Erinnerungen für diesen Termin ausgesetzt.',
@@ -1470,6 +1473,9 @@ export const texts = {
     edit: 'Erinnerung bearbeiten',
     remove: 'Erinnerung deaktivieren',
     confirmRemove: 'Möchten Sie diese Erinnerung deaktivieren?',
+    delete: 'Einzelerinnerung löschen',
+    confirmDelete:
+      'Möchten Sie diese Einzelerinnerung löschen? Bestehende Kategorie-Abos gelten weiterhin.',
     resume: 'Erinnerung aktivieren',
     paused: 'Erinnerung deaktiviert.',
     save: 'Speichern',

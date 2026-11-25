@@ -291,9 +291,7 @@ const getSettingContent = (
 ) => {
   switch (setting) {
     case SETTINGS_SCREENS.EVENT_REMINDERS:
-      return (
-        <EventReminderSettings listsWithoutArrows={listsWithoutArrows} navigation={navigation} />
-      );
+      return <EventReminderSettings navigation={navigation} />;
     case SETTINGS_SCREENS.LOCATION:
       return <LocationSettings />;
     case SETTINGS_SCREENS.PERMANENT_FILTER:
@@ -310,11 +308,7 @@ const getSettingContent = (
           showRemotePush={showRemotePush}
           footer={
             categoryEnabled ? (
-              <EventReminderSettings
-                embeddedCategories
-                listsWithoutArrows={listsWithoutArrows}
-                navigation={navigation}
-              />
+              <EventReminderSettings embeddedCategories navigation={navigation} />
             ) : null
           }
         >

@@ -149,6 +149,34 @@ describe('SettingsToggle accessibility', () => {
     expect(loadingSlot).toBeDefined();
   });
 
+  it('exposes the category name and the switch as separate actions', () => {
+    const onOpen = jest.fn();
+    const onActivate = jest.fn();
+    const tree = renderWithAct(
+      <SettingsToggle
+        needsConnection={false}
+        item={{
+          title: 'Kultur / Freizeit',
+          value: false,
+          onOpen,
+          openLabel: 'Benachrichtigungseinstellungen für Kultur / Freizeit',
+          onActivate
+        }}
+      />
+    );
+    expect(tree.root.findByType('mock-list-item').props.onPress).toBeUndefined();
+    expect(tree.root.findByType('mock-touchable').props.accessibilityLabel).toBe(
+      'Benachrichtigungseinstellungen für Kultur / Freizeit'
+    );
+    renderer.act(() => tree.root.findByType('mock-touchable').props.onPress());
+    expect(onOpen).toHaveBeenCalledTimes(1);
+    expect(onActivate).not.toHaveBeenCalled();
+    expect(tree.root.findByProps({ accessibilityRole: 'switch' }).props.accessibilityLabel).toBe(
+      'Kultur / Freizeit'
+    );
+    renderer.act(() => tree.unmount());
+  });
+
   it('preserves the compact control gap while the loading indicator is visible', () => {
     jest.useFakeTimers();
     const tree = renderWithAct(

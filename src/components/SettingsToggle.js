@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, StyleSheet } from 'react-native';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { ListItem } from 'react-native-elements';
 
 import { device, normalize, texts } from '../config';
@@ -24,6 +24,8 @@ export const SettingsToggle = ({ item, needsConnection = true }) => {
     isDisabled,
     onActivate,
     onDeactivate,
+    onOpen,
+    openLabel,
     showSwitchLabels,
     title,
     topDivider,
@@ -64,15 +66,30 @@ export const SettingsToggle = ({ item, needsConnection = true }) => {
     <ListItem
       accessible={false}
       bottomDivider={bottomDivider ?? false}
-      Component={!isDisabled ? Touchable : undefined}
+      Component={!isDisabled && !onOpen ? Touchable : undefined}
       containerStyle={styles.container}
       delayPressIn={0}
       importantForAccessibility="no"
-      onPress={!isDisabled ? onPress : undefined}
+      onPress={!isDisabled && !onOpen ? onPress : undefined}
       topDivider={topDivider ?? false}
     >
       <ListItem.Content>
-        {!!title && <BoldText small>{title}</BoldText>}
+        {onOpen ? (
+          <Touchable
+            accessibilityLabel={openLabel}
+            disabled={isDisabled}
+            hitSlop={{ top: 10, bottom: 10 }}
+            onPress={onOpen}
+          >
+            <View>
+              <BoldText small underline>
+                {title}
+              </BoldText>
+            </View>
+          </Touchable>
+        ) : (
+          !!title && <BoldText small>{title}</BoldText>
+        )}
         {!!description && <RegularText small>{description}</RegularText>}
       </ListItem.Content>
 

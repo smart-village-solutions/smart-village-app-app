@@ -115,7 +115,7 @@ it('loads existing exclusions without writing or resetting them', async () => {
 });
 
 it('keeps shared categories in remote news preferences without writing event preferences', async () => {
-  mockCategories([{ id: '1', name: 'Shared', tagList: 'news_item, event_record' }]);
+  mockCategories([{ id: '1', name: 'Kultur &#x2F; Freizeit', tagList: 'news_item, event_record' }]);
   jest.mocked(getExcludeNotificationConfigurationFromServer).mockResolvedValue({
     news_item: { '1': {} },
     event_record: { '3': { '17': {} } }
@@ -125,7 +125,7 @@ it('keeps shared categories in remote news preferences without writing event pre
   expect(tree.root.findAllByType(RegularText).map(({ props }) => props.children)).toEqual([
     'News categories'
   ]);
-  expect(toggle(1)).toMatchObject({ title: 'Shared', value: false });
+  expect(toggle(1)).toMatchObject({ title: 'Kultur / Freizeit', value: false });
   expect(tree.root.findAllByType(SettingsToggle)).toHaveLength(2);
   expect(useQuery).toHaveBeenLastCalledWith(
     ['categories', { tagList: ['news_item'] }],

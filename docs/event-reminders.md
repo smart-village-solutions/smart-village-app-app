@@ -22,12 +22,17 @@ Configure `settings.personalizedPush` in a municipality's `globalSettings`.
 **Push-Benachrichtigungen** contains one event category list. Tagged event
 categories start off. A category enabled from an event detail is added in
 alphabetical order even if the category has no `event_record` tag. Switching
-off cancels pending notifications and retains the rule for reactivation.
+off cancels pending notifications and retains the rule for reactivation. The
+list stays the same when a switch changes. Tapping a category name opens its
+rule, sync status, and confirmed scheduling coverage in the reminder dialog.
+The dialog also offers permanent deletion. Category names display decoded HTML
+character references as plain text.
 
 **Veranstaltungserinnerungen** shows configured individual reminders using the
 standard event list layout. Tapping a row opens the reminder settings. Pausing
-a reminder retains its rule until the event begins. Completed reminders drop
-out of the list. The app observes incoming deliveries while open and reconciles
+a reminder retains its rule until the event begins. Permanent deletion removes
+the rule and lets any applicable category reminder take over. Completed reminders
+drop out of the list. The app observes incoming deliveries while open and reconciles
 past scheduled reminders against the pending OS inventory when activated.
 
 Local rules use device storage and the operating system's notification
@@ -51,7 +56,7 @@ waste operation. Android uses a separate notification channel for events.
 The app refreshes stored occurrence details and category subscriptions when it
 has a connection on launch or foreground. Subscriptions use their own
 paginated Main-Server query and match the selected category ID. They consider
-reminders due over the next 90 calendar days. Subscriptions display the last
+reminders due over the next 90 calendar days. Their dialogs display the last
 successful fetch and the coverage confirmed from the native notification
 inventory. A failed fetch preserves the prior schedule.
 
@@ -89,9 +94,19 @@ On the Pixel 4a Android emulator, denying notification permission showed the
 explanation and opened the system settings from the provided action. After
 enabling notifications there, saving the same category subscription created
 one native notification request for occurrence `92231`. Deleting the
-subscription removed that request and cleared the app's entry.
+subscription removed that request and cleared the app's entry. A single
+reminder was delivered with Wi-Fi and mobile data disabled and with the app
+process stopped before the alarm fired. After reconnecting, tapping the
+notification launched the app and opened occurrence `92231`. The app retained
+its completion marker.
+
+The category switch layout was verified on both simulators with the
+`Führung / Besichtigung` category. Activating it left the list layout intact,
+and tapping its name revealed the sync status in the dialog. On iOS,
+switching `Veranstaltung` off canceled its pending request for occurrence
+`92231`. After reactivation, permanent deletion removed both the saved rule
+and the pending request.
 
 Release acceptance still requires checking source-confirmed moves and
 cancellations, full waste queue coexistence, permission revocation, device
-reboot, time-zone changes, and accessibility on the supported platforms, plus
-Android delivery and navigation from a terminated app.
+reboot, time-zone changes, and accessibility on the supported platforms.
