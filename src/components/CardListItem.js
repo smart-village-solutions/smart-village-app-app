@@ -52,6 +52,16 @@ const renderCardContent = (bigTitle, horizontal, index, isSue, item, noOvertitle
     </HeadlineText>
   );
 
+  const subtitleComponent = (
+    <RegularText
+      key={keyExtractor(subtitle, index)}
+      small
+      style={[styles.subtitle, generalStyle, subtitleStyle]}
+    >
+      {subtitle}
+    </RegularText>
+  );
+
   const sequenceMap = {
     picture: () =>
       picture?.url ? (
@@ -81,15 +91,14 @@ const renderCardContent = (bigTitle, horizontal, index, isSue, item, noOvertitle
         </HeadlineText>
       ),
     subtitle: () =>
-      !!subtitle && (
-        <RegularText
-          key={keyExtractor(subtitle, index)}
-          small
-          style={[styles.subtitle, generalStyle, subtitleStyle]}
-        >
-          {subtitle}
-        </RegularText>
-      ),
+      !!subtitle &&
+      (isSue ? (
+        <WrapperHorizontal key={keyExtractor(subtitle, index)}>
+          {subtitleComponent}
+        </WrapperHorizontal>
+      ) : (
+        subtitleComponent
+      )),
     title: () =>
       !!title &&
       (isSue ? (

@@ -1,7 +1,10 @@
 import _camelCase from 'lodash/camelCase';
 import _mapKeys from 'lodash/mapKeys';
 
-import { fetchSueEndpoints } from '../../helpers';
+import { fetchSueEndpoints } from '../../helpers/sueHelper';
+import { withSueResourceCache } from '../../helpers/sueResourceCache';
+
+import { fetchSueJson } from './submitRequest';
 
 export const configurations = async () => {
   const {
@@ -20,14 +23,9 @@ export const configurations = async () => {
     sueContactRequiredFieldConfigurationUrl
   ];
 
-  const fetchPromises = urls.map((url) => fetch(url, sueFetchObj));
-
-  try {
-    const responses = await Promise.all(fetchPromises);
-    const jsonDataPromises = responses.map((response) => response.json());
-
+  return withSueResourceCache(urls, async () => {
     const [configResponse, geoMapResponse, requiredFieldResponse] = await Promise.all(
-      jsonDataPromises
+      urls.map((url) => fetchSueJson(url, sueFetchObj))
     );
 
     const mapKeysToCamelCase = (obj) => _mapKeys(obj, (value, key) => _camelCase(key));
@@ -46,7 +44,5 @@ export const configurations = async () => {
       limitation,
       requiredFields
     };
-  } catch (error) {
-    throw new Error(`Failed to fetch configurations: ${error.message}`);
-  }
+  });
 };

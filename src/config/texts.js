@@ -1692,6 +1692,36 @@ export const texts = {
   },
   sue: {
     answer: 'Antworten',
+    delivery: {
+      labels: {
+        pending: 'Wartet auf Übermittlung',
+        sending: 'Wird übermittelt',
+        sent: 'Übermittelt',
+        failed: 'Übermittlung abgelehnt',
+        uncertain: 'Übermittlung nicht bestätigt'
+      },
+      messages: {
+        pending:
+          'Ihre Meldung wurde auf diesem Gerät gespeichert. Sobald eine Verbindung zum Meldungsdienst möglich ist, wird sie bei geöffneter App automatisch gesendet. Öffnen Sie die App später erneut, falls Sie sie schließen.',
+        sending: 'Ihre Meldung ist auf diesem Gerät gespeichert und wird gerade übermittelt.',
+        sent: 'Der Meldungsdienst hat Ihre Meldung bestätigt.',
+        failed:
+          'Der Meldungsdienst hat die Übermittlung abgelehnt. Ihre Meldung bleibt auf diesem Gerät gespeichert. Bitte prüfen Sie Ihre Angaben vor einem erneuten Versuch.',
+        uncertain:
+          'Ihre Meldung ist auf diesem Gerät gespeichert. Der Meldungsdienst könnte sie bereits erhalten haben, aber die Bestätigung fehlt. Um doppelte Meldungen zu vermeiden, erfolgt kein automatischer erneuter Versand.'
+      },
+      retry: 'Erneut übermitteln',
+      retryTitle: 'Meldung erneut übermitteln?',
+      retryMessage:
+        'Diese Meldung könnte bereits beim Meldungsdienst vorliegen. Ein erneuter Versand kann eine doppelte Meldung erzeugen. Bitte prüfen Sie dies vor dem erneuten Versand.',
+      edit: 'Angaben bearbeiten',
+      saveError:
+        'Ihre Meldung konnte nicht auf diesem Gerät gespeichert werden. Bitte versuchen Sie es erneut. Die Formulareingaben bleiben erhalten.',
+      actionError:
+        'Die Aktion konnte nicht abgeschlossen werden. Ihre gespeicherte Meldung bleibt erhalten.',
+      differentServer:
+        'Diese Meldung gehört zu einem anderen Meldungsdienst. Sie wird nur über den ursprünglich gewählten Dienst übermittelt.'
+    },
     currentStatus: 'Aktueller Status',
     datetime: 'Datum und Uhrzeit der Meldung',
     description: 'Beschreibung',
