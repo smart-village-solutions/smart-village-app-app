@@ -13,7 +13,7 @@ import { isTodayOrLater, matomoTrackingString, openLink, trimNewLines } from '..
 import { getEventOccurrences, getEventReminderCategories } from '../../helpers/eventReminderTime';
 import { useDetailRefresh, useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
-import { getEventRemindersEnabled } from '../../pushNotifications/EventReminderLocalNotifications';
+import { getEventReminderModes } from '../../pushNotifications/EventReminderLocalNotifications';
 import { DELETE_EVENT_RECORD } from '../../queries/eventRecords';
 import { ScreenName } from '../../types';
 import { Button } from '../Button';
@@ -150,11 +150,16 @@ export const EventRecord = ({ data, navigation, readAloudControls, refetch, rout
     eventDates.shift();
   }
 
-  const eventRemindersEnabled = getEventRemindersEnabled(globalSettings);
+  const reminderModes = getEventReminderModes(globalSettings);
+  const reminderCategories = reminderModes.categoryEnabled ? getEventReminderCategories(data) : [];
+  const eventRemindersEnabled = reminderModes.singleEnabled || reminderModes.categoryEnabled;
   const reminderOccurrences = eventRemindersEnabled ? getEventOccurrences(data) : [];
   const reminderOccurrenceId = route.params?.eventReminderOccurrenceId;
   const showReminderActions =
-    eventRemindersEnabled && (reminderOccurrences.length > 0 || !!reminderOccurrenceId);
+    eventRemindersEnabled &&
+    (!!reminderOccurrenceId ||
+      (reminderOccurrences.length > 0 &&
+        (reminderModes.singleEnabled || reminderCategories.length > 0)));
 
   return (
     <View>
@@ -240,7 +245,8 @@ export const EventRecord = ({ data, navigation, readAloudControls, refetch, rout
           {showReminderActions && (
             <WrapperHorizontal>
               <EventReminderActions
-                categories={getEventReminderCategories(data)}
+                categories={reminderCategories}
+                modes={reminderModes}
                 listsWithoutArrows={settings.listsWithoutArrows}
                 navigation={navigation}
                 occurrences={reminderOccurrences}

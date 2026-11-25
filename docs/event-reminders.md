@@ -1,9 +1,38 @@
 # Local event reminders
 
-Set `settings.eventCalendar.reminders.enabled` to `true` in a municipality's
-`globalSettings` to enable single-event reminders and category subscriptions. The
-default is off. The UI appears on Main-Server event details and in the app's settings.
-Reminders use local device storage and the operating system's notification permissions.
+Configure `settings.personalizedPush.eventReminders` in a municipality's
+`globalSettings`. Set `singleEnabled` for individual reminders and
+`categoryEnabled` for category subscriptions. Each mode is off unless its own
+flag is `true`. This example enables both while keeping existing news categories.
+
+```json
+{
+  "settings": {
+    "personalizedPush": {
+      "categories": {
+        "queryVariables": { "tagList": ["news_item"] },
+        "sectionTitle": "Push-Benachrichtigungen für Nachrichtenkategorien"
+      },
+      "eventReminders": { "singleEnabled": true, "categoryEnabled": true }
+    }
+  }
+}
+```
+
+Reminders are available on Main-Server event details. If the municipality
+already uses categorized push (`settings.pushNotifications` and
+`settings.personalizedPush.categories`), its push settings screen also links
+to **Veranstaltungserinnerungen**. Other municipalities that enable reminders
+get the link directly in app settings.
+
+Remote category switches control messages sent by the server. The `tagList`
+filters those categories. Local reminder rules use Main-Server event
+categories, device storage, and operating system notification permissions.
+They can be managed with remote push switched off.
+When the app receives a disabled mode in `globalSettings`, it removes the
+corresponding pending plans and reconciles the remaining mode. For example, an
+eligible category rule can take over from a disabled single rule. Stored rules
+become available again if their mode is re-enabled.
 
 The default reminder is three calendar days before the occurrence in
 `Europe/Berlin`. When the source has no fixed start, the default time is noon.

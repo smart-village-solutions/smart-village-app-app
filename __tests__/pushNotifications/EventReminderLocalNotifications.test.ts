@@ -4,6 +4,7 @@ import { addToStore } from '../../src/helpers/storageHelper';
 import {
   applyEventCategorySourceResults,
   applyEventReminderUpdates,
+  getEventReminderModes,
   getEventRemindersEnabled,
   readEventReminders,
   readEventReminderSettings,
@@ -89,11 +90,21 @@ describe('event reminders scheduling', () => {
     jest.restoreAllMocks();
   });
 
-  it('requires explicit instance configuration', () => {
-    expect(getEventRemindersEnabled({ settings: { pushNotifications: true } })).toBe(false);
-    expect(
-      getEventRemindersEnabled({ settings: { eventCalendar: { reminders: { enabled: true } } } })
-    ).toBe(true);
+  const singleOnly = { singleEnabled: true, categoryEnabled: false };
+  const categoryOnly = { singleEnabled: false, categoryEnabled: true };
+  const disabled = { singleEnabled: false, categoryEnabled: false };
+
+  it('requires an explicit opt-in for each reminder mode', () => {
+    const categories = { queryVariables: { tagList: ['news_item', 'event_record'] } };
+    const globalSettings = (eventReminders = {}) => ({
+      settings: { pushNotifications: true, personalizedPush: { categories, eventReminders } }
+    });
+    expect(getEventReminderModes(globalSettings())).toEqual(disabled);
+    expect(getEventRemindersEnabled(globalSettings(disabled))).toBe(false);
+    expect(getEventReminderModes(globalSettings({ singleEnabled: true }))).toEqual(singleOnly);
+    expect(getEventReminderModes(globalSettings({ categoryEnabled: true }))).toEqual(categoryOnly);
+    expect(getEventRemindersEnabled(globalSettings(categoryOnly))).toBe(true);
+    expect(getEventRemindersEnabled(globalSettings(singleOnly))).toBe(true);
   });
 
   it('migrates single reminders into the combined store', async () => {
@@ -122,6 +133,67 @@ describe('event reminders scheduling', () => {
     ],
     coverageThrough: '2027-01-30',
     syncedAt: Date.now()
+  });
+
+  it('leaves native scheduling untouched without previously stored reminders', async () => {
+    await refreshEventReminders(disabled);
+    expect(Notifications.getAllScheduledNotificationsAsync).not.toHaveBeenCalled();
+  });
+
+  it('suspends only event requests and restores saved rules after opting in again', async () => {
+    const waste: Notifications.NotificationRequest = {
+      identifier: 'waste',
+      content: {
+        title: null,
+        subtitle: null,
+        body: null,
+        categoryIdentifier: null,
+        sound: null,
+        data: { query_type: 'WasteAddresses' }
+      },
+      trigger: null
+    };
+    native.set(waste.identifier, waste);
+    await saveEventCategorySubscription(categories[0], rule, eventSnapshot());
+    await saveEventReminder({ ...venue, occurrenceId: 'single' }, rule);
+
+    await refreshEventReminders(disabled);
+
+    expect([...native.keys()]).toEqual([waste.identifier]);
+    const settings = await readEventReminderSettings();
+    expect(settings.categoryPlan).toEqual({});
+    expect(settings.subscriptions.a.rule).toEqual(rule);
+    expect(settings.singles['e1:single'].rule).toEqual(rule);
+
+    await refreshEventReminders();
+
+    expect([...native.keys()].sort()).toEqual([
+      'event-reminder:e1:d1',
+      'event-reminder:e1:single',
+      waste.identifier
+    ]);
+  });
+
+  it('replaces a disabled single rule with the active category and preserves both saved rules', async () => {
+    await saveEventCategorySubscription(categories[0], rule, eventSnapshot());
+    await saveEventReminder(venue, { ...rule, leadDays: 1 });
+
+    await refreshEventReminders(categoryOnly);
+    expect((await readEventReminderSettings()).categoryPlan['e1:d1'].categoryId).toBe('a');
+    expect(native.get('event-reminder:e1:d1')?.content.data?.reminderAt).toBe(
+      Date.parse('2026-11-17T18:00:00Z')
+    );
+    expect(await saveEventReminder(venue, rule, categoryOnly)).toBe('invalid');
+
+    await refreshEventReminders(singleOnly);
+    expect((await readEventReminderSettings()).categoryPlan).toEqual({});
+    expect(native.get('event-reminder:e1:d1')?.content.data?.reminderAt).toBe(
+      Date.parse('2026-11-19T18:00:00Z')
+    );
+    expect(await saveEventCategorySubscription(categories[0], rule, undefined, singleOnly)).toBe(
+      'invalid'
+    );
+    expect((await readEventReminderSettings()).subscriptions.a.rule).toEqual(rule);
   });
 
   it('shares one native request across overlapping subscriptions and an explicit reminder', async () => {

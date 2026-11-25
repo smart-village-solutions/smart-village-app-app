@@ -275,7 +275,10 @@ const SettingsDevelopmentFooter = () => {
   );
 };
 
-const getSettingContent = (setting, { ar, listsWithoutArrows, mowas, navigation }) => {
+const getSettingContent = (
+  setting,
+  { ar, listsWithoutArrows, mowas, navigation, reminderEntry }
+) => {
   switch (setting) {
     case SETTINGS_SCREENS.EVENT_REMINDERS:
       return (
@@ -292,7 +295,7 @@ const getSettingContent = (setting, { ar, listsWithoutArrows, mowas, navigation 
     case SETTINGS_SCREENS.AR:
       return <AugmentedReality id={ar?.tourId} onSettingsScreen />;
     case SETTINGS_SCREENS.PERSONALIZED_PUSH:
-      return <PersonalizedPushSettings />;
+      return <PersonalizedPushSettings>{reminderEntry}</PersonalizedPushSettings>;
     case SETTINGS_SCREENS.ACCESSIBILITY:
       return <AccessibilitySettings />;
     default:
@@ -314,6 +317,7 @@ export const SettingsScreen = ({ navigation, route }) => {
   const [data, setData] = useState([]);
   const { setting = '' } = route?.params || {};
   const eventRemindersEnabled = getEventRemindersEnabled(globalSettings);
+  const hasPersonalizedPush = !!(settings.pushNotifications && personalizedPush.categories);
 
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.SETTINGS);
 
@@ -327,7 +331,7 @@ export const SettingsScreen = ({ navigation, route }) => {
       if (settings.pushNotifications) {
         const pushPermission = await readFromStore(PushNotificationStorageKeys.IN_APP_PERMISSION);
 
-        if (personalizedPush.categories) {
+        if (hasPersonalizedPush) {
           settingsList.push({
             data: [SETTINGS_SCREENS.PERSONALIZED_PUSH]
           });
@@ -348,7 +352,7 @@ export const SettingsScreen = ({ navigation, route }) => {
         }
       }
 
-      if (eventRemindersEnabled) {
+      if (eventRemindersEnabled && !hasPersonalizedPush) {
         settingsList.push({ data: [SETTINGS_SCREENS.EVENT_REMINDERS] });
       }
 
@@ -523,7 +527,7 @@ export const SettingsScreen = ({ navigation, route }) => {
     /* eslint-enable complexity */
 
     setting == '' && updateData();
-  }, [eventRemindersEnabled, setting]);
+  }, [eventRemindersEnabled, hasPersonalizedPush, setting]);
   /* eslint-enable react-hooks/exhaustive-deps */
 
   if (setting == '' && !data.length) {
@@ -538,7 +542,16 @@ export const SettingsScreen = ({ navigation, route }) => {
     ar: settings.ar,
     listsWithoutArrows,
     mowas,
-    navigation
+    navigation,
+    reminderEntry:
+      eventRemindersEnabled && hasPersonalizedPush && setting === SETTINGS_SCREENS.PERSONALIZED_PUSH
+        ? renderItem({
+            item: SETTINGS_SCREENS.EVENT_REMINDERS,
+            navigation,
+            listsWithoutArrows,
+            settingsScreenListItemTitles
+          })
+        : null
   });
   return (
     <SafeAreaViewFlex>

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires, react/prop-types */
 import React from 'react';
-import { Alert, TouchableOpacity } from 'react-native';
+import { Alert, SectionList, TouchableOpacity } from 'react-native';
 import renderer, { act } from 'react-test-renderer';
 
 jest.mock('../../src/components', () => {
@@ -30,6 +30,7 @@ jest.mock('../../src/components/TextListItem', () => ({
 }));
 
 jest.mock('../../src/components/form/Input', () => ({ Input: () => null }));
+jest.mock('../../src/components/SectionHeader', () => ({ SectionHeader: () => null }));
 
 jest.mock('../../src/hooks', () => ({
   useMatomoTrackScreenView: jest.fn()
@@ -42,6 +43,11 @@ jest.mock('../../src/config', () => ({
   texts: {
     errors: {
       errorTitle: 'Fehler'
+    },
+    eventReminders: {
+      title: 'Veranstaltungserinnerungen',
+      singles: 'Einzelne Erinnerungen',
+      categorySubscriptions: 'Kategorie-Abos'
     },
     profile: {
       termsAndConditionsAlertTitle: 'Datenschutzhinweise'
@@ -122,7 +128,10 @@ jest.mock('../../src/NetworkProvider', () => ({
 }));
 
 import { clearPersistentCaches } from '../../src/ReactQueryProvider';
+import { SectionHeader } from '../../src/components/SectionHeader';
+import { PersonalizedPushSettings } from '../../src/components/settings';
 import {
+  SETTINGS_SCREENS,
   SettingsScreen,
   confirmResetPersistentCaches,
   onActivatePushNotifications,
@@ -139,6 +148,56 @@ describe('SettingsScreen', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
+
+  it.each([
+    [false, false, true, false, false],
+    [true, false, true, false, true],
+    [false, true, true, false, true],
+    [true, true, true, false, true],
+    [false, true, false, true, false]
+  ])(
+    'places the entry and sections with single reminders %s, category reminders %s, and categorized push %s',
+    async (singleEnabled, categoryEnabled, personalized, showInRoot, showInPush) => {
+      const globalSettings = {
+        ...initialContext.globalSettings,
+        settings: {
+          pushNotifications: personalized,
+          personalizedPush: {
+            categories: { queryVariables: { tagList: ['news_item', 'event_record'] } },
+            eventReminders: { singleEnabled, categoryEnabled }
+          }
+        }
+      };
+      const screen = (params) => (
+        <SettingsContext.Provider value={{ ...initialContext, globalSettings }}>
+          <SettingsScreen navigation={navigation} route={{ params }} />
+        </SettingsContext.Provider>
+      );
+      let tree;
+      await act(async () => {
+        tree = renderer.create(screen());
+      });
+      const entries = tree.root.findByType(SectionList).props.sections.flatMap(({ data }) => data);
+      expect(entries.includes(SETTINGS_SCREENS.EVENT_REMINDERS)).toBe(showInRoot);
+      expect(entries.includes(SETTINGS_SCREENS.PERSONALIZED_PUSH)).toBe(personalized);
+
+      await act(async () => {
+        tree.update(screen({ setting: SETTINGS_SCREENS.PERSONALIZED_PUSH }));
+      });
+      const entry = tree.root.findByType(PersonalizedPushSettings).props.children;
+      expect(entry?.props.item.params.setting ?? null).toBe(
+        showInPush ? SETTINGS_SCREENS.EVENT_REMINDERS : null
+      );
+
+      await act(async () => {
+        tree.update(screen({ setting: SETTINGS_SCREENS.EVENT_REMINDERS }));
+      });
+      const groups = tree.root.findAllByType(SectionHeader).map(({ props }) => props.title);
+      expect(groups.includes('Einzelne Erinnerungen')).toBe(singleEnabled);
+      expect(groups.includes('Kategorie-Abos')).toBe(categoryEnabled);
+      await act(async () => tree.unmount());
+    }
+  );
 
   it('shows a dev-only persistent cache reset link and clears caches after confirmation', async () => {
     jest.mocked(clearPersistentCaches).mockResolvedValue(undefined);

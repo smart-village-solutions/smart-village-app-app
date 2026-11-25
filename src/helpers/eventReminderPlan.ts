@@ -71,6 +71,10 @@ export type ReminderCandidate = {
   categoryId?: string;
 };
 
+export type EventReminderModes = { singleEnabled: boolean; categoryEnabled: boolean };
+
+export const allEventReminderModes = { singleEnabled: true, categoryEnabled: true };
+
 const compareCandidates = (left: ReminderCandidate, right: ReminderCandidate) =>
   left.when - right.when || left.key.localeCompare(right.key);
 
@@ -91,18 +95,32 @@ export const previewCategoryReminders = (
   return { count: due.length, next: due[0]?.when };
 };
 
-export const buildReminderCandidates = (state: EventReminderSettingsState, now: number) => {
-  const singles = Object.entries(state.singles).flatMap(([key, reminder]) => {
+export const buildReminderCandidates = (
+  state: EventReminderSettingsState,
+  now: number,
+  { singleEnabled, categoryEnabled }: EventReminderModes
+) => {
+  const singleRules = singleEnabled ? state.singles : {};
+  const singles = Object.entries(singleRules).flatMap(([key, reminder]) => {
     const when = getReminderTimestamp(reminder.occurrence, reminder.rule);
     if (reminder.requiresReview || !isValidReminderTimestamp(reminder.occurrence, when, now))
       return [];
     return [{ key, occurrence: reminder.occurrence, when }];
   });
+  const categories = categoryEnabled ? buildCategoryCandidates(state, singleRules, now) : [];
+  return [...singles, ...categories].sort(compareCandidates);
+};
+
+const buildCategoryCandidates = (
+  state: EventReminderSettingsState,
+  singleRules: EventReminderSettingsState['singles'],
+  now: number
+) => {
   const categoryCandidates = new Map<string, ReminderCandidate>();
   for (const subscription of Object.values(state.subscriptions)) {
     const end = categoryReminderCoverageEnd(subscription.sourceCoverageThrough);
     for (const [key, occurrence] of Object.entries(subscription.occurrences)) {
-      if (state.singles[key] || state.exclusions[key] || state.elapsedCategoryReminders[key])
+      if (singleRules[key] || state.exclusions[key] || state.elapsedCategoryReminders[key])
         continue;
       const when = getReminderTimestamp(occurrence, subscription.rule);
       if (when >= end || !isValidReminderTimestamp(occurrence, when, now)) continue;
@@ -112,7 +130,7 @@ export const buildReminderCandidates = (state: EventReminderSettingsState, now: 
       categoryCandidates.set(key, { key, occurrence, when, categoryId });
     }
   }
-  return [...singles, ...categoryCandidates.values()].sort(compareCandidates);
+  return categoryCandidates.values();
 };
 
 const compareCategoryCandidates = (previous: ReminderCandidate, when: number, categoryId: string) =>

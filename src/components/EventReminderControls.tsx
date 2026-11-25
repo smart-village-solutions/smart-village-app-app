@@ -18,6 +18,7 @@ import { useQuery } from 'react-query';
 import { Icon, consts, normalize, texts } from '../config';
 import {
   CategorySubscription,
+  EventReminderModes,
   EventReminderSettingsState,
   previewCategoryReminders,
   summarizeCategoryPlan
@@ -43,7 +44,7 @@ import { NetworkContext } from '../NetworkProvider';
 import {
   EVENT_REMINDERS_CHANGED,
   SingleEventReminder,
-  getEventRemindersEnabled,
+  getEventReminderModes,
   readEventReminderSettings,
   removeEventCategorySubscription,
   removeEventReminder,
@@ -99,7 +100,7 @@ const presetRule = (occurrence: EventOccurrence, leadDays: number): EventReminde
 type ListNavigation = React.ComponentProps<typeof TextListItem>['navigation'];
 const emptySingles: EventReminderSettingsState['singles'] = {};
 
-const useEventReminders = () => {
+const useEventReminders = ({ singleEnabled, categoryEnabled }: EventReminderModes) => {
   const [settings, setSettings] = useState<EventReminderSettingsState>();
   const [readFailed, setReadFailed] = useState(false);
   const [now, setNow] = useState(Date.now);
@@ -125,7 +126,12 @@ const useEventReminders = () => {
       listener.remove();
     };
   }, []);
-  return { settings, reminders: settings?.singles ?? emptySingles, readFailed, now };
+  return {
+    settings: categoryEnabled ? settings : undefined,
+    reminders: (singleEnabled ? settings?.singles : undefined) ?? emptySingles,
+    readFailed,
+    now
+  };
 };
 
 const useCategoryPreview = (
@@ -164,6 +170,7 @@ const notifyPermissionMissing = () =>
   ]);
 
 type EditorProps = {
+  modes: EventReminderModes;
   occurrence?: EventOccurrence;
   reminder?: SingleEventReminder;
   categories?: EventReminderCategory[];
@@ -186,6 +193,7 @@ const EventReminderEditor = ({
   categories = [],
   subscription,
   settings,
+  modes,
   close
 }: EditorProps) => {
   const { colors, isDark } = useTheme();
@@ -193,7 +201,12 @@ const EventReminderEditor = ({
   const { bottom, top } = useSafeAreaInsets();
   const scrollView = useRef<ScrollView>(null);
   const [rule, setRule] = useState(reminder?.rule ?? defaultRule);
-  const [categoryMode, setCategoryMode] = useState(!!subscription);
+  const [selectedCategoryMode, setCategoryMode] = useState(!!subscription);
+  const categoryMode =
+    !!subscription ||
+    (modes.categoryEnabled &&
+      !!categories.length &&
+      (!modes.singleEnabled || selectedCategoryMode));
   const initialCategory =
     subscription?.category ?? (categories.length === 1 ? categories[0] : undefined);
   const initialRule =
@@ -261,7 +274,10 @@ const EventReminderEditor = ({
       : copy.invalid);
   const occurrenceKey = occurrence && eventOccurrenceKey(occurrence);
   const excluded = !!occurrenceKey && !!settings?.exclusions[occurrenceKey];
-  const canExclude = excluded || categories.some(({ id }) => !!settings?.subscriptions[id]);
+  const canExclude =
+    modes.categoryEnabled &&
+    !!occurrence &&
+    (excluded || categories.some(({ id }) => !!settings?.subscriptions[id]));
 
   const togglePicker = (mode: 'date' | 'time') =>
     setPicker((current) => (current === mode ? undefined : mode));
@@ -326,9 +342,9 @@ const EventReminderEditor = ({
     try {
       const status =
         categoryMode && selectedCategory
-          ? await saveEventCategorySubscription(selectedCategory, categoryRule, preview.data)
+          ? await saveEventCategorySubscription(selectedCategory, categoryRule, preview.data, modes)
           : occurrence
-          ? await saveEventReminder(occurrence, rule)
+          ? await saveEventReminder(occurrence, rule, modes)
           : 'invalid';
       if (status === 'permission') notifyPermissionMissing();
       else if (status === 'scheduled' || status === 'capacity' || status === 'saved') close();
@@ -351,8 +367,8 @@ const EventReminderEditor = ({
           setSaving(true);
           try {
             if (categoryMode && selectedCategory)
-              await removeEventCategorySubscription(selectedCategory.id);
-            else if (occurrence) await removeEventReminder(occurrence);
+              await removeEventCategorySubscription(selectedCategory.id, modes);
+            else if (occurrence) await removeEventReminder(occurrence, modes);
             close();
           } catch {
             setMessage(copy.failed);
@@ -368,7 +384,7 @@ const EventReminderEditor = ({
     if (!occurrence) return;
     setSaving(true);
     try {
-      await setEventCategoryExclusion(occurrence, !excluded);
+      await setEventCategoryExclusion(occurrence, !excluded, modes);
       close();
     } catch {
       setMessage(copy.failed);
@@ -443,7 +459,7 @@ const EventReminderEditor = ({
 
   const renderScopeOptions = () => (
     <WrapperHorizontal style={styles.presets}>
-      {!subscription && !!categories.length && (
+      {!subscription && modes.singleEnabled && modes.categoryEnabled && !!categories.length && (
         <>
           <BoldText small>{copy.reminderScope}</BoldText>
           <View accessibilityLabel={copy.reminderScope} accessibilityRole="radiogroup">
@@ -532,7 +548,7 @@ const EventReminderEditor = ({
           </BoldText>
         </TouchableOpacity>
       )}
-      {!categoryMode && canExclude && (
+      {(!categoryMode || !modes.singleEnabled) && canExclude && (
         <TouchableOpacity
           accessibilityRole="button"
           accessibilityLabel={excluded ? copy.categoryIncludeAgain : copy.categoryExclude}
@@ -657,6 +673,7 @@ const EventReminderEditor = ({
 
 export const EventReminderActions = ({
   categories,
+  modes,
   listsWithoutArrows,
   navigation,
   occurrences,
@@ -664,16 +681,20 @@ export const EventReminderActions = ({
   notificationOccurrenceId
 }: {
   categories: EventReminderCategory[];
+  modes: EventReminderModes;
   listsWithoutArrows?: boolean;
   navigation: ListNavigation;
   occurrences: EventOccurrence[];
   selectedOccurrenceId?: string | number | null;
   notificationOccurrenceId?: string;
 }) => {
-  const { settings, reminders, readFailed, now } = useEventReminders();
+  const { settings, reminders, readFailed, now } = useEventReminders(modes);
   const [edited, setEdited] = useState<EventOccurrence>();
   const [choosing, setChoosing] = useState(false);
-  const future = occurrences.filter((occurrence) => occurrenceEndForReminders(occurrence) > now);
+  const future = occurrences.filter(
+    (occurrence) =>
+      (modes.singleEnabled || !!categories.length) && occurrenceEndForReminders(occurrence) > now
+  );
   const opened = occurrences.find(({ occurrenceId }) => occurrenceId === notificationOccurrenceId);
   const selected = selectOccurrence(future, notificationOccurrenceId ?? selectedOccurrenceId);
 
@@ -746,6 +767,7 @@ export const EventReminderActions = ({
           occurrence={edited}
           reminder={reminders[eventOccurrenceKey(edited)]}
           categories={categories}
+          modes={modes}
           settings={settings}
           close={() => setEdited(undefined)}
         />
@@ -873,11 +895,18 @@ const describeCategorySubscription = (
 
 export const EventReminderSettings = (props: SettingsProps) => {
   const { globalSettings } = useContext(SettingsContext);
-  return getEventRemindersEnabled(globalSettings) ? <EventReminderList {...props} /> : null;
+  const modes = getEventReminderModes(globalSettings);
+  return modes.singleEnabled || modes.categoryEnabled ? (
+    <EventReminderList {...props} modes={modes} />
+  ) : null;
 };
 
-const EventReminderList = ({ listsWithoutArrows, navigation }: SettingsProps) => {
-  const { settings, reminders, readFailed, now } = useEventReminders();
+const EventReminderList = ({
+  listsWithoutArrows,
+  navigation,
+  modes
+}: SettingsProps & { modes: EventReminderModes }) => {
+  const { settings, reminders, readFailed, now } = useEventReminders(modes);
   const [edited, setEdited] = useState<SingleEventReminder>();
   const [editedSubscription, setEditedSubscription] = useState<CategorySubscription>();
   const subscriptions = Object.values(settings?.subscriptions ?? {}).sort((left, right) =>
@@ -893,7 +922,6 @@ const EventReminderList = ({ listsWithoutArrows, navigation }: SettingsProps) =>
   return (
     <>
       <ScrollView>
-        <SectionHeader title={copy.singles} />
         {readFailed && (
           <Wrapper>
             <RegularText small error accessibilityRole="alert">
@@ -901,92 +929,106 @@ const EventReminderList = ({ listsWithoutArrows, navigation }: SettingsProps) =>
             </RegularText>
           </Wrapper>
         )}
-        {!entries.length && !readFailed && (
-          <Wrapper>
-            <RegularText small lighter>
-              {copy.empty}
-            </RegularText>
-          </Wrapper>
+        {modes.singleEnabled && (
+          <>
+            <SectionHeader title={copy.singles} />
+            {!entries.length && !readFailed && (
+              <Wrapper>
+                <RegularText small lighter>
+                  {copy.empty}
+                </RegularText>
+              </Wrapper>
+            )}
+            <WrapperHorizontal style={styles.settingsList}>
+              {entries.map((reminder) => {
+                const id = eventOccurrenceKey(reminder.occurrence);
+                const { title } = reminder.occurrence;
+                const date = formatOccurrence(reminder.occurrence);
+                const status = describeReminder(reminder);
+                return (
+                  <TextListItem
+                    key={id}
+                    accessibilityLabel={`${copy.edit}. ${title}. ${date}. ${status} ${consts.a11yLabel.button}`}
+                    item={{
+                      id,
+                      routeName: ScreenName.Settings,
+                      params: {},
+                      isHeadlineTitle: false,
+                      title,
+                      teaserTitle: date,
+                      subtitle: status,
+                      onPress: () => setEdited(reminder)
+                    }}
+                    listsWithoutArrows={listsWithoutArrows}
+                    navigation={navigation}
+                  />
+                );
+              })}
+            </WrapperHorizontal>
+            {!!edited && (
+              <EventReminderEditor
+                modes={modes}
+                occurrence={edited.occurrence}
+                reminder={edited}
+                settings={settings}
+                close={() => setEdited(undefined)}
+              />
+            )}
+          </>
         )}
-        <WrapperHorizontal style={styles.settingsList}>
-          {entries.map((reminder) => {
-            const id = eventOccurrenceKey(reminder.occurrence);
-            const { title } = reminder.occurrence;
-            const date = formatOccurrence(reminder.occurrence);
-            const status = describeReminder(reminder);
-            return (
-              <TextListItem
-                key={id}
-                accessibilityLabel={`${copy.edit}. ${title}. ${date}. ${status} ${consts.a11yLabel.button}`}
-                item={{
-                  id,
-                  routeName: ScreenName.Settings,
-                  params: {},
-                  isHeadlineTitle: false,
-                  title,
-                  teaserTitle: date,
-                  subtitle: status,
-                  onPress: () => setEdited(reminder)
-                }}
-                listsWithoutArrows={listsWithoutArrows}
-                navigation={navigation}
+        {modes.categoryEnabled && (
+          <>
+            <SectionHeader title={copy.categorySubscriptions} />
+            <WrapperHorizontal style={styles.settingsList}>
+              <RegularText small lighter style={styles.detailNote}>
+                {copy.categoryUpdateHint}
+              </RegularText>
+              {!subscriptions.length && !readFailed && (
+                <RegularText small>{copy.categoryEmpty}</RegularText>
+              )}
+              {subscriptions.map((subscription) => {
+                const { id, name } = subscription.category;
+                const { leadDays, time } = subscription.rule;
+                const rule = copy.categoryRule(
+                  leadDays,
+                  time ? `${time} Uhr` : copy.categoryStartTime
+                );
+                const status = describeCategorySubscription(
+                  subscription,
+                  settings?.categoryPlan ?? {},
+                  now
+                );
+                return (
+                  <TextListItem
+                    key={id}
+                    accessibilityLabel={`${copy.categoryEdit}. ${name}. ${rule}. ${status} ${consts.a11yLabel.button}`}
+                    item={{
+                      id,
+                      routeName: ScreenName.Settings,
+                      params: {},
+                      isHeadlineTitle: false,
+                      title: name,
+                      teaserTitle: rule,
+                      subtitle: status,
+                      onPress: () => setEditedSubscription(subscription)
+                    }}
+                    listsWithoutArrows={listsWithoutArrows}
+                    navigation={navigation}
+                  />
+                );
+              })}
+            </WrapperHorizontal>
+            {!!editedSubscription && (
+              <EventReminderEditor
+                modes={modes}
+                subscription={editedSubscription}
+                settings={settings}
+                close={() => setEditedSubscription(undefined)}
               />
-            );
-          })}
-        </WrapperHorizontal>
-        <SectionHeader title={copy.categorySubscriptions} />
-        <WrapperHorizontal style={styles.settingsList}>
-          <RegularText small lighter style={styles.detailNote}>
-            {copy.categoryUpdateHint}
-          </RegularText>
-          {!subscriptions.length && !readFailed && (
-            <RegularText small>{copy.categoryEmpty}</RegularText>
-          )}
-          {subscriptions.map((subscription) => {
-            const { id, name } = subscription.category;
-            const { leadDays, time } = subscription.rule;
-            const rule = copy.categoryRule(leadDays, time ? `${time} Uhr` : copy.categoryStartTime);
-            const status = describeCategorySubscription(
-              subscription,
-              settings?.categoryPlan ?? {},
-              now
-            );
-            return (
-              <TextListItem
-                key={id}
-                accessibilityLabel={`${copy.categoryEdit}. ${name}. ${rule}. ${status} ${consts.a11yLabel.button}`}
-                item={{
-                  id,
-                  routeName: ScreenName.Settings,
-                  params: {},
-                  isHeadlineTitle: false,
-                  title: name,
-                  teaserTitle: rule,
-                  subtitle: status,
-                  onPress: () => setEditedSubscription(subscription)
-                }}
-                listsWithoutArrows={listsWithoutArrows}
-                navigation={navigation}
-              />
-            );
-          })}
-        </WrapperHorizontal>
+            )}
+          </>
+        )}
       </ScrollView>
-      {!!edited && (
-        <EventReminderEditor
-          occurrence={edited.occurrence}
-          reminder={edited}
-          settings={settings}
-          close={() => setEdited(undefined)}
-        />
-      )}
-      {!!editedSubscription && (
-        <EventReminderEditor
-          subscription={editedSubscription}
-          settings={settings}
-          close={() => setEditedSubscription(undefined)}
-        />
-      )}
     </>
   );
 };

@@ -1,6 +1,14 @@
 import _cloneDeep from 'lodash/cloneDeep';
 import _isEmpty from 'lodash/isEmpty';
-import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from 'react';
 import { FlatList } from 'react-native';
 import { useQuery } from 'react-query';
 
@@ -44,7 +52,7 @@ const tagListArray = (tag) => {
     : [];
 };
 
-export const PersonalizedPushSettings = () => {
+export const PersonalizedPushSettings = ({ children }: { children?: ReactNode }) => {
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { personalizedPush = {}, settingsScreenListItemTitles = {} } = settings;
@@ -301,7 +309,12 @@ export const PersonalizedPushSettings = () => {
   ]);
 
   if (loading) {
-    return <LoadingSpinner loading />;
+    return (
+      <>
+        {!!children && <WrapperHorizontal>{children}</WrapperHorizontal>}
+        <LoadingSpinner loading />
+      </>
+    );
   }
 
   return (
@@ -319,6 +332,7 @@ export const PersonalizedPushSettings = () => {
             value: permission
           }}
         />
+        {children}
       </WrapperHorizontal>
       <FlatList
         data={listItems}
