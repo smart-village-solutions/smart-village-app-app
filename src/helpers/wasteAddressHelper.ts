@@ -1,8 +1,8 @@
-type WasteAddress = {
-  city?: string | null;
+export type WasteAddress = {
+  city?: string;
   id?: number | string | null;
-  street?: string | null;
-  zip?: string | null;
+  street?: string;
+  zip?: string;
 };
 
 export const getAutoSelectableWasteAddress = (

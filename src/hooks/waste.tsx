@@ -8,6 +8,7 @@ import { RegularText, Wrapper } from '../components';
 import { createWasteSuggestionStyles } from '../components/waste/wasteInputStyles';
 import { device, namespace, secrets, staticRestSuffix } from '../config';
 import { graphqlFetchPolicy, openLink } from '../helpers';
+import type { WasteAddress } from '../helpers/wasteAddressHelper';
 import { NetworkContext } from '../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../queries';
 import { getLocationData } from '../screens';
@@ -235,7 +236,7 @@ type WasteAddressSelectionOptions = {
 };
 
 export const useRenderSuggestions = (
-  selectionCallback?: (item: any, options?: WasteAddressSelectionOptions) => void
+  selectionCallback?: (item: WasteAddress, options?: WasteAddressSelectionOptions) => void
 ) => {
   const styles = useThemeStyles(createWasteSuggestionStyles);
   const [inputValueCity, setInputValueCity] = useState('');
@@ -264,7 +265,7 @@ export const useRenderSuggestions = (
   );
 
   const onSelectItem = useCallback(
-    (item: any, options?: WasteAddressSelectionOptions) => {
+    (item: WasteAddress, options?: WasteAddressSelectionOptions) => {
       setInputValue(getStreetString(item));
       selectionCallback?.(item, options);
     },
