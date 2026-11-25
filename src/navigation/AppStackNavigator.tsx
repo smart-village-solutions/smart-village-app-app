@@ -2,12 +2,16 @@ import {
   CardStyleInterpolators,
   createStackNavigator
 } from 'expo-router/build/react-navigation/stack';
+import type { StackHeaderProps } from 'expo-router/build/react-navigation/stack';
 import React, { useContext } from 'react';
 
 import { AccessibilityContext } from '../AccessibilityProvider';
+import { NavigationHeader } from '../components/NavigationHeader';
 import { StackConfig } from '../types';
 
 const Stack = createStackNavigator<Record<string, { title: string } | undefined>>();
+
+const renderNavigationHeader = (props: StackHeaderProps) => <NavigationHeader {...props} />;
 
 const AppStackNavigator = ({ stackConfig }: { stackConfig: StackConfig }) => {
   const { isReduceMotionEnabled } = useContext(AccessibilityContext);
@@ -22,6 +26,7 @@ const AppStackNavigator = ({ stackConfig }: { stackConfig: StackConfig }) => {
             : stackConfig.screenOptions || {};
 
         return {
+          header: renderNavigationHeader,
           ...resolvedOptions,
           animationEnabled: isReduceMotionEnabled ? false : resolvedOptions.animationEnabled,
           cardStyleInterpolator: isReduceMotionEnabled

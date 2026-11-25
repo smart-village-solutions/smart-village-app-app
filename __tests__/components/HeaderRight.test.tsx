@@ -36,7 +36,7 @@ jest.mock('../../src/components/InfoHeader', () => ({
 
 jest.mock('../../src/components/LoginHeader', () => ({
   LoginHeader: () => {
-    const ReactLocal = require('react');
+    const ReactLocal = jest.requireActual('react');
 
     return ReactLocal.createElement('mock-login-header');
   }
@@ -44,7 +44,7 @@ jest.mock('../../src/components/LoginHeader', () => ({
 
 jest.mock('../../src/components/SearchHeader', () => ({
   SearchHeader: () => {
-    const ReactLocal = require('react');
+    const ReactLocal = jest.requireActual('react');
 
     return ReactLocal.createElement('mock-search-header');
   }
@@ -52,7 +52,7 @@ jest.mock('../../src/components/SearchHeader', () => ({
 
 jest.mock('../../src/components/Wrapper', () => ({
   WrapperRow: ({ children, style }) => {
-    const ReactLocal = require('react');
+    const ReactLocal = jest.requireActual('react');
 
     return ReactLocal.createElement('mock-wrapper-row', { style }, children);
   }
@@ -63,7 +63,7 @@ jest.mock('../../src/components/bookmarks', () => ({
 }));
 
 jest.mock('../../src/config', () => {
-  const ReactLocal = require('react');
+  const ReactLocal = jest.requireActual('react');
 
   return {
     colors: {
@@ -94,6 +94,7 @@ import { AccessibilityHeader } from '../../src/components/AccessibilityHeader';
 import { DrawerHeader } from '../../src/components/DrawerHeader';
 import { HeaderRight } from '../../src/components/HeaderRight';
 import { ShareHeader } from '../../src/components/ShareHeader';
+import { HeaderForegroundContext } from '../../src/hooks/useHeaderForeground';
 
 const renderWithSettings = (element: React.ReactElement) => {
   let tree: renderer.ReactTestRenderer;
@@ -110,6 +111,22 @@ const renderWithSettings = (element: React.ReactElement) => {
 };
 
 describe('HeaderRight', () => {
+  it.each(['#FFFFFF', '#141414'])(
+    'shares the header foreground %s between accessibility, drawer, and share controls',
+    (foreground) => {
+      const tree = renderWithSettings(
+        <HeaderForegroundContext.Provider value={foreground}>
+          <AccessibilityHeader style={undefined} />
+          <DrawerHeader navigation={{ openDrawer: jest.fn() } as never} style={undefined} />
+          <ShareHeader shareContent={{ message: 'Test' }} style={undefined} />
+        </HeaderForegroundContext.Provider>
+      );
+      ['mock-named-icon', 'mock-drawer-icon', 'mock-share-icon'].forEach((type) => {
+        expect(tree.root.findByType(type).props.color).toBe(foreground);
+      });
+    }
+  );
+
   it.each([
     ['regular screen', 'Details', undefined, 1],
     ['search screen', ScreenName.Search, undefined, 0],

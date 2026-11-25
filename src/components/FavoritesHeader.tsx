@@ -4,7 +4,7 @@ import { StyleProp, ViewStyle } from 'react-native';
 
 import { BookmarkContext } from '../BookmarkProvider';
 import { consts, texts } from '../config';
-import { useTheme } from '../hooks/useTheme';
+import { useHeaderForeground } from '../hooks/useHeaderForeground';
 
 import { ConfiguredBookmarkIcon } from './bookmarks/BookmarkIcon';
 import { HeaderIconButton } from './HeaderIconButton';
@@ -18,7 +18,7 @@ type Props = {
 };
 
 export const FavoritesHeader = ({ navigation, style }: Props) => {
-  const { colors } = useTheme();
+  const foreground = useHeaderForeground();
   const { bookmarks } = useContext(BookmarkContext);
   const hasBookmarks = Object.values(bookmarks ?? {}).some((items) => items.length > 0);
 
@@ -29,7 +29,7 @@ export const FavoritesHeader = ({ navigation, style }: Props) => {
       accessibilityHint={a11yText.bookmarksHint}
     >
       <ConfiguredBookmarkIcon
-        color={colors.darkText}
+        color={foreground}
         selected={hasBookmarks}
         size={HEADER_RIGHT_ICON_SIZE}
         style={style}

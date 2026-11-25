@@ -139,9 +139,13 @@ export const NoticeboardDetail = ({
   useLayoutEffect(() => {
     isCurrentUser &&
       navigation.setOptions({
-        headerTitle: () => <HeadlineText>{texts.noticeboard.myNoticeboard}</HeadlineText>
+        headerTitle: ({ tintColor }: { tintColor?: string }) => (
+          <HeadlineText style={{ color: tintColor }}>
+            {texts.noticeboard.myNoticeboard}
+          </HeadlineText>
+        )
       });
-  }, [isCurrentUser]);
+  }, [isCurrentUser, navigation]);
 
   if (isLoading) {
     return <LoadingSpinner loading />;

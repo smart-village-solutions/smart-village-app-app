@@ -43,10 +43,19 @@ export type ThemePaletteOverrides = Partial<Record<keyof ThemeColorPalette, unkn
 
 export type ThemePalettesConfig = Partial<Record<ResolvedThemeMode, ThemePaletteOverrides>>;
 
+export type HeaderThemeAppearance = {
+  backgroundColor?: string;
+  gradientColors?: readonly [string, string, ...string[]];
+  tintColor?: string;
+};
+
 export type ThemeGlobalSettings = {
   settings?: {
     accessibility?: {
       themePalettes?: ThemePalettesConfig;
+      header?: Partial<
+        Record<ResolvedThemeMode, Partial<Record<keyof HeaderThemeAppearance, unknown>>>
+      >;
     };
   };
 };

@@ -81,6 +81,7 @@ import {
 } from '../../src/components/bookmarks/BookmarkIcon';
 import { BookmarkHeader } from '../../src/components/bookmarks/BookmarkHeader';
 import { FavoritesHeader } from '../../src/components/FavoritesHeader';
+import { HeaderForegroundContext } from '../../src/hooks/useHeaderForeground';
 
 const route = {
   key: 'detail-key',
@@ -125,6 +126,26 @@ const renderFavoritesHeader = (
   );
 
 describe('BookmarkHeader icon configuration', () => {
+  it('uses the shared header color for bookmark labels and shortcut icons', () => {
+    const tree = renderWithIcon(
+      undefined,
+      <HeaderForegroundContext.Provider value="#ABCDEF">
+        <BookmarkHeader label="Nachricht merken" route={route} />
+        <FavoritesHeader navigation={{ navigate: jest.fn() } as never} style={{}} />
+      </HeaderForegroundContext.Provider>,
+      { newsItems: ['42'] }
+    );
+    expect(tree.root.findByType('mock-heart-empty').props.color).toBe('#ABCDEF');
+    expect(tree.root.findByType('mock-heart-filled').props.color).toBe('#ABCDEF');
+    expect(tree.root.findByType('mock-regular-text').props.style.color).toBe('#ABCDEF');
+  });
+
+  it('keeps labeled actions primary-colored outside a navigation header', () => {
+    const tree = renderBookmark();
+    expect(tree.root.findByType('mock-heart-empty').props.color).toBe('#107821');
+    expect(tree.root.findByType('mock-regular-text').props.style.color).toBe('#107821');
+  });
+
   it('uses the heart icon pair by default', () => {
     expect(renderBookmark().root.findByType('mock-heart-empty')).toBeTruthy();
     expect(renderFavoritesHeader().root.findByType('mock-heart-filled')).toBeTruthy();

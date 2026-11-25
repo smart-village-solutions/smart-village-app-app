@@ -4,6 +4,7 @@ import { ShareContent, StyleProp, ViewStyle } from 'react-native';
 import { consts, Icon } from '../config';
 import { openShare } from '../helpers';
 import { useTheme } from '../hooks/useTheme';
+import { useHeaderForeground } from '../hooks/useHeaderForeground';
 
 import { HEADER_RIGHT_ICON_SIZE, HEADER_RIGHT_ICON_STROKE_WIDTH } from './headerIconConfig';
 import { HeaderIconButton } from './HeaderIconButton';
@@ -20,6 +21,7 @@ type Props = {
 
 export const ShareHeader = ({ buttonStyle, label, shareContent, style }: Props) => {
   const { colors } = useTheme();
+  const foreground = useHeaderForeground(label ? colors.primary : colors.text);
 
   if (!shareContent) {
     return null;
@@ -34,12 +36,17 @@ export const ShareHeader = ({ buttonStyle, label, shareContent, style }: Props) 
         style={buttonStyle}
       >
         <Icon.Share
-          color={label ? colors.primary : colors.darkText}
+          color={foreground}
           size={HEADER_RIGHT_ICON_SIZE}
           style={style}
           hasNoHitSlop
+          strokeWidth={HEADER_RIGHT_ICON_STROKE_WIDTH}
         />
-        {!!label && <RegularText primary>{label}</RegularText>}
+        {!!label && (
+          <RegularText primary style={{ color: foreground }}>
+            {label}
+          </RegularText>
+        )}
       </HeaderIconButton>
     )
   );

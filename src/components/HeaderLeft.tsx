@@ -3,7 +3,7 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { consts, Icon, normalize } from '../config';
-import { useTheme } from '../hooks/useTheme';
+import { useHeaderForeground } from '../hooks/useHeaderForeground';
 
 import { HeadlineText } from './Text';
 import { HeaderIconButton } from './HeaderIconButton';
@@ -15,7 +15,7 @@ export const HeaderLeft = ({
   backImage,
   text
 }: HeaderBackButtonProps & { text?: string }) => {
-  const { colors } = useTheme();
+  const foreground = useHeaderForeground();
 
   if (!onPress && !backImage && !text) {
     return null;
@@ -25,9 +25,9 @@ export const HeaderLeft = ({
     return (
       <View>
         {backImage ? (
-          backImage({ tintColor: colors.darkText })
+          backImage({ tintColor: foreground })
         ) : text ? (
-          <HeadlineText placeholder smaller style={styles.text}>
+          <HeadlineText placeholder smaller style={[styles.text, { color: foreground }]}>
             {text}
           </HeadlineText>
         ) : null}
@@ -42,13 +42,13 @@ export const HeaderLeft = ({
       accessibilityHint={consts.a11yLabel.backIconHint}
     >
       {backImage ? (
-        backImage({ tintColor: colors.darkText })
+        backImage({ tintColor: foreground })
       ) : text ? (
-        <HeadlineText lightest smaller style={styles.text}>
+        <HeadlineText lightest smaller style={[styles.text, { color: foreground }]}>
           {text}
         </HeadlineText>
       ) : (
-        <Icon.ArrowLeft color={colors.darkText} size={HEADER_RIGHT_ICON_SIZE} style={styles.icon} />
+        <Icon.ArrowLeft color={foreground} size={HEADER_RIGHT_ICON_SIZE} style={styles.icon} />
       )}
     </HeaderIconButton>
   );
