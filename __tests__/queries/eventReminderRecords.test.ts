@@ -1,4 +1,7 @@
-import { fetchEventCategorySnapshot } from '../../src/queries/eventReminderRecords';
+import {
+  fetchEventCategorySnapshot,
+  fetchEventReminderCategories
+} from '../../src/queries/eventReminderRecords';
 import { ReactQueryClient } from '../../src/ReactQueryClient';
 
 jest.mock('../../src/ReactQueryClient', () => ({ ReactQueryClient: jest.fn() }));
@@ -11,6 +14,22 @@ describe('category reminder source', () => {
   beforeEach(() => {
     request.mockReset();
     jest.mocked(ReactQueryClient).mockResolvedValue({ request });
+  });
+
+  it('includes tagged categories and categories already assigned to events', async () => {
+    request.mockResolvedValue({
+      categories: [
+        { id: 12, name: 'Kultur', tagList: 'news_item, event_record', eventRecordsCount: 0 },
+        { id: '13', name: 'Veranstaltung', tagList: null, eventRecordsCount: 1 },
+        { id: '14', name: 'Nachrichten', tagList: 'news_item', eventRecordsCount: 0 },
+        null
+      ]
+    });
+
+    expect(await fetchEventReminderCategories()).toEqual([
+      { id: '12', name: 'Kultur' },
+      { id: '13', name: 'Veranstaltung' }
+    ]);
   });
 
   it('continues after a short page and completes only at an empty page', async () => {

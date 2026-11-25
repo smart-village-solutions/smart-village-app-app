@@ -42,7 +42,7 @@ import {
   setInAppPermission,
   showSystemPermissionMissingDialog
 } from '../pushNotifications';
-import { getEventRemindersEnabled } from '../pushNotifications/EventReminderLocalNotifications';
+import { getEventReminderModes } from '../pushNotifications/EventReminderLocalNotifications';
 import { clearPersistentCaches } from '../ReactQueryProvider';
 import { SettingsContext } from '../SettingsProvider';
 import { ScreenName } from '../types';
@@ -140,6 +140,7 @@ const renderItem = ({ item, navigation, listsWithoutArrows, settingsScreenListIt
     component = (
       <TextListItem
         item={{
+          isHeadlineTitle: false,
           params: { setting: item, title: entryTitle },
           routeName: ScreenName.Settings,
           title: entryTitle
@@ -277,7 +278,16 @@ const SettingsDevelopmentFooter = () => {
 
 const getSettingContent = (
   setting,
-  { ar, listsWithoutArrows, mowas, navigation, reminderEntry }
+  {
+    ar,
+    listsWithoutArrows,
+    mowas,
+    navigation,
+    categoryEnabled,
+    eventRemindersEnabled,
+    settingsScreenListItemTitles,
+    showRemotePush
+  }
 ) => {
   switch (setting) {
     case SETTINGS_SCREENS.EVENT_REMINDERS:
@@ -295,7 +305,28 @@ const getSettingContent = (
     case SETTINGS_SCREENS.AR:
       return <AugmentedReality id={ar?.tourId} onSettingsScreen />;
     case SETTINGS_SCREENS.PERSONALIZED_PUSH:
-      return <PersonalizedPushSettings>{reminderEntry}</PersonalizedPushSettings>;
+      return (
+        <PersonalizedPushSettings
+          showRemotePush={showRemotePush}
+          footer={
+            categoryEnabled ? (
+              <EventReminderSettings
+                embeddedCategories
+                listsWithoutArrows={listsWithoutArrows}
+                navigation={navigation}
+              />
+            ) : null
+          }
+        >
+          {eventRemindersEnabled &&
+            renderItem({
+              item: SETTINGS_SCREENS.EVENT_REMINDERS,
+              navigation,
+              listsWithoutArrows,
+              settingsScreenListItemTitles
+            })}
+        </PersonalizedPushSettings>
+      );
     case SETTINGS_SCREENS.ACCESSIBILITY:
       return <AccessibilitySettings />;
     default:
@@ -316,8 +347,11 @@ export const SettingsScreen = ({ navigation, route }) => {
   } = settings;
   const [data, setData] = useState([]);
   const { setting = '' } = route?.params || {};
-  const eventRemindersEnabled = getEventRemindersEnabled(globalSettings);
-  const hasPersonalizedPush = !!(settings.pushNotifications && personalizedPush.categories);
+  const { singleEnabled, categoryEnabled } = getEventReminderModes(globalSettings);
+  const eventRemindersEnabled = singleEnabled || categoryEnabled;
+  const showRemotePush = !!settings.pushNotifications;
+  const hasNotificationSettings =
+    eventRemindersEnabled || !!(showRemotePush && personalizedPush.categories);
 
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.SETTINGS);
 
@@ -328,32 +362,24 @@ export const SettingsScreen = ({ navigation, route }) => {
     const updateData = async () => {
       const settingsList = [];
 
-      if (settings.pushNotifications) {
+      if (hasNotificationSettings) {
+        settingsList.push({ data: [SETTINGS_SCREENS.PERSONALIZED_PUSH] });
+      } else if (showRemotePush) {
         const pushPermission = await readFromStore(PushNotificationStorageKeys.IN_APP_PERMISSION);
 
-        if (hasPersonalizedPush) {
-          settingsList.push({
-            data: [SETTINGS_SCREENS.PERSONALIZED_PUSH]
-          });
-        } else {
-          settingsList.push({
-            data: [
-              {
-                title:
-                  settingsScreenListItemTitles.pushNotifications ||
-                  texts.settingsTitles.pushNotifications,
-                topDivider: false,
-                value: pushPermission,
-                onActivate: onActivatePushNotifications,
-                onDeactivate: onDeactivatePushNotifications
-              }
-            ]
-          });
-        }
-      }
-
-      if (eventRemindersEnabled && !hasPersonalizedPush) {
-        settingsList.push({ data: [SETTINGS_SCREENS.EVENT_REMINDERS] });
+        settingsList.push({
+          data: [
+            {
+              title:
+                settingsScreenListItemTitles.pushNotifications ||
+                texts.settingsTitles.pushNotifications,
+              topDivider: false,
+              value: pushPermission,
+              onActivate: onActivatePushNotifications,
+              onDeactivate: onDeactivatePushNotifications
+            }
+          ]
+        });
       }
 
       // settings should sometimes contain matomo analytics next, depending on server settings
@@ -527,7 +553,7 @@ export const SettingsScreen = ({ navigation, route }) => {
     /* eslint-enable complexity */
 
     setting == '' && updateData();
-  }, [eventRemindersEnabled, hasPersonalizedPush, setting]);
+  }, [hasNotificationSettings, setting, showRemotePush]);
   /* eslint-enable react-hooks/exhaustive-deps */
 
   if (setting == '' && !data.length) {
@@ -543,15 +569,10 @@ export const SettingsScreen = ({ navigation, route }) => {
     listsWithoutArrows,
     mowas,
     navigation,
-    reminderEntry:
-      eventRemindersEnabled && hasPersonalizedPush && setting === SETTINGS_SCREENS.PERSONALIZED_PUSH
-        ? renderItem({
-            item: SETTINGS_SCREENS.EVENT_REMINDERS,
-            navigation,
-            listsWithoutArrows,
-            settingsScreenListItemTitles
-          })
-        : null
+    categoryEnabled,
+    eventRemindersEnabled,
+    settingsScreenListItemTitles,
+    showRemotePush
   });
   return (
     <SafeAreaViewFlex>

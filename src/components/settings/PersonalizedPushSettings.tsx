@@ -52,19 +52,29 @@ const tagListArray = (tag) => {
     : [];
 };
 
-export const PersonalizedPushSettings = ({ children }: { children?: ReactNode }) => {
+export const PersonalizedPushSettings = ({
+  children,
+  footer,
+  showRemotePush = true
+}: {
+  children?: ReactNode;
+  footer?: React.ReactElement | null;
+  showRemotePush?: boolean;
+}) => {
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { personalizedPush = {}, settingsScreenListItemTitles = {} } = settings;
   const queryVariables = personalizedPush.categories?.queryVariables || DEFAULT_QUERY_VARIABLES;
+  const hasRemoteCategories = showRemotePush && !!personalizedPush.categories;
 
   const [permission, setPermission] = useState<boolean>(false);
   const [pushToken, setPushToken] = useState<string | null>(null);
   const [busy, setBusy] = useState(true);
   const [preferencesToken, setPreferencesToken] = useState<string | null>(null);
   const [settledPreferencesToken, setSettledPreferencesToken] = useState<string | null>(null);
-  const preferencesLoaded = permission && !!pushToken && preferencesToken === pushToken;
-  const loadingPreferences = permission && !!pushToken && settledPreferencesToken !== pushToken;
+  const categoryToken = hasRemoteCategories && permission ? pushToken : null;
+  const preferencesLoaded = !!categoryToken && preferencesToken === categoryToken;
+  const loadingPreferences = !!categoryToken && settledPreferencesToken !== categoryToken;
   const operationInProgress = useRef(false);
   const [excludeCategoryIds, setExcludeCategoryIds] = useState<ExcludeMap>({});
 
@@ -76,7 +86,7 @@ export const PersonalizedPushSettings = ({ children }: { children?: ReactNode })
       return await client.request(getQuery(QUERY_TYPES.CATEGORIES_FILTER), queryVariables);
     },
     {
-      enabled: !!personalizedPush?.categories
+      enabled: hasRemoteCategories
     }
   );
 
@@ -113,6 +123,7 @@ export const PersonalizedPushSettings = ({ children }: { children?: ReactNode })
   );
 
   useEffect(() => {
+    if (!showRemotePush) return;
     let cancelled = false;
 
     (async () => {
@@ -136,16 +147,16 @@ export const PersonalizedPushSettings = ({ children }: { children?: ReactNode })
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [showRemotePush]);
 
   useEffect(() => {
     let cancelled = false;
 
-    if (!permission || !pushToken) return;
+    if (!categoryToken) return;
 
     (async () => {
       try {
-        const categories = await getExcludeNotificationConfigurationFromServer(pushToken);
+        const categories = await getExcludeNotificationConfigurationFromServer(categoryToken);
 
         // A failed read must never replace existing preferences or trigger a write.
         if (cancelled || !categories) return;
@@ -157,7 +168,11 @@ export const PersonalizedPushSettings = ({ children }: { children?: ReactNode })
         let nextCategories = categories;
 
         if (Array.isArray(storedCategories)) {
-          const syncedCategories = await addIdsOnServer(storedCategories, pushToken, categories);
+          const syncedCategories = await addIdsOnServer(
+            storedCategories,
+            categoryToken,
+            categories
+          );
 
           if (cancelled || !syncedCategories) return;
           nextCategories = syncedCategories;
@@ -166,19 +181,19 @@ export const PersonalizedPushSettings = ({ children }: { children?: ReactNode })
 
         if (!cancelled) {
           setExcludeCategoryIds(nextCategories);
-          setPreferencesToken(pushToken);
+          setPreferencesToken(categoryToken);
         }
       } catch {
         console.warn('Could not load push notification preferences.');
       } finally {
-        if (!cancelled) setSettledPreferencesToken(pushToken);
+        if (!cancelled) setSettledPreferencesToken(categoryToken);
       }
     })();
 
     return () => {
       cancelled = true;
     };
-  }, [addIdsOnServer, permission, pushToken]);
+  }, [addIdsOnServer, categoryToken]);
 
   const selectedCategoryIds = useMemo(
     () =>
@@ -271,6 +286,7 @@ export const PersonalizedPushSettings = ({ children }: { children?: ReactNode })
   };
 
   const listItems = useMemo(() => {
+    if (!hasRemoteCategories) return [];
     const parsedListItems = data?.categories?.map((category: Category) => {
       const tags = tagListArray(category.tagList);
       const isExcluded = !tags.some((tag) => {
@@ -302,16 +318,47 @@ export const PersonalizedPushSettings = ({ children }: { children?: ReactNode })
     busy,
     changeCategories,
     data,
+    hasRemoteCategories,
     permission,
     preferencesLoaded,
     excludeCategoryIds,
     selectedCategoryIds
   ]);
 
-  if (loading) {
+  const renderCategoryHeading = () => {
+    if (!hasRemoteCategories) return null;
+    return loading ? (
+      <LoadingSpinner loading />
+    ) : (
+      <Wrapper noPaddingBottom>
+        <RegularText small placeholder>
+          {personalizedPush.categories?.sectionTitle ||
+            texts.settingsContents.personalizedPush.sectionTitle}
+        </RegularText>
+      </Wrapper>
+    );
+  };
+
+  const renderRemoteToggle = () =>
+    showRemotePush && (
+      <SettingsToggle
+        item={{
+          isDisabled: busy || loadingPreferences,
+          onActivate,
+          onDeactivate,
+          title:
+            settingsScreenListItemTitles.pushNotifications ||
+            texts.settingsTitles.pushNotifications,
+          topDivider: false,
+          value: permission
+        }}
+      />
+    );
+
+  if (loading && !footer) {
     return (
       <>
-        {!!children && <WrapperHorizontal>{children}</WrapperHorizontal>}
+        <WrapperHorizontal>{children}</WrapperHorizontal>
         <LoadingSpinner loading />
       </>
     );
@@ -320,31 +367,14 @@ export const PersonalizedPushSettings = ({ children }: { children?: ReactNode })
   return (
     <>
       <WrapperHorizontal>
-        <SettingsToggle
-          item={{
-            isDisabled: busy || loadingPreferences,
-            onActivate,
-            onDeactivate,
-            title:
-              settingsScreenListItemTitles.pushNotifications ||
-              texts.settingsTitles.pushNotifications,
-            topDivider: false,
-            value: permission
-          }}
-        />
+        {renderRemoteToggle()}
         {children}
       </WrapperHorizontal>
       <FlatList
         data={listItems}
         keyExtractor={keyExtractor}
-        ListHeaderComponent={
-          <Wrapper noPaddingBottom>
-            <RegularText small placeholder>
-              {personalizedPush.categories?.sectionTitle ||
-                texts.settingsContents.personalizedPush.sectionTitle}
-            </RegularText>
-          </Wrapper>
-        }
+        ListFooterComponent={footer}
+        ListHeaderComponent={renderCategoryHeading()}
         renderItem={({ item }) => (
           <WrapperHorizontal>
             <SettingsToggle item={item} />

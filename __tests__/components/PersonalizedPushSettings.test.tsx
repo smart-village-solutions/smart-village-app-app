@@ -1,4 +1,5 @@
 import React from 'react';
+import { FlatList, View } from 'react-native';
 import renderer, { act } from 'react-test-renderer';
 
 import { SettingsContext } from '../../src/SettingsProvider';
@@ -67,11 +68,14 @@ const settings = {
 };
 let tree: renderer.ReactTestRenderer;
 const toggle = (index = 0) => tree.root.findAllByType(SettingsToggle)[index].props.item;
-const mount = async () => {
+const mount = async (
+  context = settings,
+  props: React.ComponentProps<typeof PersonalizedPushSettings> = {}
+) => {
   await act(async () => {
     tree = renderer.create(
-      <SettingsContext.Provider value={settings as never}>
-        <PersonalizedPushSettings />
+      <SettingsContext.Provider value={context as never}>
+        <PersonalizedPushSettings {...props} />
       </SettingsContext.Provider>
     );
   });
@@ -96,6 +100,20 @@ afterEach(async () => {
 it('loads existing exclusions without writing or resetting them', async () => {
   await mount();
   expect(toggle(1).value).toBe(false);
+  expect(addExcludeNotificationConfigurationOnServer).not.toHaveBeenCalled();
+});
+
+it('shows the event footer without remote categories and leaves remote preferences alone', async () => {
+  const footer = <View />;
+  const context = { globalSettings: { settings: {} } } as typeof settings;
+  await mount(context, { footer });
+
+  const list = tree.root.findByType(FlatList);
+  expect(list.props.ListFooterComponent).toBe(footer);
+  expect(list.props.ListHeaderComponent).toBeNull();
+  expect(list.props.data).toEqual([]);
+  expect(toggle()).toMatchObject({ value: true, isDisabled: false });
+  expect(getExcludeNotificationConfigurationFromServer).not.toHaveBeenCalled();
   expect(addExcludeNotificationConfigurationOnServer).not.toHaveBeenCalled();
 });
 it('keeps the screen usable and blocks category writes after a failed read', async () => {

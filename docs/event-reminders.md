@@ -19,11 +19,18 @@ flag is `true`. This example enables both while keeping existing news categories
 }
 ```
 
-Reminders are available on Main-Server event details. If the municipality
-already uses categorized push (`settings.pushNotifications` and
-`settings.personalizedPush.categories`), its push settings screen also links
-to **Veranstaltungserinnerungen**. Other municipalities that enable reminders
-get the link directly in app settings.
+Reminders are available on Main-Server event details. When either reminder
+mode is enabled, app settings link to **Push-Benachrichtigungen**, where
+**Veranstaltungserinnerungen** is available. If category reminders are enabled,
+the push settings screen also shows the event category switches directly.
+This location applies with or without a remote push category configuration.
+
+The category switches include categories tagged `event_record` and categories
+assigned to visible events, including those without that tag.
+Switching a category on opens the existing reminder rule editor. Saving the rule
+enables the switch. Switching it off asks for confirmation and cancels the
+associated local reminders. Saved subscriptions remain manageable when the
+category catalog is unavailable.
 
 Remote category switches control messages sent by the server. The `tagList`
 filters those categories. Local reminder rules use Main-Server event
