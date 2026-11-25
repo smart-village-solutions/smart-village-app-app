@@ -44,6 +44,7 @@ const defaultAccessibility: AccessibilityContextValue = {
   },
   features: {
     autoContrastEnabled: true,
+    balanceWidgetRows: false,
     boldText: false,
     headerEntry: false,
     highContrast: false,

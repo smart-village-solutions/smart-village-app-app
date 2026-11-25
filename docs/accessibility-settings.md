@@ -221,6 +221,9 @@ Omitted keys in `enabledFeatures` default to `false`, except `autoContrastEnable
 - `autoContrastEnabled`
   - Enables automatic foreground contrast correction for both theme palettes; defaults to `true`. Set to `false` to preserve valid configured foreground colors.
   - Controlled only through `globalSettings`, without a user-facing toggle.
+- `balanceWidgetRows`
+  - Balances widget counts across rows without adding rows; defaults to `false`.
+  - See `enabledFeatures.balanceWidgetRows` below for examples and measurement behavior.
 - `highContrast`
   - Enables/disables the in-app higher-contrast preference.
 - `reduceMotion`
@@ -240,6 +243,50 @@ Omitted keys in `enabledFeatures` default to `false`, except `autoContrastEnable
 - `theming`
   - Enables/disables the Light, Dark, and System theme selector in both accessibility entry points.
   - When disabled or omitted, the app uses the built-in light palette and ignores stored theme selections and configured palette overrides.
+
+### `enabledFeatures.balanceWidgetRows`
+
+Optional boolean, defaults to `false`. Only `true` enables balanced widget rows through
+`globalSettings.settings.accessibility.enabledFeatures.balanceWidgetRows`.
+
+- Disabled or omitted: preserve the existing maximum-column layout, including partial final rows.
+- Enabled: determine the maximum columns from available width, measured labels and text scaling,
+  then distribute widgets evenly across the minimum required number of rows. Earlier rows receive
+  any extra widgets; each row uses its full width. Widget order is preserved.
+- Widgets that fit on one row remain on one row. Balancing never adds rows or forces a single
+  column just to remove a lone widget. Large text or narrow screens can still require one column.
+
+For a width that fits at most three widgets per row:
+
+| Widgets | Disabled | Enabled |
+| --- | --- | --- |
+| 3 | 3 | 3 |
+| 4 | 3 + 1 | 2 + 2 |
+| 5 | 3 + 2 | 3 + 2 |
+| 7 | 3 + 3 + 1 | 3 + 2 + 2 |
+
+When enabled, on initial mount the widget grid is kept hidden and out of the accessibility/touch tree until
+its container and all labels have been measured. It then appears with the resolved layout,
+without briefly displaying the provisional four-column arrangement. When disabled, the unbalanced
+layout renders immediately and adapts as label measurements arrive.
+Text scale or widget style changes require fresh measurements when enabled.
+Network data such as weather temperature does not need to finish loading before labels are measured.
+
+This is an operator feature with no user-facing toggle. Remote changes apply at runtime.
+The previously proposed `accessibility.widgetLayout.balanceLastRow` field is not read;
+use the feature flag below instead.
+
+```json
+{
+  "settings": {
+    "accessibility": {
+      "enabledFeatures": {
+        "balanceWidgetRows": true
+      }
+    }
+  }
+}
+```
 
 ### `defaults`
 

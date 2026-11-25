@@ -24,6 +24,7 @@ export const DEFAULT_ACCESSIBILITY_TEXT_SCALE_LEVEL = 2;
 
 export const DEFAULT_ACCESSIBILITY_FEATURES: Required<AccessibilityFeatureAvailability> = {
   autoContrastEnabled: true,
+  balanceWidgetRows: false,
   boldText: false,
   headerEntry: false,
   highContrast: false,

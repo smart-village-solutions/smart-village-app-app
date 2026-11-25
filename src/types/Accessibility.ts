@@ -38,6 +38,7 @@ export type AccessibilityUserSettings = {
 
 export type AccessibilityFeatureKey =
   | 'autoContrastEnabled'
+  | 'balanceWidgetRows'
   | 'isGrayscaleEnabled'
   | 'textScaling'
   | 'boldText'

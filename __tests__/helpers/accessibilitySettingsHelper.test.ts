@@ -17,6 +17,7 @@ describe('accessibilitySettingsHelper', () => {
     expect(resolved.features).toEqual(DEFAULT_ACCESSIBILITY_FEATURES);
     expect(resolved.features.readAloud).toBe(false);
     expect(resolved.features.autoContrastEnabled).toBe(true);
+    expect(resolved.features.balanceWidgetRows).toBe(false);
     expect(resolved.defaults).toEqual(DEFAULT_ACCESSIBILITY_USER_SETTINGS);
   });
 
@@ -38,6 +39,7 @@ describe('accessibilitySettingsHelper', () => {
         accessibility: {
           enabledFeatures: {
             autoContrastEnabled: true,
+            balanceWidgetRows: true,
             settingsEntry: true,
             headerEntry: true,
             textScaling: true,
@@ -53,6 +55,7 @@ describe('accessibilitySettingsHelper', () => {
     });
 
     expect(resolved.features.autoContrastEnabled).toBe(true);
+    expect(resolved.features.balanceWidgetRows).toBe(true);
     expect(resolved.features.settingsEntry).toBe(true);
     expect(resolved.features.headerEntry).toBe(true);
     expect(resolved.features.textScaling).toBe(true);

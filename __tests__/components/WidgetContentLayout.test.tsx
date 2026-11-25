@@ -86,4 +86,14 @@ describe('WidgetContent label measurements', () => {
     fireEvent(container, 'layout', { nativeEvent: { layout: { width: 400 } } });
     expect(StyleSheet.flatten(container.props.style).flexDirection).toBe('row');
   });
+
+  it('reports an empty label so it cannot keep the grid hidden forever', () => {
+    const onLabelWidth = jest.fn();
+    render(
+      <WidgetLayoutContext.Provider value={{ mode: 'grid', onLabelWidth }}>
+        <WidgetContent label="" visual={null} />
+      </WidgetLayoutContext.Provider>
+    );
+    expect(onLabelWidth).toHaveBeenCalledWith(9);
+  });
 });

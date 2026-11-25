@@ -1,4 +1,4 @@
-import React, { ReactNode, useCallback, useContext, useState } from 'react';
+import React, { ReactNode, useCallback, useContext, useLayoutEffect, useState } from 'react';
 import {
   NativeSyntheticEvent,
   StyleProp,
@@ -32,11 +32,15 @@ const canFitListContent = (containerWidth: number, visualWidth: number, wordWidt
     containerWidth;
 
 export const WidgetContent = ({ label, labelStyle, visual }: Props) => {
-  const { mode, onLabelWidth } = useContext(WidgetLayoutContext);
+  const { mode, measurementKey, onLabelWidth } = useContext(WidgetLayoutContext);
   const [containerWidth, setContainerWidth] = useState(0);
   const [visualWidth, setVisualWidth] = useState(0);
   const [wordWidth, setWordWidth] = useState(0);
   const isList = mode === 'list' && canFitListContent(containerWidth, visualWidth, wordWidth);
+  useLayoutEffect(() => {
+    // Empty native Text may not emit onTextLayout; it must not block the grid.
+    if (!label.trim()) onLabelWidth?.(1 + 2 * normalize(4));
+  }, [label, onLabelWidth]);
   const measureLabel = useCallback(
     ({ nativeEvent }: NativeSyntheticEvent<TextLayoutEventData>) => {
       const wordWidth = Math.max(0, ...nativeEvent.lines.map((line) => line.width));
@@ -62,7 +66,13 @@ export const WidgetContent = ({ label, labelStyle, visual }: Props) => {
           pointerEvents="none"
           style={styles.measurement}
         >
-          <RegularText primary small style={[styles.label, labelStyle]} onTextLayout={measureLabel}>
+          <RegularText
+            key={`${measurementKey ?? ''}:${label}`}
+            primary
+            small
+            style={[styles.label, labelStyle]}
+            onTextLayout={measureLabel}
+          >
             {label.trim().split(/\s+/).join('\n')}
           </RegularText>
         </View>
