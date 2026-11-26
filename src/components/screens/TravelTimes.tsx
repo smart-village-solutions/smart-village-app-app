@@ -38,14 +38,16 @@ const delayLabel = (seconds: number) =>
 
 export const TravelTimes = ({ id }: { id: string }) => {
   const { colors: colors } = useTheme();
-  const { globalSettings } = useContext(SettingsContext);
-  const settings = globalSettings?.settings as { travelTimesRealtime?: boolean } | undefined;
-  const travelTimesRealtime = settings?.travelTimesRealtime === true;
 
   const styles = useThemeStyles(createStyles);
   const [today, setToday] = useState<string>(moment().format('YYYY-MM-DDTHH:mm'));
   const [moreData, setMoreData] = useState(1);
   const [timeColumnWidth, setTimeColumnWidth] = useState<number>();
+
+  const realtimeSettings = useContext(SettingsContext).globalSettings?.settings as
+    | { travelTimesRealtime?: boolean }
+    | undefined;
+  const travelTimesRealtime = realtimeSettings?.travelTimesRealtime === true;
 
   const { data, error, loading, refetch } = useQuery(
     getQuery(QUERY_TYPES.POINT_OF_INTEREST_TRAVEL_TIMES, { travelTimesRealtime }),
