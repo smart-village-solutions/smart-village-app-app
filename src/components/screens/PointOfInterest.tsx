@@ -7,13 +7,20 @@ import { useProfileContext } from '../../ProfileProvider';
 import { SettingsContext } from '../../SettingsProvider';
 import { Icon, consts, normalize, texts } from '../../config';
 import { AUTH_MODE_USER, getApolloAuthContext } from '../../graphqlAuth';
-import { isValidGeoLocation, matomoTrackingString, parseListItemsFromQuery } from '../../helpers';
+import {
+  hasConcretePostalAddress,
+  isOpen,
+  isValidGeoLocation,
+  matomoTrackingString,
+  mergeWebUrls,
+  parseListItemsFromQuery
+} from '../../helpers';
 import { useDetailRefresh, useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
 import { useTheme } from '../../hooks/useTheme';
 import { DETAIL_REFRESH_EVENT } from '../../hooks/DetailRefresh';
 import { QUERY_TYPES } from '../../queries';
 import { DELETE_POINT_OF_INTEREST } from '../../queries/pointsOfInterest';
-import { ScreenName } from '../../types';
+import { Address, ScreenName } from '../../types';
 import { Button } from '../Button';
 import { DataProviderButton } from '../DataProviderButton';
 import { DataProviderNotice } from '../DataProviderNotice';
@@ -213,6 +220,22 @@ export const PointOfInterest = ({
       ? status
       : payload?.activeIconName || vehicleActiveIconName || fallbackActiveIconName;
 
+  const hasOverviewContent =
+    addresses?.some(
+      (address: Address) =>
+        address.kind === 'default' &&
+        (hasConcretePostalAddress(address) || isValidGeoLocation(address.geoLocation))
+    ) ||
+    !!(
+      contact?.firstName ||
+      contact?.lastName ||
+      contact?.phone ||
+      contact?.email ||
+      contact?.fax
+    ) ||
+    mergeWebUrls({ webUrls, contact }).some(({ url }) => !!url) ||
+    (showOpeningTimes && !!openingHours?.length && !!isOpen(openingHours));
+
   return (
     <WrapperVertical>
       {isCurrentUser && (
@@ -271,21 +294,20 @@ export const PointOfInterest = ({
         </WrapperVertical>
       )}
 
-      {(!!addresses?.length || !!contact || !!openingHours?.length || !!webUrls?.length) && (
-        <SectionHeader title={texts.pointOfInterest.overview} />
-      )}
-
-      {(!!addresses?.length || !!contact || !!openingHours?.length || !!webUrls?.length) && (
-        <Wrapper noPaddingBottom={!!readAloudControls}>
-          <InfoCard
-            addresses={addresses}
-            contact={contact}
-            openingHours={openingHours}
-            openWebScreen={openWebScreen}
-            showOpeningTimes={showOpeningTimes}
-            webUrls={webUrls}
-          />
-        </Wrapper>
+      {hasOverviewContent && (
+        <>
+          <SectionHeader title={texts.pointOfInterest.overview} />
+          <Wrapper noPaddingBottom={!!readAloudControls}>
+            <InfoCard
+              addresses={addresses}
+              contact={contact}
+              openingHours={openingHours}
+              openWebScreen={openWebScreen}
+              showOpeningTimes={showOpeningTimes}
+              webUrls={webUrls}
+            />
+          </Wrapper>
+        </>
       )}
       {readAloudControls}
 
