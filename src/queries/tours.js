@@ -104,9 +104,12 @@ export const GET_TOUR = gql`
           }
         }
         mediaContents {
+          captionText
           contentType
+          copyright
           id
           sourceUrl {
+            description
             id
             url
           }

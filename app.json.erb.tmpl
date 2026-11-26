@@ -10,9 +10,7 @@ end %>
     "githubUrl": "https://github.com/smart-village-solutions/smart-village-app-app",
     "platforms": ["ios", "android"],
     "version": "<%= @mobile_app_version_number %>",
-    "runtimeVersion": {
-      "policy": "appVersion"
-    },
+    "runtimeVersion": "<%= @mobile_app_version_number %>-audio.1",
     "extra": {
       "eas": {
         "projectId": "<%= @eas_project_id %>"
@@ -75,7 +73,6 @@ end %>
       "googleServicesFile": "./google-services.json",
       "permissions": ["ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION", "WRITE_EXTERNAL_STORAGE"],
       "blockedPermissions": [
-        "FOREGROUND_SERVICE_MEDIA_PLAYBACK",
         "READ_EXTERNAL_STORAGE",
         "READ_MEDIA_IMAGES",
         "READ_MEDIA_VIDEO"
@@ -147,6 +144,7 @@ end %>
       "@react-native-community/datetimepicker",
       "@rnrepo/expo-config-plugin",
       "expo-asset",
+      ["expo-audio", { "enableBackgroundPlayback": true, "recordAudioAndroid": false }],
       "expo-font",
       "expo-image-picker",
       "expo-image",

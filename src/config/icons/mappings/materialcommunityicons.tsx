@@ -101,6 +101,8 @@ export const materialcommunityiconsIconMapping: Record<string, string> = {
   pause: 'pause',
 
   // Accessibility & Read Aloud
+  music: 'music',
+  'player-stop': 'stop',
   accessible: 'human',
   volume: 'volume-high',
   'player-play': 'play',

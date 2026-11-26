@@ -25,6 +25,7 @@ jest.mock('react-apollo', () => ({
 }));
 
 jest.mock('expo-router/react-navigation', () => ({
+  createNavigationContainerRef: () => ({ isReady: () => false }),
   useFocusEffect: (...args) => mockUseFocusEffect(...args)
 }));
 

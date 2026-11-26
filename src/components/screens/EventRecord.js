@@ -19,6 +19,7 @@ import { DataProviderButton } from '../DataProviderButton';
 import { DataProviderNotice } from '../DataProviderNotice';
 import { HtmlView } from '../HtmlView';
 import { ImageSection } from '../ImageSection';
+import { MediaSection } from '../MediaSection';
 import { LoadingContainer } from '../LoadingContainer';
 import { SectionHeader } from '../SectionHeader';
 import { HeadlineText } from '../Text';
@@ -90,34 +91,33 @@ export const EventRecord = ({ data, navigation, readAloudControls, refetch, rout
     ])
   );
 
-  let media = [];
+  const media = [];
 
   !!mediaContents &&
     !!mediaContents.length &&
-    _filter(
-      mediaContents,
-      (mediaContent) => mediaContent.contentType === 'video' || mediaContent.contentType === 'audio'
-    ).forEach((mediaContent) => {
-      !!mediaContent.sourceUrl &&
-        !!mediaContent.sourceUrl.url &&
-        media.push(
-          <WrapperHorizontal key={`mediaContent${mediaContent.id}`}>
-            <WebView
-              source={{ html: trimNewLines(mediaContent.sourceUrl.url) }}
-              style={styles.iframeWebView}
-              scrollEnabled={false}
-              bounces={false}
-              injectedJavaScript={INJECTED_JAVASCRIPT_FOR_IFRAME_WEBVIEW}
-              startInLoadingState
-              renderLoading={() => (
-                <LoadingContainer web>
-                  <ActivityIndicator color={colors.refreshControl} />
-                </LoadingContainer>
-              )}
-            />
-          </WrapperHorizontal>
-        );
-    });
+    _filter(mediaContents, (mediaContent) => mediaContent.contentType === 'video').forEach(
+      (mediaContent) => {
+        !!mediaContent.sourceUrl &&
+          !!mediaContent.sourceUrl.url &&
+          media.push(
+            <WrapperHorizontal key={`mediaContent${mediaContent.id}`}>
+              <WebView
+                source={{ html: trimNewLines(mediaContent.sourceUrl.url) }}
+                style={styles.iframeWebView}
+                scrollEnabled={false}
+                bounces={false}
+                injectedJavaScript={INJECTED_JAVASCRIPT_FOR_IFRAME_WEBVIEW}
+                startInLoadingState
+                renderLoading={() => (
+                  <LoadingContainer web>
+                    <ActivityIndicator color={colors.refreshControl} />
+                  </LoadingContainer>
+                )}
+              />
+            </WrapperHorizontal>
+          );
+      }
+    );
 
   const businessAccount = dataProvider?.dataType === 'business_account';
   const currentUserDataProviderId = currentUserData?.user?.data_provider_id;
@@ -246,6 +246,11 @@ export const EventRecord = ({ data, navigation, readAloudControls, refetch, rout
         </WrapperVertical>
       )}
 
+      <MediaSection
+        mediaContents={mediaContents?.filter(
+          (mediaContent) => mediaContent.contentType === 'audio'
+        )}
+      />
       {!!media.length && media}
 
       <OperatingCompany

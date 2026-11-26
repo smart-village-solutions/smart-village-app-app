@@ -11,6 +11,7 @@ import React, {
 import { StyleSheet, StyleProp, ViewStyle } from 'react-native';
 
 import { AccessibilityContext } from './AccessibilityProvider';
+import { useAudioPlayerPresence } from './AudioPlayerProvider';
 import { DetailSpeechItem } from './helpers/accessibility/detailSpeechParser';
 
 type RegisteredReadAloudContent = {
@@ -159,8 +160,11 @@ export const useReadAloudPlayerBottomSpacing = () => {
   const route = useContext(NavigationRouteContext);
   const { features } = useContext(AccessibilityContext);
   const { isRouteAvailable, playerBottomSpacing } = useReadAloudAvailability();
+  const hasAudioTrack = useAudioPlayerPresence();
 
-  return features.readAloud && isRouteAvailable(route?.key) ? playerBottomSpacing : 0;
+  return (features.readAloud && isRouteAvailable(route?.key)) || hasAudioTrack
+    ? playerBottomSpacing
+    : 0;
 };
 
 export const useReadAloudScrollContentContainerStyle = <T extends StyleProp<ViewStyle>>(

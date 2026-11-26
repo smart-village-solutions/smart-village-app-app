@@ -100,6 +100,8 @@ export const ioniconsIconMapping: Record<string, string> = {
   pause: 'pause',
 
   // Accessibility & Read Aloud
+  music: 'musical-notes-outline',
+  'player-stop': 'stop',
   accessible: 'accessibility-outline',
   volume: 'volume-high-outline',
   'player-play': 'play',

@@ -20,6 +20,7 @@ import { DataProviderNotice } from '../DataProviderNotice';
 import { HtmlView } from '../HtmlView';
 import { ImageSection } from '../ImageSection';
 import { LoadingSpinner } from '../LoadingSpinner';
+import { MediaSection } from '../MediaSection';
 import { SectionHeader } from '../SectionHeader';
 import { HeadlineText } from '../Text';
 import { Wrapper, WrapperHorizontal, WrapperRow, WrapperVertical } from '../Wrapper';
@@ -270,6 +271,11 @@ export const PointOfInterest = ({
           <ImageSection mediaContents={mediaContents} />
         </WrapperVertical>
       )}
+      <MediaSection
+        mediaContents={mediaContents?.filter(
+          (mediaContent: { contentType: string }) => mediaContent.contentType === 'audio'
+        )}
+      />
 
       {(!!addresses?.length || !!contact || !!openingHours?.length || !!webUrls?.length) && (
         <SectionHeader title={texts.pointOfInterest.overview} />

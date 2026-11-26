@@ -100,6 +100,8 @@ export const materialiconsIconMapping: Record<string, string> = {
   pause: 'pause',
 
   // Accessibility & Read Aloud
+  music: 'music-note',
+  'player-stop': 'stop',
   accessible: 'accessibility-new',
   volume: 'volume-up',
   'player-play': 'play-arrow',

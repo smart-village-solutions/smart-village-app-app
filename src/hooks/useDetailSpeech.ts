@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AppState } from 'react-native';
 import * as Speech from 'expo-speech';
 
+import { useOptionalAudioPlayback } from '../AudioPlayerProvider';
 import { DetailSpeechItem } from '../helpers/accessibility/detailSpeechParser';
 
 type SpeechChunk = {
@@ -84,7 +85,20 @@ const buildQueue = (items: DetailSpeechItem[]) => {
   }, []);
 };
 
+// The native speech queue is shared across screens, including during route changes.
+let pendingNativeStop: Promise<void> | undefined;
+
+const stopNativeSpeech = () => {
+  pendingNativeStop ??= Speech.stop()
+    .catch((error) => console.warn('Could not stop speech playback.', error))
+    .finally(() => {
+      pendingNativeStop = undefined;
+    });
+  return pendingNativeStop;
+};
+
 export const useDetailSpeech = (items: DetailSpeechItem[], enabled = true, speechRate = 1) => {
+  const pauseAudio = useOptionalAudioPlayback()?.pauseForReadAloud;
   const queue = useMemo(() => (enabled ? buildQueue(items) : []), [enabled, items]);
   const queueKey = useMemo(() => items.map((item) => `${item.id}:${item.text}`).join('|'), [items]);
   const generationRef = useRef(0);
@@ -95,6 +109,7 @@ export const useDetailSpeech = (items: DetailSpeechItem[], enabled = true, speec
   const previousSpeechRateRef = useRef(speechRate);
   const mountedRef = useRef(true);
   const pausedByUserRef = useRef(false);
+  const speechRequestedRef = useRef(false);
 
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
@@ -104,20 +119,17 @@ export const useDetailSpeech = (items: DetailSpeechItem[], enabled = true, speec
   );
 
   const stop = useCallback(async () => {
-    generationRef.current += 1;
+    const generation = ++generationRef.current;
+    speechRequestedRef.current = false;
     pausedByUserRef.current = false;
     resumeChunkIndexRef.current = 0;
     resumeChunkOffsetRef.current = 0;
     activeChunkIndexRef.current = 0;
     activeChunkResumeOffsetRef.current = 0;
 
-    try {
-      await Speech.stop();
-    } catch (error) {
-      console.warn('Could not stop speech playback.', error);
-    }
+    await stopNativeSpeech();
 
-    if (!mountedRef.current) return;
+    if (!mountedRef.current || generation !== generationRef.current) return;
     setIsSpeaking(false);
     setIsPaused(false);
     setCurrentItemIndex(0);
@@ -128,6 +140,7 @@ export const useDetailSpeech = (items: DetailSpeechItem[], enabled = true, speec
     (startIndex: number, startOffset = 0) => {
       const generation = generationRef.current;
       const finishPlayback = () => {
+        speechRequestedRef.current = false;
         if (mountedRef.current) {
           setIsSpeaking(false);
           setIsPaused(false);
@@ -216,6 +229,7 @@ export const useDetailSpeech = (items: DetailSpeechItem[], enabled = true, speec
           },
           onError: (error) => {
             if (generationRef.current !== generation) return;
+            speechRequestedRef.current = false;
             console.warn('Speech playback failed.', error);
             if (!mountedRef.current) return;
             setIsSpeaking(false);
@@ -238,49 +252,51 @@ export const useDetailSpeech = (items: DetailSpeechItem[], enabled = true, speec
   const start = useCallback(async () => {
     if (!enabled || !queue.length) return;
 
-    generationRef.current += 1;
+    pauseAudio?.();
+    const generation = ++generationRef.current;
+    speechRequestedRef.current = true;
     pausedByUserRef.current = false;
     resumeChunkIndexRef.current = 0;
     resumeChunkOffsetRef.current = 0;
+    activeChunkIndexRef.current = 0;
+    activeChunkResumeOffsetRef.current = 0;
 
-    try {
-      await Speech.stop();
-    } catch (error) {
-      console.warn('Could not reset speech queue before start.', error);
-    }
-
-    if (!mountedRef.current) return;
+    await stopNativeSpeech();
+    if (!mountedRef.current || generation !== generationRef.current) return;
     setCurrentItemIndex(0);
     playFromIndex(0);
-  }, [enabled, playFromIndex, queue.length]);
+  }, [enabled, pauseAudio, playFromIndex, queue.length]);
 
   const pause = useCallback(async () => {
-    if (!isSpeaking) return;
+    if (!speechRequestedRef.current) {
+      await pendingNativeStop;
+      return;
+    }
 
-    generationRef.current += 1;
+    const generation = ++generationRef.current;
+    speechRequestedRef.current = false;
     pausedByUserRef.current = true;
     resumeChunkIndexRef.current = activeChunkIndexRef.current;
     resumeChunkOffsetRef.current = activeChunkResumeOffsetRef.current;
 
-    try {
-      await Speech.stop();
-    } catch (error) {
-      console.warn('Could not pause speech playback.', error);
-    }
-
-    if (!mountedRef.current) return;
+    await stopNativeSpeech();
+    if (!mountedRef.current || generation !== generationRef.current) return;
     setIsSpeaking(false);
     setIsPaused(true);
     setCurrentItemIndex(queue[resumeChunkIndexRef.current]?.sourceIndex || 0);
-  }, [isSpeaking, queue]);
+  }, [queue]);
 
-  const resume = useCallback(() => {
+  const resume = useCallback(async () => {
     if (!enabled || !isPaused || !queue.length) return;
 
-    generationRef.current += 1;
+    pauseAudio?.();
+    const generation = ++generationRef.current;
+    speechRequestedRef.current = true;
     pausedByUserRef.current = false;
+    if (pendingNativeStop) await pendingNativeStop;
+    if (!mountedRef.current || generation !== generationRef.current) return;
     playFromIndex(resumeChunkIndexRef.current, resumeChunkOffsetRef.current);
-  }, [enabled, isPaused, playFromIndex, queue.length]);
+  }, [enabled, isPaused, pauseAudio, playFromIndex, queue.length]);
 
   const skipToItem = useCallback(
     async (targetItemIndex: number) => {
@@ -290,25 +306,22 @@ export const useDetailSpeech = (items: DetailSpeechItem[], enabled = true, speec
       const nextChunkIndex = queue.findIndex((chunk) => chunk.sourceIndex === nextItemIndex);
       if (nextChunkIndex < 0) return;
 
-      generationRef.current += 1;
+      pauseAudio?.();
+      const generation = ++generationRef.current;
+      speechRequestedRef.current = true;
       pausedByUserRef.current = false;
       resumeChunkIndexRef.current = nextChunkIndex;
       resumeChunkOffsetRef.current = 0;
       activeChunkIndexRef.current = nextChunkIndex;
       activeChunkResumeOffsetRef.current = 0;
 
-      try {
-        await Speech.stop();
-      } catch (error) {
-        console.warn('Could not skip to the requested speech section.', error);
-      }
-
-      if (!mountedRef.current) return;
+      await stopNativeSpeech();
+      if (!mountedRef.current || generation !== generationRef.current) return;
       setCurrentItemIndex(nextItemIndex);
       setActiveWordRange(null);
       playFromIndex(nextChunkIndex);
     },
-    [enabled, items.length, playFromIndex, queue]
+    [enabled, items.length, pauseAudio, playFromIndex, queue]
   );
 
   const skipPrevious = useCallback(
@@ -328,7 +341,7 @@ export const useDetailSpeech = (items: DetailSpeechItem[], enabled = true, speec
 
   useEffect(() => {
     if (!queue.length) {
-      void Speech.stop();
+      void stopNativeSpeech();
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsSpeaking(false);
       setIsPaused(false);
@@ -350,7 +363,8 @@ export const useDetailSpeech = (items: DetailSpeechItem[], enabled = true, speec
     return () => {
       generationRef.current += 1;
       pausedByUserRef.current = true;
-      void Speech.stop();
+      speechRequestedRef.current = false;
+      void stopNativeSpeech();
     };
   }, [queueKey]);
 
@@ -370,21 +384,16 @@ export const useDetailSpeech = (items: DetailSpeechItem[], enabled = true, speec
 
     previousSpeechRateRef.current = speechRate;
 
-    if (!enabled || !isSpeaking || !queue.length) return;
+    if (!enabled || !isSpeaking || !speechRequestedRef.current || !queue.length) return;
 
     const restartWithNewRate = async () => {
-      generationRef.current += 1;
+      const generation = ++generationRef.current;
       pausedByUserRef.current = false;
       const restartIndex = Math.min(activeChunkIndexRef.current, queue.length - 1);
       const restartOffset = activeChunkResumeOffsetRef.current;
 
-      try {
-        await Speech.stop();
-      } catch (error) {
-        console.warn('Could not restart speech playback with new speed.', error);
-      }
-
-      if (!mountedRef.current) return;
+      await stopNativeSpeech();
+      if (!mountedRef.current || generation !== generationRef.current) return;
       playFromIndex(restartIndex, restartOffset);
     };
 
@@ -392,11 +401,13 @@ export const useDetailSpeech = (items: DetailSpeechItem[], enabled = true, speec
   }, [enabled, isSpeaking, playFromIndex, queue.length, speechRate]);
 
   useEffect(() => {
+    mountedRef.current = true;
     return () => {
       generationRef.current += 1;
       pausedByUserRef.current = true;
       mountedRef.current = false;
-      void Speech.stop();
+      speechRequestedRef.current = false;
+      void stopNativeSpeech();
     };
   }, []);
 

@@ -3,8 +3,10 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import { ScrollView, View } from 'react-native';
 import { Divider } from 'react-native-elements';
 
+import { AudioTrackSourceProvider } from '../../AudioPlayerProvider';
 import { Icon, normalize, texts } from '../../config';
 import { trimNewLines } from '../../helpers';
+import { getAudioSourceMetadata } from '../../helpers/audioSourceMetadata';
 import {
   useLastKnownPosition,
   useLocationSettings,
@@ -12,6 +14,7 @@ import {
   usePosition,
   useSystemPermission
 } from '../../hooks';
+import { useReadAloudScrollContentContainerStyle } from '../../ReadAloudAvailabilityProvider';
 import { SettingsContext } from '../../SettingsProvider';
 import { ScreenName } from '../../types';
 import { Button } from '../Button';
@@ -19,6 +22,7 @@ import { HtmlView } from '../HtmlView';
 import { DistanceDirectionCard } from '../infoCard';
 import { MapLibre } from '../map';
 import { MediaCarousel } from '../MediaCarousel';
+import { MediaSection } from '../MediaSection';
 import { locationServiceEnabledAlert } from '../SUE/report/SueReportLocation';
 import { HeadlineText, RegularText } from '../Text';
 import { Touchable } from '../Touchable';
@@ -34,8 +38,14 @@ export const TourStopDetail = ({ route, navigation }: { route: any; navigation: 
   const { colors } = useTheme();
 
   const styles = useThemeStyles(createStyles);
+  const scrollContentContainerStyle = useReadAloudScrollContentContainerStyle();
   const { geometryTourData, id, rootRouteName, tourStops, tourStopData, subtitle } = route.params;
-  const { description, mediaContents, title } = tourStopData || {};
+  const { description, title } = tourStopData || {};
+  const mediaContents: React.ComponentProps<typeof MediaCarousel>['mediaContents'] =
+    tourStopData?.mediaContents;
+  const carouselMedia = mediaContents?.filter(({ contentType }) => contentType !== 'audio');
+  const audioMedia = mediaContents?.filter(({ contentType }) => contentType === 'audio');
+  const { title: audioTitle, imageUrl } = getAudioSourceMetadata(tourStopData, route.params?.title);
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { showDistanceDirection = {} } = settings;
@@ -123,7 +133,7 @@ export const TourStopDetail = ({ route, navigation }: { route: any; navigation: 
     ?.geoLocation;
 
   return (
-    <ScrollView ref={scrollViewRef}>
+    <ScrollView contentContainerStyle={scrollContentContainerStyle} ref={scrollViewRef}>
       {!!subtitle && (
         <WrapperVertical noPaddingBottom>
           <WrapperRow center>
@@ -138,7 +148,10 @@ export const TourStopDetail = ({ route, navigation }: { route: any; navigation: 
         <SectionHeader big center title={trimNewLines(title)} />
       </WrapperRow>
 
-      <MediaCarousel mediaContents={mediaContents} />
+      <MediaCarousel mediaContents={carouselMedia} />
+      <AudioTrackSourceProvider id={String(id)} imageUrl={imageUrl} title={audioTitle}>
+        <MediaSection mediaContents={audioMedia} />
+      </AudioTrackSourceProvider>
 
       <SectionHeader title={texts.tour.overview} />
 

@@ -4,6 +4,11 @@ import * as Speech from 'expo-speech';
 
 import { getNativeSpeechRate, useDetailSpeech } from '../../src/hooks/useDetailSpeech';
 
+const mockPauseAudio = jest.fn();
+jest.mock('../../src/AudioPlayerProvider', () => ({
+  useOptionalAudioPlayback: () => ({ pauseForReadAloud: mockPauseAudio })
+}));
+
 jest.mock('expo-speech', () => ({
   maxSpeechInputLength: 4000,
   speak: jest.fn(),
@@ -61,6 +66,44 @@ describe('useDetailSpeech section navigation', () => {
     expect(currentHook.currentItemIndex).toBe(0);
     expect(currentHook.canSkipPrevious).toBe(false);
   });
+
+  it('takes over the media session before starting read aloud', async () => {
+    await renderer.act(async () => {
+      await currentHook.start();
+    });
+
+    expect(mockPauseAudio).toHaveBeenCalledTimes(1);
+    expect(Speech.speak).toHaveBeenCalled();
+    expect(mockPauseAudio.mock.invocationCallOrder[0]).toBeLessThan(
+      jest.mocked(Speech.speak).mock.invocationCallOrder[0]
+    );
+  });
+
+  it.each(['start', 'skipNext'] as const)(
+    'cancels a pending %s when MP3 playback takes over',
+    async (action) => {
+      let finishNativeStop!: () => void;
+      jest.mocked(Speech.stop).mockImplementationOnce(
+        () =>
+          new Promise<void>((resolve) => {
+            finishNativeStop = resolve;
+          })
+      );
+
+      await renderer.act(async () => {
+        const pendingSpeech = currentHook[action]();
+        expect(currentHook.isSpeaking).toBe(false);
+        const waitForSpeechToPause = currentHook.pause();
+        expect(Speech.stop).toHaveBeenCalledTimes(1);
+        finishNativeStop();
+        await Promise.all([pendingSpeech, waitForSpeechToPause]);
+      });
+
+      expect(Speech.speak).not.toHaveBeenCalled();
+      expect(currentHook.isSpeaking).toBe(false);
+      expect(currentHook.isPaused).toBe(true);
+    }
+  );
 });
 
 describe('getNativeSpeechRate', () => {

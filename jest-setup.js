@@ -51,6 +51,25 @@ jest.mock('expo-video', () => ({
   }),
   VideoView: () => null
 }));
+jest.mock('expo-audio', () => ({
+  setAudioModeAsync: jest.fn(async () => undefined),
+  useAudioPlayer: jest.fn(() => ({
+    pause: jest.fn(),
+    play: jest.fn(),
+    replace: jest.fn(),
+    seekTo: jest.fn(async () => undefined),
+    setActiveForLockScreen: jest.fn(),
+    setPlaybackRate: jest.fn()
+  })),
+  useAudioPlayerStatus: jest.fn(() => ({
+    currentTime: 0,
+    didJustFinish: false,
+    duration: 0,
+    error: null,
+    isBuffering: false,
+    playing: false
+  }))
+}));
 jest.mock('expo-image', () => {
   return {
     // eslint-disable-next-line react/prop-types

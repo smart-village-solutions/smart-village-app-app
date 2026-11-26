@@ -100,6 +100,8 @@ export const tablerIconMapping: Record<string, string> = {
   pause: 'player-pause',
 
   // Accessibility & Read Aloud
+  music: 'music',
+  'player-stop': 'player-stop',
   accessible: 'accessible',
   volume: 'volume',
   'player-play': 'player-play',

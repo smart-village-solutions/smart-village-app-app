@@ -101,6 +101,8 @@ export const simplelineiconsIconMapping: Record<string, string> = {
   pause: 'control-pause',
 
   // Accessibility & Read Aloud
+  music: 'music-tone-alt',
+  'player-stop': 'close',
   accessible: 'user',
   volume: 'volume-2',
   'player-play': 'control-play',

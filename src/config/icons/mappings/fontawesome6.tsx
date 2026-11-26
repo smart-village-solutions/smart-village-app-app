@@ -102,6 +102,8 @@ export const fontawesome6IconMapping: Record<string, string> = {
   pause: 'circle-pause',
 
   // Accessibility & Read Aloud
+  music: 'music',
+  'player-stop': 'stop',
   accessible: 'universal-access',
   volume: 'volume-high',
   'player-play': 'play',
