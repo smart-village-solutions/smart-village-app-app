@@ -23,7 +23,8 @@ import {
   getInAppPermission,
   getLocalNotificationPermission,
   getPushTokenFromStorage,
-  PUSH_NOTIFICATION_PERMISSION_CHANGED_EVENT
+  PUSH_NOTIFICATION_PERMISSION_CHANGED_EVENT,
+  PUSH_NOTIFICATION_TOKEN_CHANGED_EVENT
 } from '../../pushNotifications';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { onActivatePushNotifications, onDeactivatePushNotifications } from '../../screens';
@@ -100,7 +101,8 @@ export const PersonalizedPushSettings = ({
     [queryVariables]
   );
   const hasRemoteCategories = showRemotePush && !!personalizedPush.categories && hasRemoteTags;
-  const showPushToggle = showRemotePush || !!footer || !!children;
+  const hasEventReminders = !!footer || !!children;
+  const showPushToggle = showRemotePush || hasEventReminders;
 
   const [permission, setPermission] = useState<boolean>(false);
   const [systemPermission, setSystemPermission] = useState(false);
@@ -160,33 +162,39 @@ export const PersonalizedPushSettings = ({
 
   useEffect(() => {
     if (!showPushToggle) return;
-    let cancelled = false;
+    let revision = 0;
 
-    const permissionChange = DeviceEventEmitter.addListener(
-      PUSH_NOTIFICATION_PERMISSION_CHANGED_EVENT,
-      setPermission
-    );
-    (async () => {
+    const refresh = async () => {
+      const check = ++revision;
       try {
         const [inAppPermission, storedToken] = await Promise.all([
           getInAppPermission(),
-          showRemotePush ? getPushTokenFromStorage() : null
+          showRemotePush ? getPushTokenFromStorage().catch(() => undefined) : null
         ]);
 
-        if (!cancelled) {
+        if (check === revision) {
           setPermission(!!inAppPermission);
-          setPushToken(storedToken);
+          if (storedToken !== undefined) setPushToken(storedToken);
         }
       } catch {
         console.warn('Could not load push notification settings.');
       } finally {
-        if (!cancelled) setBusy(false);
+        if (check === revision && !operationInProgress.current) setBusy(false);
       }
-    })();
+    };
+    const permissionChange = DeviceEventEmitter.addListener(
+      PUSH_NOTIFICATION_PERMISSION_CHANGED_EVENT,
+      refresh
+    );
+    const tokenChange = showRemotePush
+      ? DeviceEventEmitter.addListener(PUSH_NOTIFICATION_TOKEN_CHANGED_EVENT, refresh)
+      : undefined;
+    void refresh();
 
     return () => {
-      cancelled = true;
+      ++revision;
       permissionChange.remove();
+      tokenChange?.remove();
     };
   }, [showPushToggle, showRemotePush]);
 
@@ -311,15 +319,13 @@ export const PersonalizedPushSettings = ({
     operationInProgress.current = true;
     setBusy(true);
     try {
-      const success = showRemotePush
-        ? await onActivatePushNotifications(revert)
-        : await onActivatePushNotifications(revert, false);
+      const success = hasEventReminders
+        ? await onActivatePushNotifications(revert, showRemotePush, true)
+        : await onActivatePushNotifications(revert);
 
       if (!success) return;
 
-      const token = showRemotePush ? await getPushTokenFromStorage() : null;
-
-      setPushToken(token);
+      if (!hasEventReminders) setPushToken(await getPushTokenFromStorage());
       setPermission(true);
       setSystemPermission(await getLocalNotificationPermission().catch(() => false));
     } catch {
@@ -342,10 +348,14 @@ export const PersonalizedPushSettings = ({
     try {
       // Preserve recoverable preferences before removing the device on the server.
       if (preferencesLoaded) {
-        await addToStore(PERSONALIZED_PUSH_SETTINGS, selectedCategoryIds);
+        const backup = addToStore(PERSONALIZED_PUSH_SETTINGS, selectedCategoryIds);
+        if (hasEventReminders) await backup.catch(() => undefined);
+        else await backup;
       }
 
-      const success = await onDeactivatePushNotifications(revert);
+      const success = hasEventReminders
+        ? await onDeactivatePushNotifications(revert, showRemotePush, true)
+        : await onDeactivatePushNotifications(revert);
 
       if (!success) return;
 
@@ -384,7 +394,7 @@ export const PersonalizedPushSettings = ({
           onActivate: (revert: () => void) => changeCategories(category, false, revert),
           onDeactivate: (revert: () => void) => changeCategories(category, true, revert),
           title: name,
-          value: notificationsAllowed && isExcluded
+          value: notificationsAllowed && preferencesLoaded && isExcluded
         }
       };
     };
@@ -416,8 +426,9 @@ export const PersonalizedPushSettings = ({
   const renderRemoteToggle = () =>
     showPushToggle && (
       <SettingsToggle
+        needsConnection={!hasEventReminders}
         item={{
-          isDisabled: busy || loadingPreferences,
+          isDisabled: busy || (!hasEventReminders && loadingPreferences),
           onActivate,
           onDeactivate,
           title:

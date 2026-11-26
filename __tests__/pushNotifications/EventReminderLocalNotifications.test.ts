@@ -308,12 +308,32 @@ describe('event reminders scheduling', () => {
     expect(native.size).toBe(0);
   });
 
-  it('does not schedule a second category notification after the first is due', async () => {
+  it('keeps a delayed category request and skips overlapping rules once it leaves the queue', async () => {
     await saveEventCategorySubscription(categories[0], rule, eventSnapshot());
     await saveEventCategorySubscription(categories[1], { ...rule, leadDays: 1 }, eventSnapshot());
+    const id = 'event-reminder:e1:d1';
+    const original = native.get(id);
     jest.spyOn(Date, 'now').mockReturnValue(Date.parse('2026-11-18T10:00:00Z'));
+    jest
+      .mocked(Notifications.getAllScheduledNotificationsAsync)
+      .mockRejectedValueOnce(new Error('native inventory unavailable'));
+    await expect(refreshEventReminders()).rejects.toThrow();
     await refreshEventReminders();
+    expect(native.get(id)).toBe(original);
+    expect((await readEventReminderSettings()).categoryPlan['e1:d1'].status).toBe('scheduled');
+    native.delete(id);
+    await refreshEventReminders();
+    expect(Notifications.scheduleNotificationAsync).toHaveBeenCalledTimes(1);
     expect(native.size).toBe(0);
+  });
+
+  it('cancels a delayed category request on confirmed removal before native delivery', async () => {
+    const snapshot = eventSnapshot();
+    await saveEventCategorySubscription(categories[0], rule, snapshot);
+    jest.spyOn(Date, 'now').mockReturnValue(Date.parse('2026-11-18T10:00:00Z'));
+    await applyEventReminderUpdates([{ ...snapshot.records[0], visible: false }]);
+    expect(native.size).toBe(0);
+    expect((await readEventReminderSettings()).subscriptions.a.occurrences).toEqual({});
   });
 
   it('ranks category and single events together after existing native requests consume capacity', async () => {

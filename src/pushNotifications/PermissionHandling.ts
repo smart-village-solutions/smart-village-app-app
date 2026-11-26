@@ -28,6 +28,7 @@ export const getInAppPermission = async (): Promise<boolean> => {
 
 // Token refreshes and user permission changes must observe the same ordering.
 let pendingPushOperation = Promise.resolve();
+let preferenceRevision = 0;
 
 const enqueuePushOperation = <T>(operation: () => Promise<T>): Promise<T> => {
   const result = pendingPushOperation.then(operation);
@@ -43,6 +44,7 @@ export const setInAppPermission = (newValue: boolean, registerRemote = true) =>
   enqueuePushOperation(() => applyInAppPermission(newValue, registerRemote));
 
 const applyInAppPermission = async (newValue: boolean, registerRemote: boolean) => {
+  const revision = preferenceRevision;
   let token = undefined;
   const oldValue = await readFromStore(PushNotificationStorageKeys.IN_APP_PERMISSION);
 
@@ -61,25 +63,41 @@ const applyInAppPermission = async (newValue: boolean, registerRemote: boolean) 
     // remove token from store and notify server
     const successfullyHandled = await handleIncomingToken(token);
 
-    if (successfullyHandled) {
-      if (!newValue) {
-        try {
-          await clearWasteReminderLocalNotifications();
-        } catch (error) {
-          console.warn(
-            'An error occurred while clearing local waste reminder notifications:',
-            error
-          );
-        }
-      }
-
-      await addToStore(PushNotificationStorageKeys.IN_APP_PERMISSION, newValue);
-      DeviceEventEmitter.emit(PUSH_NOTIFICATION_PERMISSION_CHANGED_EVENT, newValue);
-    }
-
-    return successfullyHandled;
+    if (!successfullyHandled || revision !== preferenceRevision) return false;
+    if (!newValue) await clearWasteNotifications();
+    if (revision !== preferenceRevision) return false;
+    await storeInAppPermission(newValue);
   }
 
+  return true;
+};
+
+const storeInAppPermission = async (enabled: boolean) => {
+  await addToStore(PushNotificationStorageKeys.IN_APP_PERMISSION, enabled);
+  DeviceEventEmitter.emit(PUSH_NOTIFICATION_PERMISSION_CHANGED_EVENT, enabled);
+};
+
+const clearWasteNotifications = async () => {
+  try {
+    await clearWasteReminderLocalNotifications();
+  } catch (error) {
+    console.warn('An error occurred while clearing local waste reminder notifications:', error);
+  }
+};
+
+export const setInAppPermissionForEventReminders = async (
+  enabled: boolean,
+  registerRemote: boolean
+) => {
+  const previous = await readFromStore(PushNotificationStorageKeys.IN_APP_PERMISSION);
+  ++preferenceRevision;
+  await storeInAppPermission(enabled);
+  if (registerRemote) {
+    void syncInAppPushRegistration().catch(() => {
+      console.warn('Could not synchronize remote push registration.');
+    });
+  }
+  if (!enabled && previous) await clearWasteNotifications();
   return true;
 };
 
@@ -208,7 +226,25 @@ export const updatePushToken = (devicePushToken?: Notifications.DevicePushToken)
       ? await registerForPushNotificationsAsync(devicePushToken)
       : undefined;
 
+    if (!(await getInAppPermission())) return false;
     return handleIncomingToken(token);
+  });
+
+export const syncInAppPushRegistration = () =>
+  enqueuePushOperation(async () => {
+    const permission = await readFromStore(PushNotificationStorageKeys.IN_APP_PERMISSION);
+    if (permission !== true && permission !== false) return true;
+
+    const storedToken = await getPushTokenFromStorage();
+    if (!permission) {
+      return !storedToken || handleIncomingToken(undefined, false);
+    }
+    if (storedToken) return true;
+    if (!(await handleSystemPermissions(false))) return false;
+
+    const token = await registerForPushNotificationsAsync();
+    if (!(await getInAppPermission())) return false;
+    return handleIncomingToken(token, false);
   });
 
 export const showSystemPermissionMissingDialog = () => {

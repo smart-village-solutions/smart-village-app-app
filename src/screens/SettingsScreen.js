@@ -41,6 +41,7 @@ import {
   handleSystemPermissions,
   PushNotificationStorageKeys,
   setInAppPermission,
+  setInAppPermissionForEventReminders,
   showSystemPermissionMissingDialog
 } from '../pushNotifications';
 import { getEventReminderModes } from '../pushNotifications/EventReminderLocalNotifications';
@@ -190,7 +191,11 @@ renderItem.propTypes = {
   dimensions: PropTypes.object.isRequired
 };
 
-export const onActivatePushNotifications = async (revert, registerRemote = true) => {
+export const onActivatePushNotifications = async (
+  revert,
+  registerRemote = true,
+  eventReminders = false
+) => {
   try {
     const hasPermission = await handleSystemPermissions(false, true);
 
@@ -200,6 +205,7 @@ export const onActivatePushNotifications = async (revert, registerRemote = true)
       return false;
     }
 
+    if (eventReminders) return await setInAppPermissionForEventReminders(true, registerRemote);
     const success = registerRemote
       ? await setInAppPermission(true)
       : await setInAppPermission(true, false);
@@ -214,8 +220,13 @@ export const onActivatePushNotifications = async (revert, registerRemote = true)
   }
 };
 
-export const onDeactivatePushNotifications = async (revert) => {
+export const onDeactivatePushNotifications = async (
+  revert,
+  registerRemote = true,
+  eventReminders = false
+) => {
   try {
+    if (eventReminders) return await setInAppPermissionForEventReminders(false, registerRemote);
     const success = await setInAppPermission(false);
 
     if (!success) revert();

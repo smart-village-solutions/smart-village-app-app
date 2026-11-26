@@ -19,7 +19,10 @@ import {
   refreshEventReminders
 } from './pushNotifications/EventReminderLocalNotifications';
 import { registerEventReminderRestoration } from './pushNotifications/LocalNotificationCapacity';
-import { PUSH_NOTIFICATION_PERMISSION_CHANGED_EVENT } from './pushNotifications/PermissionHandling';
+import {
+  PUSH_NOTIFICATION_PERMISSION_CHANGED_EVENT,
+  syncInAppPushRegistration
+} from './pushNotifications/PermissionHandling';
 import {
   fetchEventCategorySnapshot,
   fetchEventReminderRecords
@@ -78,6 +81,15 @@ export const EventReminderRuntime = () => {
     [singleEnabled, categoryEnabled]
   );
   const enabled = singleEnabled || categoryEnabled;
+  const settings = globalSettings?.settings;
+  const shouldSyncPush =
+    enabled && !!settings && 'pushNotifications' in settings && !!settings.pushNotifications;
+
+  useEffect(() => {
+    if (shouldSyncPush && isConnected && isMainserverUp) {
+      void syncInAppPushRegistration().catch(() => undefined);
+    }
+  }, [isConnected, isMainserverUp, shouldSyncPush]);
 
   useEffect(() => {
     if (!singleEnabled) return;

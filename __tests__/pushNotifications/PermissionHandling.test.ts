@@ -7,9 +7,14 @@ import {
   PUSH_NOTIFICATION_PERMISSION_CHANGED_EVENT,
   handleSystemPermissions,
   setInAppPermission,
+  setInAppPermissionForEventReminders,
+  syncInAppPushRegistration,
   updatePushToken
 } from '../../src/pushNotifications/PermissionHandling';
-import { handleIncomingToken } from '../../src/pushNotifications/TokenHandling';
+import {
+  getPushTokenFromStorage,
+  handleIncomingToken
+} from '../../src/pushNotifications/TokenHandling';
 import { clearWasteReminderLocalNotifications } from '../../src/pushNotifications/WasteReminderLocalNotifications';
 
 jest.mock('expo-constants', () => ({
@@ -354,5 +359,81 @@ describe('push token refresh and opt-out ordering', () => {
     await expect(updatePushToken({ data: 'native', type: 'ios' })).rejects.toThrow('offline');
     await expect(setInAppPermission(false)).resolves.toBe(true);
     expect(handleIncomingToken).toHaveBeenCalledWith(undefined);
+  });
+});
+
+describe('push preferences with local event reminders', () => {
+  let permission: boolean;
+
+  beforeEach(() => {
+    jest.resetAllMocks();
+    permission = false;
+    jest.mocked(readFromStore).mockImplementation(async () => permission);
+    jest.mocked(addToStore).mockImplementation(async (_key, value) => {
+      permission = value;
+    });
+    (Notifications.getPermissionsAsync as jest.Mock).mockResolvedValue({
+      granted: true,
+      status: 'granted'
+    });
+    (Notifications.getExpoPushTokenAsync as jest.Mock).mockResolvedValue({ data: 'push-token' });
+    jest.mocked(getPushTokenFromStorage).mockResolvedValue(null);
+    jest.mocked(handleIncomingToken).mockResolvedValue(true);
+  });
+
+  it('persists and emits consent before a remote failure and retries registration', async () => {
+    let finishRegistration: ((success: boolean) => void) | undefined;
+    jest.mocked(handleIncomingToken).mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          finishRegistration = resolve;
+        })
+    );
+    const emit = jest.spyOn(DeviceEventEmitter, 'emit');
+
+    await expect(setInAppPermissionForEventReminders(true, true)).resolves.toBe(true);
+    expect(permission).toBe(true);
+    expect(emit).toHaveBeenCalledWith(PUSH_NOTIFICATION_PERMISSION_CHANGED_EVENT, true);
+    await new Promise((resolve) => setImmediate(resolve));
+    expect(finishRegistration).toBeDefined();
+    finishRegistration?.(false);
+    await expect(syncInAppPushRegistration()).resolves.toBe(true);
+    expect(handleIncomingToken).toHaveBeenCalledTimes(2);
+    expect(handleIncomingToken).toHaveBeenLastCalledWith('push-token', false);
+    expect(permission).toBe(true);
+    emit.mockRestore();
+  });
+
+  it('keeps opt-out in effect while remote unregistration is retried', async () => {
+    permission = true;
+    jest.mocked(getPushTokenFromStorage).mockResolvedValue('stored-token');
+    jest.mocked(handleIncomingToken).mockResolvedValueOnce(false);
+
+    await expect(setInAppPermissionForEventReminders(false, true)).resolves.toBe(true);
+    expect(permission).toBe(false);
+    await expect(syncInAppPushRegistration()).resolves.toBe(true);
+    expect(handleIncomingToken).toHaveBeenCalledTimes(2);
+    expect(handleIncomingToken).toHaveBeenLastCalledWith(undefined, false);
+    expect(await updatePushToken()).toBe(false);
+    expect(permission).toBe(false);
+  });
+
+  it('does not register a token received after local consent was revoked', async () => {
+    let finishToken: ((value: { data: string }) => void) | undefined;
+    (Notifications.getExpoPushTokenAsync as jest.Mock).mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          finishToken = resolve;
+        })
+    );
+
+    await expect(setInAppPermissionForEventReminders(true, true)).resolves.toBe(true);
+    await new Promise((resolve) => setImmediate(resolve));
+    expect(finishToken).toBeDefined();
+    await expect(setInAppPermissionForEventReminders(false, true)).resolves.toBe(true);
+    finishToken?.({ data: 'push-token' });
+    await expect(syncInAppPushRegistration()).resolves.toBe(true);
+    expect(handleIncomingToken).not.toHaveBeenCalled();
+    expect(permission).toBe(false);
   });
 });

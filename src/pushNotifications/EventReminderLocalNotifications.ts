@@ -15,6 +15,7 @@ import {
   SingleEventReminder,
   allEventReminderModes,
   buildReminderCandidates,
+  categoryReminderCoverageEnd,
   rememberElapsedCategoryPlans
 } from '../helpers/eventReminderPlan';
 import {
@@ -166,7 +167,7 @@ const commitNativePlan = async (
     if (
       candidate &&
       matchesNativeReminder(content.data, candidate) &&
-      content.body === candidate.occurrence.title
+      (candidate.when <= Date.now() || content.body === candidate.occurrence.title)
     )
       continue;
 
@@ -219,13 +220,21 @@ const planningStatus = (
   return confirmed.has(id) ? 'scheduled' : 'failed';
 };
 
-const pruneReminderSettings = (state: EventReminderSettingsState, now: number) => {
+const pruneReminderSettings = (
+  state: EventReminderSettingsState,
+  now: number,
+  nativePendingCategoryKeys: ReadonlySet<string>
+) => {
   state.singles = Object.fromEntries(
     Object.entries(state.singles).filter(
       ([, { occurrence }]) => occurrenceEndForReminders(occurrence) > now - recentOccurrenceLookback
     )
   );
-  state.elapsedCategoryReminders = rememberElapsedCategoryPlans(state, now);
+  state.elapsedCategoryReminders = rememberElapsedCategoryPlans(
+    state,
+    now,
+    nativePendingCategoryKeys
+  );
   for (const subscription of Object.values(state.subscriptions)) {
     subscription.occurrences = Object.fromEntries(
       Object.entries(subscription.occurrences).filter(
@@ -273,10 +282,9 @@ const applyPlanStatus = (
 
 const waitingSingleCandidates = (
   state: EventReminderSettingsState,
-  inventory: Notifications.NotificationRequest[],
+  requests: ReadonlyMap<string, Notifications.NotificationContent['data']>,
   now: number
 ) => {
-  const requests = new Map(inventory.map(({ identifier, content }) => [identifier, content.data]));
   return Object.entries(state.singles).flatMap(([key, reminder]) => {
     const { occurrence, rule, status } = reminder;
     if (status !== 'scheduled' || occurrenceEndForReminders(occurrence) <= now) return [];
@@ -288,19 +296,68 @@ const waitingSingleCandidates = (
   });
 };
 
+const pendingCategoryPlans = (
+  state: EventReminderSettingsState,
+  requests: ReadonlyMap<string, Notifications.NotificationContent['data']>,
+  now: number
+) =>
+  Object.entries(state.categoryPlan).filter(([key, entry]) => {
+    const { status, when, occurrence } = entry;
+    return (
+      status === 'scheduled' &&
+      when <= now &&
+      occurrenceEndForReminders(occurrence) > now &&
+      matchesNativeReminder(requests.get(notificationId(key)), { ...entry, key })
+    );
+  });
+
+const waitingCategoryCandidates = (
+  state: EventReminderSettingsState,
+  pending: ReturnType<typeof pendingCategoryPlans>,
+  { singleEnabled, categoryEnabled }: EventReminderModes,
+  now: number
+): ReminderCandidate[] => {
+  if (!categoryEnabled) return [];
+  return pending.flatMap(([key, { categoryId, when }]) => {
+    const subscription = state.subscriptions[categoryId];
+    if (!subscription || subscription.paused || state.exclusions[key]) return [];
+    const single = singleEnabled ? state.singles[key] : undefined;
+    if (single && single.status !== 'paused') return [];
+    const occurrence = subscription.occurrences[key];
+    if (
+      !occurrence ||
+      occurrenceEndForReminders(occurrence) <= now ||
+      when >= categoryReminderCoverageEnd(subscription.sourceCoverageThrough) ||
+      getReminderTimestamp(occurrence, subscription.rule) !== when
+    ) {
+      return [];
+    }
+    return [{ key, categoryId, occurrence, when }];
+  });
+};
+
 const reconcileEventReminders = async (
   state: EventReminderSettingsState,
   modes: EventReminderModes
 ) => {
   const now = Date.now();
-  pruneReminderSettings(state, now);
   const inventory = await Notifications.getAllScheduledNotificationsAsync();
   const eventInventory = inventory.filter(({ content }) =>
     isEventReminderNotification(content.data)
   );
+  const requests = new Map(
+    eventInventory.map(({ identifier, content }) => [identifier, content.data])
+  );
+  const pendingCategories = pendingCategoryPlans(state, requests, now);
+  pruneReminderSettings(state, now, new Set(pendingCategories.map(([key]) => key)));
+  const waiting = [
+    ...(modes.singleEnabled ? waitingSingleCandidates(state, requests, now) : []),
+    ...waitingCategoryCandidates(state, pendingCategories, modes, now)
+  ].sort((left, right) => left.when - right.when || left.key.localeCompare(right.key));
+  const waitingKeys = new Set(waiting.map(({ key }) => key));
   const candidates = [
-    ...(modes.singleEnabled ? waitingSingleCandidates(state, eventInventory, now) : []),
-    ...buildReminderCandidates(state, now, modes)
+    ...waiting,
+    ...buildReminderCandidates(state, now, modes).filter(({ key }) => !waitingKeys.has(key))
   ];
   const canSchedule = candidates.length > 0 && (await getEventReminderPermission()) === 'allowed';
   const otherCount = inventory.length - eventInventory.length;
@@ -338,6 +395,12 @@ const updateEventReminders = async (
     await reconcileEventReminders(state, modes);
   } catch {
     const now = Date.now();
+    // An unreadable native inventory cannot confirm delivery of scheduled category reminders.
+    const unverified = Object.fromEntries(
+      Object.entries(state.categoryPlan).filter(
+        ([, entry]) => entry.status === 'scheduled' && entry.when <= now
+      )
+    );
     applyPlanStatus(state, now, buildReminderCandidates(state, now, modes), modes, (key) => {
       const reminder = state.singles[key];
       return reminder?.status === 'scheduled' &&
@@ -345,6 +408,7 @@ const updateEventReminders = async (
         ? 'scheduled'
         : 'failed';
     });
+    state.categoryPlan = { ...state.categoryPlan, ...unverified };
     await writeEventReminders(state);
     throw new Error('Event reminder schedule could not be verified');
   }

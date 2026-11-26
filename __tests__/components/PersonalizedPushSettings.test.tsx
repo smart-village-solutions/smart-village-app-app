@@ -1,5 +1,5 @@
 import React from 'react';
-import { AppState, FlatList, View } from 'react-native';
+import { AppState, DeviceEventEmitter, FlatList, View } from 'react-native';
 import renderer, { act } from 'react-test-renderer';
 import { useQuery } from 'react-query';
 
@@ -10,7 +10,8 @@ import {
   getExcludeNotificationConfigurationFromServer,
   getInAppPermission,
   getLocalNotificationPermission,
-  getPushTokenFromStorage
+  getPushTokenFromStorage,
+  PUSH_NOTIFICATION_TOKEN_CHANGED_EVENT
 } from '../../src/pushNotifications';
 import { onActivatePushNotifications, onDeactivatePushNotifications } from '../../src/screens';
 import { SettingsToggle } from '../../src/components/SettingsToggle';
@@ -31,7 +32,8 @@ jest.mock('../../src/pushNotifications', () => ({
   getInAppPermission: jest.fn(),
   getLocalNotificationPermission: jest.fn(),
   getPushTokenFromStorage: jest.fn(),
-  PUSH_NOTIFICATION_PERMISSION_CHANGED_EVENT: 'pushNotificationPermissionChanged'
+  PUSH_NOTIFICATION_PERMISSION_CHANGED_EVENT: 'pushNotificationPermissionChanged',
+  PUSH_NOTIFICATION_TOKEN_CHANGED_EVENT: 'pushNotificationTokenChanged'
 }));
 jest.mock('../../src/helpers', () => ({
   readFromStore: jest.fn(),
@@ -207,8 +209,27 @@ it('offers the app switch for event-only municipalities without starting remote 
   await mount(withTags('event_record'), { footer: () => <View />, showRemotePush: false });
   const revert = jest.fn();
   await act(async () => toggle().onActivate(revert));
-  expect(onActivatePushNotifications).toHaveBeenCalledWith(revert, false);
+  expect(onActivatePushNotifications).toHaveBeenCalledWith(revert, false, true);
+  expect(tree.root.findAllByType(SettingsToggle)[0].props.needsConnection).toBe(false);
   expect(getPushTokenFromStorage).not.toHaveBeenCalled();
+});
+
+it('allows local events before the remote token is available and updates news after registration', async () => {
+  const footer = jest.fn(() => <View />);
+  jest.mocked(getInAppPermission).mockResolvedValue(false);
+  jest.mocked(getPushTokenFromStorage).mockResolvedValue(null);
+  await mount(settings, { footer });
+  const revert = jest.fn();
+  await act(async () => toggle().onActivate(revert));
+  expect(onActivatePushNotifications).toHaveBeenCalledWith(revert, true, true);
+  expect(footer).toHaveBeenLastCalledWith(true);
+  expect(toggle(1).isDisabled).toBe(true);
+  expect(getExcludeNotificationConfigurationFromServer).not.toHaveBeenCalled();
+
+  jest.mocked(getInAppPermission).mockResolvedValue(true);
+  jest.mocked(getPushTokenFromStorage).mockResolvedValue('token-a');
+  await act(async () => DeviceEventEmitter.emit(PUSH_NOTIFICATION_TOKEN_CHANGED_EVENT, 'added'));
+  expect(toggle(1).isDisabled).toBe(false);
 });
 it('keeps the screen usable and blocks category writes after a failed read', async () => {
   jest.mocked(getExcludeNotificationConfigurationFromServer).mockResolvedValue(undefined);

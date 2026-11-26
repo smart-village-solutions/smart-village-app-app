@@ -161,7 +161,12 @@ export const summarizeCategoryPlan = (
   now: number
 ) => {
   const remaining = Object.values(plan)
-    .filter((entry) => entry.categoryId === categoryId && entry.when > now)
+    .filter(
+      (entry) =>
+        entry.categoryId === categoryId &&
+        (entry.when > now ||
+          (entry.status === 'scheduled' && occurrenceEndForReminders(entry.occurrence) > now))
+    )
     .sort((left, right) => left.when - right.when);
   const confirmed = remaining.filter(({ status }) => status === 'scheduled');
   const firstGap = remaining.find(({ status }) => status !== 'scheduled');
@@ -174,10 +179,19 @@ export const summarizeCategoryPlan = (
   };
 };
 
-export const rememberElapsedCategoryPlans = (state: EventReminderSettingsState, now: number) => {
+export const rememberElapsedCategoryPlans = (
+  state: EventReminderSettingsState,
+  now: number,
+  nativePendingKeys: ReadonlySet<string>
+) => {
   const elapsed = Object.entries(state.elapsedCategoryReminders).filter(([, ends]) => ends > now);
   for (const [key, { occurrence, status, when }] of Object.entries(state.categoryPlan)) {
-    if (status === 'scheduled' && when <= now && occurrenceEndForReminders(occurrence) > now) {
+    if (
+      status === 'scheduled' &&
+      when <= now &&
+      !nativePendingKeys.has(key) &&
+      occurrenceEndForReminders(occurrence) > now
+    ) {
       elapsed.push([key, occurrenceEndForReminders(occurrence)]);
     }
   }

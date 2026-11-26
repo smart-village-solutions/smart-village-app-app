@@ -10,6 +10,7 @@ import {
 import {
   PushNotificationStorageKeys,
   getPushTokenFromStorage,
+  syncInAppPushRegistration,
   updatePushToken
 } from '../pushNotifications';
 
@@ -46,28 +47,36 @@ export const usePushNotifications = (
 
   const currentAppState = useRef<AppStateStatus | null>(null);
 
-  const onGetActive = useCallback(async (nextState: AppStateStatus) => {
-    if (currentAppState.current !== nextState) {
-      currentAppState.current = nextState;
+  const onGetActive = useCallback(
+    async (nextState: AppStateStatus) => {
+      if (currentAppState.current !== nextState) {
+        currentAppState.current = nextState;
 
-      // timeout is needed due to ios system push permission popup triggering appstate change
-      // no timeout causes the onGetActive to fire an additional request to our server
-      setTimeout(async () => {
-        try {
-          const inAppPermission = await readFromStore(
-            PushNotificationStorageKeys.IN_APP_PERMISSION
-          );
-          const token = await getPushTokenFromStorage();
+        // timeout is needed due to ios system push permission popup triggering appstate change
+        // no timeout causes the onGetActive to fire an additional request to our server
+        setTimeout(async () => {
+          if (nextState !== 'active' || currentAppState.current !== nextState) return;
+          try {
+            if (eventRemindersEnabled) {
+              await syncInAppPushRegistration();
+              return;
+            }
+            const inAppPermission = await readFromStore(
+              PushNotificationStorageKeys.IN_APP_PERMISSION
+            );
+            const token = await getPushTokenFromStorage();
 
-          if (nextState === 'active' && inAppPermission && !token) {
-            await updatePushToken();
+            if (inAppPermission && !token) {
+              await updatePushToken();
+            }
+          } catch {
+            console.warn('An error occurred while restoring the push notification token.');
           }
-        } catch {
-          console.warn('An error occurred while restoring the push notification token.');
-        }
-      }, 3000);
-    }
-  }, []); // empty dependencies because it will only used once in the "mountEffect" below
+        }, 3000);
+      }
+    },
+    [eventRemindersEnabled]
+  );
 
   const handleNotificationResponse = useCallback((response: Notifications.NotificationResponse) => {
     if (!interactionHandlerRef.current) return;
@@ -98,7 +107,7 @@ export const usePushNotifications = (
   }, [handleNotificationResponse, lastNotificationResponse]);
 
   useEffect(() => {
-    const shouldHandlePushNotifications = isActive !== false;
+    const shouldHandlePushNotifications = eventRemindersEnabled ? !!isActive : isActive !== false;
     let subscription: ReturnType<typeof AppState.addEventListener> | undefined;
 
     if (shouldHandlePushNotifications || eventRemindersEnabled) {
