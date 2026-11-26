@@ -43,6 +43,7 @@ import {
   PARTICIPATION_PROJECT_STATUS_POSITION_PARAM,
   sortPOIsByDistanceFromPosition
 } from '../../helpers';
+import { resolveReferencePosition } from '../../helpers/locationReference';
 import { compareParticipationProjects } from '../../helpers/participationProjectSortHelper';
 import { DETAIL_REFRESH_EVENT } from '../../hooks/DetailRefresh';
 import { updateResourceFiltersStateHelper } from '../../helpers/updateResourceFiltersStateHelper';
@@ -227,6 +228,8 @@ export const Overviews = ({ navigation, route }) => {
     poiListIntro
   } = sections;
   const query = route.params?.query ?? '';
+  const klimaTalerOnlyMap =
+    query === QUERY_TYPES.POINTS_OF_INTEREST && route.params?.includeKlimaTaler === true;
   const dateTimeFormat = news?.listDateFormat;
   const { initialFilter = FILTER_TYPES.LIST } = route.params?.queryVariables ?? {};
   const INITIAL_FILTER = [
@@ -298,18 +301,20 @@ export const Overviews = ({ navigation, route }) => {
     return () => subscription.remove();
   }, [isParticipationProjectOverview, route.key]);
   const [refreshing, setRefreshing] = useState(false);
-  const showMap = isMapSelected(query, filterType);
+  const showMap = klimaTalerOnlyMap || isMapSelected(query, filterType);
   const { excludeDataProviderIds, excludeMowasRegionalKeys } = usePermanentFilter();
   const { locationSettings } = useLocationSettings();
   const { locationService: locationServiceEnabled } = locationSettings;
+  const hasFallbackPosition =
+    locationServiceEnabled === false && !!resolveReferencePosition(locationSettings);
   const systemPermission = useSystemPermission();
   const sortByDistance =
     query === QUERY_TYPES.POINTS_OF_INTEREST &&
-    locationServiceEnabled &&
+    (locationServiceEnabled || hasFallbackPosition) &&
     (locationService.sortByDistance ?? true);
   const radiusSearchByDistance = !!queryVariables?.radiusSearch?.distance;
   const skipPosition =
-    systemPermission?.status !== Location.PermissionStatus.GRANTED ||
+    (!hasFallbackPosition && systemPermission?.status !== Location.PermissionStatus.GRANTED) ||
     (!sortByDistance && !radiusSearchByDistance);
   const { loading: loadingPosition, position } = usePosition(skipPosition);
   const { position: lastKnownPosition } = useLastKnownPosition(skipPosition);
@@ -351,6 +356,7 @@ export const Overviews = ({ navigation, route }) => {
 
   const { data, loading, fetchMore, refetch } = useQuery(getQuery(query, { showNewsFilter }), {
     ...(authMode ? getApolloAuthContext(authMode) : {}),
+    skip: klimaTalerOnlyMap,
     fetchPolicy,
     variables: {
       ...networkQueryVariables,
@@ -476,11 +482,11 @@ export const Overviews = ({ navigation, route }) => {
   const refresh = useCallback(() => {
     lastViewedRange.current = undefined;
     setRefreshing(true);
-    if (isConnected) {
+    if (isConnected && !klimaTalerOnlyMap) {
       refetch({ ...networkQueryVariables, limit: pageSize });
     }
     setRefreshing(false);
-  }, [isConnected, setRefreshing, refetch, networkQueryVariables, pageSize]);
+  }, [isConnected, klimaTalerOnlyMap, setRefreshing, refetch, networkQueryVariables, pageSize]);
 
   useEffect(() => {
     // Successful content saves and explicit detail refreshes already emit this event.
@@ -496,6 +502,7 @@ export const Overviews = ({ navigation, route }) => {
 
   useFocusEffect(
     useCallback(() => {
+      if (klimaTalerOnlyMap) return undefined;
       const rememberViewedRange = () => {
         const previous = lastViewedRange.current;
         const keepPendingRange =
@@ -537,7 +544,7 @@ export const Overviews = ({ navigation, route }) => {
       }
 
       return rememberViewedRange;
-    }, [isConnected, query, refetch, networkQueryVariables, pageSize])
+    }, [isConnected, klimaTalerOnlyMap, query, refetch, networkQueryVariables, pageSize])
   );
 
   const filterTypes = useMemo(() => {
@@ -581,13 +588,14 @@ export const Overviews = ({ navigation, route }) => {
   ]);
 
   useEffect(() => {
+    if (klimaTalerOnlyMap) return;
     updateResourceFiltersStateHelper({
       query: filterQuery,
       queryVariables,
       resourceFiltersDispatch,
       resourceFiltersState
     });
-  }, [query, queryVariables]);
+  }, [klimaTalerOnlyMap, query, queryVariables]);
 
   useEffect(() => {
     // we want to ensure when changing from one index screen to another of the same resource, that
@@ -703,11 +711,11 @@ export const Overviews = ({ navigation, route }) => {
     !Object.prototype.hasOwnProperty.call(queryVariables, 'dataProvider') &&
     !Object.prototype.hasOwnProperty.call(queryVariables, 'refetch');
 
-  const isShowMapSwitchButton = query === QUERY_TYPES.POINTS_OF_INTEREST;
+  const isShowMapSwitchButton = query === QUERY_TYPES.POINTS_OF_INTEREST && !klimaTalerOnlyMap;
   const canShowFloatingMapSwitch =
     isShowMapSwitchButton && (!!listItems?.length || hasNestedPoiCategories);
 
-  if ((loading && (!data || initialNewsItemsFetch)) || loadingPosition) {
+  if ((!klimaTalerOnlyMap && loading && (!data || initialNewsItemsFetch)) || loadingPosition) {
     return (
       <LoadingContainer>
         <ActivityIndicator color={colors.refreshControl} />
@@ -716,11 +724,14 @@ export const Overviews = ({ navigation, route }) => {
   }
 
   const hasMultipleMapCategories = (locationOverviewQueryVariables?.categoryIds?.length || 0) > 1;
-  const hideModalFilter = isShowMapSwitchButton && showMap && hasMultipleMapCategories;
+  const hideModalFilter =
+    isShowMapSwitchButton &&
+    showMap &&
+    (hasMultipleMapCategories || route.params?.showAllPoiCategories === true);
 
   return (
     <SafeAreaViewFlex>
-      {!hideModalFilter && (
+      {!klimaTalerOnlyMap && !hideModalFilter && (
         <Filter
           countInitialFilter={
             isParticipationProjectOverview ? PARTICIPATION_PROJECT_STATUS_FILTER : undefined
@@ -740,7 +751,7 @@ export const Overviews = ({ navigation, route }) => {
             <Divider />
           </>
         )}
-      {isShowMapSwitchButton && showMap ? (
+      {(isShowMapSwitchButton || klimaTalerOnlyMap) && showMap ? (
         <LocationOverview
           currentPosition={currentPosition}
           navigation={navigation}

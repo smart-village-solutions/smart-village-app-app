@@ -4,8 +4,12 @@
  * Reference: https://fontawesome.com/v5/search
  */
 
+import { leafIconNames } from './leaf';
+import { refreshIconNames } from './refresh';
+
 export const fontawesome5IconMapping: Record<string, string> = {
   // Navigation & Actions
+  refresh: refreshIconNames.fontawesome5,
   about: 'bars',
   'arrow-down': 'arrow-down',
   'arrow-down-circle': 'arrow-circle-down',
@@ -20,6 +24,8 @@ export const fontawesome5IconMapping: Record<string, string> = {
   'condense-map': 'compress',
   plus: 'plus',
   minus: 'minus',
+
+  leaf: leafIconNames.fontawesome5,
 
   // Content & Media
   albums: 'images',
@@ -36,6 +42,7 @@ export const fontawesome5IconMapping: Record<string, string> = {
   copy: 'copy',
 
   // Status & Feedback
+  medal: 'medal',
   check: 'check-circle',
   'circle-check-filled': 'check-circle',
   'alert-hexagon-filled': 'exclamation-triangle',

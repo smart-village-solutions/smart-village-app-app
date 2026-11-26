@@ -4,8 +4,12 @@
  * Note: This is the largest icon library with 7000+ icons
  */
 
+import { leafIconNames } from './leaf';
+import { refreshIconNames } from './refresh';
+
 export const materialcommunityiconsIconMapping: Record<string, string> = {
   // Navigation & Actions
+  refresh: refreshIconNames.materialcommunityicons,
   about: 'dots-vertical',
   'arrow-down': 'arrow-down',
   'arrow-down-circle': 'arrow-down-circle',
@@ -20,6 +24,8 @@ export const materialcommunityiconsIconMapping: Record<string, string> = {
   'condense-map': 'fullscreen-exit',
   plus: 'plus',
   minus: 'minus',
+
+  leaf: leafIconNames.materialcommunityicons,
 
   // Content & Media
   albums: 'album',
@@ -36,6 +42,7 @@ export const materialcommunityiconsIconMapping: Record<string, string> = {
   copy: 'content-copy',
 
   // Status & Feedback
+  medal: 'medal-outline',
   check: 'check-circle',
   'circle-check-filled': 'check-circle',
   'alert-hexagon-filled': 'alert',

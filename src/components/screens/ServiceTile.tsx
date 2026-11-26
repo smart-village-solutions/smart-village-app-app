@@ -13,6 +13,7 @@ import {
 } from '../../helpers';
 import { resolveServiceTileColumns } from '../../helpers/serviceTileLayout';
 import { IconLibrary } from '../../IconProvider';
+import { openKlimaTaler } from '../../klimaTaler/entry';
 import { OrientationContext } from '../../OrientationProvider';
 import { Image } from '../Image';
 import { Badge } from '../profile';
@@ -110,26 +111,30 @@ export const ServiceTile = ({
       : DEFAULT_TILE_GRID_COLUMNS.portrait;
   const [contentWidth, setContentWidth] = useState<number>();
   const [isVisible, setIsVisible] = useState(item.isVisible ?? true);
-  const onPress = useCallback(
-    () =>
-      isEditMode
-        ? onToggleVisibility(draggableId, isVisible, setIsVisible)
-        : navigation.push(item.routeName, {
-            ...(item.params ?? {}),
-            navigationSourceStaticJsonName: staticJsonName,
-            navigationSourceRouteName: route.name
-          }),
-    [
-      isEditMode,
-      onToggleVisibility,
-      draggableId,
-      isVisible,
-      item,
-      navigation,
-      route.name,
-      staticJsonName
-    ]
-  );
+  const onPress = useCallback(() => {
+    if (isEditMode) {
+      onToggleVisibility(draggableId, isVisible, setIsVisible);
+      return;
+    }
+    if (item.routeName === 'KlimaTaler') {
+      void openKlimaTaler();
+      return;
+    }
+    navigation.push(item.routeName, {
+      ...(item.params ?? {}),
+      navigationSourceStaticJsonName: staticJsonName,
+      navigationSourceRouteName: route.name
+    });
+  }, [
+    isEditMode,
+    onToggleVisibility,
+    draggableId,
+    isVisible,
+    item,
+    navigation,
+    route.name,
+    staticJsonName
+  ]);
   const ToggleVisibilityIcon = isVisible ? Icon.Visible : Icon.Unvisible;
   const { fontStyle = {}, iconStyle = {}, numberOfLines, tileStyle = {} } = serviceTiles;
   const { style: itemStyle } = item;

@@ -1,10 +1,15 @@
 import moment from 'moment';
 
 import { TQuota, TVoucherDates } from '../types';
+import {
+  isImportedKlimaTalerVoucher,
+  readImportedKlimaTalerVoucher
+} from '../klimaTaler/importedVoucher';
 
 type VoucherAvailabilityInput = {
   dates?: TVoucherDates[] | null;
   quota?: Pick<TQuota, 'availableQuantity'> | null;
+  payload?: unknown;
 };
 
 type VoucherRedeemedForMemberInput = {
@@ -36,7 +41,15 @@ export const isVoucherDateCurrentlyActive = (dates?: TVoucherDates[] | null) => 
   return !!getActiveVoucherDateRange(dates);
 };
 
-export const isVoucherCurrentlyAvailable = ({ dates, quota }: VoucherAvailabilityInput) => {
+export const isVoucherCurrentlyAvailable = ({
+  dates,
+  quota,
+  payload
+}: VoucherAvailabilityInput) => {
+  if (isImportedKlimaTalerVoucher(payload)) {
+    const voucher = readImportedKlimaTalerVoucher(payload);
+    return !!voucher && voucher.remaining > 0 && isVoucherDateCurrentlyActive(dates);
+  }
   return hasVoucherRemainingQuantity(quota) && isVoucherDateCurrentlyActive(dates);
 };
 

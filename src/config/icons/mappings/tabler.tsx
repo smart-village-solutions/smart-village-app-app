@@ -3,8 +3,12 @@
  * Maps unified icon names to Tabler icon names
  */
 
+import { leafIconNames } from './leaf';
+import { refreshIconNames } from './refresh';
+
 export const tablerIconMapping: Record<string, string> = {
   // Navigation & Actions
+  refresh: refreshIconNames.tabler,
   about: 'dots-vertical',
   'arrow-down': 'arrow-down',
   'arrow-down-circle': 'circle-arrow-down-filled',
@@ -19,6 +23,8 @@ export const tablerIconMapping: Record<string, string> = {
   'condense-map': 'minimize',
   plus: 'plus',
   minus: 'minus',
+
+  leaf: leafIconNames.tabler,
 
   // Content & Media
   albums: 'album',
@@ -35,6 +41,7 @@ export const tablerIconMapping: Record<string, string> = {
   copy: 'copy',
 
   // Status & Feedback
+  medal: 'medal',
   check: 'circle-check-filled',
   'circle-check-filled': 'circle-check-filled',
   'alert-hexagon-filled': 'alert-hexagon-filled',

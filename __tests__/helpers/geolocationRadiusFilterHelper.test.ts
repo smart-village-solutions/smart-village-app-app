@@ -6,8 +6,18 @@ jest.mock('../../src/queries', () => ({
 }));
 
 jest.mock('../../src/components', () => ({ locationServiceEnabledAlert: jest.fn() }));
+jest.mock('../../src/config', () => ({
+  ...jest.requireActual('../../src/config/consts'),
+  ...jest.requireActual('../../src/config/texts')
+}));
 
-import { filterLocationsWithinRadius } from '../../src/helpers/geolocationRadiusFilterHelper';
+import type { LocationObject } from 'expo-location';
+
+import { locationServiceEnabledAlert } from '../../src/components';
+import {
+  filterLocationsWithinRadius,
+  geoLocationFilteredListItem
+} from '../../src/helpers/geolocationRadiusFilterHelper';
 import { getParticipationProjectGeoLocation } from '../../src/helpers/participationProjectHelper';
 
 describe('filterLocationsWithinRadius', () => {
@@ -53,5 +63,59 @@ describe('filterLocationsWithinRadius', () => {
     };
 
     expect(filterLocationsWithinRadius([listItem], 52.13, 11.62, 1)).toEqual([listItem]);
+  });
+});
+
+describe('reference position for radius searches', () => {
+  const nearby = { id: 'nearby', locations: [{ geoLocation: { latitude: 0, longitude: 0 } }] };
+  const distant = { id: 'distant', locations: [{ geoLocation: { latitude: 50, longitude: 10 } }] };
+  const position = { coords: { latitude: 0, longitude: 0 } };
+  const props = {
+    listItem: [nearby, distant],
+    isLocationAlertShow: false,
+    navigation: {},
+    queryVariables: { radiusSearch: { currentPosition: true, distance: 10 } },
+    setIsLocationAlertShow: jest.fn()
+  };
+
+  beforeEach(() => jest.clearAllMocks());
+
+  test.each(['alternativePosition', 'defaultAlternativePosition'])(
+    '%s works without GPS permission, including zero coordinates',
+    (key) => {
+      expect(
+        geoLocationFilteredListItem({
+          ...props,
+          locationSettings: { locationService: false, [key]: position }
+        })
+      ).toEqual([nearby]);
+      expect(locationServiceEnabledAlert).not.toHaveBeenCalled();
+    }
+  );
+
+  test('enabled GPS takes priority over a stored fallback', () => {
+    expect(
+      geoLocationFilteredListItem({
+        ...props,
+        currentPosition: position as LocationObject,
+        locationSettings: {
+          locationService: true,
+          alternativePosition: { coords: { latitude: 50, longitude: 10 } }
+        }
+      })
+    ).toEqual([nearby]);
+  });
+
+  test('missing GPS does not silently apply the saved alternative and only alerts once', () => {
+    const search = {
+      ...props,
+      locationSettings: { locationService: true, alternativePosition: position }
+    };
+    expect(geoLocationFilteredListItem(search)).toBe(props.listItem);
+    expect(locationServiceEnabledAlert).toHaveBeenCalledTimes(1);
+    expect(geoLocationFilteredListItem({ ...search, isLocationAlertShow: true })).toBe(
+      props.listItem
+    );
+    expect(locationServiceEnabledAlert).toHaveBeenCalledTimes(1);
   });
 });

@@ -4,8 +4,12 @@
  * Reference: http://simplelineicons.com/
  */
 
+import { leafIconNames } from './leaf';
+import { refreshIconNames } from './refresh';
+
 export const simplelineiconsIconMapping: Record<string, string> = {
   // Navigation & Actions
+  refresh: refreshIconNames.simplelineicons,
   about: 'options-vertical',
   'arrow-down': 'arrow-down',
   'arrow-down-circle': 'arrow-down-circle',
@@ -20,6 +24,8 @@ export const simplelineiconsIconMapping: Record<string, string> = {
   'condense-map': 'size-actual',
   plus: 'plus',
   minus: 'minus',
+
+  leaf: leafIconNames.simplelineicons,
 
   // Content & Media
   albums: 'picture',
@@ -36,6 +42,7 @@ export const simplelineiconsIconMapping: Record<string, string> = {
   copy: 'docs',
 
   // Status & Feedback
+  medal: 'badge',
   check: 'check',
   'circle-check-filled': 'check',
   'alert-hexagon-filled': 'exclamation',

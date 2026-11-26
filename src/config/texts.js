@@ -1,6 +1,63 @@
 import appJson from '../../app.json';
 
 export const texts = {
+  klimaTaler: {
+    voucher: {
+      use: 'In Klima-Taler nutzen',
+      unavailable: 'Nicht verfügbar',
+      unavailableMessage: 'Dieses Angebot ist zurzeit in dieser App nicht verfügbar.'
+    },
+    map: {
+      loading: 'Klima-Taler lädt …',
+      unavailable: 'Klima-Taler nicht verfügbar',
+      unconfigured: 'Klima-Taler: Suchgebiet fehlt',
+      stale: 'Diese Angebote können veraltet sein.',
+      showOffers: 'Angebote anzeigen oder ausblenden',
+      chooseOffer: 'Angebot auswählen',
+      openOffer: 'Angebot in Klima-Taler öffnen',
+      available: 'verfügbar'
+    },
+    title: 'Klima-Taler',
+    card: {
+      title: 'Dein Klima-Bonus',
+      description: 'Taler sammeln. Vorteile vor Ort entdecken.',
+      discover: 'Klima-Taler entdecken',
+      balance: 'Deine Klima-Taler',
+      open: 'Mein Bereich',
+      wallet: 'Wallet',
+      map: 'Karte',
+      badges: 'Abzeichen',
+      settings: 'Einstellungen',
+      comingSoonTitle: 'Bald verfügbar',
+      comingSoonMessage: 'Diese Funktion wird bald ergänzt.'
+    },
+    widget: {
+      loading: 'Wird geladen …',
+      disabled: 'Noch nicht aktiviert',
+      unconfigured: 'Noch nicht eingerichtet',
+      noSession: 'Zum Starten öffnen',
+      ready: '',
+      empty: 'Keine Punktedaten verfügbar',
+      error: 'Aktualisierung fehlgeschlagen',
+      unsupported: 'Deine Klima-Taler findest du in deinem Bereich.',
+      stale: 'Zuletzt bestätigte Punkte'
+    },
+    opening: 'Klima-Taler wird geöffnet …',
+    retry: 'Erneut versuchen',
+    errors: {
+      E_REGISTRATION_UNCERTAIN:
+        'Der Ausgang der bisherigen Registrierung ist unklar. Bitte wende dich an den Klima-Taler-Support, damit dein Konto wiederhergestellt werden kann. Es wird kein zweites Konto erstellt.',
+      E_DISABLED: 'Klima-Taler ist in dieser App noch nicht aktiviert.',
+      E_NATIVE_UNAVAILABLE: 'Klima-Taler benötigt eine neue Version dieser App.',
+      E_SIMULATOR_UNSUPPORTED:
+        'Klima-Taler ist auf diesem Simulator nicht verfügbar. Bitte auf einem echten iPhone testen.',
+      E_CONFIGURATION: 'Klima-Taler ist noch nicht eingerichtet.',
+      E_AUTHENTICATION:
+        'Die bestehende Klima-Taler-Sitzung konnte nicht wiederhergestellt werden. Bitte später erneut versuchen.',
+      E_PROVIDER:
+        'Klima-Taler konnte nicht geöffnet werden. Bitte die Verbindung prüfen und erneut versuchen.'
+    }
+  },
   accessibilityLabels: {
     actions: {
       back: 'Zurück',
@@ -2351,6 +2408,14 @@ export const texts = {
     sendCode: 'Bericht anzeigen'
   },
   widgets: {
+    edit: 'Anpassen',
+    editTitle: 'Widgets anordnen',
+    editHint: 'Widgets gedrückt halten und an die gewünschte Position ziehen.',
+    done: 'Fertig',
+    cancel: 'Abbrechen',
+    moveEarlier: 'Nach vorne verschieben',
+    moveLater: 'Nach hinten verschieben',
+    saveError: 'Die Reihenfolge konnte nicht gespeichert werden. Bitte erneut versuchen.',
     constructionSites: 'Baustellen',
     custom: 'Benutzerdefiniert',
     events: 'Events',

@@ -2,6 +2,8 @@
 
 Detailed documentation of the app's code will grow here.
 
+- [Klima-Taler native build setup](KLIMA_TALER_NATIVE_SETUP.md): local vendor-framework preparation, native build requirements and SDK validation.
+
 ## Codebase Overview
 
 The Smart Village App is an open source React Native application built with Expo for Android and iOS. This repository contains application code, documentation, test cases and example configurations.
@@ -92,3 +94,7 @@ See [Disturber theme configuration](./disturber-theming.md) for static-content d
 
 For the complete app, Main-Server and remote configuration checklist see the
 [v4.3.0 to v5.0.0 migration guide](./MIGRATION_V4.3.0_TO_V5.0.0.md).
+
+## Klima-Taler
+
+See [Klima-Taler integration](./KLIMA_TALER.md) for customer activation, native build setup, SDK compatibility and testing.

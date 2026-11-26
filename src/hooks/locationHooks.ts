@@ -8,10 +8,11 @@ import {
   PermissionStatus,
   requestForegroundPermissionsAsync
 } from 'expo-location';
-import { useCallback, useContext, useEffect, useState } from 'react';
-import { Platform } from 'react-native';
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { AppState, Platform } from 'react-native';
 
 import { storageHelper } from '../helpers';
+import { resolveReferencePosition } from '../helpers/locationReference';
 import { SettingsContext } from '../SettingsProvider';
 import { LocationSettings } from '../types';
 
@@ -82,7 +83,25 @@ export const useSystemPermission = () => {
   const [systemPermission, setSystemPermission] = useState<LocationPermissionResponse>();
 
   useEffect(() => {
-    (async () => setSystemPermission(await getForegroundPermissionsAsync()))();
+    let mounted = true;
+    let latestRequest = 0;
+    const refresh = async () => {
+      const request = ++latestRequest;
+      try {
+        const permission = await getForegroundPermissionsAsync();
+        if (mounted && request === latestRequest) setSystemPermission(permission);
+      } catch {
+        // Keep the last confirmed permission when a temporary lookup fails.
+      }
+    };
+    void refresh();
+    const subscription = AppState.addEventListener('change', (state) => {
+      if (state === 'active') void refresh();
+    });
+    return () => {
+      mounted = false;
+      subscription.remove();
+    };
   }, []);
 
   return systemPermission;
@@ -91,6 +110,14 @@ export const useSystemPermission = () => {
 export const useLocationSettings = () => {
   // @ts-expect-error settings are not properly typed
   const { locationSettings, setLocationSettings } = useContext(SettingsContext);
+  const systemPermission = useSystemPermission();
+  const effectiveLocationSettings = useMemo(
+    () =>
+      systemPermission?.status === PermissionStatus.DENIED
+        ? { ...locationSettings, locationService: false }
+        : locationSettings,
+    [locationSettings, systemPermission?.status]
+  );
 
   const setAndSyncLocationSettings = useCallback(
     async (newSettings: LocationSettings) => {
@@ -103,7 +130,7 @@ export const useLocationSettings = () => {
   );
 
   return {
-    locationSettings: locationSettings as LocationSettings,
+    locationSettings: effectiveLocationSettings as LocationSettings,
     setAndSyncLocationSettings
   };
 };
@@ -119,13 +146,22 @@ const usePos = (func: RequestPermissionAndFetchFunction, skip?: boolean) => {
     let mounted = true;
     if (shouldGetPosition) {
       setLoading(true);
-      func(setAndSyncLocationSettings)
+      func(async (settings) => {
+        if (mounted) await setAndSyncLocationSettings(settings);
+      })
         .then((result) => {
           if (mounted && result) {
             setPosition(result);
           }
         })
-        .finally(() => setLoading(false));
+        .catch(() => {
+          if (mounted) console.warn('Unable to refresh the device location');
+        })
+        .finally(() => {
+          if (mounted) setLoading(false);
+        });
+    } else {
+      setLoading(false);
     }
     return () => {
       mounted = false;
@@ -133,11 +169,7 @@ const usePos = (func: RequestPermissionAndFetchFunction, skip?: boolean) => {
   }, [shouldGetPosition]);
 
   // if skip, then don't return a position
-  const returnPosition = skip
-    ? undefined
-    : locationSettings.locationService
-    ? position
-    : locationSettings.alternativePosition ?? locationSettings.defaultAlternativePosition;
+  const returnPosition = skip ? undefined : resolveReferencePosition(locationSettings, position);
 
   // actively return undefined as the position, to avoid using the position from when the in app setting was true
   return { loading, position: returnPosition };

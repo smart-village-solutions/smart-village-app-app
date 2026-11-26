@@ -5,8 +5,12 @@
  * Note: Many icon names have been updated from v5 (e.g. times→xmark, home→house)
  */
 
+import { leafIconNames } from './leaf';
+import { refreshIconNames } from './refresh';
+
 export const fontawesome6IconMapping: Record<string, string> = {
   // Navigation & Actions
+  refresh: refreshIconNames.fontawesome6,
   about: 'ellipsis-vertical',
   'arrow-down': 'arrow-down',
   'arrow-down-circle': 'circle-arrow-down',
@@ -21,6 +25,8 @@ export const fontawesome6IconMapping: Record<string, string> = {
   'condense-map': 'compress',
   plus: 'plus',
   minus: 'minus',
+
+  leaf: leafIconNames.fontawesome6,
 
   // Content & Media
   albums: 'images',
@@ -37,6 +43,7 @@ export const fontawesome6IconMapping: Record<string, string> = {
   copy: 'copy',
 
   // Status & Feedback
+  medal: 'medal',
   check: 'circle-check',
   'circle-check-filled': 'circle-check',
   'alert-hexagon-filled': 'triangle-exclamation',

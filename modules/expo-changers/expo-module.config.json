@@ -1,0 +1,5 @@
+{
+  "platforms": ["apple", "android"],
+  "apple": { "modules": ["ExpoChangersModule"], "appDelegateSubscribers": ["ChangersAppDelegateSubscriber"] },
+  "android": { "modules": ["expo.modules.changers.ExpoChangersModule"], "packages": ["expo.modules.changers.ChangersPackage"] }
+}

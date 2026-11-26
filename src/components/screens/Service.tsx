@@ -18,6 +18,7 @@ import { OrientationContext } from '../../OrientationProvider';
 import { ProfileContext } from '../../ProfileProvider';
 import { SettingsContext } from '../../SettingsProvider';
 import { ScreenName } from '../../types';
+import { isKlimaTalerConfigured } from '../../klimaTaler/settings';
 import { DiagonalGradient } from '../DiagonalGradient';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { RegularText } from '../Text';
@@ -159,19 +160,23 @@ export const Service = ({
     </View>
   );
 
-  if (isLoading && isEditMode) return <LoadingSpinner loading />;
-
   const visibleTiles = useMemo(() => {
+    const enabledTiles = tiles?.filter(
+      (tile: TServiceTile) =>
+        tile.routeName !== 'KlimaTaler' || isKlimaTalerConfigured(globalSettings)
+    );
     if (isEditMode) {
-      return tiles;
+      return enabledTiles;
     }
 
     if (route.name === ScreenName.Profile) {
-      return filterProfileEditorialTiles(tiles, roles);
+      return filterProfileEditorialTiles(enabledTiles, roles);
     }
 
-    return tiles;
-  }, [tiles, route.name, isEditMode, roles]);
+    return enabledTiles;
+  }, [tiles, route.name, isEditMode, roles, globalSettings]);
+
+  if (isLoading && isEditMode) return <LoadingSpinner loading />;
 
   const rows = groupServiceTileRows(
     (visibleTiles ?? []).map(configureTile),
@@ -186,7 +191,7 @@ export const Service = ({
       style={styles.diagonalGradient}
     >
       <DraggableGrid columns={itemsPerRow} onDragEnd={onDragEnd}>
-        {tiles?.map((item, index) => renderItem(configureTile(item), index))}
+        {visibleTiles?.map((item, index) => renderItem(configureTile(item), index))}
       </DraggableGrid>
       {toggler}
     </DiagonalGradient>

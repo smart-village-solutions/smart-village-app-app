@@ -297,7 +297,12 @@ export const PointOfInterest = ({
         <View>
           <SectionHeader title={texts.pointOfInterest.vouchers} />
           {voucherListItems.slice(0, loadedVoucherDataCount).map((item) => (
-            <VoucherListItem key={item.id} item={item} navigation={navigation} />
+            <VoucherListItem
+              key={item.id}
+              item={item}
+              navigation={navigation}
+              openKlimaTalerOffer
+            />
           ))}
           {voucherListItems.length > loadedVoucherDataCount && (
             <Wrapper>

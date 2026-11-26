@@ -13,6 +13,19 @@ type WidgetLayoutOptions = {
   textScale: number;
 };
 
+export const balancedWidgetRowSizes = (itemCount: number, columns: number) => {
+  if (itemCount <= 0) return [];
+  // Keep the minimum row count allowed by width/text size, distributing items evenly.
+  // Unlike reducing columns for a singleton, this never adds rows or forces a list.
+  const rowCount = Math.ceil(itemCount / columns);
+  const smallerRowSize = Math.floor(itemCount / rowCount);
+  const largerRowCount = itemCount % rowCount;
+  return Array.from(
+    { length: rowCount },
+    (_, index) => smallerRowSize + (index < largerRowCount ? 1 : 0)
+  );
+};
+
 export const resolveWidgetLayout = ({
   availableWidth,
   balanceWidgetRows = false,
@@ -33,15 +46,7 @@ export const resolveWidgetLayout = ({
 
   if (balanceWidgetRows !== true || itemCount <= 0) return { ...layout, rowSizes: undefined };
 
-  // Keep the minimum row count allowed by width/text size, distributing items evenly.
-  // Unlike reducing columns for a singleton, this never adds rows or forces a list.
-  const rowCount = Math.ceil(itemCount / layout.columns);
-  const smallerRowSize = Math.floor(itemCount / rowCount);
-  const largerRowCount = itemCount % rowCount;
-  const rowSizes = Array.from(
-    { length: rowCount },
-    (_, index) => smallerRowSize + (index < largerRowCount ? 1 : 0)
-  );
+  const rowSizes = balancedWidgetRowSizes(itemCount, layout.columns);
   const columns = rowSizes[0];
 
   return { columns, itemWidth: availableWidth / columns, rowSizes };

@@ -3,8 +3,12 @@
  * Maps unified icon names to Ionicons icon names
  */
 
+import { leafIconNames } from './leaf';
+import { refreshIconNames } from './refresh';
+
 export const ioniconsIconMapping: Record<string, string> = {
   // Navigation & Actions
+  refresh: refreshIconNames.ionicons,
   about: 'ellipsis-vertical',
   'arrow-down': 'arrow-down',
   'arrow-down-circle': 'arrow-down-circle',
@@ -19,6 +23,8 @@ export const ioniconsIconMapping: Record<string, string> = {
   'condense-map': 'contract',
   plus: 'add',
   minus: 'remove',
+
+  leaf: leafIconNames.ionicons,
 
   // Content & Media
   albums: 'albums',
@@ -35,6 +41,7 @@ export const ioniconsIconMapping: Record<string, string> = {
   copy: 'copy',
 
   // Status & Feedback
+  medal: 'medal-outline',
   check: 'checkmark-circle',
   'circle-check-filled': 'checkmark-circle',
   'alert-hexagon-filled': 'warning',

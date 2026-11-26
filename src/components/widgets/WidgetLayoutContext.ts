@@ -5,6 +5,7 @@ export type WidgetLayoutMode = 'grid' | 'list';
 
 export const WidgetLayoutContext = createContext<{
   mode: WidgetLayoutMode;
+  contentPaddingVertical?: number;
   measurementKey?: string;
   onLabelWidth?: (width: number) => void;
 }>({ mode: 'grid' });

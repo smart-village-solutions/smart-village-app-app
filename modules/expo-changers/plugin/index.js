@@ -1,0 +1,306 @@
+const fs = require('node:fs');
+const path = require('node:path');
+const {
+  withInfoPlist,
+  withAndroidManifest,
+  withProjectBuildGradle,
+  withPodfile,
+  withGradleProperties,
+  withDangerousMod,
+  AndroidConfig
+} = require('expo/config-plugins');
+const { XML } = require('expo/config-plugins');
+const withBuildProperties = require('expo-build-properties').default;
+const PERMISSIONS = [
+  'ACCESS_FINE_LOCATION',
+  'ACCESS_COARSE_LOCATION',
+  'ACCESS_BACKGROUND_LOCATION',
+  'ACTIVITY_RECOGNITION',
+  'FOREGROUND_SERVICE',
+  'FOREGROUND_SERVICE_LOCATION',
+  'POST_NOTIFICATIONS',
+  'CAMERA'
+];
+function mergePlist(plist) {
+  const descriptions = {
+    NSLocationWhenInUseUsageDescription:
+      'Mit Ihrer Erlaubnis verwendet Klima-Taler Ihren Standort, um zurückgelegte Wege zu erfassen.',
+    NSLocationAlwaysAndWhenInUseUsageDescription:
+      'Mit Ihrer Einwilligung erfasst Klima-Taler Ihre Wege auch im Hintergrund.',
+    NSMotionUsageDescription:
+      'Bewegungsdaten werden verwendet, um die Art der Fortbewegung zu erkennen.',
+    NSCameraUsageDescription: 'Die Kamera wird zum Scannen von Klima-Taler-QR-Codes verwendet.'
+  };
+  for (const [key, value] of Object.entries(descriptions)) plist[key] ??= value;
+  plist.UIBackgroundModes = [...new Set([...(plist.UIBackgroundModes || []), 'location'])];
+  return plist;
+}
+function mergeReceivers(app) {
+  app.receiver ??= [];
+  const vendor = 'de.motiontag.tracker.internal.receivers.BootAppUpdateReceiver';
+  const existing = app.receiver.find((receiver) => receiver.$['android:name'] === vendor);
+  if (existing) existing.$['tools:node'] = 'remove';
+  else app.receiver.push({ $: { 'android:name': vendor, 'tools:node': 'remove' } });
+  const guarded = 'expo.modules.changers.ChangersBootReceiver';
+  if (!app.receiver.some((receiver) => receiver.$['android:name'] === guarded)) {
+    app.receiver.push({
+      $: { 'android:name': guarded, 'android:exported': 'false' },
+      'intent-filter': [
+        {
+          action: [
+            'android.intent.action.BOOT_COMPLETED',
+            'android.intent.action.QUICKBOOT_POWERON',
+            'com.htc.intent.action.QUICKBOOT_POWERON',
+            'android.intent.action.MY_PACKAGE_REPLACED'
+          ].map((name) => ({ $: { 'android:name': name } }))
+        }
+      ]
+    });
+  }
+}
+function mergeManifest(manifest) {
+  manifest.manifest.$['xmlns:tools'] ??= 'http://schemas.android.com/tools';
+  const app = AndroidConfig.Manifest.getMainApplicationOrThrow(manifest);
+  mergeReceivers(app);
+  // Expo Dev Launcher benötigt barcode_ui; Changers/Quickie benötigt barcode.
+  // ML Kit unterstützt eine kommagetrennte Abhängigkeitsliste; Einträge der einbindenden App ebenfalls erhalten.
+  app['meta-data'] ??= [];
+  let mlkit = app['meta-data'].find(
+    (x) => x.$['android:name'] === 'com.google.mlkit.vision.DEPENDENCIES'
+  );
+  if (!mlkit) {
+    mlkit = { $: { 'android:name': 'com.google.mlkit.vision.DEPENDENCIES' } };
+    app['meta-data'].push(mlkit);
+  }
+  mlkit.$['android:value'] = [
+    ...new Set([
+      ...(mlkit.$['android:value'] || '')
+        .split(',')
+        .map((x) => x.trim())
+        .filter(Boolean),
+      'barcode',
+      'barcode_ui'
+    ])
+  ].join(',');
+  mlkit.$['tools:replace'] = [
+    ...new Set([
+      ...(mlkit.$['tools:replace'] || '')
+        .split(',')
+        .map((x) => x.trim())
+        .filter(Boolean),
+      'android:value'
+    ])
+  ].join(',');
+  app.activity ??= [];
+  if (
+    !app.activity.some((x) => x.$['android:name'] === 'com.blacksquared.sdk.activity.WebActivity')
+  ) {
+    app.activity.push({
+      $: {
+        'android:name': 'com.blacksquared.sdk.activity.WebActivity',
+        'android:exported': 'false',
+        'android:theme': '@style/Theme.AppCompat.Light.NoActionBar'
+      }
+    });
+  }
+  app.provider ??= [];
+  const authority = '${applicationId}.fileprovider';
+  const existing = app.provider.find((x) => x.$['android:authorities'] === authority);
+  if (
+    existing &&
+    !existing['meta-data']?.some(
+      (x) =>
+        x.$['android:name'] === 'android.support.FILE_PROVIDER_PATHS' &&
+        x.$['android:resource'] === '@xml/changers_file_paths'
+    )
+  )
+    throw new Error(
+      'Die Changers-FileProvider-Authority kollidiert mit einem vorhandenen Provider. Die Pfade in der Konfiguration der einbindenden App abgleichen.'
+    );
+  if (!existing) {
+    app.provider.push({
+      $: {
+        'android:name': 'expo.modules.changers.ChangersFileProvider',
+        'android:authorities': authority,
+        'android:exported': 'false',
+        'android:grantUriPermissions': 'true'
+      },
+      'meta-data': [
+        {
+          $: {
+            'android:name': 'android.support.FILE_PROVIDER_PATHS',
+            'android:resource': '@xml/changers_file_paths'
+          }
+        }
+      ]
+    });
+  }
+  app.$['android:fullBackupContent'] ??= '@xml/changers_backup_rules';
+  app.$['android:dataExtractionRules'] ??= '@xml/changers_data_extraction_rules';
+  app.$['tools:replace'] = [
+    ...new Set([
+      ...(app.$['tools:replace'] || '')
+        .split(',')
+        .map((x) => x.trim())
+        .filter(Boolean),
+      'android:fullBackupContent',
+      'android:dataExtractionRules'
+    ])
+  ].join(',');
+  return manifest;
+}
+async function mergeBackup(file, modern) {
+  let doc;
+  if (fs.existsSync(file)) doc = await XML.readXMLAsync({ path: file });
+  else if (modern)
+    doc = { 'data-extraction-rules': { 'cloud-backup': [{}], 'device-transfer': [{}] } };
+  else doc = { 'full-backup-content': {} };
+  const rootKey = modern ? 'data-extraction-rules' : 'full-backup-content';
+  if (doc[rootKey] === '') doc[rootKey] = {};
+  const root = doc[rootKey];
+  if (!root || typeof root !== 'object')
+    throw new Error('Nicht unterstützte Backup-Regeln: ' + file);
+  const targets = modern
+    ? ['cloud-backup', 'device-transfer'].map((key) => {
+        root[key] ||= [{}];
+        if (root[key][0] === '') root[key][0] = {};
+        return root[key][0];
+      })
+    : [root];
+  for (const target of targets) {
+    target.exclude ||= [];
+    // Die Backup-Ausnahmen des transitiven Pusher-1.9.0-AAR ebenfalls übernehmen.
+    for (const [domain, entry] of [
+      ['sharedpref', 'motiontag_tracker.xml'],
+      ['sharedpref', 'changers_activated.xml'],
+      ['sharedpref', 'com.pusher.pushnotifications.PushNotificationsInstance.xml'],
+      ['file', 'beams/.']
+    ]) {
+      if (!target.exclude.some((x) => x.$.domain === domain && x.$.path === entry))
+        target.exclude.push({ $: { domain, path: entry } });
+    }
+  }
+  await XML.writeXMLAsync({ path: file, xml: doc });
+}
+function withChangers(config, options = {}) {
+  const provider = options.configuration || {};
+  const environment = resolveEnvironment(provider);
+  if (!config.version) throw new Error('Changers requires an app version for OTA isolation.');
+  config.runtimeVersion = `${config.version}-changers-8-${environment}`;
+
+  config = withBuildProperties(config, { ios: { enableSceneSupport: true } });
+  config = withPodfile(config, (c) => {
+    c.modResults.contents = removeLegacySimulatorCompatibility(c.modResults.contents);
+    return c;
+  });
+  config = withGradleProperties(config, (c) => {
+    c.modResults = c.modResults.filter((entry) => entry.key !== 'expo.changers.environment');
+    c.modResults.push({ type: 'property', key: 'expo.changers.environment', value: environment });
+    return c;
+  });
+  if (provider.clientId && !/^\d+$/.test(String(provider.clientId)))
+    throw new Error('Changers clientId must be numeric.');
+  config = withInfoPlist(config, (c) => {
+    c.modResults = mergePlist(c.modResults);
+    c.modResults.ChangersConfiguration = {
+      environment,
+      clientId: String(provider.clientId || ''),
+      clientName: provider.clientName || '',
+      clientSecret: provider.clientSecret || ''
+    };
+    return c;
+  });
+  config = AndroidConfig.Permissions.withPermissions(
+    config,
+    PERMISSIONS.map((p) => 'android.permission.' + p)
+  );
+  config = withAndroidManifest(config, async (c) => {
+    c.modResults = mergeManifest(c.modResults);
+    const res = path.join(c.modRequest.platformProjectRoot, 'app/src/main/res/xml');
+    fs.mkdirSync(res, { recursive: true });
+    const app = AndroidConfig.Manifest.getMainApplicationOrThrow(c.modResults);
+    await Promise.all(
+      [
+        ['android:fullBackupContent', false],
+        ['android:dataExtractionRules', true]
+      ].map(async ([key, modern]) => {
+        const ref = app.$[key];
+        if (ref === 'false') return;
+        if (!/^@xml\/[a-z0-9_]+$/.test(ref))
+          throw new Error('Keine sichere Zusammenführung möglich für ' + key);
+        await mergeBackup(path.join(res, ref.slice(5) + '.xml'), modern);
+      })
+    );
+    return c;
+  });
+  config = withProjectBuildGradle(config, (c) => {
+    const block = `// @generated expo-changers-repositories begin
+allprojects {
+  repositories {
+    exclusiveContent {
+      forRepository { maven { url 'https://pkgs.dev.azure.com/motiontag/releases/_packaging/releases/maven/v1' } }
+      filter { includeGroup 'de.motiontag' }
+    }
+    exclusiveContent {
+      forRepository { maven { url 'https://jitpack.io' } }
+      filter { includeGroupByRegex 'com.github.Changers.*' }
+    }
+  }
+}
+// @generated expo-changers-repositories end`;
+    c.modResults.contents =
+      c.modResults.contents
+        .replace(
+          /\n?\/\/ @generated expo-changers-repositories begin[\s\S]*?\/\/ @generated expo-changers-repositories end\n?/g,
+          '\n'
+        )
+        .trimEnd() +
+      '\n\n' +
+      block +
+      '\n';
+    return c;
+  });
+  config = withDangerousMod(config, [
+    'android',
+    async (c) => {
+      const root = c.modRequest.platformProjectRoot;
+      // Die dokumentierte Pfadressource des Anbieters wird in dessen AAR mitgeliefert.
+      const assets = path.join(root, 'app/src/main/assets');
+      fs.mkdirSync(assets, { recursive: true });
+      fs.writeFileSync(
+        path.join(assets, 'changers-config.json'),
+        JSON.stringify({
+          environment,
+          clientId: String(provider.clientId || ''),
+          clientName: provider.clientName || '',
+          clientSecret: provider.clientSecret || ''
+        })
+      );
+      return c;
+    }
+  ]);
+  return config;
+}
+module.exports = withChangers;
+// Remove only the workaround generated for Changers 4.2.0. Keep customer hooks.
+function removeLegacySimulatorCompatibility(contents) {
+  return contents
+    .replace(/^[ \t]*# @generated expo-changers-simulator[ \t]*\n/gm, '')
+    .replace(
+      /^[ \t]*require_relative ['"]\.\.\/modules\/expo-changers\/ios\/simulator_compatibility['"][ \t]*\n/gm,
+      ''
+    )
+    .replace(/^[ \t]*ExpoChangersSimulatorCompatibility\.apply\(\w+\)[ \t]*\n/gm, '');
+}
+module.exports.removeLegacySimulatorCompatibility = removeLegacySimulatorCompatibility;
+module.exports.mergePlist = mergePlist;
+module.exports.mergeManifest = mergeManifest;
+module.exports.mergeBackup = mergeBackup;
+
+function resolveEnvironment(provider) {
+  const environment = provider.environment ?? 'production';
+  if (!['stage', 'production'].includes(environment))
+    throw new Error('Changers environment must be stage or production.');
+  return environment;
+}
+module.exports.resolveEnvironment = resolveEnvironment;

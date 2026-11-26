@@ -50,6 +50,7 @@ export enum ScreenName {
   Home = 'Home',
   Html = 'Html',
   Index = 'Index',
+  KlimaTaler = 'KlimaTaler',
   Lunch = 'Lunch',
   Map = 'Map',
   MapView = 'MapView',

@@ -3,8 +3,12 @@
  * Maps unified icon names to MaterialIcons icon names
  */
 
+import { leafIconNames } from './leaf';
+import { refreshIconNames } from './refresh';
+
 export const materialiconsIconMapping: Record<string, string> = {
   // Navigation & Actions
+  refresh: refreshIconNames.materialicons,
   about: 'more-vert',
   'arrow-down': 'arrow-downward',
   'arrow-down-circle': 'arrow-circle-down',
@@ -19,6 +23,8 @@ export const materialiconsIconMapping: Record<string, string> = {
   'condense-map': 'fullscreen-exit',
   plus: 'add',
   minus: 'remove',
+
+  leaf: leafIconNames.materialicons,
 
   // Content & Media
   albums: 'collections',
@@ -35,6 +41,7 @@ export const materialiconsIconMapping: Record<string, string> = {
   copy: 'content-copy',
 
   // Status & Feedback
+  medal: 'military-tech',
   check: 'check-circle',
   'circle-check-filled': 'check-circle',
   'alert-hexagon-filled': 'warning',

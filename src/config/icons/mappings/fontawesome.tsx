@@ -3,8 +3,12 @@
  * Maps unified icon names to FontAwesome icon names
  */
 
+import { leafIconNames } from './leaf';
+import { refreshIconNames } from './refresh';
+
 export const fontawesomeIconMapping: Record<string, string> = {
   // Navigation & Actions
+  refresh: refreshIconNames.fontawesome,
   about: 'ellipsis-v',
   'arrow-down': 'arrow-down',
   'arrow-down-circle': 'arrow-circle-down',
@@ -19,6 +23,8 @@ export const fontawesomeIconMapping: Record<string, string> = {
   'condense-map': 'compress',
   plus: 'plus',
   minus: 'minus',
+
+  leaf: leafIconNames.fontawesome,
 
   // Content & Media
   albums: 'picture-o',
@@ -35,6 +41,7 @@ export const fontawesomeIconMapping: Record<string, string> = {
   copy: 'copy',
 
   // Status & Feedback
+  medal: 'trophy',
   check: 'check-circle',
   'circle-check-filled': 'check-circle',
   'alert-hexagon-filled': 'exclamation-triangle',

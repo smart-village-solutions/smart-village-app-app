@@ -14,14 +14,15 @@ type Props = {
 };
 
 export const WidgetContainer = ({ accessibilityLabel, children, onPress, widgetStyle }: Props) => {
-  const { mode } = useContext(WidgetLayoutContext);
+  const { mode, contentPaddingVertical } = useContext(WidgetLayoutContext);
   const normalizedStyle =
     StyleSheet.flatten(omitResponsiveDimensions(normalizeStyleValues(widgetStyle ?? {}))) || {};
   const paddingStyle = {
     padding: normalize(16),
     // An explicit all-edge override also replaces the layout's default horizontal inset.
     ...(normalizedStyle.padding == null && {
-      paddingHorizontal: normalize(mode === 'list' ? 12 : 4)
+      paddingHorizontal: normalize(mode === 'list' ? 12 : 4),
+      ...(contentPaddingVertical !== undefined && { paddingVertical: contentPaddingVertical })
     })
   };
 
