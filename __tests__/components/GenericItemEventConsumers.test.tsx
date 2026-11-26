@@ -2,11 +2,12 @@
 import React from 'react';
 import { act, fireEvent, render } from '@testing-library/react-native';
 import moment from 'moment';
-import { DeviceEventEmitter } from 'react-native';
+import { ActivityIndicator, DeviceEventEmitter } from 'react-native';
 
 import { Calendar, REFRESH_CALENDAR } from '../../src/components/Calendar';
 import { HomeSection } from '../../src/components/HomeSection';
 import { EventRecords } from '../../src/components/screens/EventRecords';
+import { EmptyMessage } from '../../src/components/EmptyMessage';
 import { EventWidget } from '../../src/components/widgets/EventWidget';
 import { NetworkContext } from '../../src/NetworkProvider';
 import { SettingsContext } from '../../src/SettingsProvider';
@@ -389,6 +390,33 @@ describe('Generic Item event consumers', () => {
     expect(mockUseVolunteerData).toHaveBeenLastCalledWith(
       expect.objectContaining({ queryOptions: { enabled: false, keepPreviousData: true } })
     );
+  });
+
+  it('shows loading in an empty daily list until the query finishes', () => {
+    const calendar = () => (
+      <SettingsContext.Provider
+        value={{ globalSettings: { settings: { eventCalendar: { subList: true } } } } as never}
+      >
+        <Calendar
+          isListRefreshing={false}
+          navigation={{ navigate: jest.fn() } as never}
+          query="eventRecords"
+          queryVariables={{ limit: 15 }}
+        />
+      </SettingsContext.Provider>
+    );
+    mockSubListInfiniteResult.isLoading = true;
+    const tree = render(calendar());
+
+    expect(tree.UNSAFE_getByType(ActivityIndicator)).toBeTruthy();
+    expect(tree.UNSAFE_queryByType(EmptyMessage)).toBeNull();
+    expect(mockListProps.ListFooterComponent()).toBeNull();
+
+    mockSubListInfiniteResult.isLoading = false;
+    tree.rerender(calendar());
+
+    expect(tree.UNSAFE_queryByType(ActivityIndicator)).toBeNull();
+    expect(tree.UNSAFE_getByType(EmptyMessage)).toBeTruthy();
   });
 
   it('lists a multi-day Volunteer event on an intermediate selected day', () => {

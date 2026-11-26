@@ -433,7 +433,7 @@ export const Calendar = ({
           hasNextPage={hasNextPageSubList}
           isFetchingNextPage={isFetchingNextPageSubList}
           ListFooterComponent={() => {
-            if (loadingSubList || isRefetchingSubList) {
+            if ((loadingSubList || isRefetchingSubList) && !!listItems?.length) {
               return (
                 <LoadingContainer>
                   <ActivityIndicator color={colors.refreshControl} />
@@ -448,12 +448,18 @@ export const Calendar = ({
             return null;
           }}
           ListEmptyComponent={
-            <>
-              <EmptyMessage title={texts.empty.list} />
-              {eventListIntro?.buttonType === EVENT_SUGGESTION_BUTTON.BOTTOM_FLOATING && (
-                <View style={styles.spacer} />
-              )}
-            </>
+            loadingSubList || isRefetchingSubList ? (
+              <LoadingContainer>
+                <ActivityIndicator color={colors.refreshControl} />
+              </LoadingContainer>
+            ) : (
+              <>
+                <EmptyMessage title={texts.empty.list} />
+                {eventListIntro?.buttonType === EVENT_SUGGESTION_BUTTON.BOTTOM_FLOATING && (
+                  <View style={styles.spacer} />
+                )}
+              </>
+            )
           }
           ListHeaderComponent={<View style={styles.spacerSmall} />}
           navigation={navigation}
