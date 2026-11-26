@@ -33,6 +33,26 @@ const defaultRouteTypes: Record<string, RoutePresentation> = {
   '3': { icon: 'bus', label: texts.pointOfInterest.routeTypes.bus, color: '#265BA4' }
 };
 
+const configuredString = (value: unknown, fallback?: string) =>
+  typeof value === 'string' ? value : fallback;
+
+const resolveRoutePresentation = (
+  routeType: string,
+  configured: RoutePresentation | undefined,
+  primaryColor: string
+) => {
+  const defaults = defaultRouteTypes[routeType] ?? {};
+  const overrides = configured ?? {};
+  const icon = configuredString(overrides.icon, defaults.icon);
+
+  return {
+    icon,
+    label: configuredString(overrides.label, defaults.label),
+    color: configuredString(overrides.color, defaults.color) ?? (icon ? primaryColor : undefined),
+    textColor: configuredString(overrides.textColor)
+  };
+};
+
 type TravelTimeProps = {
   departureTime: string;
   route: {
@@ -101,17 +121,11 @@ export const TravelTimes = ({ id }: { id: string }) => {
         const { routeShortName, routeType } = route;
         const { tripHeadsign } = trip;
 
-        const defaults = defaultRouteTypes[routeType];
-        const configured = configuredRouteTypes?.[routeType];
-        const icon = typeof configured?.icon === 'string' ? configured.icon : defaults?.icon;
-        const label = typeof configured?.label === 'string' ? configured.label : defaults?.label;
-        const color =
-          typeof configured?.color === 'string'
-            ? configured.color
-            : defaults?.color ?? (icon ? colors.primary : undefined);
-
-        const textColor =
-          typeof configured?.textColor === 'string' ? configured.textColor : undefined;
+        const { icon, label, color, textColor } = resolveRoutePresentation(
+          routeType,
+          configuredRouteTypes?.[routeType],
+          colors.primary
+        );
 
         return (
           <Fragment key={index}>
