@@ -87,6 +87,23 @@ describe('notificationNavigationHelper', () => {
     });
   });
 
+  it('passes the stored occurrence ID separately from the event GraphQL ID', () => {
+    const { getNotificationNavigationTarget } = jest.requireActual(
+      '../../src/helpers/notificationNavigationHelper'
+    );
+    const event = { id: 'event-1', query_type: 'EventRecord', occurrenceId: 'date-2' };
+
+    expect(
+      getNotificationNavigationTarget({ ...event, notificationKind: 'event-reminder' })
+    ).toMatchObject({
+      name: ScreenName.Detail,
+      params: { queryVariables: { id: 'event-1' }, eventReminderOccurrenceId: 'date-2' }
+    });
+    expect(
+      getNotificationNavigationTarget(event)?.params.eventReminderOccurrenceId
+    ).toBeUndefined();
+  });
+
   it('keeps cold-start navigation queued until the dynamic tab stack exists', () => {
     /* eslint-disable @typescript-eslint/no-var-requires */
     const { flushPendingNavigationActions } = require('../../src/navigation/navigationRef');

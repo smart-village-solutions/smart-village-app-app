@@ -10,13 +10,20 @@ import { SettingsContext } from '../../SettingsProvider';
 import { Icon, consts, normalize, texts } from '../../config';
 import { AUTH_MODE_USER, getApolloAuthContext } from '../../graphqlAuth';
 import { isTodayOrLater, matomoTrackingString, openLink, trimNewLines } from '../../helpers';
+import {
+  getEventOccurrences,
+  getEventReminderCategories,
+  getEventReminderListDetails
+} from '../../helpers/eventReminderTime';
 import { useDetailRefresh, useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
+import { getEventReminderModes } from '../../pushNotifications/EventReminderLocalNotifications';
 import { DELETE_EVENT_RECORD } from '../../queries/eventRecords';
 import { ScreenName } from '../../types';
 import { Button } from '../Button';
 import { DataProviderButton } from '../DataProviderButton';
 import { DataProviderNotice } from '../DataProviderNotice';
+import { EventReminderActions } from '../EventReminderControls';
 import { HtmlView } from '../HtmlView';
 import { ImageSection } from '../ImageSection';
 import { LoadingContainer } from '../LoadingContainer';
@@ -147,6 +154,17 @@ export const EventRecord = ({ data, navigation, readAloudControls, refetch, rout
     eventDates.shift();
   }
 
+  const reminderModes = getEventReminderModes(globalSettings);
+  const reminderCategories = reminderModes.categoryEnabled ? getEventReminderCategories(data) : [];
+  const eventRemindersEnabled = reminderModes.singleEnabled || reminderModes.categoryEnabled;
+  const reminderOccurrences = eventRemindersEnabled ? getEventOccurrences(data) : [];
+  const reminderOccurrenceId = route.params?.eventReminderOccurrenceId;
+  const showReminderActions =
+    eventRemindersEnabled &&
+    (!!reminderOccurrenceId ||
+      (reminderOccurrences.length > 0 &&
+        (reminderModes.singleEnabled || reminderCategories.length > 0)));
+
   return (
     <View>
       {isCurrentUser && (
@@ -218,14 +236,30 @@ export const EventRecord = ({ data, navigation, readAloudControls, refetch, rout
       </Wrapper>
       {readAloudControls}
 
-      {!!eventDates?.length && (
+      {(!!eventDates.length || showReminderActions) && (
         <WrapperVertical noPaddingTop={!!readAloudControls}>
           <SectionHeader title={texts.eventRecord.appointments} />
-          <OpeningTimesCard
-            openingHours={eventDates}
-            MAX_INITIAL_NUM_TO_RENDER={MAX_INITIAL_NUM_TO_RENDER}
-            appointmentsShowMoreButton={appointmentsShowMoreButton}
-          />
+          {!!eventDates.length && (
+            <OpeningTimesCard
+              openingHours={eventDates}
+              MAX_INITIAL_NUM_TO_RENDER={MAX_INITIAL_NUM_TO_RENDER}
+              appointmentsShowMoreButton={appointmentsShowMoreButton}
+            />
+          )}
+          {showReminderActions && (
+            <WrapperHorizontal>
+              <EventReminderActions
+                categories={reminderCategories}
+                details={getEventReminderListDetails(data)}
+                modes={reminderModes}
+                listsWithoutArrows={settings.listsWithoutArrows}
+                navigation={navigation}
+                occurrences={reminderOccurrences}
+                selectedOccurrenceId={route.params?.details?.date?.id}
+                notificationOccurrenceId={reminderOccurrenceId}
+              />
+            </WrapperHorizontal>
+          )}
         </WrapperVertical>
       )}
 

@@ -53,14 +53,15 @@ const coldStartResponse = {
   }
 };
 
-const TestPushNotifications = ({ active, onInteraction }) => {
-  usePushNotifications(undefined, onInteraction, undefined, active);
+const TestPushNotifications = ({ active, onInteraction, eventRemindersEnabled = false }) => {
+  usePushNotifications(undefined, onInteraction, undefined, active, eventRemindersEnabled);
 
   return null;
 };
 
 TestPushNotifications.propTypes = {
-  active: PropTypes.bool.isRequired,
+  active: PropTypes.bool,
+  eventRemindersEnabled: PropTypes.bool,
   onInteraction: PropTypes.func.isRequired
 };
 
@@ -111,6 +112,29 @@ describe('usePushNotifications', () => {
     expect(onInteraction).toHaveBeenCalledWith(response);
     expect(Notifications.addPushTokenListener).not.toHaveBeenCalled();
   });
+
+  it.each([false, undefined])(
+    'shows only local event notifications when remote push is %s',
+    async (active) => {
+      let tree;
+      act(() => {
+        tree = renderer.create(
+          <TestPushNotifications active={active} eventRemindersEnabled onInteraction={jest.fn()} />
+        );
+      });
+
+      const { handleNotification } = Notifications.setNotificationHandler.mock.calls[0][0];
+      const notification = (data) => ({ request: { content: { data } } });
+      await expect(
+        handleNotification(notification({ notificationKind: 'event-reminder' }))
+      ).resolves.toMatchObject({ shouldShowBanner: true, shouldShowList: true });
+      await expect(
+        handleNotification(notification({ query_type: 'NewsItem' }))
+      ).resolves.toMatchObject({ shouldShowBanner: false, shouldShowList: false });
+      expect(Notifications.addPushTokenListener).not.toHaveBeenCalled();
+      act(() => tree.unmount());
+    }
+  );
 
   it('handles and clears an Android cold-start response without an identifier', async () => {
     const onInteraction = jest.fn(() => true);

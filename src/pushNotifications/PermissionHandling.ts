@@ -28,6 +28,7 @@ export const getInAppPermission = async (): Promise<boolean> => {
 
 // Token refreshes and user permission changes must observe the same ordering.
 let pendingPushOperation = Promise.resolve();
+let preferenceRevision = 0;
 
 const enqueuePushOperation = <T>(operation: () => Promise<T>): Promise<T> => {
   const result = pendingPushOperation.then(operation);
@@ -39,14 +40,20 @@ const enqueuePushOperation = <T>(operation: () => Promise<T>): Promise<T> => {
   return result;
 };
 
-export const setInAppPermission = (newValue: boolean) =>
-  enqueuePushOperation(() => applyInAppPermission(newValue));
+export const setInAppPermission = (newValue: boolean, registerRemote = true) =>
+  enqueuePushOperation(() => applyInAppPermission(newValue, registerRemote));
 
-const applyInAppPermission = async (newValue: boolean) => {
+const applyInAppPermission = async (newValue: boolean, registerRemote: boolean) => {
+  const revision = preferenceRevision;
   let token = undefined;
   const oldValue = await readFromStore(PushNotificationStorageKeys.IN_APP_PERMISSION);
 
   if (newValue !== oldValue) {
+    if (newValue && !registerRemote) {
+      await addToStore(PushNotificationStorageKeys.IN_APP_PERMISSION, true);
+      DeviceEventEmitter.emit(PUSH_NOTIFICATION_PERMISSION_CHANGED_EVENT, true);
+      return true;
+    }
     if (newValue) {
       // receive token
       token = await registerForPushNotificationsAsync();
@@ -56,25 +63,41 @@ const applyInAppPermission = async (newValue: boolean) => {
     // remove token from store and notify server
     const successfullyHandled = await handleIncomingToken(token);
 
-    if (successfullyHandled) {
-      if (!newValue) {
-        try {
-          await clearWasteReminderLocalNotifications();
-        } catch (error) {
-          console.warn(
-            'An error occurred while clearing local waste reminder notifications:',
-            error
-          );
-        }
-      }
-
-      await addToStore(PushNotificationStorageKeys.IN_APP_PERMISSION, newValue);
-      DeviceEventEmitter.emit(PUSH_NOTIFICATION_PERMISSION_CHANGED_EVENT, newValue);
-    }
-
-    return successfullyHandled;
+    if (!successfullyHandled || revision !== preferenceRevision) return false;
+    if (!newValue) await clearWasteNotifications();
+    if (revision !== preferenceRevision) return false;
+    await storeInAppPermission(newValue);
   }
 
+  return true;
+};
+
+const storeInAppPermission = async (enabled: boolean) => {
+  await addToStore(PushNotificationStorageKeys.IN_APP_PERMISSION, enabled);
+  DeviceEventEmitter.emit(PUSH_NOTIFICATION_PERMISSION_CHANGED_EVENT, enabled);
+};
+
+const clearWasteNotifications = async () => {
+  try {
+    await clearWasteReminderLocalNotifications();
+  } catch (error) {
+    console.warn('An error occurred while clearing local waste reminder notifications:', error);
+  }
+};
+
+export const setInAppPermissionForEventReminders = async (
+  enabled: boolean,
+  registerRemote: boolean
+) => {
+  const previous = await readFromStore(PushNotificationStorageKeys.IN_APP_PERMISSION);
+  ++preferenceRevision;
+  await storeInAppPermission(enabled);
+  if (registerRemote) {
+    void syncInAppPushRegistration().catch(() => {
+      console.warn('Could not synchronize remote push registration.');
+    });
+  }
+  if (!enabled && previous) await clearWasteNotifications();
   return true;
 };
 
@@ -113,6 +136,13 @@ const hasGrantedNotificationPermission = (
   );
 };
 
+const readSystemPermission = async (requestIfNeeded = false) => {
+  const settings = await Notifications.getPermissionsAsync();
+  if (hasGrantedNotificationPermission(settings)) return true;
+  if (!requestIfNeeded || settings.canAskAgain === false) return false;
+  return hasGrantedNotificationPermission(await Notifications.requestPermissionsAsync());
+};
+
 export const getLocalNotificationPermission = async (): Promise<boolean> => {
   await ensureDefaultNotificationChannel();
 
@@ -120,9 +150,7 @@ export const getLocalNotificationPermission = async (): Promise<boolean> => {
     return false;
   }
 
-  const settings = await Notifications.getPermissionsAsync();
-
-  return hasGrantedNotificationPermission(settings);
+  return readSystemPermission();
 };
 
 export const requestLocalNotificationPermission = async (): Promise<boolean> => {
@@ -132,15 +160,7 @@ export const requestLocalNotificationPermission = async (): Promise<boolean> => 
     return false;
   }
 
-  const existingSettings = await Notifications.getPermissionsAsync();
-
-  if (hasGrantedNotificationPermission(existingSettings)) {
-    return true;
-  }
-
-  const requestedSettings = await Notifications.requestPermissionsAsync();
-
-  return hasGrantedNotificationPermission(requestedSettings);
+  return readSystemPermission(true);
 };
 
 export const ensurePushNotificationToken = async () => {
@@ -169,30 +189,20 @@ export const ensurePushNotificationToken = async () => {
 };
 
 export const handleSystemPermissions = async (
-  shouldSetInAppPermission = true
+  shouldSetInAppPermission = true,
+  requestIfNeeded = false
 ): Promise<boolean> => {
-  // Push notifications do not work properly with simulators/emulators
-  if (!Device.isDevice) {
+  if (device.platform !== 'ios' && device.platform !== 'android') {
     return false;
   }
 
   await ensureDefaultNotificationChannel();
 
-  const { status: existingStatus } = await Notifications.getPermissionsAsync();
-  let finalStatus = existingStatus;
   const inAppPermission = await readFromStore(PushNotificationStorageKeys.IN_APP_PERMISSION);
-  // if in app permission is already set, do not request again
-  const hasInAppPermissionSet = inAppPermission !== undefined && inAppPermission !== null;
+  const shouldInitialize = Device.isDevice && inAppPermission == null;
+  const isGranted = await readSystemPermission(requestIfNeeded || shouldInitialize);
 
-  if (!hasInAppPermissionSet && existingStatus !== PermissionStatus.GRANTED) {
-    const { status: requestedStatus } = await Notifications.requestPermissionsAsync();
-
-    finalStatus = requestedStatus;
-  }
-
-  const isGranted = finalStatus === PermissionStatus.GRANTED;
-
-  if (shouldSetInAppPermission && inAppPermission == null) {
+  if (shouldSetInAppPermission && shouldInitialize) {
     try {
       const successfullyHandledInAppPermission = await setInAppPermission(isGranted);
 
@@ -216,7 +226,25 @@ export const updatePushToken = (devicePushToken?: Notifications.DevicePushToken)
       ? await registerForPushNotificationsAsync(devicePushToken)
       : undefined;
 
+    if (!(await getInAppPermission())) return false;
     return handleIncomingToken(token);
+  });
+
+export const syncInAppPushRegistration = () =>
+  enqueuePushOperation(async () => {
+    const permission = await readFromStore(PushNotificationStorageKeys.IN_APP_PERMISSION);
+    if (permission !== true && permission !== false) return true;
+
+    const storedToken = await getPushTokenFromStorage();
+    if (!permission) {
+      return !storedToken || handleIncomingToken(undefined, false);
+    }
+    if (storedToken) return true;
+    if (!(await handleSystemPermissions(false))) return false;
+
+    const token = await registerForPushNotificationsAsync();
+    if (!(await getInAppPermission())) return false;
+    return handleIncomingToken(token, false);
   });
 
 export const showSystemPermissionMissingDialog = () => {

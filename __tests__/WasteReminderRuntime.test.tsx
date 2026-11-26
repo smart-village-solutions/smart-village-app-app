@@ -62,7 +62,8 @@ describe('WasteReminderRuntime', () => {
       undefined,
       expect.any(Function),
       undefined,
-      true
+      true,
+      false
     );
 
     const interactionHandler = (usePushNotifications as jest.Mock).mock.calls[0][1];
@@ -125,6 +126,7 @@ describe('WasteReminderRuntime', () => {
       undefined,
       expect.any(Function),
       undefined,
+      false,
       false
     );
 

@@ -73,6 +73,7 @@
     "apollo-link-context": "1.0.20",
     "apollo-link-http": "1.5.17",
     "apollo-link-rest": "~0.7.3",
+    "entities": "^3.0.1",
     "expo": "~57.0.14",
     "expo-application": "~57.0.2",
     "expo-asset": "~57.0.12",

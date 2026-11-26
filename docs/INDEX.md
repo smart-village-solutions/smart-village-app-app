@@ -56,6 +56,8 @@ For executing tests run `npm run test` or `yarn test`.
 
 For release template generation and Firebase requirements, see [release template configuration](./RELEASE_TEMPLATE.md).
 
+For per-municipality configuration and device checks, see [local event reminders](./event-reminders.md).
+
 ## Lint the app
 
 For executing linters run `npm run lint` or `yarn lint`.

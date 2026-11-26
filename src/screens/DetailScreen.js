@@ -110,21 +110,15 @@ export const DetailScreen = ({ navigation, route }) => {
   const authMode = route.params?.authMode ?? AUTH_MODE_PUBLIC;
   const details = route.params?.details ?? {};
   const hasValidDetailParams = !!query && !!queryVariables?.id;
-  const isSueDetail = query === QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID;
+  const isSueDetail =
+    query === QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID ||
+    query === QUERY_TYPES.SUE.MY_REQUEST_WITH_SERVICE_REQUEST_ID;
 
   const [refreshing, setRefreshing] = useState(false);
   const refreshTime = useRefreshTime(`${query}-${queryVariables.id}`, getRefreshInterval(query));
   const scrollContentContainerStyle = useReadAloudScrollContentContainerStyle();
 
   useRootRouteByCategory(details, navigation);
-
-  // Render SUE detail screen without the need of processing the rest of the code here
-  if (
-    query === QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID ||
-    query === QUERY_TYPES.SUE.MY_REQUEST_WITH_SERVICE_REQUEST_ID
-  ) {
-    return <SueDetailScreen navigation={navigation} route={route} />;
-  }
 
   const refresh = async (refetch) => {
     setRefreshing(true);
@@ -160,8 +154,8 @@ export const DetailScreen = ({ navigation, route }) => {
   );
   const detailData = (data && data[query]) || details;
   const detailSpeechItems = useMemo(
-    () => getDetailSpeechItems({ detail: detailData, query }),
-    [detailData, query]
+    () => (isSueDetail ? [] : getDetailSpeechItems({ detail: detailData, query })),
+    [detailData, isSueDetail, query]
   );
   useRegisterReadAloudContent(
     `detail-${queryVariables.id}`,
@@ -169,12 +163,11 @@ export const DetailScreen = ({ navigation, route }) => {
     features.readAloud && detailSpeechItems.length > 0
   );
 
-  if (!hasValidDetailParams) return null;
-
-  // Render SUE detail screen without the need of processing the rest of the code here
   if (isSueDetail) {
     return <SueDetailScreen navigation={navigation} route={route} />;
   }
+
+  if (!hasValidDetailParams) return null;
 
   if (!refreshTime) {
     return (
@@ -190,6 +183,13 @@ export const DetailScreen = ({ navigation, route }) => {
         <ActivityIndicator color={colors.refreshControl} />
       </LoadingContainer>
     );
+  }
+
+  if (
+    route.params?.eventReminderOccurrenceId &&
+    (!data?.[query] || data[query].visible === false)
+  ) {
+    return <EmptyMessage title={texts.eventReminders.unavailable} />;
   }
 
   // we can have `data` from GraphQL or `details` from the previous list view.

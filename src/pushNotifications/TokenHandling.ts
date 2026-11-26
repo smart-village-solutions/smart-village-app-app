@@ -34,15 +34,15 @@ export const serverConnectionAlert = (
 // if it is different it will add the new one to the server if it is present
 // in theory the token should be persistent, so we should never have
 // two defined values that are distinct.
-export const handleIncomingToken = async (token?: string) => {
+export const handleIncomingToken = async (token?: string, reportFailure = true) => {
   const storedToken = await getPushTokenFromStorage();
 
   if (storedToken !== (token ?? null)) {
     let successfullyRemoved = false;
     let successfullyAdded = false;
 
-    if (storedToken) successfullyRemoved = await removeTokenFromServer(storedToken);
-    if (token) successfullyAdded = await addTokenToServer(token);
+    if (storedToken) successfullyRemoved = await removeTokenFromServer(storedToken, reportFailure);
+    if (token) successfullyAdded = await addTokenToServer(token, reportFailure);
 
     const serverTransitionSucceeded =
       (!storedToken || successfullyRemoved) && (!token || successfullyAdded);
@@ -64,7 +64,7 @@ export const handleIncomingToken = async (token?: string) => {
   return true;
 };
 
-const removeTokenFromServer = async (token: string) => {
+const removeTokenFromServer = async (token: string, reportFailure: boolean) => {
   const accessToken = await SecureStore.getItemAsync(PushNotificationStorageKeys.ACCESS_TOKEN);
   const requestPath = secrets[namespace].serverUrl + secrets[namespace].rest.pushDevicesDelete;
   const fetchObj = {
@@ -85,7 +85,7 @@ const removeTokenFromServer = async (token: string) => {
     // 404 means that the token was already not on the server and can be treated as a success
     const isSuccess = response.status === 204 || response.status === 404;
 
-    serverConnectionAlert(isSuccess);
+    if (reportFailure) serverConnectionAlert(isSuccess);
 
     return isSuccess;
   }
@@ -93,7 +93,7 @@ const removeTokenFromServer = async (token: string) => {
   return false;
 };
 
-const addTokenToServer = async (token: string) => {
+const addTokenToServer = async (token: string, reportFailure: boolean) => {
   const accessToken = await SecureStore.getItemAsync(PushNotificationStorageKeys.ACCESS_TOKEN);
   const requestPath = secrets[namespace].serverUrl + secrets[namespace].rest.pushDevicesRegister;
   const os =
@@ -115,7 +115,7 @@ const addTokenToServer = async (token: string) => {
     const response = await fetch(requestPath, fetchObj);
     const isSuccess = response.status === 201;
 
-    serverConnectionAlert(isSuccess);
+    if (reportFailure) serverConnectionAlert(isSuccess);
 
     return isSuccess;
   }

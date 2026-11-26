@@ -3,10 +3,14 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { AppState, AppStateStatus } from 'react-native';
 
 import { readFromStore } from '../helpers';
-import { getNotificationResponseKey } from '../helpers/notificationHelper';
+import {
+  getNotificationResponseKey,
+  isEventReminderNotification
+} from '../helpers/notificationHelper';
 import {
   PushNotificationStorageKeys,
   getPushTokenFromStorage,
+  syncInAppPushRegistration,
   updatePushToken
 } from '../pushNotifications';
 
@@ -17,7 +21,8 @@ export const usePushNotifications = (
   notificationHandler?: NotificationHandler,
   interactionHandler?: ResponseHandler,
   behavior?: Notifications.NotificationBehavior,
-  active?: boolean
+  active?: boolean,
+  eventRemindersEnabled = false
 ): void => {
   // this causes the active state to never change between rerenders.
   // like this enabling or disabling the pushNotifications requires an app restart.
@@ -42,28 +47,36 @@ export const usePushNotifications = (
 
   const currentAppState = useRef<AppStateStatus | null>(null);
 
-  const onGetActive = useCallback(async (nextState: AppStateStatus) => {
-    if (currentAppState.current !== nextState) {
-      currentAppState.current = nextState;
+  const onGetActive = useCallback(
+    async (nextState: AppStateStatus) => {
+      if (currentAppState.current !== nextState) {
+        currentAppState.current = nextState;
 
-      // timeout is needed due to ios system push permission popup triggering appstate change
-      // no timeout causes the onGetActive to fire an additional request to our server
-      setTimeout(async () => {
-        try {
-          const inAppPermission = await readFromStore(
-            PushNotificationStorageKeys.IN_APP_PERMISSION
-          );
-          const token = await getPushTokenFromStorage();
+        // timeout is needed due to ios system push permission popup triggering appstate change
+        // no timeout causes the onGetActive to fire an additional request to our server
+        setTimeout(async () => {
+          if (nextState !== 'active' || currentAppState.current !== nextState) return;
+          try {
+            if (eventRemindersEnabled) {
+              await syncInAppPushRegistration();
+              return;
+            }
+            const inAppPermission = await readFromStore(
+              PushNotificationStorageKeys.IN_APP_PERMISSION
+            );
+            const token = await getPushTokenFromStorage();
 
-          if (nextState === 'active' && inAppPermission && !token) {
-            await updatePushToken();
+            if (inAppPermission && !token) {
+              await updatePushToken();
+            }
+          } catch {
+            console.warn('An error occurred while restoring the push notification token.');
           }
-        } catch {
-          console.warn('An error occurred while restoring the push notification token.');
-        }
-      }, 3000);
-    }
-  }, []); // empty dependencies because it will only used once in the "mountEffect" below
+        }, 3000);
+      }
+    },
+    [eventRemindersEnabled]
+  );
 
   const handleNotificationResponse = useCallback((response: Notifications.NotificationResponse) => {
     if (!interactionHandlerRef.current) return;
@@ -94,21 +107,47 @@ export const usePushNotifications = (
   }, [handleNotificationResponse, lastNotificationResponse]);
 
   useEffect(() => {
-    const shouldHandlePushNotifications = isActive !== false;
+    const shouldHandlePushNotifications = eventRemindersEnabled ? !!isActive : isActive !== false;
     let subscription: ReturnType<typeof AppState.addEventListener> | undefined;
 
-    if (shouldHandlePushNotifications) {
+    if (shouldHandlePushNotifications || eventRemindersEnabled) {
       Notifications.setNotificationHandler({
-        handleNotification: async () =>
-          behaviorRef.current ?? {
-            shouldShowAlert: true,
-            shouldPlaySound: false,
-            shouldSetBadge: false,
-            shouldShowBanner: __DEV__,
-            shouldShowList: __DEV__
+        handleNotification: async (notification) => {
+          if (
+            eventRemindersEnabled &&
+            isEventReminderNotification(notification?.request?.content?.data)
+          ) {
+            return {
+              shouldPlaySound: false,
+              shouldSetBadge: false,
+              shouldShowBanner: true,
+              shouldShowList: true
+            };
           }
-      });
 
+          if (!shouldHandlePushNotifications) {
+            return {
+              shouldPlaySound: false,
+              shouldSetBadge: false,
+              shouldShowBanner: false,
+              shouldShowList: false
+            };
+          }
+
+          return (
+            behaviorRef.current ?? {
+              shouldShowAlert: true,
+              shouldPlaySound: false,
+              shouldSetBadge: false,
+              shouldShowBanner: __DEV__,
+              shouldShowList: __DEV__
+            }
+          );
+        }
+      });
+    }
+
+    if (shouldHandlePushNotifications) {
       subscription = AppState.addEventListener('change', onGetActive);
 
       // This listener is fired whenever a notification is received while the app is foregrounded
@@ -134,11 +173,14 @@ export const usePushNotifications = (
     );
 
     return () => {
+      if (!shouldHandlePushNotifications && eventRemindersEnabled) {
+        Notifications.setNotificationHandler(null);
+      }
       notificationListener.current?.remove();
       pushTokenListener.current?.remove();
       responseListener.current?.remove();
 
       subscription?.remove();
     };
-  }, [handleNotificationResponse, isActive, onGetActive]);
+  }, [eventRemindersEnabled, handleNotificationResponse, isActive, onGetActive]);
 };

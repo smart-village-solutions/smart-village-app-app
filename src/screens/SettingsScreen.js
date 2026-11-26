@@ -20,7 +20,9 @@ import {
   PermanentFilterSettings,
   PersonalizedPushSettings
 } from '../components/settings';
+import { EventReminderSettings } from '../components/EventReminderControls';
 import { consts, normalize, texts } from '../config';
+import { SETTINGS_SCREENS } from '../config/settingsScreens';
 import {
   addToStore,
   getAccessibilitySettingsEntryEnabled,
@@ -39,8 +41,10 @@ import {
   handleSystemPermissions,
   PushNotificationStorageKeys,
   setInAppPermission,
+  setInAppPermissionForEventReminders,
   showSystemPermissionMissingDialog
 } from '../pushNotifications';
+import { getEventReminderModes } from '../pushNotifications/EventReminderLocalNotifications';
 import { clearPersistentCaches } from '../ReactQueryProvider';
 import { SettingsContext } from '../SettingsProvider';
 import { ScreenName } from '../types';
@@ -51,15 +55,7 @@ const { MATOMO_TRACKING } = consts;
 
 const keyExtractor = (item, index) => `index${index}-item${item.title || item}`;
 
-export const SETTINGS_SCREENS = {
-  ACCESSIBILITY: 'accessibilitySettings',
-  AR: 'augmentedRealitySettings',
-  LIST: 'listSettings',
-  LOCATION: 'locationSettings',
-  MOWAS_REGION: 'mowasRegionSettings',
-  PERMANENT_FILTER: 'permanentFilterSettings',
-  PERSONALIZED_PUSH: 'personalizedPushSettings'
-};
+export { SETTINGS_SCREENS };
 
 /* eslint-disable complexity */
 const renderItem = ({ item, navigation, listsWithoutArrows, settingsScreenListItemTitles }) => {
@@ -132,6 +128,20 @@ const renderItem = ({ item, navigation, listsWithoutArrows, settingsScreenListIt
         navigation={navigation}
       />
     );
+  } else if (item === SETTINGS_SCREENS.EVENT_REMINDERS) {
+    const entryTitle = title || texts.eventReminders.title;
+    component = (
+      <TextListItem
+        item={{
+          isHeadlineTitle: false,
+          params: { setting: item, title: entryTitle },
+          routeName: ScreenName.Settings,
+          title: entryTitle
+        }}
+        listsWithoutArrows={listsWithoutArrows}
+        navigation={navigation}
+      />
+    );
   } else if (item === SETTINGS_SCREENS.PERSONALIZED_PUSH) {
     component = (
       <TextListItem
@@ -181,9 +191,13 @@ renderItem.propTypes = {
   dimensions: PropTypes.object.isRequired
 };
 
-export const onActivatePushNotifications = async (revert) => {
+export const onActivatePushNotifications = async (
+  revert,
+  registerRemote = true,
+  eventReminders = false
+) => {
   try {
-    const hasPermission = await handleSystemPermissions(false);
+    const hasPermission = await handleSystemPermissions(false, true);
 
     if (!hasPermission) {
       showSystemPermissionMissingDialog();
@@ -191,19 +205,28 @@ export const onActivatePushNotifications = async (revert) => {
       return false;
     }
 
-    const success = await setInAppPermission(true);
+    if (eventReminders) return await setInAppPermissionForEventReminders(true, registerRemote);
+    const success = registerRemote
+      ? await setInAppPermission(true)
+      : await setInAppPermission(true, false);
 
     if (!success) revert();
     return success;
   } catch {
     console.warn('An error occurred while activating push notifications.');
+    Alert.alert(texts.errors.errorTitle, texts.pushNotifications.activationFailed);
     revert();
     return false;
   }
 };
 
-export const onDeactivatePushNotifications = async (revert) => {
+export const onDeactivatePushNotifications = async (
+  revert,
+  registerRemote = true,
+  eventReminders = false
+) => {
   try {
+    if (eventReminders) return await setInAppPermissionForEventReminders(false, registerRemote);
     const success = await setInAppPermission(false);
 
     if (!success) revert();
@@ -259,6 +282,64 @@ const SettingsDevelopmentFooter = () => {
   );
 };
 
+const getSettingContent = (
+  setting,
+  {
+    ar,
+    listsWithoutArrows,
+    mowas,
+    navigation,
+    categoryEnabled,
+    singleEnabled,
+    settingsScreenListItemTitles,
+    showRemotePush
+  }
+) => {
+  switch (setting) {
+    case SETTINGS_SCREENS.EVENT_REMINDERS:
+      return <EventReminderSettings navigation={navigation} />;
+    case SETTINGS_SCREENS.LOCATION:
+      return <LocationSettings />;
+    case SETTINGS_SCREENS.PERMANENT_FILTER:
+      return <PermanentFilterSettings />;
+    case SETTINGS_SCREENS.MOWAS_REGION:
+      return <MowasRegionSettings mowasRegionalKeys={mowas?.regionalKeys} />;
+    case SETTINGS_SCREENS.LIST:
+      return <ListSettings />;
+    case SETTINGS_SCREENS.AR:
+      return <AugmentedReality id={ar?.tourId} onSettingsScreen />;
+    case SETTINGS_SCREENS.PERSONALIZED_PUSH:
+      return (
+        <PersonalizedPushSettings
+          showRemotePush={showRemotePush}
+          footer={
+            categoryEnabled
+              ? (notificationsAllowed) => (
+                  <EventReminderSettings
+                    embeddedCategories
+                    navigation={navigation}
+                    notificationsAllowed={notificationsAllowed}
+                  />
+                )
+              : undefined
+          }
+        >
+          {singleEnabled &&
+            renderItem({
+              item: SETTINGS_SCREENS.EVENT_REMINDERS,
+              navigation,
+              listsWithoutArrows,
+              settingsScreenListItemTitles
+            })}
+        </PersonalizedPushSettings>
+      );
+    case SETTINGS_SCREENS.ACCESSIBILITY:
+      return <AccessibilitySettings />;
+    default:
+      return null;
+  }
+};
+
 export const SettingsScreen = ({ navigation, route }) => {
   const { colors: colors } = useTheme();
 
@@ -272,6 +353,11 @@ export const SettingsScreen = ({ navigation, route }) => {
   } = settings;
   const [data, setData] = useState([]);
   const { setting = '' } = route?.params || {};
+  const { singleEnabled, categoryEnabled } = getEventReminderModes(globalSettings);
+  const eventRemindersEnabled = singleEnabled || categoryEnabled;
+  const showRemotePush = !!settings.pushNotifications;
+  const hasNotificationSettings =
+    eventRemindersEnabled || !!(showRemotePush && personalizedPush.categories);
 
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.SETTINGS);
 
@@ -282,28 +368,24 @@ export const SettingsScreen = ({ navigation, route }) => {
     const updateData = async () => {
       const settingsList = [];
 
-      if (settings.pushNotifications) {
+      if (hasNotificationSettings) {
+        settingsList.push({ data: [SETTINGS_SCREENS.PERSONALIZED_PUSH] });
+      } else if (showRemotePush) {
         const pushPermission = await readFromStore(PushNotificationStorageKeys.IN_APP_PERMISSION);
 
-        if (personalizedPush.categories) {
-          settingsList.push({
-            data: [SETTINGS_SCREENS.PERSONALIZED_PUSH]
-          });
-        } else {
-          settingsList.push({
-            data: [
-              {
-                title:
-                  settingsScreenListItemTitles.pushNotifications ||
-                  texts.settingsTitles.pushNotifications,
-                topDivider: false,
-                value: pushPermission,
-                onActivate: onActivatePushNotifications,
-                onDeactivate: onDeactivatePushNotifications
-              }
-            ]
-          });
-        }
+        settingsList.push({
+          data: [
+            {
+              title:
+                settingsScreenListItemTitles.pushNotifications ||
+                texts.settingsTitles.pushNotifications,
+              topDivider: false,
+              value: pushPermission,
+              onActivate: onActivatePushNotifications,
+              onDeactivate: onDeactivatePushNotifications
+            }
+          ]
+        });
       }
 
       // settings should sometimes contain matomo analytics next, depending on server settings
@@ -477,7 +559,7 @@ export const SettingsScreen = ({ navigation, route }) => {
     /* eslint-enable complexity */
 
     setting == '' && updateData();
-  }, [setting]);
+  }, [hasNotificationSettings, setting, showRemotePush]);
   /* eslint-enable react-hooks/exhaustive-deps */
 
   if (setting == '' && !data.length) {
@@ -488,33 +570,19 @@ export const SettingsScreen = ({ navigation, route }) => {
     );
   }
 
-  // switch to have a condition on `setting` to decide which component to render
-  let Component;
-
-  switch (setting) {
-    case SETTINGS_SCREENS.LOCATION:
-      Component = <LocationSettings />;
-      break;
-    case SETTINGS_SCREENS.PERMANENT_FILTER:
-      Component = <PermanentFilterSettings />;
-      break;
-    case SETTINGS_SCREENS.MOWAS_REGION:
-      Component = <MowasRegionSettings mowasRegionalKeys={mowas?.regionalKeys} />;
-      break;
-    case SETTINGS_SCREENS.LIST:
-      Component = <ListSettings />;
-      break;
-    case SETTINGS_SCREENS.AR:
-      Component = <AugmentedReality id={settings.ar?.tourId} onSettingsScreen />;
-      break;
-    case SETTINGS_SCREENS.PERSONALIZED_PUSH:
-      Component = <PersonalizedPushSettings />;
-      break;
-    case SETTINGS_SCREENS.ACCESSIBILITY:
-      Component = <AccessibilitySettings />;
-      break;
-    default:
-      Component = (
+  const settingContent = getSettingContent(setting, {
+    ar: settings.ar,
+    listsWithoutArrows,
+    mowas,
+    navigation,
+    categoryEnabled,
+    singleEnabled,
+    settingsScreenListItemTitles,
+    showRemotePush
+  });
+  return (
+    <SafeAreaViewFlex>
+      {settingContent ?? (
         <SectionList
           initialNumToRender={100}
           keyExtractor={keyExtractor}
@@ -532,11 +600,9 @@ export const SettingsScreen = ({ navigation, route }) => {
           ListFooterComponent={SettingsDevelopmentFooter}
           style={styles.container}
         />
-      );
-      break;
-  }
-
-  return <SafeAreaViewFlex>{Component}</SafeAreaViewFlex>;
+      )}
+    </SafeAreaViewFlex>
+  );
 };
 /* eslint-enable complexity */
 

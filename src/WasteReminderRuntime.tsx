@@ -4,6 +4,7 @@ import { useCallback, useContext } from 'react';
 import { getNotificationNavigationTarget, getPushNotificationNavigationData } from './helpers';
 import { navigateToNotificationTarget } from './helpers/notificationNavigationHelper';
 import { usePushNotifications, useWasteReminderSync } from './hooks';
+import { getEventRemindersEnabled } from './pushNotifications/EventReminderLocalNotifications';
 import { SettingsContext } from './SettingsProvider';
 
 export const WasteReminderRuntime = () => {
@@ -38,7 +39,8 @@ export const WasteReminderRuntime = () => {
     undefined,
     interactionHandler,
     undefined,
-    globalSettings?.settings?.pushNotifications
+    globalSettings?.settings?.pushNotifications,
+    getEventRemindersEnabled(globalSettings)
   );
   useWasteReminderSync();
 

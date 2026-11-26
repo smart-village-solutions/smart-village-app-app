@@ -164,6 +164,7 @@ export const GET_EVENT_RECORD = gql`
         timeFrom: timeStart
         timeTo: timeEnd
         description: timeDescription
+        useOnlyTimeDescription
       }
       description
       category {
