@@ -69,6 +69,7 @@ import { SettingsContext } from '../SettingsProvider';
 import { ScreenName } from '../types';
 
 import { Button } from './Button';
+import { EmptyMessage } from './EmptyMessage';
 import { Input } from './form/Input';
 import { ListComponent } from './ListComponent';
 import { Modal } from './Modal';
@@ -1216,11 +1217,15 @@ const EventReminderList = ({
         navigation={navigation}
         sectionByDate
         ListEmptyComponent={
-          <Wrapper>
-            <RegularText small error={readFailed} lighter={!readFailed}>
-              {readFailed ? copy.failed : copy.empty}
-            </RegularText>
-          </Wrapper>
+          readFailed ? (
+            <Wrapper>
+              <RegularText small error>
+                {copy.failed}
+              </RegularText>
+            </Wrapper>
+          ) : (
+            <EmptyMessage title={copy.empty} showIcon />
+          )
         }
       />
       {edited && (

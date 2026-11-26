@@ -145,6 +145,7 @@ jest.mock('../../src/NetworkProvider', () => ({
 }));
 
 import { clearPersistentCaches } from '../../src/ReactQueryProvider';
+import { EmptyMessage } from '../../src/components/EmptyMessage';
 import {
   EventReminderActions,
   EventReminderSettings
@@ -397,6 +398,11 @@ describe('SettingsScreen', () => {
     });
     const list = tree.root.findByType(ListComponent).props;
     expect(list).toMatchObject({ query: 'eventRecords', horizontal: false, sectionByDate: true });
+    expect(list.ListEmptyComponent.type).toBe(EmptyMessage);
+    expect(list.ListEmptyComponent.props).toEqual({
+      title: 'Sie haben noch keine einzelnen Erinnerungen eingerichtet.',
+      showIcon: true
+    });
     expect(list.navigation).toBe(navigation);
     expect(list.data.map(({ id }) => id)).toEqual(['1:1', '3:3']);
     act(() => list.data[1].onPress());
