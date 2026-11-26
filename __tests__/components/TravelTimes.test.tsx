@@ -12,7 +12,9 @@ jest.mock('../../src/config', () => {
 
   return {
     Icon: { ArrowRight2: () => null },
-    IconUrl: ({ iconName }: { iconName: string }) => <Text>{iconName}.svg</Text>,
+    IconUrl: ({ iconName, color }: { iconName: string; color: string }) => (
+      <Text style={{ color }}>{iconName}.svg</Text>
+    ),
     normalize: (value: number) => value,
     texts: {
       pointOfInterest: {
@@ -80,7 +82,7 @@ it('uses the route presentation from globalSettings for extended GTFS types', as
           settings: {
             icons: {
               routeTypes: {
-                '700': { icon: 'bus', label: 'Bus', color: '#265BA4' },
+                '700': { icon: 'bus', label: 'Bus', color: '#265BA4', textColor: '#FFFFFF' },
                 '100': { icon: 'train' }
               }
             }
@@ -93,7 +95,8 @@ it('uses the route presentation from globalSettings for extended GTFS types', as
   );
 
   expect(screen.getAllByText('bus.svg')).toHaveLength(2);
-  expect(screen.getByText('Bus 620')).toBeTruthy();
+  expect(screen.getByText('Bus 620')).toHaveStyle({ color: '#FFFFFF' });
+  expect(screen.getAllByText('bus.svg')[1]).toHaveStyle({ color: '#FFFFFF' });
   expect(screen.getByText('train.svg')).toBeTruthy();
   expect(screen.getByText('RE7')).toBeTruthy();
 });

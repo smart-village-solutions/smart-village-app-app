@@ -23,6 +23,7 @@ type RoutePresentation = {
   icon?: string;
   label?: string;
   color?: string;
+  textColor?: string;
 };
 
 const defaultRouteTypes: Record<string, RoutePresentation> = {
@@ -109,6 +110,9 @@ export const TravelTimes = ({ id }: { id: string }) => {
             ? configured.color
             : defaults?.color ?? (icon ? colors.primary : undefined);
 
+        const textColor =
+          typeof configured?.textColor === 'string' ? configured.textColor : undefined;
+
         return (
           <Fragment key={index}>
             <ListItem style={styles.container} containerStyle={styles.container}>
@@ -123,11 +127,20 @@ export const TravelTimes = ({ id }: { id: string }) => {
                   <View style={styles.typeDirection}>
                     {!!icon && (
                       <View style={[styles.typeIconContainer, { backgroundColor: color }]}>
-                        <IconUrl iconName={icon} color={colors.lightestText} size={normalize(16)} />
+                        <IconUrl
+                          iconName={icon}
+                          color={textColor ?? colors.lightestText}
+                          size={normalize(16)}
+                        />
                       </View>
                     )}
                     <View style={[styles.typeView, { backgroundColor: color }]}>
-                      <BoldText lightest={!!color} small center>
+                      <BoldText
+                        lightest={!!color}
+                        style={textColor ? { color: textColor } : undefined}
+                        small
+                        center
+                      >
                         {label ? `${label} ${routeShortName}` : routeShortName}
                       </BoldText>
                     </View>
