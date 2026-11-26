@@ -204,11 +204,11 @@ export const DraggableItem = ({
   });
 
   return (
-    <Animated.View style={[StyleSheet.absoluteFillObject, animatedStyle]}>
+    <Animated.View style={[StyleSheet.absoluteFill, animatedStyle]}>
       <GestureDetector gesture={panGesture}>
         <Animated.View
           style={[
-            StyleSheet.absoluteFillObject,
+            StyleSheet.absoluteFill,
             styles.draggableItem,
             !!children?.props?.item?.tile && styles.noBorder
           ]}

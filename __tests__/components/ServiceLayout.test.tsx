@@ -2,6 +2,7 @@ import { fireEvent, render } from '@testing-library/react-native';
 import React from 'react';
 
 const mockTileMount = jest.fn();
+let mockTilesLoading = false;
 
 jest.mock('expo-router/react-navigation', () => ({
   useNavigation: () => ({}),
@@ -29,12 +30,17 @@ jest.mock('../../src/config', () => ({
   texts: {}
 }));
 jest.mock('../../src/hooks', () => ({
-  usePersonalizedTiles: (_enabled: boolean, data: unknown[]) => ({ tiles: data })
+  usePersonalizedTiles: (_enabled: boolean, data: unknown[]) => ({
+    tiles: data,
+    isLoading: mockTilesLoading
+  })
 }));
 jest.mock('../../src/hooks/useTheme', () => ({
   useTheme: () => ({ colors: {} })
 }));
-jest.mock('../../src/components/DiagonalGradient', () => ({ DiagonalGradient: () => null }));
+jest.mock('../../src/components/DiagonalGradient', () => ({
+  DiagonalGradient: ({ children }: { children: React.ReactNode }) => children
+}));
 jest.mock('../../src/components/LoadingSpinner', () => ({ LoadingSpinner: () => null }));
 jest.mock('../../src/components/Text', () => ({ RegularText: () => null }));
 jest.mock('../../src/components/screens/DraggableGrid', () => ({ DraggableGrid: () => null }));
@@ -54,6 +60,8 @@ jest.mock('../../src/components/screens/ServiceTile', () => ({
 
 import { AccessibilityContext } from '../../src/AccessibilityProvider';
 import { ConfigurationsContext } from '../../src/ConfigurationsProvider';
+import { LoadingSpinner } from '../../src/components/LoadingSpinner';
+import { DraggableGrid } from '../../src/components/screens/DraggableGrid';
 import { Service } from '../../src/components/screens/Service';
 import { ServiceTile } from '../../src/components/screens/ServiceTile';
 import { WrapperWrap } from '../../src/components/Wrapper';
@@ -69,7 +77,21 @@ const serviceAtScale = (textScaleMultiplier: number) => (
 );
 
 describe('Service layout changes', () => {
-  beforeEach(() => mockTileMount.mockClear());
+  beforeEach(() => {
+    mockTileMount.mockClear();
+    mockTilesLoading = false;
+  });
+
+  it('renders the editable grid when personalized tiles finish loading', () => {
+    const service = <Service data={tiles} isEditMode staticJsonName="services" />;
+    mockTilesLoading = true;
+    const tree = render(service);
+    expect(tree.UNSAFE_getByType(LoadingSpinner).props.loading).toBe(true);
+
+    mockTilesLoading = false;
+    tree.rerender(<Service data={tiles} isEditMode staticJsonName="services" />);
+    expect(tree.UNSAFE_getByType(DraggableGrid)).toBeTruthy();
+  });
 
   it.each([0.9, 1, 1.2])('keeps grouped rows on one native line at text scale %s', (scale) => {
     const tree = render(serviceAtScale(scale));

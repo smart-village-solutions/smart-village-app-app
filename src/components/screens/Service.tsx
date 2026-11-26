@@ -159,8 +159,6 @@ export const Service = ({
     </View>
   );
 
-  if (isLoading && isEditMode) return <LoadingSpinner loading />;
-
   const visibleTiles = useMemo(() => {
     if (isEditMode) {
       return tiles;
@@ -172,6 +170,8 @@ export const Service = ({
 
     return tiles;
   }, [tiles, route.name, isEditMode, roles]);
+
+  if (isLoading && isEditMode) return <LoadingSpinner loading />;
 
   const rows = groupServiceTileRows(
     (visibleTiles ?? []).map(configureTile),
