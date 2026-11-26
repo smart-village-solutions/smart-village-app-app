@@ -84,6 +84,10 @@ For detailed documentation see [the accessibility settings docs](./accessibility
 
 Overview of modules and major capabilities introduced or developed in every release, see [the version module history](./VERSION_MODULE_HISTORY.md).
 
+## Departure icons
+
+See [departure icon configuration](./DEPARTURE_ICONS.md) for GTFS route types and symbols.
+
 ## Disturber theming
 
 See [Disturber theme configuration](./disturber-theming.md) for static-content dark overrides.

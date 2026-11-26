@@ -1,5 +1,5 @@
 import moment from 'moment';
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useContext, useState } from 'react';
 import { useQuery } from 'react-apollo';
 import { ActivityIndicator, View } from 'react-native';
 import { Divider, ListItem } from 'react-native-elements';
@@ -8,6 +8,7 @@ import { Icon, IconUrl, normalize, texts } from '../../config';
 import { momentFormat, normalizeTime } from '../../helpers';
 import { useDetailRefresh } from '../../hooks';
 import { QUERY_TYPES, getQuery } from '../../queries';
+import { SettingsContext } from '../../SettingsProvider';
 import { Button } from '../Button';
 import { LoadingContainer } from '../LoadingContainer';
 import { SectionHeader } from '../SectionHeader';
@@ -17,6 +18,40 @@ import { useThemeStyles } from '../../hooks/useThemeStyles';
 import { useTheme } from '../../hooks/useTheme';
 
 const MAX_INITIAL_NUM_TO_RENDER = 15;
+
+type RoutePresentation = {
+  icon?: string;
+  label?: string;
+  color?: string;
+  textColor?: string;
+};
+
+const defaultRouteTypes: Record<string, RoutePresentation> = {
+  '0': { icon: 'tram', label: texts.pointOfInterest.routeTypes.tram, color: '#D02E26' },
+  '1': { icon: 'metro', label: texts.pointOfInterest.routeTypes.metro, color: '#FFCC14' },
+  '2': { icon: 'railway', label: texts.pointOfInterest.routeTypes.railway, color: '#52267D' },
+  '3': { icon: 'bus', label: texts.pointOfInterest.routeTypes.bus, color: '#265BA4' }
+};
+
+const configuredString = (value: unknown, fallback?: string) =>
+  typeof value === 'string' ? value : fallback;
+
+const resolveRoutePresentation = (
+  routeType: string,
+  configured: RoutePresentation | undefined,
+  primaryColor: string
+) => {
+  const defaults = defaultRouteTypes[routeType] ?? {};
+  const overrides = configured ?? {};
+  const icon = configuredString(overrides.icon, defaults.icon);
+
+  return {
+    icon,
+    label: configuredString(overrides.label, defaults.label),
+    color: configuredString(overrides.color, defaults.color) ?? (icon ? primaryColor : undefined),
+    textColor: configuredString(overrides.textColor)
+  };
+};
 
 type TravelTimeProps = {
   departureTime: string;
@@ -29,6 +64,11 @@ type TravelTimeProps = {
 
 export const TravelTimes = ({ id }: { id: string }) => {
   const { colors: colors } = useTheme();
+  const { globalSettings } = useContext(SettingsContext);
+  const iconSettings = globalSettings?.settings as
+    | { icons?: { routeTypes?: Record<string, RoutePresentation> } }
+    | undefined;
+  const configuredRouteTypes = iconSettings?.icons?.routeTypes;
 
   const styles = useThemeStyles(createStyles);
   const [today, setToday] = useState<string>(moment().format('YYYY-MM-DDTHH:mm'));
@@ -81,26 +121,11 @@ export const TravelTimes = ({ id }: { id: string }) => {
         const { routeShortName, routeType } = route;
         const { tripHeadsign } = trip;
 
-        const routeTypes: { [key: string]: string } = {
-          '0': texts.pointOfInterest.routeTypes.tram,
-          '1': texts.pointOfInterest.routeTypes.metro,
-          '2': texts.pointOfInterest.routeTypes.railway,
-          '3': texts.pointOfInterest.routeTypes.bus
-        };
-
-        const routeColors: { [key: string]: string } = {
-          '0': '#D02E26',
-          '1': '#FFCC14',
-          '2': '#52267D',
-          '3': '#265BA4'
-        };
-
-        const routeIcons: { [key: string]: string } = {
-          '0': 'tram',
-          '1': 'metro',
-          '2': 'railway',
-          '3': 'bus'
-        };
+        const { icon, label, color, textColor } = resolveRoutePresentation(
+          routeType,
+          configuredRouteTypes?.[routeType],
+          colors.primary
+        );
 
         return (
           <Fragment key={index}>
@@ -112,28 +137,25 @@ export const TravelTimes = ({ id }: { id: string }) => {
                   </RegularText>
                 )}
 
-                {!!routeShortName && !!routeType && (
+                {!!routeShortName && (
                   <View style={styles.typeDirection}>
-                    <View
-                      style={[
-                        styles.typeIconContainer,
-                        { backgroundColor: routeColors[routeType || '0'] }
-                      ]}
-                    >
-                      <IconUrl
-                        iconName={routeIcons[routeType || '0']}
-                        color={colors.lightestText}
-                        size={normalize(16)}
-                      />
-                    </View>
-                    <View
-                      style={[
-                        styles.typeView,
-                        { backgroundColor: `${routeColors[routeType || '0']}` }
-                      ]}
-                    >
-                      <BoldText lightest small center>
-                        {`${routeTypes[routeType || '0']} ${routeShortName}`}
+                    {!!icon && (
+                      <View style={[styles.typeIconContainer, { backgroundColor: color }]}>
+                        <IconUrl
+                          iconName={icon}
+                          color={textColor ?? colors.lightestText}
+                          size={normalize(16)}
+                        />
+                      </View>
+                    )}
+                    <View style={[styles.typeView, { backgroundColor: color }]}>
+                      <BoldText
+                        lightest={!!color}
+                        style={textColor ? { color: textColor } : undefined}
+                        small
+                        center
+                      >
+                        {label ? `${label} ${routeShortName}` : routeShortName}
                       </BoldText>
                     </View>
                   </View>
