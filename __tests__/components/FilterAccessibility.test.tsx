@@ -1,5 +1,6 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { Modal, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import renderer from 'react-test-renderer';
 
 jest.mock(
@@ -134,7 +135,16 @@ const renderWithAct = (component: React.ReactElement) => {
   let testRenderer: renderer.ReactTestRenderer;
 
   renderer.act(() => {
-    testRenderer = renderer.create(component);
+    testRenderer = renderer.create(
+      <SafeAreaProvider
+        initialMetrics={{
+          frame: { x: 0, y: 0, width: 874, height: 402 },
+          insets: { top: 0, bottom: 21, left: 62, right: 62 }
+        }}
+      >
+        {component}
+      </SafeAreaProvider>
+    );
   });
 
   return testRenderer!;
@@ -217,6 +227,32 @@ describe('Filter accessibility', () => {
     );
 
     expect(overlaySurface).toBeDefined();
+  });
+
+  it('keeps the filter scroll viewport and actions inside the modal safe area', () => {
+    const tree = renderWithAct(
+      <Filter
+        filterTypes={[{ name: 'saveable', type: 'CHECKBOX' } as never]}
+        initialQueryVariables={{}}
+        isOverlay
+        queryVariables={{}}
+        setQueryVariables={jest.fn()}
+      />
+    );
+
+    renderer.act(() => {
+      tree.root.findAllByType(TouchableOpacity)[0].props.onPress();
+    });
+
+    const provider = tree.root.findByType(Modal).findByType(SafeAreaProvider);
+    const [body, footer] = provider.findAllByType(SafeAreaView);
+
+    expect(body.props.edges).toEqual(['left', 'right']);
+    expect(body.findByType(ScrollView)).toBeDefined();
+    expect(footer.props.edges).toEqual(['left', 'right', 'bottom']);
+    expect(
+      footer.findAllByType(TouchableOpacity).map((button) => button.props.accessibilityLabel)
+    ).toEqual(['Zurücksetzen', 'Filtern']);
   });
 
   it('applies participation statuses with one press while the dropdown is open', () => {

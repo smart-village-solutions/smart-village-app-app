@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Collapsible from 'react-native-collapsible';
 
-import { consts, device, normalize } from '../../config';
+import { consts, normalize } from '../../config';
 import { updateFilters } from '../../helpers';
 import { DatesTypes, DropdownProps, FilterProps, FilterTypesProps, StatusProps } from '../../types';
 import { Label } from '../Label';
@@ -50,7 +50,7 @@ export const FilterComponent = ({
               <DateFilter
                 filters={filters}
                 setFilters={setFilters}
-                containerStyle={{ width: device.width * 0.45 }}
+                containerStyle={styles.dateField}
                 {...item}
                 data={item.data as DatesTypes[]}
               />
@@ -183,6 +183,9 @@ export const FilterComponent = ({
 };
 
 const styles = StyleSheet.create({
+  dateField: {
+    width: '48%'
+  },
   noPaddingBottom: {
     paddingBottom: 0
   },

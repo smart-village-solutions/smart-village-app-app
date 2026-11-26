@@ -1,4 +1,5 @@
 import React from 'react';
+import { StyleSheet } from 'react-native';
 import renderer from 'react-test-renderer';
 
 jest.mock('../../src/config', () => ({
@@ -84,6 +85,7 @@ jest.mock('../../src/components/filter/Sue', () => ({
   StatusFilter: () => null
 }));
 
+import { DateFilter } from '../../src/components/filter/DateFilter';
 import { FilterComponent } from '../../src/components/filter/FilterComponent';
 
 const renderWithAct = (component: React.ReactElement) => {
@@ -97,6 +99,29 @@ const renderWithAct = (component: React.ReactElement) => {
 };
 
 describe('FilterComponent accessibility', () => {
+  it('sizes date controls relative to the available filter row', () => {
+    const tree = renderWithAct(
+      <FilterComponent
+        filters={{}}
+        filterTypes={[
+          {
+            type: 'date',
+            name: 'dateRange',
+            data: [
+              { name: 'start_date', placeholder: 'Von' },
+              { name: 'end_date', placeholder: 'Bis' }
+            ]
+          }
+        ]}
+        isOverlayFilter
+        setFilters={jest.fn()}
+      />
+    );
+
+    const dateFieldStyle = tree.root.findByType(DateFilter).props.containerStyle;
+    expect(StyleSheet.flatten(dateFieldStyle)).toMatchObject({ width: '48%' });
+  });
+
   it('passes the visible checkbox label to the switch element', () => {
     const tree = renderWithAct(
       <FilterComponent

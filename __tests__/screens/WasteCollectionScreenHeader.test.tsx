@@ -1,4 +1,6 @@
 import React from 'react';
+import { DeviceEventEmitter } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 import renderer from 'react-test-renderer';
 
 const mockRenderSuggestions = {
@@ -14,6 +16,10 @@ const mockUsedTypes = {
 const mockStreetData = {
   wasteAddresses: [{ city: 'X', street: 'Y', zip: 'Z' }]
 };
+
+jest.mock('react-native-gesture-handler', () => ({
+  ScrollView: jest.requireActual('react-native').ScrollView
+}));
 
 jest.mock('expo-router/react-navigation', () => ({
   useFocusEffect: jest.fn()
@@ -37,7 +43,8 @@ jest.mock('../../src/components', () => {
     BoldText: () => null,
     Button: () => null,
     CalendarListToggle: () => null,
-    DefaultKeyboardAvoidingView: ({ children }) => children,
+    DefaultKeyboardAvoidingView: ({ children, enabled }) =>
+      ReactLocal.createElement('mock-keyboard-avoiding-view', { enabled }, children),
     DrawerHeader: () => ReactLocal.createElement('mock-drawer-header'),
     HeaderLeft: ({ backImage }) =>
       ReactLocal.createElement(
@@ -64,11 +71,11 @@ jest.mock('../../src/components/DayComponent', () => ({
 }));
 
 jest.mock('../../src/components/FeedbackFooter', () => ({
-  FeedbackFooter: () => null
+  FeedbackFooter: 'mock-feedback-footer'
 }));
 
 jest.mock('../../src/hooks', () => ({
-  useKeyboardHeight: jest.fn(() => 0),
+  useKeyboardHeight: jest.requireActual('../../src/hooks/keyboardHeight').useKeyboardHeight,
   useWasteStreetRehydration: jest.fn(),
   useWasteStreetEditRequest: jest.fn(),
   useRenderSuggestions: jest.fn(() => mockRenderSuggestions),
@@ -134,6 +141,7 @@ jest.mock('../../src/config', () => {
   };
 });
 
+import { device } from '../../src/config';
 import { SettingsContext } from '../../src/SettingsProvider';
 import { createStyles, WasteCollectionScreen } from '../../src/screens/WasteCollectionScreen';
 
@@ -151,8 +159,9 @@ describe('WasteCollectionScreen header', () => {
       setOptions: jest.fn()
     };
 
+    let screenTree: renderer.ReactTestRenderer;
     renderer.act(() => {
-      renderer.create(
+      screenTree = renderer.create(
         <SettingsContext.Provider
           value={
             {
@@ -200,5 +209,65 @@ describe('WasteCollectionScreen header', () => {
       paddingRight: 8
     });
     expect(headerTree!.root.findByType('mock-edit-icon').props.size).toBe(20);
+
+    renderer.act(() => {
+      headerTree!.unmount();
+      screenTree!.unmount();
+    });
+  });
+});
+
+describe('WasteCollectionScreen address form', () => {
+  let tree: renderer.ReactTestRenderer | undefined;
+
+  afterEach(() => {
+    renderer.act(() => tree?.unmount());
+    tree = undefined;
+    device.platform = 'ios';
+  });
+
+  const renderAddressForm = () => {
+    renderer.act(() => {
+      tree = renderer.create(
+        <SettingsContext.Provider
+          value={{ globalSettings: { navigation: 'tab', settings: {}, waste: {} } } as never}
+        >
+          <WasteCollectionScreen
+            navigation={{ setOptions: jest.fn() } as never}
+            route={{} as never}
+          />
+        </SettingsContext.Provider>
+      );
+    });
+    return tree!;
+  };
+
+  it.each(['ios', 'android'])('uses one keyboard avoidance mechanism on %s', (platform) => {
+    device.platform = platform;
+    const tree = renderAddressForm();
+    const avoidingView = tree.root.find((node) => node.type === 'mock-keyboard-avoiding-view');
+
+    expect(avoidingView.props.enabled).toBe(platform === 'android');
+    expect(avoidingView.findByType(ScrollView).props.automaticallyAdjustKeyboardInsets).toBe(
+      platform === 'ios'
+    );
+  });
+
+  it('restores the feedback footer when the hidden keyboard frame still has a height', () => {
+    const addressForm = renderAddressForm();
+    const getFooter = () =>
+      addressForm.root.findAll((node) => node.type === 'mock-feedback-footer');
+
+    expect(getFooter()).toHaveLength(1);
+
+    renderer.act(() => {
+      DeviceEventEmitter.emit('keyboardDidShow', { endCoordinates: { height: 202, screenY: 200 } });
+    });
+    expect(getFooter()).toHaveLength(0);
+
+    renderer.act(() => {
+      DeviceEventEmitter.emit('keyboardDidHide', { endCoordinates: { height: 202, screenY: 402 } });
+    });
+    expect(getFooter()).toHaveLength(1);
   });
 });
