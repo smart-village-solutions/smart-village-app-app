@@ -141,11 +141,14 @@ export const WasteCollectionScreen = ({ navigation, route }) => {
   const [selectedDay, setSelectedDay] = useState('');
   const [selectedTypes, setSelectedTypes] = useState();
   const [isReset, setIsReset] = useState(false);
-  const renderSuggestions = useRenderSuggestions((item) => {
+  const renderSuggestions = useRenderSuggestions((item, options) => {
     if (item?.id) {
       setSelectedStreetId(item.id);
       setIsReset(false);
-      navigation.navigate(ScreenName.WasteCollectionSettings, { currentSelectedStreetId: item.id });
+      navigation.navigate(ScreenName.WasteCollectionSettings, {
+        currentSelectedStreetId: item.id,
+        ...(options?.isAutoSelectedSingleOption && { isAutoSelectedSingleOption: true })
+      });
     }
   });
   const { setInputValue, setInputValueCity, setInputValueCitySelected } = renderSuggestions;

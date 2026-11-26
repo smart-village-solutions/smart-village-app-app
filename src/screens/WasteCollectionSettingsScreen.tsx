@@ -227,7 +227,7 @@ export const WasteCollectionSettingsScreen = () => {
   const { globalSettings, setGlobalSettings } = useContext(SettingsContext);
   const { navigation: navigationType, settings = {}, waste = {} } = globalSettings;
   const { wasteAddresses = {} } = settings;
-  const { texts: wasteAddressesTexts = {} } = wasteAddresses;
+  const { streetInputInfoText, texts: wasteAddressesTexts = {} } = wasteAddresses;
   const wasteTexts = { ...texts.wasteCalendar, ...wasteAddressesTexts };
   const isInitial = waste.streetId === undefined;
   const [loadedStoredSettingsInitially, setLoadedStoredSettingsInitially] = useState(false);
@@ -959,6 +959,12 @@ export const WasteCollectionSettingsScreen = () => {
         setShowDatePicker={setShowDatePicker}
         showDatePicker={showDatePicker}
         showNotificationSettings={showNotificationSettings}
+        autoSelectedStreetHint={
+          routeParams?.isAutoSelectedSingleOption &&
+          selectedStreetId === routeParams.currentSelectedStreetId
+            ? streetInputInfoText
+            : undefined
+        }
         streetName={streetName}
         styles={styles}
         tooltipRef={tooltipRef}
@@ -1051,6 +1057,7 @@ type SelectedStreetSettingsContentProps = {
   setShowDatePicker: React.Dispatch<React.SetStateAction<boolean>>;
   showDatePicker: boolean;
   showNotificationSettings: boolean;
+  autoSelectedStreetHint?: string;
   streetName?: string;
   styles: ReturnType<typeof createStyles>;
   tooltipRef: React.MutableRefObject<TooltipRef | null>;
@@ -1094,6 +1101,7 @@ const SelectedStreetSettingsContent = ({
   setShowDatePicker,
   showDatePicker,
   showNotificationSettings,
+  autoSelectedStreetHint,
   streetName,
   styles,
   tooltipRef,
@@ -1116,6 +1124,11 @@ const SelectedStreetSettingsContent = ({
       }
     >
       {!!locationData && <WasteHeader locationData={locationData} onPress={onEditStreet} />}
+      {!!locationData && !!autoSelectedStreetHint && (
+        <Wrapper>
+          <RegularText small>{autoSelectedStreetHint}</RegularText>
+        </Wrapper>
+      )}
       {!!usedTypeKeys?.length && !!usedTypes && !_isEmpty(typeSettings) && (
         <WasteTypeSelectionList
           onToggleTypeSetting={onToggleTypeSetting}

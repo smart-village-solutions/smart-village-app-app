@@ -8,6 +8,7 @@ import { RegularText, Wrapper } from '../components';
 import { createWasteSuggestionStyles } from '../components/waste/wasteInputStyles';
 import { device, namespace, secrets, staticRestSuffix } from '../config';
 import { graphqlFetchPolicy, openLink } from '../helpers';
+import type { WasteAddress } from '../helpers/wasteAddressHelper';
 import { NetworkContext } from '../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../queries';
 import { getLocationData } from '../screens';
@@ -230,7 +231,13 @@ export const useFilterStreets = (inputValueCity: string, isStreetInputFocused: b
   };
 };
 
-export const useRenderSuggestions = (selectionCallback?: (item: any) => void) => {
+type WasteAddressSelectionOptions = {
+  isAutoSelectedSingleOption?: boolean;
+};
+
+export const useRenderSuggestions = (
+  selectionCallback?: (item: WasteAddress, options?: WasteAddressSelectionOptions) => void
+) => {
   const styles = useThemeStyles(createWasteSuggestionStyles);
   const [inputValueCity, setInputValueCity] = useState('');
   const [inputValueCitySelected, setInputValueCitySelected] = useState(false);
@@ -257,6 +264,14 @@ export const useRenderSuggestions = (selectionCallback?: (item: any) => void) =>
     [setInputValue, setInputValueCity, setInputValueCitySelected, styles.divider, styles.row]
   );
 
+  const onSelectItem = useCallback(
+    (item: WasteAddress, options?: WasteAddressSelectionOptions) => {
+      setInputValue(getStreetString(item));
+      selectionCallback?.(item, options);
+    },
+    [getStreetString, selectionCallback]
+  );
+
   const renderSuggestion = useCallback(
     ({ item }) => {
       const streetString = getStreetString(item);
@@ -265,8 +280,7 @@ export const useRenderSuggestions = (selectionCallback?: (item: any) => void) =>
         <TouchableOpacity
           accessibilityLabel={streetString}
           onPress={() => {
-            setInputValue(streetString);
-            selectionCallback?.(item);
+            onSelectItem(item);
             Keyboard.dismiss();
           }}
         >
@@ -277,7 +291,7 @@ export const useRenderSuggestions = (selectionCallback?: (item: any) => void) =>
         </TouchableOpacity>
       );
     },
-    [getStreetString, selectionCallback, setInputValue, styles.divider, styles.row]
+    [getStreetString, onSelectItem, styles.divider, styles.row]
   );
 
   return {
@@ -287,6 +301,7 @@ export const useRenderSuggestions = (selectionCallback?: (item: any) => void) =>
     setInputValueCity,
     inputValueCitySelected,
     setInputValueCitySelected,
+    onSelectItem,
     renderSuggestionCities,
     renderSuggestion
   };

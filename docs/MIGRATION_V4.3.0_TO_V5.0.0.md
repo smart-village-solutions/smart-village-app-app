@@ -776,6 +776,14 @@ Local registration does not guarantee exact delivery time. The app does not requ
 Use the device matrix and privacy-safe diagnostics in
 [Local waste reminder operations](./local-waste-reminder-operations.md).
 
+#### Two-step waste address selection
+
+With `settings.wasteAddresses.twoStep` enabled, confirming a city opens the reminder settings
+automatically when the address query returns exactly one selectable address in that city. With
+multiple matches, users select an address themselves. Set
+`settings.wasteAddresses.streetInputInfoText` to explain the automatically selected address
+below the address header in the reminder settings.
+
 ### 5.7. Interactive floor plans
 
 The new `FloorPlan` route renders one or more zoomable SVG floors with selectable pins and an

@@ -1,5 +1,6 @@
 import React, { useContext, useState } from 'react';
 
+import type { useRenderSuggestions } from '../../hooks';
 import { SettingsContext } from '../../SettingsProvider';
 
 import { WasteCityInput } from './WasteCityInput';
@@ -13,21 +14,13 @@ export const WasteInputForm = ({
     setInputValueCity: () => {},
     inputValueCitySelected: false,
     setInputValueCitySelected: () => {},
+    onSelectItem: () => {},
     renderSuggestionCities: () => <></>,
     renderSuggestion: () => <></>
   },
   setSelectedStreetId
 }: {
-  renderSuggestions: {
-    inputValue: string;
-    inputValueCity: string;
-    setInputValue: (value: string) => void;
-    setInputValueCity: (value: string) => void;
-    inputValueCitySelected: boolean;
-    setInputValueCitySelected: (value: boolean) => void;
-    renderSuggestionCities: ({ item }: { item: any }) => JSX.Element;
-    renderSuggestion: ({ item }: { item: any }) => JSX.Element;
-  };
+  renderSuggestions: ReturnType<typeof useRenderSuggestions>;
   setSelectedStreetId: (id?: number) => void;
 }) => {
   const { globalSettings } = useContext(SettingsContext);
