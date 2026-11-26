@@ -43,10 +43,7 @@ import {
   IOS_LOCAL_NOTIFICATION_BUDGET,
   runLocalNotificationUpdate
 } from './LocalNotificationCapacity';
-import {
-  getLocalNotificationPermission,
-  requestLocalNotificationPermission
-} from './PermissionHandling';
+import { getInAppPermission, getLocalNotificationPermission } from './PermissionHandling';
 
 const legacyStoreKey = '@eventReminders:v1';
 const storeKey = '@eventReminders:v2';
@@ -108,18 +105,20 @@ const writeEventReminders = async (state: EventReminderSettingsState) => {
   DeviceEventEmitter.emit(EVENT_REMINDERS_CHANGED);
 };
 
-const hasSchedulingPermission = async (request = false) => {
-  if (Platform.OS !== 'ios' && Platform.OS !== 'android') return false;
+export const getEventReminderPermission = async (): Promise<'system' | 'app' | 'allowed'> => {
+  if (Platform.OS !== 'ios' && Platform.OS !== 'android') return 'system';
+  if (!(await getLocalNotificationPermission())) return 'system';
+  if (!(await getInAppPermission())) return 'app';
 
   if (Platform.OS === 'android') {
     const channel = await Notifications.setNotificationChannelAsync(androidChannel, {
       name: texts.eventReminders.title,
       importance: Notifications.AndroidImportance.DEFAULT
     });
-    if (!channel || channel.importance === Notifications.AndroidImportance.NONE) return false;
+    if (!channel || channel.importance === Notifications.AndroidImportance.NONE) return 'system';
   }
 
-  return request ? requestLocalNotificationPermission() : getLocalNotificationPermission();
+  return 'allowed';
 };
 
 const notificationId = (key: string) => `${EVENT_REMINDER_NOTIFICATION_KIND}:${key}`;
@@ -303,7 +302,7 @@ const reconcileEventReminders = async (
     ...(modes.singleEnabled ? waitingSingleCandidates(state, eventInventory, now) : []),
     ...buildReminderCandidates(state, now, modes)
   ];
-  const canSchedule = candidates.length > 0 && (await hasSchedulingPermission());
+  const canSchedule = candidates.length > 0 && (await getEventReminderPermission()) === 'allowed';
   const otherCount = inventory.length - eventInventory.length;
   const capacity =
     Platform.OS === 'ios'
@@ -487,7 +486,7 @@ export const saveEventReminder = (
     if (!modes.singleEnabled) return 'invalid';
     const when = getReminderTimestamp(occurrence, rule);
     if (!isValidReminderTimestamp(occurrence, when)) return 'invalid';
-    if (!(await hasSchedulingPermission(true))) return 'permission';
+    if ((await getEventReminderPermission()) !== 'allowed') return 'permission';
 
     const state = await readEventReminderSettings();
     const key = eventOccurrenceKey(occurrence);
@@ -578,7 +577,7 @@ export const saveEventCategorySubscription = (
 ) =>
   runLocalNotificationUpdate(async () => {
     if (!modes.categoryEnabled) return 'invalid';
-    if (!(await hasSchedulingPermission(true))) return 'permission';
+    if ((await getEventReminderPermission()) !== 'allowed') return 'permission';
     const state = await readEventReminderSettings();
     const revision = ++state.revision;
     const existing = state.subscriptions[category.id];

@@ -19,6 +19,7 @@ import {
   refreshEventReminders
 } from './pushNotifications/EventReminderLocalNotifications';
 import { registerEventReminderRestoration } from './pushNotifications/LocalNotificationCapacity';
+import { PUSH_NOTIFICATION_PERMISSION_CHANGED_EVENT } from './pushNotifications/PermissionHandling';
 import {
   fetchEventCategorySnapshot,
   fetchEventReminderRecords
@@ -92,10 +93,14 @@ export const EventReminderRuntime = () => {
     const subscription = AppState.addEventListener('change', (state) => {
       if (state === 'active') refresh();
     });
+    const permissionChange = enabled
+      ? DeviceEventEmitter.addListener(PUSH_NOTIFICATION_PERMISSION_CHANGED_EVENT, refresh)
+      : undefined;
     refresh();
     return () => {
       unregister?.();
       subscription.remove();
+      permissionChange?.remove();
     };
   }, [enabled, modes]);
 

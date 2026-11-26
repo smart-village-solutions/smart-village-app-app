@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, View } from 'react-native';
+import { AppState, FlatList, View } from 'react-native';
 import renderer, { act } from 'react-test-renderer';
 import { useQuery } from 'react-query';
 
@@ -9,6 +9,7 @@ import {
   addExcludeNotificationConfigurationOnServer,
   getExcludeNotificationConfigurationFromServer,
   getInAppPermission,
+  getLocalNotificationPermission,
   getPushTokenFromStorage
 } from '../../src/pushNotifications';
 import { onActivatePushNotifications, onDeactivatePushNotifications } from '../../src/screens';
@@ -28,7 +29,9 @@ jest.mock('../../src/pushNotifications', () => ({
   addExcludeNotificationConfigurationOnServer: jest.fn(),
   getExcludeNotificationConfigurationFromServer: jest.fn(),
   getInAppPermission: jest.fn(),
-  getPushTokenFromStorage: jest.fn()
+  getLocalNotificationPermission: jest.fn(),
+  getPushTokenFromStorage: jest.fn(),
+  PUSH_NOTIFICATION_PERMISSION_CHANGED_EVENT: 'pushNotificationPermissionChanged'
 }));
 jest.mock('../../src/helpers', () => ({
   readFromStore: jest.fn(),
@@ -93,8 +96,10 @@ const withTags = (...tagList: string[]) => ({
 
 beforeEach(() => {
   jest.resetAllMocks();
+  jest.mocked(AppState.addEventListener).mockReturnValue({ remove: jest.fn() });
   mockCategories([{ id: '1', name: 'News', tagList: ['news_item'] }]);
   jest.mocked(getInAppPermission).mockResolvedValue(true);
+  jest.mocked(getLocalNotificationPermission).mockResolvedValue(true);
   jest.mocked(getPushTokenFromStorage).mockResolvedValue('token-a');
   jest
     .mocked(getExcludeNotificationConfigurationFromServer)
@@ -147,10 +152,11 @@ it('leaves the category list to the local reminders footer when only event_recor
     { id: '1', name: 'News', tagList: ['news_item'] },
     { id: '2', name: 'Events', tagList: ['event_record'] }
   ]);
-  const footer = <View />;
+  const footer = jest.fn(() => <View />);
   await mount(withTags('event_record'), { footer });
 
-  expect(tree.root.findByType(FlatList).props.ListFooterComponent).toBe(footer);
+  expect(tree.root.findByType(FlatList).props.ListFooterComponent.type).toBe(View);
+  expect(footer).toHaveBeenLastCalledWith(true);
   expect(tree.root.findAllByType(RegularText)).toHaveLength(0);
   expect(tree.root.findAllByType(SettingsToggle).map(({ props }) => props.item.title)).toEqual([
     'Push'
@@ -159,17 +165,50 @@ it('leaves the category list to the local reminders footer when only event_recor
 });
 
 it('shows the event footer without remote categories and leaves remote preferences alone', async () => {
-  const footer = <View />;
+  const footer = () => <View />;
   const context = { globalSettings: { settings: {} } } as typeof settings;
   await mount(context, { footer });
 
   const list = tree.root.findByType(FlatList);
-  expect(list.props.ListFooterComponent).toBe(footer);
+  expect(list.props.ListFooterComponent.type).toBe(View);
   expect(list.props.ListHeaderComponent).toBeNull();
   expect(list.props.data).toEqual([]);
   expect(toggle()).toMatchObject({ value: true, isDisabled: false });
   expect(getExcludeNotificationConfigurationFromServer).not.toHaveBeenCalled();
   expect(addExcludeNotificationConfigurationOnServer).not.toHaveBeenCalled();
+});
+
+it('refreshes system permission on return and only enables category controls after both opt-ins', async () => {
+  const footer = jest.fn(() => <View />);
+  const listen = jest.mocked(AppState.addEventListener);
+  jest.mocked(getInAppPermission).mockResolvedValue(false);
+  jest.mocked(getLocalNotificationPermission).mockResolvedValue(false);
+  await mount(settings, { footer });
+  expect(toggle(1)).toMatchObject({ isDisabled: true, value: false });
+  expect(footer).toHaveBeenLastCalledWith(false);
+
+  jest.mocked(getLocalNotificationPermission).mockResolvedValue(true);
+  await act(async () => listen.mock.calls.at(-1)?.[1]('active'));
+  expect(toggle(1)).toMatchObject({ isDisabled: true, value: false });
+  expect(footer).toHaveBeenLastCalledWith(false);
+
+  await act(async () => toggle().onActivate(jest.fn()));
+  expect(toggle(1).isDisabled).toBe(false);
+  expect(footer).toHaveBeenLastCalledWith(true);
+
+  jest.mocked(getLocalNotificationPermission).mockResolvedValue(false);
+  await act(async () => listen.mock.calls.at(-1)?.[1]('active'));
+  expect(toggle(1)).toMatchObject({ isDisabled: true, value: false });
+  expect(footer).toHaveBeenLastCalledWith(false);
+});
+
+it('offers the app switch for event-only municipalities without starting remote registration', async () => {
+  jest.mocked(getInAppPermission).mockResolvedValue(false);
+  await mount(withTags('event_record'), { footer: () => <View />, showRemotePush: false });
+  const revert = jest.fn();
+  await act(async () => toggle().onActivate(revert));
+  expect(onActivatePushNotifications).toHaveBeenCalledWith(revert, false);
+  expect(getPushTokenFromStorage).not.toHaveBeenCalled();
 });
 it('keeps the screen usable and blocks category writes after a failed read', async () => {
   jest.mocked(getExcludeNotificationConfigurationFromServer).mockResolvedValue(undefined);

@@ -1502,7 +1502,10 @@ export const texts = {
     invalid: 'Wählen Sie einen zukünftigen Zeitpunkt vor Beginn der Veranstaltung.',
     capacity:
       'Derzeit ist kein Platz für diese Erinnerung verfügbar. Ihre Einstellung bleibt gespeichert.',
-    permission: 'Benachrichtigungen sind auf diesem Gerät oder für Veranstaltungen deaktiviert.',
+    permission: 'Benachrichtigungen sind derzeit deaktiviert.',
+    systemPermission: 'Aktivieren Sie Benachrichtigungen in den Systemeinstellungen.',
+    appPermission: 'Aktivieren Sie Push-Benachrichtigungen in den App-Einstellungen.',
+    appSettings: 'App-Einstellungen öffnen',
     systemSettings: 'Systemeinstellungen öffnen',
     failed: 'Die Änderung konnte auf diesem Gerät nicht bestätigt werden.',
     review: 'Der Erinnerungszeitpunkt ist ungültig. Bitte prüfen Sie die Einstellung.',
@@ -1511,6 +1514,8 @@ export const texts = {
   pushNotifications: {
     abort: 'Abbrechen',
     approve: 'Jetzt einschalten',
+    activationFailed:
+      'Push-Benachrichtigungen konnten nicht aktiviert werden. Versuchen Sie es erneut.',
     permissionMissingBody: 'Bitte überprüfen Sie Ihre Benachrichtigungseinstellungen im System.',
     permissionMissingTitle: 'Hinweis',
     permissionRequiredBody:

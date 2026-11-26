@@ -1,9 +1,11 @@
+import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import { DeviceEventEmitter } from 'react-native';
 
 import { addToStore, readFromStore } from '../../src/helpers/storageHelper';
 import {
   PUSH_NOTIFICATION_PERMISSION_CHANGED_EVENT,
+  handleSystemPermissions,
   setInAppPermission,
   updatePushToken
 } from '../../src/pushNotifications/PermissionHandling';
@@ -73,6 +75,37 @@ jest.mock('../../src/pushNotifications/TokenHandling', () => ({
 jest.mock('../../src/pushNotifications/WasteReminderLocalNotifications', () => ({
   clearWasteReminderLocalNotifications: jest.fn(async () => undefined)
 }));
+
+describe('system notification permission', () => {
+  afterEach(() => jest.restoreAllMocks());
+
+  it('reads the current iOS permission after returning to a simulator with an existing opt-out', async () => {
+    jest.replaceProperty(Device, 'isDevice', false);
+    jest.mocked(readFromStore).mockResolvedValue(false);
+    (Notifications.getPermissionsAsync as jest.Mock)
+      .mockResolvedValueOnce({ granted: false, status: 'denied', canAskAgain: false })
+      .mockResolvedValueOnce({ granted: true, status: 'granted' });
+
+    await expect(handleSystemPermissions(false, true)).resolves.toBe(false);
+    await expect(handleSystemPermissions(false, true)).resolves.toBe(true);
+    expect(Notifications.requestPermissionsAsync).not.toHaveBeenCalled();
+  });
+
+  it('lets an explicit activation request permission even after recording an app opt-out', async () => {
+    jest.mocked(readFromStore).mockResolvedValue(false);
+    (Notifications.getPermissionsAsync as jest.Mock).mockResolvedValueOnce({
+      granted: false,
+      status: 'undetermined',
+      canAskAgain: true
+    });
+    (Notifications.requestPermissionsAsync as jest.Mock).mockResolvedValueOnce({
+      granted: true,
+      status: 'granted'
+    });
+    await expect(handleSystemPermissions(false, true)).resolves.toBe(true);
+    expect(Notifications.requestPermissionsAsync).toHaveBeenCalledTimes(1);
+  });
+});
 
 describe('setInAppPermission', () => {
   beforeEach(() => {

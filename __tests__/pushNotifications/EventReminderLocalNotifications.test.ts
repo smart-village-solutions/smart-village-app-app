@@ -25,8 +25,8 @@ import {
   runWasteNotificationUpdate
 } from '../../src/pushNotifications/LocalNotificationCapacity';
 import {
-  getLocalNotificationPermission,
-  requestLocalNotificationPermission
+  getInAppPermission,
+  getLocalNotificationPermission
 } from '../../src/pushNotifications/PermissionHandling';
 
 jest.mock('../../src/config', () => ({
@@ -46,8 +46,8 @@ jest.mock('../../src/helpers/storageHelper', () => {
 });
 
 jest.mock('../../src/pushNotifications/PermissionHandling', () => ({
-  getLocalNotificationPermission: jest.fn(),
-  requestLocalNotificationPermission: jest.fn()
+  getInAppPermission: jest.fn(),
+  getLocalNotificationPermission: jest.fn()
 }));
 
 jest.mock('expo-notifications', () => ({
@@ -73,7 +73,7 @@ describe('event reminders scheduling', () => {
     jest.clearAllMocks();
     jest.spyOn(Date, 'now').mockReturnValue(Date.parse('2026-11-01T09:00:00Z'));
     (getLocalNotificationPermission as jest.Mock).mockResolvedValue(true);
-    (requestLocalNotificationPermission as jest.Mock).mockResolvedValue(true);
+    (getInAppPermission as jest.Mock).mockResolvedValue(true);
     native = new Map();
     (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockImplementation(async () => [
       ...native.values()
@@ -96,6 +96,23 @@ describe('event reminders scheduling', () => {
   const singleOnly = { singleEnabled: true, categoryEnabled: false };
   const categoryOnly = { singleEnabled: false, categoryEnabled: true };
   const disabled = { singleEnabled: false, categoryEnabled: false };
+
+  it('blocks new event reminders and cancels pending requests while in-app push is off', async () => {
+    await expect(saveEventReminder(venue, rule)).resolves.toBe('scheduled');
+    expect(native.size).toBe(1);
+    jest.mocked(getInAppPermission).mockResolvedValue(false);
+    await refreshEventReminders();
+    expect(native.size).toBe(0);
+    expect((await readEventReminders())['e1:d1']).toMatchObject({ rule, status: 'permission' });
+    await expect(saveEventReminder(venue, rule)).resolves.toBe('permission');
+    await expect(saveEventCategorySubscription({ id: 'a', name: 'Kultur' }, rule)).resolves.toBe(
+      'permission'
+    );
+    expect((await readEventReminderSettings()).subscriptions).toEqual({});
+    jest.mocked(getInAppPermission).mockResolvedValue(true);
+    await refreshEventReminders();
+    expect(native.size).toBe(1);
+  });
 
   it('uses event_record for category reminders and singleEnabled for individual reminders', () => {
     const globalSettings = (tagList: string[], eventReminders = {}) => ({

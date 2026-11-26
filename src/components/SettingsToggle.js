@@ -82,9 +82,7 @@ export const SettingsToggle = ({ item, needsConnection = true }) => {
             onPress={onOpen}
           >
             <View>
-              <BoldText small underline>
-                {title}
-              </BoldText>
+              <BoldText small>{title}</BoldText>
             </View>
           </Touchable>
         ) : (

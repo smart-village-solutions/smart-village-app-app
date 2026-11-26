@@ -17,6 +17,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useQuery } from 'react-query';
 
 import { Icon, consts, normalize, texts } from '../config';
+import { SETTINGS_SCREENS } from '../config/settingsScreens';
 import { parseListItemsFromQuery } from '../helpers';
 import {
   CategorySubscription,
@@ -49,6 +50,7 @@ import {
   EVENT_REMINDERS_CHANGED,
   SingleEventReminder,
   getEventReminderModes,
+  getEventReminderPermission,
   pauseEventCategorySubscription,
   pauseEventReminder,
   readEventReminderSettings,
@@ -175,11 +177,26 @@ const useCategoryPreview = (
   return { data, preview, isFetching, known: !!through };
 };
 
-const notifyPermissionMissing = () =>
-  Alert.alert(copy.title, copy.permission, [
+const notifyPermissionMissing = (permission: 'system' | 'app', navigation: ListNavigation) => {
+  const openSettings =
+    permission === 'app'
+      ? {
+          text: copy.appSettings,
+          onPress: () =>
+            navigation.navigate(ScreenName.Settings, {
+              setting: SETTINGS_SCREENS.PERSONALIZED_PUSH,
+              title: texts.settingsTitles.pushNotifications
+            })
+        }
+      : {
+          text: copy.systemSettings,
+          onPress: () => void Linking.openSettings().catch(() => undefined)
+        };
+  Alert.alert(copy.title, permission === 'app' ? copy.appPermission : copy.systemPermission, [
     { text: copy.cancel, style: 'cancel' },
-    { text: copy.systemSettings, onPress: () => void Linking.openSettings().catch(() => undefined) }
+    openSettings
   ]);
+};
 
 type EditorProps = {
   modes: EventReminderModes;
@@ -189,6 +206,7 @@ type EditorProps = {
   categories?: EventReminderCategory[];
   category?: EventReminderCategory;
   settings?: EventReminderSettingsState;
+  navigation: ListNavigation;
   close: () => void;
 };
 
@@ -208,6 +226,7 @@ const EventReminderEditor = ({
   category,
   settings,
   modes,
+  navigation,
   close
 }: EditorProps) => {
   const { colors, isDark } = useTheme();
@@ -357,8 +376,10 @@ const EventReminderEditor = ({
           : occurrence
           ? await saveEventReminder(occurrence, rule, modes, details)
           : 'invalid';
-      if (status === 'permission') notifyPermissionMissing();
-      else if (status === 'scheduled' || status === 'capacity' || status === 'saved') close();
+      if (status === 'permission') {
+        const permission = await getEventReminderPermission();
+        notifyPermissionMissing(permission === 'app' ? 'app' : 'system', navigation);
+      } else if (status === 'scheduled' || status === 'capacity' || status === 'saved') close();
       else setMessage(copy[status]);
     } catch {
       setMessage(copy.failed);
@@ -758,6 +779,15 @@ export const EventReminderActions = ({
   );
   const opened = occurrences.find(({ occurrenceId }) => occurrenceId === notificationOccurrenceId);
   const selected = selectOccurrence(future, notificationOccurrenceId ?? selectedOccurrenceId);
+  const openWithPermission = async (open: () => void) => {
+    try {
+      const permission = await getEventReminderPermission();
+      if (permission === 'allowed') open();
+      else notifyPermissionMissing(permission, navigation);
+    } catch {
+      Alert.alert(copy.title, copy.failed);
+    }
+  };
 
   if (!future.length && !notificationOccurrenceId) return null;
 
@@ -781,8 +811,10 @@ export const EventReminderActions = ({
           selected={selected}
           reminders={reminders}
           settings={settings}
-          onSelect={() => (selected ? setEdited(selected) : setChoosing(true))}
-          onChoose={() => setChoosing(true)}
+          onSelect={() =>
+            void openWithPermission(() => (selected ? setEdited(selected) : setChoosing(true)))
+          }
+          onChoose={() => void openWithPermission(() => setChoosing(true))}
         />
       )}
       {!!choosing && (
@@ -802,10 +834,11 @@ export const EventReminderActions = ({
                 params: {},
                 isHeadlineTitle: false,
                 title: formatOccurrence(occurrence),
-                onPress: () => {
-                  setChoosing(false);
-                  setEdited(occurrence);
-                }
+                onPress: () =>
+                  void openWithPermission(() => {
+                    setChoosing(false);
+                    setEdited(occurrence);
+                  })
               }}
               listsWithoutArrows={listsWithoutArrows}
               navigation={navigation}
@@ -831,6 +864,7 @@ export const EventReminderActions = ({
           categories={categories}
           modes={modes}
           settings={settings}
+          navigation={navigation}
           close={() => setEdited(undefined)}
         />
       )}
@@ -937,6 +971,7 @@ const OccurrenceReminderSummary = ({
 
 type SettingsProps = {
   embeddedCategories?: boolean;
+  notificationsAllowed?: boolean;
   navigation: ListNavigation;
 };
 
@@ -972,7 +1007,18 @@ export const EventReminderSettings = (props: SettingsProps) => {
   const { globalSettings } = useContext(SettingsContext);
   const modes = getEventReminderModes(globalSettings);
   if (props.embeddedCategories) {
-    return modes.categoryEnabled ? <EventCategoryReminderList modes={modes} /> : null;
+    const settings = globalSettings.settings as
+      | { personalizedPush?: { categories?: { eventSectionTitle?: string } } }
+      | undefined;
+    const title = settings?.personalizedPush?.categories?.eventSectionTitle;
+    return modes.categoryEnabled ? (
+      <EventCategoryReminderList
+        modes={modes}
+        navigation={props.navigation}
+        notificationsAllowed={!!props.notificationsAllowed}
+        title={title || texts.settingsContents.personalizedPush.eventSectionTitle}
+      />
+    ) : null;
   }
   return modes.singleEnabled ? (
     <EventReminderList modes={modes} navigation={props.navigation} />
@@ -1009,7 +1055,17 @@ const useSettingsEventCategories = (
   };
 };
 
-const EventCategoryReminderList = ({ modes }: { modes: EventReminderModes }) => {
+const EventCategoryReminderList = ({
+  modes,
+  navigation,
+  notificationsAllowed,
+  title
+}: {
+  modes: EventReminderModes;
+  navigation: ListNavigation;
+  notificationsAllowed: boolean;
+  title: string;
+}) => {
   const { settings, readFailed } = useEventReminders(modes);
   const [editedCategory, setEditedCategory] = useState<EventReminderCategory>();
   const [changingCategory, setChangingCategory] = useState(false);
@@ -1018,12 +1074,19 @@ const EventCategoryReminderList = ({ modes }: { modes: EventReminderModes }) => 
     settings?.subscriptions
   );
   const enableCategory = async (category: EventReminderCategory, revert: () => void) => {
+    if (!notificationsAllowed) {
+      revert();
+      return;
+    }
     setChangingCategory(true);
     try {
       const rule = settings?.subscriptions[category.id]?.rule ?? defaultRule;
       const status = await saveEventCategorySubscription(category, rule, undefined, modes);
       if (status !== 'saved') revert();
-      if (status === 'permission') notifyPermissionMissing();
+      if (status === 'permission') {
+        const permission = await getEventReminderPermission();
+        notifyPermissionMissing(permission === 'app' ? 'app' : 'system', navigation);
+      }
     } catch {
       revert();
       Alert.alert(copy.title, copy.failed);
@@ -1061,10 +1124,10 @@ const EventCategoryReminderList = ({ modes }: { modes: EventReminderModes }) => 
         key={id}
         needsConnection={false}
         item={{
-          topDivider: true,
-          isDisabled: !settings || changingCategory || !!editedCategory,
+          bottomDivider: true,
+          isDisabled: !notificationsAllowed || !settings || changingCategory || !!editedCategory,
           title,
-          value: !!activeSubscription,
+          value: notificationsAllowed && !!activeSubscription,
           onOpen: () => setEditedCategory(category),
           openLabel: copy.categorySettings(title),
           onActivate: (revert: () => void) => enableCategory(category, revert),
@@ -1081,7 +1144,7 @@ const EventCategoryReminderList = ({ modes }: { modes: EventReminderModes }) => 
     <>
       <Wrapper noPaddingBottom>
         <RegularText small placeholder>
-          {texts.settingsContents.personalizedPush.eventSectionTitle}
+          {title}
         </RegularText>
       </Wrapper>
       <WrapperHorizontal style={styles.settingsList}>
@@ -1098,6 +1161,7 @@ const EventCategoryReminderList = ({ modes }: { modes: EventReminderModes }) => 
           modes={modes}
           category={editedCategory}
           settings={settings}
+          navigation={navigation}
           close={() => setEditedCategory(undefined)}
         />
       )}
@@ -1164,6 +1228,7 @@ const EventReminderList = ({
           modes={modes}
           occurrence={edited.occurrence}
           reminder={edited}
+          navigation={navigation}
           close={() => setEditedKey(undefined)}
         />
       )}

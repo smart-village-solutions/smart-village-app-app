@@ -22,6 +22,7 @@ import {
 } from '../components/settings';
 import { EventReminderSettings } from '../components/EventReminderControls';
 import { consts, normalize, texts } from '../config';
+import { SETTINGS_SCREENS } from '../config/settingsScreens';
 import {
   addToStore,
   getAccessibilitySettingsEntryEnabled,
@@ -53,16 +54,7 @@ const { MATOMO_TRACKING } = consts;
 
 const keyExtractor = (item, index) => `index${index}-item${item.title || item}`;
 
-export const SETTINGS_SCREENS = {
-  ACCESSIBILITY: 'accessibilitySettings',
-  AR: 'augmentedRealitySettings',
-  EVENT_REMINDERS: 'eventReminderSettings',
-  LIST: 'listSettings',
-  LOCATION: 'locationSettings',
-  MOWAS_REGION: 'mowasRegionSettings',
-  PERMANENT_FILTER: 'permanentFilterSettings',
-  PERSONALIZED_PUSH: 'personalizedPushSettings'
-};
+export { SETTINGS_SCREENS };
 
 /* eslint-disable complexity */
 const renderItem = ({ item, navigation, listsWithoutArrows, settingsScreenListItemTitles }) => {
@@ -198,9 +190,9 @@ renderItem.propTypes = {
   dimensions: PropTypes.object.isRequired
 };
 
-export const onActivatePushNotifications = async (revert) => {
+export const onActivatePushNotifications = async (revert, registerRemote = true) => {
   try {
-    const hasPermission = await handleSystemPermissions(false);
+    const hasPermission = await handleSystemPermissions(false, true);
 
     if (!hasPermission) {
       showSystemPermissionMissingDialog();
@@ -208,12 +200,15 @@ export const onActivatePushNotifications = async (revert) => {
       return false;
     }
 
-    const success = await setInAppPermission(true);
+    const success = registerRemote
+      ? await setInAppPermission(true)
+      : await setInAppPermission(true, false);
 
     if (!success) revert();
     return success;
   } catch {
     console.warn('An error occurred while activating push notifications.');
+    Alert.alert(texts.errors.errorTitle, texts.pushNotifications.activationFailed);
     revert();
     return false;
   }
@@ -307,9 +302,15 @@ const getSettingContent = (
         <PersonalizedPushSettings
           showRemotePush={showRemotePush}
           footer={
-            categoryEnabled ? (
-              <EventReminderSettings embeddedCategories navigation={navigation} />
-            ) : null
+            categoryEnabled
+              ? (notificationsAllowed) => (
+                  <EventReminderSettings
+                    embeddedCategories
+                    navigation={navigation}
+                    notificationsAllowed={notificationsAllowed}
+                  />
+                )
+              : undefined
           }
         >
           {singleEnabled &&

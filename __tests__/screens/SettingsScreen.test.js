@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires, react/prop-types */
 import React from 'react';
-import { Alert, DeviceEventEmitter, SectionList, TouchableOpacity } from 'react-native';
+import { Alert, DeviceEventEmitter, Linking, SectionList, TouchableOpacity } from 'react-native';
 import renderer, { act } from 'react-test-renderer';
 import { useQuery } from 'react-query';
 
@@ -47,7 +47,7 @@ jest.mock('../../src/hooks', () => ({
 }));
 
 jest.mock('../../src/config', () => ({
-  Icon: { ArrowRight: () => null },
+  Icon: { ArrowRight: () => null, Clock: () => null },
   colors: { refreshControl: '#000000' },
   consts: {
     a11yLabel: { button: '(Taste)' },
@@ -64,6 +64,7 @@ jest.mock('../../src/config', () => ({
     profile: {
       termsAndConditionsAlertTitle: 'Datenschutzhinweise'
     },
+    pushNotifications: { activationFailed: 'Aktivierung fehlgeschlagen' },
     settingsContents: {
       analytics: {
         no: 'Nein',
@@ -144,7 +145,10 @@ jest.mock('../../src/NetworkProvider', () => ({
 }));
 
 import { clearPersistentCaches } from '../../src/ReactQueryProvider';
-import { EventReminderSettings } from '../../src/components/EventReminderControls';
+import {
+  EventReminderActions,
+  EventReminderSettings
+} from '../../src/components/EventReminderControls';
 import { ListComponent } from '../../src/components/ListComponent';
 import { Modal } from '../../src/components/Modal';
 import { SectionHeader } from '../../src/components/SectionHeader';
@@ -228,7 +232,7 @@ describe('SettingsScreen', () => {
         singleEnabled ? SETTINGS_SCREENS.EVENT_REMINDERS : null
       );
       if (entry) expect(entry.props.item.isHeadlineTitle).toBe(false);
-      expect(footer?.props.embeddedCategories ?? false).toBe(categoryEnabled);
+      expect(footer?.(true).props.embeddedCategories ?? false).toBe(categoryEnabled);
       expect(remoteToggle).toBe(showRemotePush);
 
       await act(async () => {
@@ -286,19 +290,28 @@ describe('SettingsScreen', () => {
             ...initialContext,
             globalSettings: {
               settings: {
-                personalizedPush: { categories: { queryVariables: { tagList: ['event_record'] } } }
+                personalizedPush: {
+                  categories: {
+                    queryVariables: { tagList: ['event_record'] },
+                    eventSectionTitle: 'Veranstaltungskategorien im Test'
+                  }
+                }
               }
             }
           }}
         >
-          <EventReminderSettings embeddedCategories navigation={navigation} />
+          <EventReminderSettings embeddedCategories navigation={navigation} notificationsAllowed />
         </SettingsContext.Provider>
       );
     });
     const [paused, available, subscribed] = tree.root
       .findAllByType(SettingsToggle)
       .map(({ props }) => props.item);
-    expect(available).toMatchObject({ title: 'Kultur / Musik', value: false });
+    expect(available).toMatchObject({ title: 'Kultur / Musik', value: false, bottomDivider: true });
+    expect(available.topDivider).toBeUndefined();
+    expect(
+      tree.root.findAll((node) => node.props.children === 'Veranstaltungskategorien im Test').length
+    ).toBeGreaterThan(0);
     expect(subscribed).toMatchObject({ title: 'Sport / Spiel', value: true });
     expect(paused).toMatchObject({ title: 'Ärger & Spaß', value: false });
     await act(async () => paused.onActivate(jest.fn()));
@@ -404,6 +417,56 @@ describe('SettingsScreen', () => {
     deleteReminder.mockRestore();
     read.mockRestore();
   });
+
+  it.each([
+    ['app', 'Aktivieren Sie Push-Benachrichtigungen in den App-Einstellungen.'],
+    ['system', 'Aktivieren Sie Benachrichtigungen in den Systemeinstellungen.']
+  ])(
+    'keeps the reminder action visible and opens the %s permission alert',
+    async (permission, message) => {
+      const checkPermission = jest
+        .spyOn(eventReminders, 'getEventReminderPermission')
+        .mockResolvedValue(permission);
+      const alert = jest.spyOn(Alert, 'alert').mockImplementation(() => {});
+      const openSystemSettings = jest.spyOn(Linking, 'openSettings').mockResolvedValue();
+      const occurrence = {
+        eventId: '1',
+        occurrenceId: '1',
+        title: 'Test',
+        date: '2099-06-15',
+        time: '20:00'
+      };
+      let tree;
+      await act(async () => {
+        tree = renderer.create(
+          <EventReminderActions
+            modes={{ singleEnabled: true, categoryEnabled: false }}
+            categories={[]}
+            occurrences={[occurrence]}
+            navigation={navigation}
+          />
+        );
+      });
+      const action = tree.root.findByType(TextListItem);
+      expect(action.props.item.title).toBe('Erinnern');
+      await act(async () => action.props.item.onPress());
+      expect(alert).toHaveBeenCalledWith('Veranstaltungserinnerungen', message, expect.any(Array));
+      expect(tree.root.findAllByType(Modal)).toHaveLength(0);
+      alert.mock.lastCall[2][1].onPress();
+      if (permission === 'app') {
+        expect(navigation.navigate).toHaveBeenCalledWith('Settings', {
+          setting: SETTINGS_SCREENS.PERSONALIZED_PUSH,
+          title: 'Push-Benachrichtigungen'
+        });
+      } else {
+        expect(openSystemSettings).toHaveBeenCalledTimes(1);
+      }
+      await act(async () => tree.unmount());
+      checkPermission.mockRestore();
+      openSystemSettings.mockRestore();
+      alert.mockRestore();
+    }
+  );
 
   it('shows a dev-only persistent cache reset link and clears caches after confirmation', async () => {
     jest.mocked(clearPersistentCaches).mockResolvedValue(undefined);

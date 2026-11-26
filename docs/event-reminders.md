@@ -11,7 +11,8 @@ Configure `settings.personalizedPush` in a municipality's `globalSettings`.
     "personalizedPush": {
       "categories": {
         "queryVariables": { "tagList": ["news_item", "event_record"] },
-        "sectionTitle": "Push-Benachrichtigungen für Nachrichtenkategorien"
+        "sectionTitle": "Push-Benachrichtigungen für Nachrichtenkategorien",
+        "eventSectionTitle": "Erinnerungen für Veranstaltungskategorien"
       },
       "eventReminders": { "singleEnabled": true }
     }
@@ -27,6 +28,8 @@ list stays the same when a switch changes. Tapping a category name opens its
 rule, sync status, and confirmed scheduling coverage in the reminder dialog.
 The dialog also offers permanent deletion. Category names display decoded HTML
 character references as plain text.
+Set `categories.eventSectionTitle` to override the default event category
+heading. `categories.sectionTitle` configures the news category heading.
 
 **Veranstaltungserinnerungen** shows configured individual reminders using the
 standard event list layout. Tapping a row opens the reminder settings. Pausing
@@ -35,10 +38,14 @@ the rule and lets any applicable category reminder take over. Completed reminder
 drop out of the list. The app observes incoming deliveries while open and reconciles
 past scheduled reminders against the pending OS inventory when activated.
 
-Local rules use device storage and the operating system's notification
-permissions. They can be managed with remote push switched off. Removing
-`event_record` or disabling `singleEnabled` cancels the corresponding pending
-requests once the app receives the changed configuration.
+Local rules use device storage. Activation and scheduling require both the
+in-app push switch and the operating system's notification permission. Turning
+off either permission suspends pending reminders and keeps the saved rules.
+Opening the reminder action on an event while permissions are off directs
+the user to the relevant settings. Instances that enable event reminders
+without configuring remote push still offer the in-app switch for local reminders.
+Removing `event_record` or disabling `singleEnabled` cancels the corresponding
+pending requests once the app receives the changed configuration.
 
 The default reminder is three calendar days before the occurrence in
 `Europe/Berlin`. When the source has no fixed start, the default time is noon.
@@ -82,7 +89,7 @@ for the instances that will enable the feature.
 ### Device verification for SVAK-245
 
 On the iPhone 17 simulator, a single reminder was delivered after the app was
-terminated with remote push disabled. Tapping the notification opened the
+terminated. Tapping the notification opened the
 correct occurrence. Using the same test CMS event (record `9998`, occurrence
 `92231`), a category subscription displayed a confirmed request in the app and
 the OS inventory. Excluding and re-including the occurrence changed the detail
@@ -106,6 +113,12 @@ and tapping its name revealed the sync status in the dialog. On iOS,
 switching `Veranstaltung` off canceled its pending request for occurrence
 `92231`. After reactivation, permanent deletion removed both the saved rule
 and the pending request.
+
+On iOS, restoring notification permission in System Settings allowed the
+in-app switch to be enabled on the next attempt. Switching it off disabled
+both category lists and canceled the planned event request. The reminder
+action in the event detail stayed visible and opened the in-app permission
+alert.
 
 Release acceptance still requires checking source-confirmed moves and
 cancellations, full waste queue coexistence, permission revocation, device
