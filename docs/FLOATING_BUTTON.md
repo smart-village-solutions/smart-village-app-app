@@ -58,6 +58,12 @@ A `publicJsonFile` record named `floatingButton` must be created on the server. 
     "icon": "url",
     "iconName": "",
     "visibleScreens": ["Home"],
+    "style": {
+      "backgroundColor": "#FFFFFF",
+      "borderColor": "#24634A",
+      "borderWidth": 2,
+      "iconSize": 36
+    },
     "routeName": "Web",
     "params": {
       "webUrl": "url",
@@ -76,6 +82,7 @@ A `publicJsonFile` record named `floatingButton` must be created on the server. 
 | `params`             | `object`     | No       | Navigation parameters to pass to the target screen                                             |
 | `iconName`           | `string`     | No       | Icon name from the `tabler-icons` set (e.g. `calendar-plus`)                                   |
 | `icon`               | `string`     | No       | Remote icon URL (used instead of `iconName`)                                                   |
+| `style`              | `object`     | No       | Per-button appearance overrides                                                                |
 | `visibleScreens`     | `string[]`   | No       | Screens on which the button is visible. If omitted or empty, the button appears on all screens |
 
 > **Note:** If both `icon` and `iconName` are provided, `icon` (URL) takes priority.
@@ -118,9 +125,21 @@ The component supports both `drawer` and `tab` navigation types:
 ## Styling and Appearance
 
 - Button size: `normalize(56)` × `normalize(56)` (circular)
-- Background color: `colors.primary`
+- The background and border colors default to the active theme's primary color. The border width defaults to zero.
+- The default icon size is `normalize(24)`.
 - Shadow: `shadowColor/shadowOffset/shadowOpacity/shadowRadius` on iOS, `elevation: 6` on Android
 - Multiple buttons are spaced vertically with `normalize(8)` gap
+
+Set `style` on an individual entry in the `floatingButton` record. All fields are optional.
+
+| Field             | Value                                          |
+| ----------------- | ---------------------------------------------- |
+| `backgroundColor` | React Native color string, such as `"#FFFFFF"` |
+| `borderColor`     | React Native color string, such as `"#24634A"` |
+| `borderWidth`     | Non-negative number before normalization       |
+| `iconSize`        | Positive number before normalization           |
+
+Pull to refresh on the home screen to fetch the updated record.
 
 ## Testing
 

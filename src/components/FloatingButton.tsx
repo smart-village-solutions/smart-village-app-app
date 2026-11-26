@@ -1,8 +1,9 @@
 import _filter from 'lodash/filter';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
-import { Platform, TouchableOpacity, View } from 'react-native';
+import { Platform, TouchableOpacity, View, processColor } from 'react-native';
 
 import { Icon, normalize } from '../config';
+import { normalizeStyleValues } from '../helpers/normalizeStyleValues';
 import { useAccessibilityPreferences, useHomeRefresh, useStaticContent } from '../hooks';
 import { navigationRef, type RootNavigationParamList } from '../navigation/navigationRef';
 import { useReadAloudAvailability } from '../ReadAloudAvailabilityProvider';
@@ -20,7 +21,36 @@ type TButton = {
   params?: RootNavigationParamList[ScreenName];
   accessibilityLabel?: string;
   routeName: ScreenName;
+  style?: {
+    backgroundColor?: string;
+    borderColor?: string;
+    borderWidth?: number;
+    iconSize?: number;
+  };
   visibleScreens?: string[];
+};
+
+const getButtonColor = (color: string | undefined, fallback: string) =>
+  typeof color === 'string' && processColor(color) != null ? color : fallback;
+
+const getButtonAppearance = (style: TButton['style'], primaryColor: string) => {
+  const { backgroundColor, borderColor, borderWidth = 0, iconSize } = style ?? {};
+  const dimensions = normalizeStyleValues({
+    borderWidth: Number.isFinite(borderWidth) && borderWidth >= 0 ? borderWidth : 0,
+    iconSize:
+      typeof iconSize === 'number' && Number.isFinite(iconSize) && iconSize > 0
+        ? iconSize
+        : undefined
+  });
+
+  return {
+    buttonStyle: style && {
+      backgroundColor: getButtonColor(backgroundColor, primaryColor),
+      borderColor: getButtonColor(borderColor, primaryColor),
+      borderWidth: dimensions.borderWidth
+    },
+    configuredIconSize: dimensions.iconSize
+  };
 };
 
 // eslint-disable-next-line complexity
@@ -91,32 +121,47 @@ export const FloatingButton = ({
 
       {!!visibleItems.length && (
         <View pointerEvents="box-none" style={styles.additionalButtons}>
-          {visibleItems.map((item, index) => (
-            <TouchableOpacity
-              activeOpacity={0.8}
-              accessibilityLabel={item.accessibilityLabel}
-              accessibilityRole="button"
-              key={`${item.accessibilityLabel}-${index}`}
-              onPress={() => {
-                if (!navigationRef.isReady()) {
-                  return;
-                }
+          {visibleItems.map((item, index) => {
+            const { buttonStyle, configuredIconSize } = getButtonAppearance(
+              item.style,
+              colors.primary
+            );
+            const imageStyle =
+              configuredIconSize === undefined
+                ? styles.icon
+                : { width: configuredIconSize, height: configuredIconSize };
 
-                navigationRef.navigate(item.routeName, item.params);
-              }}
-              style={[styles.button, styles.buttonEnabled]}
-            >
-              {item.icon ? (
-                <Image source={{ uri: item.icon }} style={styles.icon} />
-              ) : item.iconName ? (
-                <Icon.NamedIcon
-                  name={item.iconName}
-                  color={colors.lightestText}
-                  size={normalize(24)}
-                />
-              ) : null}
-            </TouchableOpacity>
-          ))}
+            return (
+              <TouchableOpacity
+                activeOpacity={0.8}
+                accessibilityLabel={item.accessibilityLabel}
+                accessibilityRole="button"
+                key={`${item.accessibilityLabel}-${index}`}
+                onPress={() => {
+                  if (!navigationRef.isReady()) {
+                    return;
+                  }
+
+                  navigationRef.navigate(item.routeName, item.params);
+                }}
+                style={[styles.button, styles.buttonEnabled, buttonStyle]}
+              >
+                {item.icon ? (
+                  <Image
+                    source={{ uri: item.icon }}
+                    style={imageStyle}
+                    resizeMode={configuredIconSize === undefined ? 'cover' : 'contain'}
+                  />
+                ) : item.iconName ? (
+                  <Icon.NamedIcon
+                    name={item.iconName}
+                    color={colors.lightestText}
+                    size={configuredIconSize ?? normalize(24)}
+                  />
+                ) : null}
+              </TouchableOpacity>
+            );
+          })}
         </View>
       )}
     </View>
