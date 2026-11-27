@@ -9,6 +9,7 @@ import { EventRecord } from '../../../src/components/screens/EventRecord';
 import { NewsItem } from '../../../src/components/screens/NewsItem';
 import { PointOfInterest } from '../../../src/components/screens/PointOfInterest';
 import { NoticeboardDetail } from '../../../src/components/screens/noticeboard/NoticeboardDetail';
+import { SectionHeader } from '../../../src/components/SectionHeader';
 import { DELETE_EVENT_RECORD } from '../../../src/queries/eventRecords';
 import { DELETE_NEWS_ITEM } from '../../../src/queries/newsItems';
 import { DELETE_POINT_OF_INTEREST } from '../../../src/queries/pointsOfInterest';
@@ -65,9 +66,11 @@ jest.mock('../../../src/hooks', () => ({
 jest.mock('../../../src/helpers', () => ({
   filterGenericItems: jest.fn(() => true),
   getGenericItemMatomoName: jest.fn(() => 'noticeboard'),
+  hasConcretePostalAddress: jest.fn(() => false),
   isTodayOrLater: jest.fn(() => true),
-  isValidGeoLocation: jest.fn(() => false),
+  isValidGeoLocation: jest.fn((location) => location?.latitude === 51.86),
   matomoTrackingString: jest.fn(() => 'tracking'),
+  mergeWebUrls: jest.fn(() => []),
   momentFormatUtcToLocal: jest.fn(() => ''),
   openLink: jest.fn(),
   parseListItemsFromQuery: jest.fn(() => []),
@@ -374,9 +377,11 @@ const navigation = {
 const route = { params: {} };
 
 const renderComponent = async (component) => {
+  let view;
   await act(async () => {
-    renderer.create(component);
+    view = renderer.create(component);
   });
+  return view;
 };
 
 describe('owner auth context for detail screen actions', () => {
@@ -398,6 +403,23 @@ describe('owner auth context for detail screen actions', () => {
       isLoggedIn: true
     });
     mockUseFocusEffect.mockImplementation(() => undefined);
+  });
+
+  it.each([
+    [{ kind: 'default' }, 0],
+    [{ kind: 'default', geoLocation: { latitude: 51.86, longitude: 13.95 } }, 1]
+  ])('shows the POI overview only when the address has content (%#)', async (address, count) => {
+    const view = await renderComponent(
+      <PointOfInterest
+        data={{ id: 'poi-1', addresses: [address] }}
+        navigation={navigation}
+        route={route}
+      />
+    );
+
+    expect(
+      view.root.findAllByType(SectionHeader).filter(({ props }) => props.title === 'Overview')
+    ).toHaveLength(count);
   });
 
   it('passes user auth context to owner delete mutations for content detail screens', async () => {

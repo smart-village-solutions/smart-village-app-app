@@ -1135,6 +1135,8 @@ export const texts = {
   },
   pointOfInterest: {
     availableVehicles: 'Verfügbare Fahrzeuge',
+    departureDeviation: (minutes, isLate) =>
+      `${minutes} ${minutes === 1 ? 'Minute' : 'Minuten'} ${isLate ? 'später' : 'früher'}`,
     departureTimes: 'Abfahrtszeiten',
     departureTimesShowMoreButton: 'Mehr anzeigen',
     description: 'Beschreibung',
@@ -1143,6 +1145,7 @@ export const texts = {
     location: 'Karte',
     navigationWithoutAddress: 'Route planen',
     noAvailableVehicles: 'Im Moment ist kein Fahrzeug verfügbar',
+    noMoreDeparturesToday: 'Heute keine weiteren Abfahrten',
     openingTime: 'Öffnungszeiten',
     operatingCompany: 'Anbieter',
     overview: 'Übersicht',

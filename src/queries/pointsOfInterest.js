@@ -279,12 +279,16 @@ export const GET_POINT_OF_INTEREST = gql`
   }
 `;
 
-export const GET_POINT_OF_INTEREST_TRAVEL_TIMES = gql`
-  query PointOfInterestTravelTimes($id: ID!, $date: String!) {
+const pointOfInterestTravelTimes = (includeRealtime) => gql`
+  query ${includeRealtime ? 'PointOfInterestRealtimeTravelTimes' : 'PointOfInterestTravelTimes'}(
+    $id: ID!
+    $date: String!
+  ) {
     pointOfInterest(id: $id) {
       id
-      travelTimes(date: $date) {
+      travelTimes(date: $date${includeRealtime ? ', includeRealtime: true' : ''}) {
         departureTime
+        ${includeRealtime ? 'estimatedDepartureTime departureDelaySeconds' : ''}
         route {
           routeShortName
           routeType
@@ -339,3 +343,6 @@ export const DELETE_POINT_OF_INTEREST = gql`
     }
   }
 `;
+
+export const GET_POINT_OF_INTEREST_TRAVEL_TIMES = pointOfInterestTravelTimes(false);
+export const GET_POINT_OF_INTEREST_REALTIME_TRAVEL_TIMES = pointOfInterestTravelTimes(true);
